@@ -6,7 +6,7 @@ class Server_game :
     def __init__(self,serv_main):
         self.canva_size = var.serv_size
         self.serv = serv_main
-        self.map = Read_map("assets/bgSand.png",var.cell_size,self.canva_size)
+        self.map = Read_map("assets/bgWater.png",var.cell_size,self.canva_size)
         #self.canva_map = self.map.canva
         self.is_running_game = True
 

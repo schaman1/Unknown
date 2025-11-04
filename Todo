@@ -1,0 +1,4 @@
+Creer le Host du serveur. Si se connecte en prems 
+faire en fonction du nombre de boutton, alors / et les affiches
+Update C_button pour pas reccre le text_rect a chaque fois
+Creer une fonction draw 
