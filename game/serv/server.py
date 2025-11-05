@@ -115,8 +115,15 @@ class Server:
         pass
 
     def send_data_all(self,data):
-        for socket,client in self.lClient.items():
-            self.send_data(json.dumps(data),socket)
+        message = json.dumps(data).encode('utf-8')
+        def send_to(sock):
+            try:
+                sock.sendall(message)
+            except:
+                pass  # ou suppression du client mort
+
+        for socket, _ in self.lClient.items():
+            threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
