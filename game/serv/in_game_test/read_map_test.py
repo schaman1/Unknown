@@ -125,7 +125,9 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
             if updated[y,x] : 
                 continue
 
-            if grid_type[y, x] == SAND:
+            typ = grid_type[y, x]
+
+            if typ == SAND:
 
                 ny = y + 1
                 if ny >= H : 
@@ -162,7 +164,12 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                                     grid_color[ny, nx, 2],
                                     grid_color[ny, nx, 3]))
                 
-            if grid_type[y, x] == WATER or grid_type[y, x] == EXPLO :
+            if typ == WATER or typ == EXPLO :
+
+                if typ == WATER :
+                    transmax = 255
+                else :
+                    transmax = 127
 
                 ny = y + 1
                 if ny >= H :
@@ -171,13 +178,13 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                 # test bas, bas-gauche, bas-droite
                 if grid_type[ny, x] in (EMPTY, FIRE):
                     nx = x
-                    temperature[y,x] = -255
+                    temperature[y,x] = -transmax
                 elif x > 0 and grid_type[ny, x - 1] in (EMPTY, FIRE):
                     nx = x - 1
-                    temperature[y,x] = -255
+                    temperature[y,x] = -transmax
                 elif x < W - 1 and grid_type[ny, x + 1] in (EMPTY, FIRE):
                     nx = x + 1
-                    temperature[y,x] = -255
+                    temperature[y,x] = -transmax
 
                 else:
                     ny = y
@@ -196,7 +203,6 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
 
                     if r_or_l[y,x] is True :
 
-
                         if x < W - 1 and grid_type[ny, x + 1] in (EMPTY, FIRE):
                             nx = x + 1
                             temperature[y,x] += 2
@@ -205,13 +211,13 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                             r_or_l[y,x] = False
                             temperature[y,x] += 2
                         else :
-                            if temperature[y,x] > -255 :
+                            if temperature[y,x] > -transmax :
                                 temperature[y,x] -= 1
-                                grid_color[y,x,3] += 1
 
-                                if temperature[y,x] < -255 :
-                                    temperature[y,x] = -255
-                                    grid_color[y,x,3] = 255
+                                if temperature[y,x] < -transmax :
+                                    temperature[y,x] = -transmax
+
+                                grid_color[y,x,3] = -temperature[y,x]
 
                                 moved_cells.append((x, y,
                                                     grid_color[y, x, 0],
@@ -231,11 +237,11 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                             temperature[y,x] += 2
                             r_or_l[y,x] = True
                         else :
-                            if temperature[y,x] > -255 :
+                            if temperature[y,x] > -transmax :
                                 temperature[y,x] -= 1
 
-                                if temperature[y,x] < -255 :
-                                    temperature[y,x] = -255
+                                if temperature[y,x] < -transmax :
+                                    temperature[y,x] = -transmax
 
                                 grid_color[y,x,3] = -temperature[y,x]
                                 moved_cells.append((x, y,
@@ -247,11 +253,8 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                             else :
                                 continue
 
-
-
-                grid_color[y,x,3] = - temperature[y,x]
+                grid_color[y,x,3] = -temperature[y,x]
                 
-
                 # swap type
                 if grid_type[ny,nx] == FIRE:
                     if grid_type[y,x] == WATER :
@@ -262,12 +265,13 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                         temperature[y,x] = 255
                         grid_type[y,x] = FIRE
                         grid_color[y,x] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
+
+                updated[ny,nx] = True
                 #else :
                 swap_cell(temperature,grid_type,grid_color,x,y,nx,ny)
                 swap_r_or_l(r_or_l,y,x,ny,nx)
 
                 # on enregistre les 2 cases modifiées
-                updated[ny,nx] = True
                 moved_cells.append((x, y,
                                     grid_color[y, x, 0],
                                     grid_color[y, x, 1],
@@ -278,8 +282,8 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                                     grid_color[ny, nx, 1],
                                     grid_color[ny, nx, 2],
                                     grid_color[ny, nx, 3]))
-                
-            if grid_type[y,x] == FIRE:
+
+            if typ == FIRE:
                 new_temp = temperature[y,x]
                 #new_life = np.zeros(4,dtype = np.int16)
                 for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
@@ -290,12 +294,12 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                         continue
 
                     temp = temperature[dy,dx]
-                    typ = grid_type[dy,dx]
+                    typ2 = grid_type[dy,dx]
                     #if temp < 0 :
                     new_temp += temp
 
-                    if typ == WOOD or typ == EXPLO:
-                        if typ == WOOD :
+                    if typ2 == WOOD or typ2 == EXPLO:
+                        if typ2 == WOOD :
                             seuil = BurnaWood 
                         else : seuil = BurnaExplo
                         if np.random.randint(0,100) > seuil :
