@@ -3,6 +3,7 @@ import var #Fichier
 import pygame
 
 class Server_game :
+    #Truc de ouf
     def __init__(self,serv_main):
         self.canva_size = var.serv_size
         self.serv = serv_main
