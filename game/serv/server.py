@@ -115,10 +115,10 @@ class Server:
         pass
 
     def send_data_all(self,data):
-        message = json.dumps(data).encode('utf-8')
-        def send_to(sock):
+        message = json.dumps(data)
+        def send_to(socket):
             try:
-                sock.sendall(message)
+                self.send_data(message, socket)
             except:
                 pass  # ou suppression du client mort
 
