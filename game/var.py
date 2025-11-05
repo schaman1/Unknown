@@ -1,6 +1,6 @@
 #Toutes les variables importantes du jeu sont ici
 
-fps = 60
+fps = 600
 bg = "assets/bgWater.png"
-cell_size = 6
+cell_size = 10
 serv_size = (2880,1800)
