@@ -2,5 +2,5 @@
 
 fps = 600
 bg = "assets/bgWater.png"
-cell_size = 1
+cell_size = 10
 serv_size = (2880,1800)
