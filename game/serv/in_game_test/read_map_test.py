@@ -11,8 +11,8 @@ class Read_map:
         self.cells_w = self.width // self.cell_size
         self.cells_h = self.height // self.cell_size
 
-        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "EXPLO" : 5}
-        self.propagation = {"WOOD": 98, "EXPLO" : 1}
+        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5 }#"EXPLO" : 5}
+        self.propagation = {"WOOD": 98}#, "EXPLO" : 1}
 
         self.map = pygame.image.load(filename).convert()
         self.map = pygame.transform.scale(self.map, (self.width, self.height))
@@ -33,7 +33,8 @@ class Read_map:
         mask_water = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 255)
         mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
-        mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
+        mask_stone = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 127)
+        #mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
 
         # Exemple de masque spécifique
         #mask_sand[120, 3] = True
@@ -42,20 +43,22 @@ class Read_map:
         self.grid_type[mask_water] = self.type["WATER"]
         self.grid_type[mask_wood] = self.type["WOOD"]
         self.grid_type[mask_fire] = self.type["FIRE"]
-        self.grid_type[mask_explo] = self.type["EXPLO"]
+        self.grid_type[mask_stone] = self.type["STONE"]
+        #self.grid_type[mask_explo] = self.type["EXPLO"]
 
         self.grid_color[mask_sand] = self.random_color(mask_sand.sum(), (150, 200), (75, 140), (0, 0),255)
         self.grid_color[mask_water] = self.random_color(mask_water.sum(), (0, 20), (0, 20), (200, 255),255)
         self.grid_color[mask_wood] = self.random_color(mask_wood.sum(), (78, 88), (31, 41), (0, 0),255)
         self.grid_color[mask_fire] = self.random_color(mask_fire.sum(), (180, 255), (0, 20), (0, 0),255)
-        self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
-        #self.grid_color[mask_explo] = self.random_color(mask_fire.sum(), (180, 255), (0, 20), (0, 0),255)
+        self.grid_color[mask_stone] = self.random_color(mask_stone.sum(), (60, 75), (55, 65), (50, 60),255)
+        #self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
 
-        self.temp[mask_sand] = -50
+        self.temp[mask_sand] = 85
         self.temp[mask_water] = -255
         self.temp[mask_fire] = 255
         self.temp[mask_wood] = 255
-        self.temp[mask_explo] = 255
+        self.temp[mask_stone] = 30
+        #self.temp[mask_explo] = 255
 
     def random_color(self, num, r_range, g_range, b_range,transparence):
         r = np.random.randint(r_range[0], r_range[1]+1, num, dtype=np.uint8)
@@ -85,8 +88,9 @@ class Read_map:
             self.type["WOOD"],
             self.type["WATER"],
             self.type["FIRE"],
-            self.type["EXPLO"],
-            self.propagation["EXPLO"],
+            self.type["STONE"],
+            #self.type["EXPLO"],
+            #self.propagation["EXPLO"],
             self.propagation["WOOD"]
         )
         return moved_cells
@@ -114,7 +118,7 @@ def swap_r_or_l(r_or_l,y,x,ny,nx):
 
 
 @njit
-def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,EXPLO,BurnaExplo,BurnaWood):
+def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,BurnaWood):
     H, W = grid_type.shape
     moved_cells = []
     updated = np.zeros((H, W), dtype=np.bool)  # masque des cellules déjà modifiées
@@ -164,12 +168,12 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                                     grid_color[ny, nx, 2],
                                     grid_color[ny, nx, 3]))
                 
-            if typ == WATER or typ == EXPLO :
+            elif typ == WATER :#or typ == EXPLO :
 
                 if typ == WATER :
                     transmax = 255
-                else :
-                    transmax = 127
+                #else :
+                #    transmax = 127
 
                 ny = y + 1
                 if ny >= H :
@@ -257,14 +261,14 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                 
                 # swap type
                 if grid_type[ny,nx] == FIRE:
-                    if grid_type[y,x] == WATER :
-                        temperature[ny,nx] = 0
-                        grid_type[ny,nx] = EMPTY
-                        grid_color[ny,nx] = (0,0,0,0)
-                    else :
-                        temperature[y,x] = 255
-                        grid_type[y,x] = FIRE
-                        grid_color[y,x] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
+                    #if grid_type[y,x] == WATER :
+                    temperature[ny,nx] = 0
+                    grid_type[ny,nx] = EMPTY
+                    grid_color[ny,nx] = (0,0,0,0)
+                    #else :
+                    #    temperature[y,x] = 255
+                    #    grid_type[y,x] = FIRE
+                    #    grid_color[y,x] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
 
                 updated[ny,nx] = True
                 #else :
@@ -283,7 +287,7 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                                     grid_color[ny, nx, 2],
                                     grid_color[ny, nx, 3]))
 
-            if typ == FIRE:
+            elif typ == FIRE:
                 new_temp = temperature[y,x]
                 #new_life = np.zeros(4,dtype = np.int16)
                 for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
@@ -298,10 +302,10 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                     #if temp < 0 :
                     new_temp += temp
 
-                    if typ2 == WOOD or typ2 == EXPLO:
-                        if typ2 == WOOD :
-                            seuil = BurnaWood 
-                        else : seuil = BurnaExplo
+                    if typ2 == WOOD :#or typ2 == EXPLO:
+                        #if typ2 == WOOD :
+                        seuil = BurnaWood 
+                        #else : seuil = BurnaExplo
                         if np.random.randint(0,100) > seuil :
                             temperature[dy,dx] = 255
                             grid_type[dy,dx] = FIRE
@@ -354,6 +358,36 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                                     grid_color[y, x, 1],
                                     grid_color[y, x, 2],
                                     grid_color[y, x, 3]))
+                
+            elif typ == STONE :
+
+                r = np.random.randint(0,10000)
+
+                ny = y + 1
+                if ny >= H :
+                    continue
+                    
+
+                for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
+                    dy = y +i
+                    dx = x + j
+                    if dy < 0 or dy >= H or dx < 0 or dx >= W :
+                        #Stoppe la boucle
+                        continue
+
+                    if grid_color[dy,dx,1] == 254 or grid_type[dy,dx] in (EMPTY,WATER):
+                        if r > 9998 :
+                            temperature[y,x] = 0
+                            grid_type[y,x] = STONE
+                            grid_color[y,x,1] = grid_color[y,x,1] + 15
+
+                        moved_cells.append((x,y,
+                                            grid_color[y,x,0],
+                                            grid_color[y,x,1],
+                                            grid_color[y,x,2],
+                                            grid_color[y,x,3],
+                                            ))
+
 
     return moved_cells
 
