@@ -1,6 +1,7 @@
 import pygame
 
 class Button:
+    """Est utilise pour les bouttons du menu"""
     def __init__(self,rect,color,text,font,id,border=10):
         self.rect = rect
         self.color = color
@@ -23,7 +24,7 @@ class Button:
 
 
     def draw(self,screen):
-
+        """Permet de draw le boutton = doit être appele pour chaque boutton crée"""
         for ele in self.dicRect.values():
 
             pygame.draw.rect(screen,ele["color"],ele["rect"],border_radius = ele["border"])
@@ -33,7 +34,7 @@ class Button:
             screen.blit(text, text_rect)
 
     def create_input(self,rect,color,text):
-
+        """Permet de creer l'input de la zone du texte dans join"""
         if rect == "RIGHT":
             rect = pygame.Rect(self.rect.left + self.rect.width/3 - self.rect.height*0.2, self.rect.top + self.rect.height*0.2, self.rect.width*2/3, self.rect.height*0.6)
 
@@ -41,6 +42,7 @@ class Button:
         self.alignement = "midleft"
  
     def update_text(self,id,new_text):
+        """Change le texte affiche dans le boutton"""
         if id in self.dicRect:
             self.dicRect[id]["text"] = new_text
         

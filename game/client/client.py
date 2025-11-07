@@ -3,7 +3,7 @@ import time
 from client.events import event_queue
 
 class Client:
-
+    """Class client, traite les envoies de données et les receptions avec le serv"""
     def __init__(self, font,screen,main,ip="localhost", port=5000):
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
@@ -21,6 +21,7 @@ class Client:
         self.screen = screen
 
     def return_ip(self,ip_port):
+        """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
         try :
             ip, port = ip_port.split(":")
             return ip, int(port)
@@ -34,11 +35,12 @@ class Client:
             return self.return_err("Utilisez le format ip:port")
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #Créer le socket
 
-        for essais in range(3):
+        for essais in range(3): #Test 3 fois de se connecter 
             try:
                 print(f"Tentative de connexion {essais+1}/3...")
-                self.client.connect((ip, port))
+                self.client.connect((ip, port)) #Ici connection 
                 self.connection_succes()
                 return
             except Exception as e:
@@ -48,16 +50,18 @@ class Client:
         self.return_err("Ip ou port incorrect")
 
     def return_err(self,mess):
+        #Va  changer err_message = dans une autre boucle teste si err message a change eet si a change = blit(alert)
         print(mess)
         self.err_message = mess
         self.connected = False
 
     def connection_succes(self):
+        """Ici, lancé quand connection réussite = lance un thread = script qui va tourner à côté = reception serveurs"""
         print("Connecté au serveur")
         self.connected = True
         threading.Thread(target=self.loop_reception_server, daemon=True).start()
         
-        self.client.send(json.dumps({"id":"new client connection"}).encode())
+        self.client.send(json.dumps({"id":"new client connection"}).encode()) #Envoie pour dire qu'il y a un nouveau client = a affiché)
         
 
         #Start loop for a data for data and client
@@ -80,6 +84,7 @@ class Client:
         #self.client.close()
 
     def loop_reception_server(self):
+        """Fonction reception ser"""
         self.client.settimeout(0.5)  # timeout pour ne pas bloquer recv
         buffer = ""
 
@@ -96,7 +101,7 @@ class Client:
 
                     buffer += data.decode()
 
-                    # traiter tous les messages reçus séparés par "\n"
+                    # traiter tous les messages reçus séparés par "\n" car des fois des données peuvent être envoyé en même temps
                     while "\n" in buffer:
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
@@ -132,9 +137,11 @@ class Client:
             event_queue.put({"type": "SERVER_DISCONNECTED"})
 
     def update_canva(self,l):
+        """Envoie a C_game pour update le canva qui sera blit plus tard"""
         self.main.state.game.update_canva(l)
 
     def traiter_data(self,data):
+        """Regarde quoi faire des datas reçus + Chaque data contient un id et c'est en fonction de lui qu'on traite les données"""
                 
         # Réception de la réponse
         id = data["id"]
@@ -160,10 +167,12 @@ class Client:
             self.main.mod = "game"
 
     def display_clients_name(self):
+        """Affiche le nom des clients"""
         for idx,client in enumerate(self.lClient_id):
             self.draw_text(self.screen,self.font,client,idx)
 
     def send_data(self,data):
+        """Envoi des données au serv. json.dumps permet de convertir des dicos en texte = peut être envoyé au serv"""
         self.client.send(json.dumps(data).encode())
 
     def draw_text(self,screen,font,text,idx):

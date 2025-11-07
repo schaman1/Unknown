@@ -2,6 +2,7 @@ import socket, threading, json
 from serv.server_game import Server_game
 
 class Server:
+    """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
     def __init__(self, host='0.0.0.0', port=5000):
         self.lClient = {}
         self.host = host
@@ -14,7 +15,7 @@ class Server:
         self.server_game = Server_game(self)
 
     def handle_client(self, client_socket):
-        """Gère la réception des messages d'un client connecté."""
+        """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
         try:
             while True:
                 try:
@@ -75,7 +76,7 @@ class Server:
             print(f"Tentative de suppression d’un client déjà supprimé.")
 
     def in_menu(self, data, sender):
-
+        """Traite les données sachant qu'on est dans le menu"""
         if data["id"] == "new client connection":
             print("New client connection")
             for client in list(self.lClient.keys()):
@@ -112,9 +113,11 @@ class Server:
             self.current_thread = threading.Thread(target=self.server_game.loop_server_game, daemon=True).start()
 
     def in_game(self,data,sender):
+        """Traite les données sachant qu'on est en jeu = saute par ex"""
         pass
 
-    def send_data_all(self,data):
+    def send_data_all(self,data : dict):
+        """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
         message = json.dumps(data)
         def send_to(socket):
             try:
@@ -125,7 +128,7 @@ class Server:
         for socket, _ in self.lClient.items():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
-    def send_data(self, data, client):
+    def send_data(self, data : dict, client):
         """Envoie des données à un client spécifique."""
         data += "\n"
         try:
@@ -156,21 +159,23 @@ class Server:
         print("Serveur arrêté.")
 
     def start_server(self, port, client):
+        """Lance le serveur"""
         host = socket.gethostbyname(socket.gethostname())
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))
         print(f"Serveur lancé — host : {host}, port : {port}")
 
-        self.server.listen()
+        self.server.listen() #Ecoute si des clients veulent se connecter
         self.is_running_menu = True
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
         client.connexion_serveur(f"{host}:{port}")
 
     def loop_server_menu(self):
+        """Loop du serveur sachant qu'on est dans le menu = accept les demandes des clients pour venir"""
         self.server.settimeout(1)
         while self.is_running_menu:
             try:
-                client_socket, addr = self.server.accept()
+                client_socket, addr = self.server.accept() #Accept les clients qui veulent rejoindres #Peut faire un system de mdp ici
             except socket.timeout:
                 continue
             except OSError:
@@ -181,7 +186,7 @@ class Server:
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
     def set_param_on_client_connection(self, client_socket):
-                
+        """client_socket = le client qui s'est connecté, ici set les valeurs par default = nom / si il est host ou pas"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
         self.lClient[client_socket] = {"Host": is_host,
