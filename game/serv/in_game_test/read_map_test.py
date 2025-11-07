@@ -5,6 +5,7 @@ from numba.typed import List
 from serv.in_game.particles import Sand, Wood, Water, Fire
 
 class Read_map:
+    """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
     def __init__(self, filename, size, canva_size):
         self.width, self.height = canva_size
         self.cell_size = size
@@ -53,7 +54,7 @@ class Read_map:
         self.grid_color[mask_stone] = self.random_color(mask_stone.sum(), (60, 75), (55, 65), (50, 60),255)
         #self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
 
-        self.temp[mask_sand] = 85
+        self.temp[mask_sand] = 80
         self.temp[mask_water] = -255
         self.temp[mask_fire] = 255
         self.temp[mask_wood] = 255

@@ -2,6 +2,7 @@ import pygame
 import var
 
 class Game :
+    """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
     def __init__(self, size,canva_size):
         self.canva_size = canva_size
         self.cell_size = (self.canva_size[1]*var.cell_size)//var.serv_size[1]
@@ -19,10 +20,12 @@ class Game :
         ]
     
     def update_canva(self,l):
+        """Reçoit les données l du serveur et appelle update"""
         for e in l :
             self.switch_cell(e)
 
     def switch_cell(self,el):
+        """Chaque donné contient le x/y et les couleurs = dessine sur le canva !IMPORTANT : dessine pas sur le screen"""
         #print(el)
         x,y,r,g,b,a = el
         color = (r,g,b,a)

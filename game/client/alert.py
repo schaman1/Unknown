@@ -1,6 +1,7 @@
 import pygame
 
 class Alert : 
+    """Permet de draw une alert on top of the screen - Voir dans state : self.draw_alert() = draw alert"""
     def __init__(self,screen,text,duration=2):
         self.screen = screen
         self.Size = (self.screen.get_width(),self.screen.get_height())
@@ -18,7 +19,7 @@ class Alert :
         self.start_alert(duration)
 
     def calcul_rect(self):
-
+        """Permet de calculer le rect en fonction du text """
         r = self.alert_text.get_rect()
         self.rect = pygame.Rect(0, 0, r.width + 20, r.height + 20)
         self.rect.centerx, self.rect.top = self.screen.get_width() // 2, 20

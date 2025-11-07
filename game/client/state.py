@@ -6,8 +6,10 @@ from client.C_load import Load
 from client.C_game import Game
 
 class State:
+    """Class qui affiche tout"""
 
     def __init__(self,screen,screenSize,font,client,cell_size):
+        """Contient tout les bouttons du menu a blit"""
         self.screen = screen
         self.Size = screenSize
         self.font = font
@@ -48,6 +50,7 @@ class State:
         self.no_black_screen = ""#"loading"
 
     def a_state(self,state):
+        """Prend en param l'état / state et dessine en fct ce qu'il doit être dessiner"""
 
         if state not in self.no_black_screen:
             self.screen.fill(color["BLACK"])
@@ -120,6 +123,7 @@ class State:
         return "connexion"
 
     def draw_load(self):
+        """Si appele, dessine les ronds qui tournent"""
         self.load.draw()
 
     def draw_waiting(self):
@@ -131,6 +135,7 @@ class State:
         self.client.display_clients_name()
 
     def draw_alert(self):
+        """Dessine toutes les alert (ex : deconnection de serv) en haut de l'ecran"""
 
         for idx, warning in enumerate(self.alert):
 
@@ -143,4 +148,5 @@ class State:
             warning.draw()
 
     def add_alert(self,err_message,time=5):
+        """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
         self.alert.insert(0,Alert(self.screen,err_message,time))

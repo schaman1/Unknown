@@ -9,7 +9,9 @@ import var
 #from C_card import Card
 
 class Main:
+    """Class main = à on top le fichier main.py puis juste après le C_main"""
     def __init__(self,size):
+        """Continet le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
         # Set up the display (width, height)
         self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.FULLSCREEN | pygame.SCALED)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
@@ -33,10 +35,12 @@ class Main:
 
 
     def run(self):
+        """Ce qui est run à chaque itérations"""
         running = True
         while running:
 
             for event in pygame.event.get():
+                #Capture les events = touche /clique de la souris / clavier
                 if event.type == pygame.QUIT:
                     running = False
 
@@ -144,10 +148,10 @@ class Main:
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.state.a_state(self.mod)
 
-            # Update the display
+            # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
-            self.dt = self.fpsClock.tick(self.fps) / 1000
+            self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
         pygame.quit()
 
@@ -161,5 +165,6 @@ class Main:
                 self.mod = "menu"
 
     def connect_serv(self):
+        """Connecte au serveur"""
         self.mod = self.state.connexion_serv(self.client)  #Connexion serv
         self.objClicked = None
