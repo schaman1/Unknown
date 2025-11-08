@@ -1,7 +1,7 @@
 import pygame, heapq
 import numpy as np
 from numba import njit
-from numba.typed import List
+#from numba.typed import List
 from serv.in_game.particles import Sand, Wood, Water, Fire
 
 class Read_map:
@@ -12,7 +12,7 @@ class Read_map:
         self.cells_w = self.width // self.cell_size
         self.cells_h = self.height // self.cell_size
 
-        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5 }#"EXPLO" : 5}
+        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5, "GRASS":6 }#"EXPLO" : 5}
         self.propagation = {"WOOD": 98}#, "EXPLO" : 1}
 
         self.map = pygame.image.load(filename).convert()
@@ -54,7 +54,7 @@ class Read_map:
         self.grid_color[mask_stone] = self.random_color(mask_stone.sum(), (60, 75), (55, 65), (50, 60),255)
         #self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
 
-        self.temp[mask_sand] = 80
+        self.temp[mask_sand] = 60
         self.temp[mask_water] = -255
         self.temp[mask_fire] = 255
         self.temp[mask_wood] = 255
@@ -90,6 +90,7 @@ class Read_map:
             self.type["WATER"],
             self.type["FIRE"],
             self.type["STONE"],
+            self.type["GRASS"],
             #self.type["EXPLO"],
             #self.propagation["EXPLO"],
             self.propagation["WOOD"]
@@ -104,24 +105,116 @@ def swap_cell(temperature,grid_type,grid_color,x,y,nx,ny):
     grid_type[ny, nx] = tmp
     temperature[ny,nx] = degre
 
-
     # swap couleur
     for c in range(4):
         tmpc = grid_color[y, x, c]
         grid_color[y, x, c] = grid_color[ny, nx, c]
         grid_color[ny, nx, c] = tmpc
 
+
+@njit
+def set_empty(nx,ny,temperature,grid_type,grid_color,EMPTY):
+    """Set nx,ny as an EMPTY cell"""
+    temperature[ny,nx] = 0
+    grid_type[ny,nx] = EMPTY
+    grid_color[ny,nx] = (0,0,0,0)
+
+@njit
+def set_fire(nx,ny,temperature,grid_type,grid_color,FIRE):
+    """Set nx,ny as an EMPTY cell"""
+    temperature[ny,nx] = 255
+    grid_type[ny,nx] = FIRE
+    grid_color[ny,nx] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
+
+@njit
+def set_grass(nx,ny,temperature,grid_type,grid_color,GRASS):
+    """Set nx,ny as an EMPTY cell"""
+    temperature[ny,nx] = 255
+    grid_type[ny,nx] = GRASS
+    grid_color[ny,nx] = (np.random.randint(60,75),np.random.randint(100,120),np.random.randint(50,60),255)
+
 @njit
 def swap_r_or_l(r_or_l,y,x,ny,nx):
+    """Swap the cell for r_or_l"""
     tmp = r_or_l[y,x]
     r_or_l[y,x] = r_or_l[ny,nx]
     r_or_l[ny,nx] = tmp
 
+@njit
+def move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY): #ASEMPTY = empty pour la cell specifique
+    """Return nx,ny if can move down, or down-right or down-left else : None"""
+    ny = y + 1
+    if ny >= H : 
+        return (False,0,0)
+
+    # test bas, bas-gauche, bas-droite
+    if grid_type[ny, x] in ISEMPTY:
+        nx = x
+    elif x > 0 and grid_type[ny, x - 1] in ISEMPTY:
+        nx = x - 1
+    elif x < W - 1 and grid_type[ny, x + 1] in ISEMPTY:
+        nx = x + 1
+    else:
+        return (False,0,0)
+
+    # swap type
+    if grid_type[ny,nx] in BECOMEEMPTY:
+        set_empty(nx,ny,temperature,grid_type,grid_color,EMPTY)
+    return (True,nx,ny)
 
 @njit
-def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,BurnaWood):
+def move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY):
+    if r_or_l[y,x] is True :
+        dx = -1
+    else : dx = 1
+
+    if x < W - dx and grid_type[y, x + dx] in ISEMPTY:
+        nx = x + dx
+        temperature[y,x] += 2
+
+    elif x > 0 and grid_type[y, x - dx] in ISEMPTY:
+        nx = x - dx
+        r_or_l[y,x] = False
+        temperature[y,x] += 2
+
+    else :
+        return (False,0)
+        
+    if grid_type[y,nx] in BECOMEEMPTY :
+        set_empty(nx,y,temperature,grid_type,grid_color,EMPTY)
+
+    return (True,nx)
+
+@njit
+def change_pos(x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color):
+    """Change the pos of the cell with it's nx,ny"""
+    #else :
+    swap_cell(temperature,grid_type,grid_color,x,y,nx,ny)
+
+    # on enregistre les 2 cases modifiées
+    set_move(nx,ny,updated,moved_cells,grid_color)
+    set_moved_cells(x,y,moved_cells,grid_color)
+
+@njit
+def set_moved_cells(x,y,moved_cells,grid_color):
+    moved_cells.append((x, y,
+                        grid_color[y, x, 0],
+                        grid_color[y, x, 1],
+                        grid_color[y, x, 2],
+                        grid_color[y, x, 3]))
+
+@njit
+def set_move(x,y,updated,moved_cells,grid_color):
+    """Set as move and to update the cell"""
+    updated[y,x] = True
+    set_moved_cells(x,y,moved_cells,grid_color)
+
+@njit
+def move_sand_fast(grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
     H, W = grid_type.shape
     moved_cells = []
+    moved_cells.append((0,0,0,0,0,0))#Pour le type de list
+
     updated = np.zeros((H, W), dtype=np.bool)  # masque des cellules déjà modifiées
 
     for y in range(H - 1, -1, -1):
@@ -133,162 +226,51 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
             typ = grid_type[y, x]
 
             if typ == SAND:
-
-                ny = y + 1
-                if ny >= H : 
-                    continue
-
-                # test bas, bas-gauche, bas-droite
-                if grid_type[ny, x] in (EMPTY, WATER, FIRE):
-                    nx = x
-                elif x > 0 and grid_type[ny, x - 1] in (EMPTY, WATER, FIRE):
-                    nx = x - 1
-                elif x < W - 1 and grid_type[ny, x + 1] in (EMPTY, WATER, FIRE):
-                    nx = x + 1
-                else:
-                    continue
-
-                # swap type
-                if grid_type[ny,nx] == FIRE:
-                    temperature[ny,nx] = 0
-                    grid_type[ny,nx] = EMPTY
-                    grid_color[ny,nx] = (0,0,0,0)
-                #else :
-                swap_cell(temperature,grid_type,grid_color,x,y,nx,ny)
-
-                # on enregistre les 2 cases modifiées
-                updated[ny,nx] = True
-                moved_cells.append((x, y,
-                                    grid_color[y, x, 0],
-                                    grid_color[y, x, 1],
-                                    grid_color[y, x, 2],
-                                    grid_color[y, x, 3]))
-                moved_cells.append((nx, ny,
-                                    grid_color[ny, nx, 0],
-                                    grid_color[ny, nx, 1],
-                                    grid_color[ny, nx, 2],
-                                    grid_color[ny, nx, 3]))
+                #continue
+                chg,nx,ny = move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,(EMPTY,WATER,FIRE),(FIRE,),EMPTY)
+                if chg is True:
+                    change_pos(x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
                 
             elif typ == WATER :#or typ == EXPLO :
+                #continue
 
-                if typ == WATER :
-                    transmax = 255
+                #if typ == WATER :
+                transmax = 255
                 #else :
                 #    transmax = 127
-
-                ny = y + 1
-                if ny >= H :
-                    continue
-
-                # test bas, bas-gauche, bas-droite
-                if grid_type[ny, x] in (EMPTY, FIRE):
-                    nx = x
+                chg,nx,ny = move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
+                if chg is True :
                     temperature[y,x] = -transmax
-                elif x > 0 and grid_type[ny, x - 1] in (EMPTY, FIRE):
-                    nx = x - 1
-                    temperature[y,x] = -transmax
-                elif x < W - 1 and grid_type[ny, x + 1] in (EMPTY, FIRE):
-                    nx = x + 1
-                    temperature[y,x] = -transmax
+                    #set_moved_cells(x,y,moved_cells,grid_color) #Test1
 
                 else:
                     ny = y
-
-                    if -50 < temperature[y,x] :
-                        temperature[y,x] = 0
-                        grid_type[y,x] = EMPTY
-                        grid_color[y,x] = (0,0,0,0)
-
-                        moved_cells.append((x, y,
-                                            grid_color[y, x, 0],
-                                            grid_color[y, x, 1],
-                                            grid_color[y, x, 2],
-                                            grid_color[y, x, 3]))
+                    if -50 < temperature[y,x] : #cellule meurt
+                        set_empty(x,y,temperature,grid_type,grid_color,EMPTY)
+                        #set_moved_cells(x,y,moved_cells,grid_color) #Test1
                         continue
 
-                    if r_or_l[y,x] is True :
+                    chg,nx = move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
+                    if chg is False :
+                        if temperature[y,x] > -transmax :
+                            temperature[y,x] -= 1
 
-                        if x < W - 1 and grid_type[ny, x + 1] in (EMPTY, FIRE):
-                            nx = x + 1
-                            temperature[y,x] += 2
-                        elif x > 0 and grid_type[ny, x - 1] in (EMPTY, FIRE):
-                            nx = x - 1
-                            r_or_l[y,x] = False
-                            temperature[y,x] += 2
-                        else :
-                            if temperature[y,x] > -transmax :
-                                temperature[y,x] -= 1
+                            if temperature[y,x] < -transmax :
+                                temperature[y,x] = -transmax
 
-                                if temperature[y,x] < -transmax :
-                                    temperature[y,x] = -transmax
-
-                                grid_color[y,x,3] = -temperature[y,x]
-
-                                moved_cells.append((x, y,
-                                                    grid_color[y, x, 0],
-                                                    grid_color[y, x, 1],
-                                                    grid_color[y, x, 2],
-                                                    grid_color[y, x, 3]))
-                                continue
-                            else :
-                                continue
-
-                    else :
-                        if x > 0 and grid_type[ny, x - 1] in (EMPTY, FIRE):
-                            nx = x - 1
-                            temperature[y,x] += 2
-                        elif x < W - 1 and grid_type[ny, x + 1] in (EMPTY, FIRE):
-                            nx = x + 1
-                            temperature[y,x] += 2
-                            r_or_l[y,x] = True
-                        else :
-                            if temperature[y,x] > -transmax :
-                                temperature[y,x] -= 1
-
-                                if temperature[y,x] < -transmax :
-                                    temperature[y,x] = -transmax
-
-                                grid_color[y,x,3] = -temperature[y,x]
-                                moved_cells.append((x, y,
-                                                    grid_color[y, x, 0],
-                                                    grid_color[y, x, 1],
-                                                    grid_color[y, x, 2],
-                                                    grid_color[y, x, 3]))
-                                continue
-                            else :
-                                continue
+                            grid_color[y,x,3] = -temperature[y,x]
+                            set_moved_cells(x,y,moved_cells,grid_color)
+                        continue
 
                 grid_color[y,x,3] = -temperature[y,x]
-                
-                # swap type
-                if grid_type[ny,nx] == FIRE:
-                    #if grid_type[y,x] == WATER :
-                    temperature[ny,nx] = 0
-                    grid_type[ny,nx] = EMPTY
-                    grid_color[ny,nx] = (0,0,0,0)
-                    #else :
-                    #    temperature[y,x] = 255
-                    #    grid_type[y,x] = FIRE
-                    #    grid_color[y,x] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
-
-                updated[ny,nx] = True
                 #else :
-                swap_cell(temperature,grid_type,grid_color,x,y,nx,ny)
+                change_pos(x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
                 swap_r_or_l(r_or_l,y,x,ny,nx)
 
                 # on enregistre les 2 cases modifiées
-                moved_cells.append((x, y,
-                                    grid_color[y, x, 0],
-                                    grid_color[y, x, 1],
-                                    grid_color[y, x, 2],
-                                    grid_color[y, x, 3]))
-                moved_cells.append((nx, ny,
-                                    grid_color[ny, nx, 0],
-                                    grid_color[ny, nx, 1],
-                                    grid_color[ny, nx, 2],
-                                    grid_color[ny, nx, 3]))
 
             elif typ == FIRE:
+                #continue
                 new_temp = temperature[y,x]
                 #new_life = np.zeros(4,dtype = np.int16)
                 for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
@@ -308,32 +290,19 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                         seuil = BurnaWood 
                         #else : seuil = BurnaExplo
                         if np.random.randint(0,100) > seuil :
-                            temperature[dy,dx] = 255
-                            grid_type[dy,dx] = FIRE
-                            grid_color[dy,dx] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
-                            updated[dy,dx] = True
-                            moved_cells.append((dx, dy,
-                                                grid_color[dy,dx, 0],
-                                                grid_color[dy,dx, 1],
-                                                grid_color[dy,dx, 2],
-                                                grid_color[dy,dx, 3]))
+                            set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
+
+                            set_move(dx,dy,updated,moved_cells,grid_color)
                         #grid[self.dx][self.x+j] = Fire(self.dx,self.y+i,255)
 
-                new_temp = (new_temp)//5-6#np.mean(new_life) - 6
+                new_temp = (new_temp)//5-6
                 temperature[y,x] = new_temp
                 grid_color[y,x,3] = new_temp
 
                 if temperature[y,x] < 20 :
-                    temperature[y,x] = 0
-                    grid_type[y,x] = EMPTY
-                    grid_color[y,x] = (0,0,0,0)
+                    set_empty(x,y,temperature,grid_type,grid_color,EMPTY)
                     # on enregistre les cases modifiées
-                    updated[y,x] = True
-                    moved_cells.append((x, y,
-                                        grid_color[y, x, 0],
-                                        grid_color[y, x, 1],
-                                        grid_color[y, x, 2],
-                                        grid_color[y, x, 3]))
+                    set_move(x,y,updated,moved_cells,grid_color)
                     continue
                 
 
@@ -342,32 +311,19 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                     if 0< x + choice and x+choice < W and 0<y -1 and grid_type[y-1,x+choice] == EMPTY:
                         dy = y-1
                         dx = x + choice
-                        temperature[dy,dx] = 255
-                        grid_type[dy,dx] = FIRE
-                        grid_color[dy,dx] = (np.random.randint(180,255),np.random.randint(0,20),0,255)
+                        set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
                         # on enregistre les cases modifiées
-                        updated[y,x] = True
-                        moved_cells.append((dx, dy,
-                                            grid_color[dy,dx, 0],
-                                            grid_color[dy,dx, 1],
-                                            grid_color[dy,dx, 2],
-                                            grid_color[dy,dx, 3]))
+                        set_move(dx,dy,updated,moved_cells,grid_color)
                     
-                updated[y,x] = True
-                moved_cells.append((x, y,
-                                    grid_color[y, x, 0],
-                                    grid_color[y, x, 1],
-                                    grid_color[y, x, 2],
-                                    grid_color[y, x, 3]))
+                set_moved_cells(x,y,moved_cells,grid_color)
                 
             elif typ == STONE :
-
-                r = np.random.randint(0,10000)
+                #continue
+                r = np.random.randint(0,100000)
 
                 ny = y + 1
                 if ny >= H :
                     continue
-                    
 
                 for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
                     dy = y +i
@@ -376,19 +332,31 @@ def move_sand_fast(grid_type, r_or_l,  grid_color, temperature, EMPTY,SAND,WOOD,
                         #Stoppe la boucle
                         continue
 
-                    if grid_color[dy,dx,1] == 254 or grid_type[dy,dx] in (EMPTY,WATER):
-                        if r > 9998 :
-                            temperature[y,x] = 0
-                            grid_type[y,x] = STONE
-                            grid_color[y,x,1] = grid_color[y,x,1] + 15
+                    elif grid_type[dy,dx] in (EMPTY,WATER):
+                        if r > 99998 :
+                            set_grass(x,y,temperature,grid_type,grid_color,GRASS)
 
-                        moved_cells.append((x,y,
-                                            grid_color[y,x,0],
-                                            grid_color[y,x,1],
-                                            grid_color[y,x,2],
-                                            grid_color[y,x,3],
-                                            ))
+                        set_moved_cells(x,y,moved_cells,grid_color)
 
+            elif typ == GRASS :
+                nbrGrass = 0
+                for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
+                    dy = y +i
+                    dx = x + j
+                    r = np.random.randint(0,1000)
+
+                    if dy < 0 or dy >= H or dx < 0 or dx >= W :
+                        continue
+
+                    elif r > 997 and grid_type[dy,dx] != GRASS:
+                        for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
+                            ddy = dy +i
+                            ddx = dx + j
+                            if grid_type[ddy,ddx] == GRASS :
+                                nbrGrass +=1
+                        if nbrGrass < 2 or nbrGrass == 4:
+                            set_grass(dx,dy,temperature,grid_type,grid_color,GRASS)
+                            set_move(dx,dy,updated,moved_cells,grid_color)
 
     return moved_cells
 
