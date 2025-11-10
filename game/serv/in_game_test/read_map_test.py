@@ -251,7 +251,6 @@ def return_cell_update(lClient,H,W):
 @njit
 def move_sand_fast(InfoClient,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
     l= [[(0,0,0,0,0,0),],]
-    print(l[0])
     return l
     H, W = grid_type.shape
 
