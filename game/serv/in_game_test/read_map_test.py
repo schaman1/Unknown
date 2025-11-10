@@ -22,6 +22,10 @@ class Read_map:
         self.r_or_l = np.zeros((self.height, self.width), dtype=np.bool) #If true = cell go left / else, cell go right
         self.temp = np.zeros((self.height, self.width), dtype=np.int16)
 
+        self.visible = None
+        self.xs = np.empty(1, dtype=np.int32)
+        self.ys = np.empty(1, dtype=np.int32)
+
         self.create_map()
 
     def create_map(self):
@@ -78,12 +82,16 @@ class Read_map:
         """Retourne les chg de pixels"""
 
         #Robinet
-        self.grid_color[0,50] = (0,0,np.random.randint(200,255),255)
-        self.grid_type[0,50] = self.type["WATER"]
-        self.temp[0,50] = -255
+        self.grid_color[500,500] = (0,0,np.random.randint(200,255),255)
+        self.grid_type[500,500] = self.type["WATER"]
+        self.temp[500,500] = -255
+
+        self.visible = return_cell_update(InfoClient,self.height,self.width)
+        self.ys , self.xs = return_x_y(self.visible)
 
         moved_cells = move_sand_fast(
-            InfoClient,
+            self.visible,
+            self.xs,self.ys,
             self.grid_type,
             self.r_or_l,
             self.grid_color,
@@ -101,7 +109,43 @@ class Read_map:
         )
         #print(moved_cells)
         return moved_cells
+
+@njit
+def return_x_y(visible):
+    n_clients,H,W = visible.shape
+    max_cell = H*W
+    ys_temp = np.empty(max_cell, dtype=np.int32)
+    xs_temp = np.empty(max_cell, dtype=np.int32)
+    count = 0
+
+    # Parcourir toutes les cellules
+    for y in range(H):
+        for x in range(W):
+            for c in range(n_clients):
+                if visible[c, y, x]:
+                    ys_temp[count] = y
+                    xs_temp[count] = x
+                    count += 1
+                    break  # si un client voit la cellule, on peut passer à la suivante
     
+    # Redimensionner les arrays pour retourner uniquement les cellules visibles
+    ys = ys_temp[:count]
+    xs = xs_temp[:count]
+    return ys, xs
+
+@njit
+def return_cell_update(lClient,H,W):
+    visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
+    for i,(x,y,screenx,screeny) in enumerate(lClient) :
+        xs = max(x-screenx//2,0)
+        xe = min(x+screenx//2,W)
+        ys = max(y-screeny//2,0)
+        ye = min(y+screeny//2,H)
+
+        visible[i,ys:ye,xs:xe] = True
+
+    return visible
+
 @njit
 def swap_cell(temperature,grid_type,grid_color,x,y,nx,ny):
     tmp,degre = grid_type[y, x],temperature[y,x]
@@ -221,7 +265,7 @@ def change_pos(clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_typ
 @njit
 def set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color):
     #moved_cells[0].append([x,y,grid_color[y,x]])
-    return
+    #return
     for client in clientToUpdate : #List->int
         moved_cells[client].append((x, y,
                             grid_color[y, x, 0],
@@ -236,49 +280,29 @@ def set_move(clientToUpdate,x,y,updated,moved_cells,grid_color):
     set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
 
 @njit
-def return_cell_update(lClient,H,W):
-    visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
-    for i,(x,y,screenx,screeny) in enumerate(lClient) :
-        xs = max(x-screenx//2,0)
-        xe = min(x+screenx//2,W)
-        ys = max(y-screeny//2,0)
-        ye = min(y+screeny//2,H)
+def move_sand_fast(visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
 
-        visible[i,ys:ye,xs:xe] = True
-
-    return visible
-
-@njit
-def move_sand_fast(InfoClient,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
-    l= [[(0,0,0,0,0,0),],]
-    return l
-    H, W = grid_type.shape
+    len_client,H, W = visible.shape
 
     moved_cells = []
-    for i in range(len(InfoClient)):
+    for i in range(len_client):
         sublist = []
         sublist.append((0,0,0,0,0,0))
         moved_cells.append(sublist)
 
     updated = np.zeros((H, W), dtype=np.bool)  # masque des cellules déjà modifiées
 
-    cell_visible = return_cell_update(InfoClient,H,W)
-
-    # Création d'un masque combiné : une cellule est visible si au moins 1 client la voit
-    visible_any = np.any(cell_visible, axis=0)  # shape = (H, W)
-
-    # Récupérer toutes les coordonnées visibles
-    yl, xl = np.nonzero(visible_any)
+    #cell_visible = return_cell_update(InfoClient,H,W)
 
     #for y in range(H - 1, -1, -1):
     #    for x in range(W-1,-1,-1):
-    for i in range(len(xl)):
-            x = xl[i]
-            y = yl[i]
+    for i in range(len(xs)):
+            x = xs[i]
+            y = ys[i]
 
             #clientToUpdate = create_list_update(x,y,InfoClient)
             #clientToUpdate.pop()
-            clientToUpdate = np.nonzero(cell_visible[:,y,x])[0]
+            clientToUpdate = np.nonzero(visible[:,y,x])[0]
             #print(clientToUpdate)
             #print(clientToUpdate)
 
@@ -287,6 +311,8 @@ def move_sand_fast(InfoClient,grid_type, r_or_l,grid_color, temperature, EMPTY,S
 
             if updated[y,x] : 
                 continue
+
+            #print("Inside loop")
 
             typ = grid_type[y, x]
 

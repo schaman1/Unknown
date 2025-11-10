@@ -12,9 +12,12 @@ class State:
         """Contient tout les bouttons du menu a blit"""
         self.screen = screen
         self.Size = screenSize
+        self.cell_size = cell_size
         self.font = font
         self.client = client
         self.load = Load(screen)
+
+        self.posClient = (500,500)#A modifier après
 
         self.game = Game(cell_size,self.Size)
 
@@ -63,11 +66,10 @@ class State:
 
         elif state == "game":
 
+            x,y = self.return_pos_blit()
             self.screen.blit(self.game.bg,(0,0))
-            self.screen.blit(self.game.canva, (0, 0))
-            #for i in range(100):  #Test vitesse d'execution
-            #    for j in range(200):
-            #        self.game.canva.fill((22,22,22), pygame.Rect(50,50,50, 50))
+            self.screen.blit(self.game.canva, (x, y))
+
             #.drawAll()
 
         elif state == "wait_serv":
@@ -100,6 +102,14 @@ class State:
             pass
 
         self.draw_alert()
+
+    def return_pos_blit(self):
+        x = -self.posClient[0]*self.cell_size + self.Size[0]//2
+        y = -self.posClient[1]*self.cell_size + self.Size[1]//2
+
+        #self.game.canva.fill((0,255,255,255), pygame.Rect(self.posClient[0],self.posClient[1],50,50))
+
+        return (x,y)
 
     def connexion_serv(self,client):
         """renvoie le mode de jeu apres connexion"""

@@ -47,7 +47,7 @@ class Server_game(Server) :
                 self.send_data_all({"id":"to change","updates":result[0]}) #Envoie à tt le monde tout les nouveau pixels à draw
             
             fps = self.fpsClock.get_fps()
-            if fps < 30 : #Affiche le fps quand c'est critique
+            if fps < 60 : #Affiche le fps quand c'est critique
                 print(fps)
 
     def init_canva(self):
