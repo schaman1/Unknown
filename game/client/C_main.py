@@ -1,6 +1,7 @@
 import pygame, threading
 from client.state import State
 from client.client import Client
+from serv.server_game import Server_game
 from serv.server import Server
 from client.events import event_queue
 import var
@@ -10,8 +11,8 @@ import var
 
 class Main:
     """Class main = à on top le fichier main.py puis juste après le C_main"""
-    def __init__(self,size):
-        """Continet le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
+    def __init__(self,cell_size):
+        """Contient le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
         # Set up the display (width, height)
         self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.FULLSCREEN | pygame.SCALED)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
@@ -31,7 +32,7 @@ class Main:
         self.mod = "menu" #menu/reglage/game
 
         self.client = Client(self.font,self.screen,self)
-        self.state = State(self.screen,self.screenSize,self.font,self.client,size)
+        self.state = State(self.screen,self.screenSize,self.font,self.client,cell_size)
 
 
     def run(self):
@@ -126,7 +127,9 @@ class Main:
                     elif self.mod == "host":
 
                         if self.state.start.rect.collidepoint(event.pos):
+                            self.Server = Server_game.from_server(self.Server)
                             self.client.send_data({"id":"start game"})
+                            self.Server.start_game()
 
 
                         elif self.state.menu.rect.collidepoint(event.pos):

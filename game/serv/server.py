@@ -1,5 +1,5 @@
 import socket, threading, json
-from serv.server_game import Server_game
+#from serv.server_game import Server_game
 
 class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
@@ -12,7 +12,6 @@ class Server:
         self.is_running_game = True
         self.current_thread = None
         self.nbr_player = 0
-        self.server_game = Server_game(self)
 
     def handle_client(self, client_socket):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
@@ -77,6 +76,7 @@ class Server:
 
     def in_menu(self, data, sender):
         """Traite les données sachant qu'on est dans le menu"""
+
         if data["id"] == "new client connection":
             print("New client connection")
             for client in list(self.lClient.keys()):
@@ -87,6 +87,8 @@ class Server:
                     "new connection": text,
                     "sender": meornot
                 }), client)
+
+            self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
 
         elif data["id"] == "remove client":
             print("Remove client")
@@ -105,12 +107,7 @@ class Server:
             print("start !")
             self.is_running_menu = False
             self.is_running_game = True
-            #self.current_thread.join()
-            self.send_data_all({"id":"start game"})
-            result = self.server_game.init_canva()
-            if result != [] :
-                self.send_data_all({"id":"to change","updates":result})
-            self.current_thread = threading.Thread(target=self.server_game.loop_server_game, daemon=True).start()
+            #self.server_game.lClient = self.lClient
 
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
@@ -121,8 +118,10 @@ class Server:
         message = json.dumps(data)
         def send_to(socket):
             try:
+                #print("Send successfuly")
                 self.send_data(message, socket)
             except:
+                print("Erreur envoi")
                 pass  # ou suppression du client mort
 
         for socket, _ in self.lClient.items():
@@ -185,12 +184,18 @@ class Server:
             self.set_param_on_client_connection(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
+    def set_param_on_client_arriving(self,client_socket,data):
+        """Set une fois qu'a reçu la 1er donnée du client"""
+        self.lClient[client_socket]["screen_size"] = data["screen_size"]
+        self.lClient[client_socket]["position"] = (100,100)
+
     def set_param_on_client_connection(self, client_socket):
         """client_socket = le client qui s'est connecté, ici set les valeurs par default = nom / si il est host ou pas"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
         self.lClient[client_socket] = {"Host": is_host,
-                                       "id": f"Player {self.nbr_player}"}
+                                       "id": f"Player {self.nbr_player}", #A changer, mettre cette ligne dans set param_on_client_arriving = pour le pseudo qui sera mis dans les data que le client envoie
+                                       }
 
         for socket,client in self.lClient.items():
             

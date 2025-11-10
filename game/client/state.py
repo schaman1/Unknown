@@ -65,6 +65,9 @@ class State:
 
             self.screen.blit(self.game.bg,(0,0))
             self.screen.blit(self.game.canva, (0, 0))
+            #for i in range(100):  #Test vitesse d'execution
+            #    for j in range(200):
+            #        self.game.canva.fill((22,22,22), pygame.Rect(50,50,50, 50))
             #.drawAll()
 
         elif state == "wait_serv":

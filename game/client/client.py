@@ -19,6 +19,7 @@ class Client:
 
         self.font = font
         self.screen = screen
+        self.screen_size = self.screen.get_size()
 
     def return_ip(self,ip_port):
         """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
@@ -61,9 +62,8 @@ class Client:
         self.connected = True
         threading.Thread(target=self.loop_reception_server, daemon=True).start()
         
-        self.client.send(json.dumps({"id":"new client connection"}).encode()) #Envoie pour dire qu'il y a un nouveau client = a affiché)
+        self.send_data({"id":"new client connection","screen_size":self.screen_size})
         
-
         #Start loop for a data for data and client
 
         #self.loop_client() #Test
@@ -93,16 +93,17 @@ class Client:
                 try:
                     # Lecture non bloquante (avec timeout)
                     data = self.client.recv(1024)
-
                     if not data:
                         # si serveur coupé ou client déconnecté
                         print("Connexion perdue (serveur fermé ?)")
                         break
 
                     buffer += data.decode()
+                    #print("Data reçu",data)
 
                     # traiter tous les messages reçus séparés par "\n" car des fois des données peuvent être envoyé en même temps
                     while "\n" in buffer:
+                        #print("in buffer")
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
                         #print(f"Data reçue : {data_json}")
