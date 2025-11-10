@@ -187,7 +187,7 @@ class Server:
     def set_param_on_client_arriving(self,client_socket,data):
         """Set une fois qu'a reçu la 1er donnée du client"""
         self.lClient[client_socket]["screen_size"] = data["screen_size"]
-        self.lClient[client_socket]["position"] = (100,100)
+        self.lClient[client_socket]["position"] = (500,500)
 
     def set_param_on_client_connection(self, client_socket):
         """client_socket = le client qui s'est connecté, ici set les valeurs par default = nom / si il est host ou pas"""

@@ -8,7 +8,7 @@ class Game :
         self.canva_size = canva_size
         self.cell_size = cell_size
         #print(self.cell_size,"Cell_size client")
-        self.canva = pygame.Surface(canva_size, pygame.SRCALPHA)
+        self.canva = pygame.Surface((canva_size[0]*cell_size,canva_size[1]*cell_size), pygame.SRCALPHA)
         #self.canva_map = self.map.canva
         self.bg = pygame.image.load("assets/bg1.png").convert()
 
@@ -37,6 +37,8 @@ class Game :
         #x,y,color = el
 
         #try : 
+
+        self.canva.fill((0,255,0,255), pygame.Rect(500,500,50,50))
         self.canva.fill(color, self.rect_grid[y][x])
         #except : 
         #    None
