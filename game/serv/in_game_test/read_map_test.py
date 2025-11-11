@@ -70,13 +70,18 @@ class Read_map:
         b = np.random.randint(b_range[0], b_range[1]+1, num, dtype=np.uint8)
         a = np.full(num, transparence, dtype=np.uint8)
         return np.stack([r, g, b, a], axis=1)
+    
 
-    def return_all(self):
-        #mask_active = self.grid_type != self.type["EMPTY"]
-        #ys, xs = np.where(mask_active)
-        #colors = self.grid_color[ys, xs]
-        #return np.column_stack((xs, ys, colors)).tolist()
-        return []
+    def return_all(self,InfoClient):
+        cells = []
+        for i,info in enumerate(InfoClient):
+            cells.append([])
+            for column in range (info[2]):
+                deltax = column-(info[2]//2)
+                deltay = -(info[3]//2)
+                cells[i]+=(return_column(info[0]+deltax,info[1]+deltay,info[3],self.grid_color))
+
+        return cells
 
     def return_chg(self,InfoClient):
         """Retourne les chg de pixels"""
@@ -109,6 +114,22 @@ class Read_map:
         )
         #print(moved_cells)
         return moved_cells
+    
+@njit
+def return_column(x:int,y:int,length:int,grid_color):
+    """Return colonne = column"""
+    moved = []
+    for i in range(length):
+        ys = y+i
+        if grid_color[ys, x, 3] != 0 :
+            moved.append((x,
+                        y+i,                            
+                        grid_color[ys, x, 0],
+                        grid_color[ys, x, 1],
+                        grid_color[ys, x, 2],
+                        grid_color[ys, x, 3])
+                        )
+    return moved
 
 @njit
 def return_x_y(visible):
@@ -217,9 +238,9 @@ def move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,E
     # test bas, bas-gauche, bas-droite
     if grid_type[ny, x] in ISEMPTY:
         nx = x
-    elif x > 0 and grid_type[ny, x - 1] in ISEMPTY:
+    elif x > 0 and grid_type[ny, x - 1] == EMPTY:  #Or in ISEMPTY mais bug de Edmond
         nx = x - 1
-    elif x < W - 1 and grid_type[ny, x + 1] in ISEMPTY:
+    elif x < W - 1 and grid_type[ny, x + 1] == EMPTY: #Or in ISEMPTY mais bug de Edmond
         nx = x + 1
     else:
         return (False,0,0)

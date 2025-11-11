@@ -15,7 +15,7 @@ class Load :
     def draw(self):
         """Dessine le cercle"""
         for i in range(self.nbr):
-            pygame.draw.circle(self.screen,(150,150,150),self.calcul_pos(i),self.radius)
+            pygame.draw.circle(self.screen,(150,150,150),self.calcul_pos(i),self.distance)
 
     def calcul_pos(self,idx):
         """Calcul la pos de 1 rond à dessiner"""

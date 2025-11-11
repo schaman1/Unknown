@@ -24,6 +24,7 @@ class Game :
     
     def update_canva(self,l):
         """Reçoit les données l du serveur et appelle update"""
+        #print(l)
         for e in l :
             self.switch_cell(e)
         #self.canva.fill((255,0,0,255),self.rect_grid[2][2])

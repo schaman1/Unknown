@@ -127,6 +127,24 @@ class Server:
         for socket, _ in self.lClient.items():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
+    def send_data_update(self,data : list):
+        """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
+        def send_to(socket,message):
+            try:
+                #print("Send successfuly")
+                self.send_data(message, socket)
+            except:
+                print("Erreur envoi")
+                pass  # ou suppression du client mort
+
+        cnt = 0
+
+        for socket, _ in self.lClient.items():
+            if len(data[cnt]) != 1:
+                message = json.dumps({"id":"to change","updates":data[cnt]})
+                cnt +=1
+                threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
+
     def send_data(self, data : dict, client):
         """Envoie des données à un client spécifique."""
         data += "\n"
