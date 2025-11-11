@@ -42,21 +42,18 @@ class Server_game(Server) :
 
             result = self.map.return_chg(self.lInfoClient)
             #print(result)
+
+
             if len(result[0]) != 1:
                 #print("OK")
-                self.send_data_all({"id":"to change","updates":result[0]}) #Envoie à tt le monde tout les nouveau pixels à draw
+                self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
             
             fps = self.fpsClock.get_fps()
             if fps < 60 : #Affiche le fps quand c'est critique
                 print(fps)
 
     def init_canva(self):
-        #l = []
-        #for e in self.map.grid:
-        #    for el in e :
-        #        if el != None :
-        #            l.append((el.x,el.y,el.color))
-        #return l
+
         self.lInfoClient = np.zeros((len(self.lClient), 4), dtype=np.int32)  # 4 colonnes : xpos, ypos, xscreen, yscreen
 
         for i,client in enumerate(self.lClient.keys()) :
@@ -64,11 +61,11 @@ class Server_game(Server) :
             xscreen,yscreen = self.lClient[client]["screen_size"]
             self.lInfoClient[i,:] = [xpos,ypos,xscreen,yscreen]
 
-        return self.map.return_all() #Renvoie tout les pixels à dessiner
+        return self.map.return_all(self.lInfoClient) #Renvoie tout les pixels à dessiner
     
     def start_game(self):
         self.send_data_all({"id":"start game"})
         result = self.init_canva()
-        if result != [] :
-            self.send_data_all({"id":"to change","updates":result})
+        #if result != [] :
+        self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
         self.current_thread = threading.Thread(target=self.loop_server_game, daemon=True).start()

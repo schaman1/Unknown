@@ -2,5 +2,5 @@
 
 fps = 30000
 bg = "assets/bgSand.png"
-cell_size = 16
+cell_size = 10
 serv_size = (1920,1080)
