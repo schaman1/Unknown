@@ -41,9 +41,7 @@ class Server_game(Server) :
             dt = self.fpsClock.tick(self.fps)/1000
 
             result = self.map.return_chg(self.lInfoClient)
-            #print(result)
-
-
+            
             if len(result[0]) != 1:
                 #print("OK")
                 self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw

@@ -78,10 +78,10 @@ class Main:
                             self.state.start.update_text("start","Lancement du serveur...")
                             
                             self.Server = Server()
-                            threading.Thread(target=self.Server.start_server, args = (5000,self.client)).start()
                             self.mod = "host"
+                            threading.Thread(target=self.Server.start_server, args = (5000,self.client)).start()
+                            threading.Thread(target=self.wait_serv_created).start()
                             
-                            self.state.start.update_text("start","Serveur créé")
                             print("Create serv et connection!")
 
                         elif self.state.join.rect.collidepoint(event.pos):
@@ -171,3 +171,9 @@ class Main:
         """Connecte au serveur"""
         self.mod = self.state.connexion_serv(self.client)  #Connexion serv
         self.objClicked = None
+
+    def wait_serv_created(self):
+        while True :
+            if self.Server.is_running_menu :
+                self.state.start.update_text("start","Jouer")
+                return

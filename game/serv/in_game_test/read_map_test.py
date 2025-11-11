@@ -118,7 +118,7 @@ class Read_map:
 @njit
 def return_column(x:int,y:int,length:int,grid_color):
     """Return colonne = column"""
-    moved = []
+    moved = [(0,0,0,0,0,0)]
     for i in range(length):
         ys = y+i
         if grid_color[ys, x, 3] != 0 :
@@ -258,12 +258,12 @@ def move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPT
 
     if x < W - dx and grid_type[y, x + dx] in ISEMPTY:
         nx = x + dx
-        temperature[y,x] += 2
+        temperature[y,x] += 4
 
     elif x > 0 and grid_type[y, x - dx] in ISEMPTY:
         nx = x - dx
         r_or_l[y,x] = False
-        temperature[y,x] += 2
+        temperature[y,x] += 4
 
     else :
         return (False,0)
@@ -315,17 +315,11 @@ def move_sand_fast(visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPT
 
     #cell_visible = return_cell_update(InfoClient,H,W)
 
-    #for y in range(H - 1, -1, -1):
-    #    for x in range(W-1,-1,-1):
     for i in range(len(xs)):
             x = xs[i]
             y = ys[i]
 
-            #clientToUpdate = create_list_update(x,y,InfoClient)
-            #clientToUpdate.pop()
             clientToUpdate = np.nonzero(visible[:,y,x])[0]
-            #print(clientToUpdate)
-            #print(clientToUpdate)
 
             if len(clientToUpdate) == 0 :
                 continue

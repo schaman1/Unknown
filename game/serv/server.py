@@ -141,7 +141,7 @@ class Server:
 
         for socket, _ in self.lClient.items():
             if len(data[cnt]) != 1:
-                message = json.dumps({"id":"to change","updates":data[cnt]})
+                message = json.dumps({"id":"to change","updates":data[cnt][1:]})
                 cnt +=1
                 threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
 
