@@ -7,7 +7,7 @@ class Client:
     def __init__(self, font,screen,main,ip="localhost", port=5000):
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
-        self.client = None
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connected = None
         self.main = main
 
@@ -34,8 +34,6 @@ class Client:
         ip, port = self.return_ip(ip_port)
         if ip is None or port is None:
             return self.return_err("Utilisez le format ip:port")
-
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #Créer le socket
 
         for essais in range(3): #Test 3 fois de se connecter 
@@ -63,25 +61,6 @@ class Client:
         threading.Thread(target=self.loop_reception_server, daemon=True).start()
         
         self.send_data({"id":"new client connection","screen_size":self.screen_size})
-        
-        #Start loop for a data for data and client
-
-        #self.loop_client() #Test
-
-    #def loop_client(self):
-
-        # Envoi d'un message
-        #while True:
-            #pass
-            #self.dic["pseudo"] = input("Ton pseudo: ")
-            #self.dic["force"] = int(input("ta force"))
-
-            #self.client.send(json.dumps(self.dic).encode())
-            #print("Message envoyé")
-
-        # Fermer la connexion
-        #print("Deco")
-        #self.client.close()
 
     def loop_reception_server(self):
         """Fonction reception ser"""

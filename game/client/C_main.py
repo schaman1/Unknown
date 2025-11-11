@@ -76,10 +76,10 @@ class Main:
 
                             self.state.show_ip.update_text("show_ip",f"ip:port = {self.client.ip}:{5000}")
                             self.state.start.update_text("start","Lancement du serveur...")
-                            
-                            self.Server = Server()
                             self.mod = "host"
-                            threading.Thread(target=self.Server.start_server, args = (5000,self.client)).start()
+                            
+                            self.Server = Server(var.intervalle_refresh_server_available,port = var.port)
+                            threading.Thread(target=self.Server.start_server, args = (self.client,)).start()
                             threading.Thread(target=self.wait_serv_created).start()
                             
                             print("Create serv et connection!")
