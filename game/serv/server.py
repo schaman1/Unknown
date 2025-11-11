@@ -1,17 +1,19 @@
-import socket, threading, json
+import socket, threading, json, time
 #from serv.server_game import Server_game
 
 class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
-    def __init__(self, host='0.0.0.0', port=5000):
+    def __init__(self, intervalle,port=5000,host='0.0.0.0'):
         self.lClient = {}
         self.host = host
         self.port = port
         self.server = None
+        self.serverUDP = None #Server qui "crie" a tout le monde le ip et port du serv
         self.is_running_menu = False
         self.is_running_game = True
         self.current_thread = None
         self.nbr_player = 0
+        self.intervalle_available_server = intervalle
 
     def handle_client(self, client_socket):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
@@ -175,17 +177,40 @@ class Server:
         print(self.lClient)
         print("Serveur arrêté.")
 
-    def start_server(self, port, client):
+    def start_server(self, client):
         """Lance le serveur"""
-        host = socket.gethostbyname(socket.gethostname())
+        self.host = socket.gethostbyname(socket.gethostname())
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((host, port))
-        print(f"Serveur lancé — host : {host}, port : {port}")
+
+        self.serverUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.serverUDP.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #Permet d'envoyer des message a tt le monde = BORADCAST
+
+        self.server.bind((self.host, self.port))
+        print(f"Serveur lancé — host : {self.host}, port : {self.port}")
 
         self.server.listen() #Ecoute si des clients veulent se connecter
         self.is_running_menu = True
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
-        client.connexion_serveur(f"{host}:{port}")
+        self.broadcast_server_info(self.host,self.port,"Serveur")
+        client.connexion_serveur(f"{self.host}:{self.port}")
+
+
+    def broadcast_server_info(self,ip,port,server_name):
+        """Annonce la présence du serveur sur le LAN via UDP broadcast."""
+
+        data = json.dumps({"ip":ip,
+                            "port":port,
+                            "name":server_name
+        }).encode()
+
+        threading.Thread(target = self.loop_send_data,args = (data,), daemon = True).start()
+
+    def loop_send_data(self,data):
+
+        while self.is_running_menu :
+            print("Broadcast")
+            self.serverUDP.sendto(data,('255.255.255.255', self.port))
+            time.sleep(self.intervalle_available_server)
 
     def loop_server_menu(self):
         """Loop du serveur sachant qu'on est dans le menu = accept les demandes des clients pour venir"""

@@ -106,9 +106,6 @@ class State:
     def return_pos_blit(self):
         x = -self.posClient[0]*self.cell_size + self.Size[0]//2
         y = -self.posClient[1]*self.cell_size + self.Size[1]//2
-
-        #self.game.canva.fill((0,255,255,255), pygame.Rect(self.posClient[0],self.posClient[1],50,50))
-
         return (x,y)
 
     def connexion_serv(self,client):
