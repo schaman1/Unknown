@@ -87,6 +87,7 @@ class Main:
                         elif self.state.join.rect.collidepoint(event.pos):
                             print("join button clicked")
                             self.mod = "connexion"
+                            threading.Thread(target = self.client.loop_reception_server_open).start()
 
                         elif self.state.quit.rect.collidepoint(event.pos):
                             #("Quit button clicked")

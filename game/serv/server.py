@@ -209,7 +209,7 @@ class Server:
 
         while self.is_running_menu :
             print("Broadcast")
-            self.serverUDP.sendto(data,('255.255.255.255', self.port))
+            self.serverUDP.sendto(data,('255.255.255.255', 37020))
             time.sleep(self.intervalle_available_server)
 
     def loop_server_menu(self):

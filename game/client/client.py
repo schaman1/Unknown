@@ -8,6 +8,11 @@ class Client:
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_look_party = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try :
+            self.client_look_party.bind(('',37020))
+        except :
+            self.client_look_party.bind(('',37021)) #A enlever après juste test pcq qur sur 1 pc
         self.connected = None
         self.main = main
 
@@ -61,6 +66,24 @@ class Client:
         threading.Thread(target=self.loop_reception_server, daemon=True).start()
         
         self.send_data({"id":"new client connection","screen_size":self.screen_size})
+
+    def loop_reception_server_open(self):
+        self.client_look_party.settimeout(0.5)
+
+        while self.main.mod == "connexion" :
+            try :
+
+                print("wait for data")
+                data = self.client_look_party.recv(1024)
+
+                print(data.decode())
+
+            except socket.timeout :
+                continue
+
+            except Exception as e:
+                print(f"Erreur réception: {e}")
+                break            
 
     def loop_reception_server(self):
         """Fonction reception ser"""
