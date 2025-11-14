@@ -1,4 +1,4 @@
-import socket, json, threading, pygame
+import socket, json, threading
 import time
 from client.events import event_queue
 
@@ -9,13 +9,19 @@ class Client:
         self.port = port
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_look_party = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try :
-            self.client_look_party.bind(('',37020))
-        except :
-            self.client_look_party.bind(('',37021)) #A enlever après juste test pcq qur sur 1 pc
+        connect = False
+        port = 37020
+        while connect == False :
+            try :
+                self.client_look_party.bind(('',port))
+                connect = True
+            except :
+                port +=1
+                
         self.connected = None
         self.main = main
 
+        self.server_names = {}
         self.pseudo = "Coming soon"
         self.err_message = ""
 
@@ -68,22 +74,31 @@ class Client:
         self.send_data({"id":"new client connection","screen_size":self.screen_size})
 
     def loop_reception_server_open(self):
-        self.client_look_party.settimeout(0.5)
+        self.client_look_party.settimeout(3)
 
         while self.main.mod == "connexion" :
             try :
 
                 print("wait for data")
-                data = self.client_look_party.recv(1024)
+                buffer = self.client_look_party.recv(1024).decode()
 
-                print(data.decode())
+                self.server_names = {} 
+                while "\n" in buffer :
+                    data,buffer = buffer.split("\n",1)
+
+                    data_json = json.loads(data)
+
+                    self.server_names[data_json["server_name"]] = (data_json["ip"],data_json["port"])
+
+                    print(data_json)
+                self.main.state.update_server_dispo(self.server_names)
 
             except socket.timeout :
                 continue
 
-            except Exception as e:
-                print(f"Erreur réception: {e}")
-                break            
+            #except Exception as e:
+            #    print(f"Erreur réception: {e}")
+#                break            
 
     def loop_reception_server(self):
         """Fonction reception ser"""

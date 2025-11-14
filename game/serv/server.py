@@ -3,12 +3,13 @@ import socket, threading, json, time
 
 class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
-    def __init__(self, intervalle,port=5000,host='0.0.0.0'):
+    def __init__(self, intervalle,port=5000,server_name = "Game",host='0.0.0.0'):
         self.lClient = {}
         self.host = host
         self.port = port
         self.server = None
         self.serverUDP = None #Server qui "crie" a tout le monde le ip et port du serv
+        self.server_name = server_name
         self.is_running_menu = False
         self.is_running_game = True
         self.current_thread = None
@@ -191,17 +192,17 @@ class Server:
         self.server.listen() #Ecoute si des clients veulent se connecter
         self.is_running_menu = True
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
-        self.broadcast_server_info(self.host,self.port,"Serveur")
+        self.broadcast_server_info(self.host,self.port,self.server_name)
         client.connexion_serveur(f"{self.host}:{self.port}")
 
 
     def broadcast_server_info(self,ip,port,server_name):
         """Annonce la présence du serveur sur le LAN via UDP broadcast."""
 
-        data = json.dumps({"ip":ip,
+        data = (json.dumps({"ip":ip,
                             "port":port,
-                            "name":server_name
-        }).encode()
+                            "server_name":server_name
+        })+"\n").encode()
 
         threading.Thread(target = self.loop_send_data,args = (data,), daemon = True).start()
 

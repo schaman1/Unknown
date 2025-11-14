@@ -25,12 +25,16 @@ class State:
         self.host = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Creer une partie",self.font,"host")
         self.quit = Button(pygame.Rect(self.Size[0]/3, 12*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["RED"],"Quit",self.font,"quit")
 
-        self.ip = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Ip:port",self.font,"ip")
-        self.ip.create_input("RIGHT",color["BLACK"],"")
+        #self.ip = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Ip:port",self.font,"ip")
+        #self.ip.create_input("RIGHT",color["BLACK"],"")
+
+        #New connexion button
+        self.server_dispo = {} #Liste des serveurs dispo
+
         self.connexion = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Se connecter",self.font,"connexion")
 
         self.start = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Lancer la partie",self.font,"start")
-        self.show_ip = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"ip:port = ",self.font,"show_ip")
+        self.game_name = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"ip:port = ",self.font,"game_name")
 
         self.menu = Button(pygame.Rect(self.Size[0]*2.5/6, 15.5*self.Size[1]/18, self.Size[0]/6, self.Size[1]/12),color["RED"],"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
@@ -40,13 +44,13 @@ class State:
                         "host": self.host,
                         "quit": self.quit}
         
-        self.dicConnexion = {"ip": self.ip,
+        self.dicConnexion = {#"ip": self.ip,
                             "connexion": self.connexion,
                             "menu": self.menu}
         
         self.dicCreation = {"menu": self.menu,
                             "start": self.start,
-                            "ip": self.show_ip}
+                            "ip": self.game_name}
         
         self.dicWaiting = {"menu": self.menu}
         
@@ -87,6 +91,9 @@ class State:
 
                 btn.draw(self.screen)
 
+            for btn in self.server_dispo.values():
+                btn.draw(self.screen)
+
         elif state == "host":
 
             for btn in self.dicCreation.values():
@@ -108,9 +115,9 @@ class State:
         y = -self.posClient[1]*self.cell_size + self.Size[1]//2
         return (x,y)
 
-    def connexion_serv(self,client):
+    def connexion_serv(self,client,ip_port):
         """renvoie le mode de jeu apres connexion"""
-        ip_port = self.ip.dicRect[self.ip.id+"_input"]["text"].replace("|","")
+        #ip_port = self.ip.dicRect[self.ip.id+"_input"]["text"].replace("|","")
 
         self.start.update_text("start","Connexion...")
         client.connected = None
@@ -156,6 +163,13 @@ class State:
 
             warning.update_pos(idx)
             warning.draw()
+
+    def update_server_dispo(self,server_names):
+        """Met a jour les serveurs dispo dans l'ecran de connexion"""
+
+        self.server_dispo = {}
+        for keys in server_names.keys():
+            self.server_dispo[f"{server_names[keys][0]}:{server_names[keys][1]}"] = Button(pygame.Rect(self.Size[0]/3, (6+len(self.server_dispo))*self.Size[1]/18, self.Size[0]*1/3, self.Size[1]/18),color["GREY"],keys,self.font,keys)
 
     def add_alert(self,err_message,time=5):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""

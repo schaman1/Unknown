@@ -27,13 +27,12 @@ class Main:
 
         #self.Game = InGame(self.screen,self.screenSize,self.font,self.cards)
         self.Server = None
-        self.objClicked = None
+        self.server_name = "Game1"
 
         self.mod = "menu" #menu/reglage/game
 
         self.client = Client(self.font,self.screen,self)
         self.state = State(self.screen,self.screenSize,self.font,self.client,cell_size)
-
 
     def run(self):
         """Ce qui est run à chaque itérations"""
@@ -45,42 +44,21 @@ class Main:
                 if event.type == pygame.QUIT:
                     running = False
 
-                if event.type == pygame.KEYDOWN:
-
-                    if self.objClicked != None:
-
-                        txt = self.objClicked.dicRect[self.objClicked.id+"_input"]["text"]
-
-                        if event.key == pygame.K_RETURN:
-                            self.mod = "loading"
-                            print("Loading")
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
-                            threading.Thread(target = self.connect_serv).start()
-
-                        elif event.key == pygame.K_ESCAPE:
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
-                            self.objClicked = None
-
-                        elif event.key == pygame.K_BACKSPACE:
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt[:-2] + "|"
-
-                        else :
-                            if len(txt) < 30: #max char
-                                self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt[:-1] + str(event.unicode) + txt[-1]
+                #if event.type == pygame.KEYDOWN:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.mod == "menu":
                         if self.state.host.rect.collidepoint(event.pos):
                             #("Play button clicked")
+                            self.Server = Server(var.intervalle_refresh_server_available,port = var.port, server_name = self.server_name)
+                            threading.Thread(target=self.Server.start_server, args = (self.client,)).start()
+                            threading.Thread(target=self.wait_serv_created).start()
 
-                            self.state.show_ip.update_text("show_ip",f"ip:port = {self.client.ip}:{5000}")
+                            self.state.game_name.update_text("game_name",f"Game : {self.Server.server_name}")
                             self.state.start.update_text("start","Lancement du serveur...")
                             self.mod = "host"
                             
-                            self.Server = Server(var.intervalle_refresh_server_available,port = var.port)
-                            threading.Thread(target=self.Server.start_server, args = (self.client,)).start()
-                            threading.Thread(target=self.wait_serv_created).start()
                             
                             print("Create serv et connection!")
 
@@ -95,15 +73,8 @@ class Main:
 
                     elif self.mod == "connexion":
 
-                        if self.state.ip.rect.collidepoint(event.pos):
-
-                            if self.objClicked == None:
-                                self.state.ip.dicRect[self.state.ip.id+"_input"]["text"] += "|"
-                                self.objClicked = self.state.ip
-
-                        elif self.state.menu.rect.collidepoint(event.pos):
+                        if self.state.menu.rect.collidepoint(event.pos):
                             self.objClicked = None
-                            self.state.ip.dicRect[self.state.ip.id+"_input"]["text"] = self.state.ip.dicRect[self.state.ip.id+"_input"]["text"].replace("|","")
                             self.mod = "menu"
 
                         elif self.state.connexion.rect.collidepoint(event.pos):
@@ -113,8 +84,13 @@ class Main:
 
                         else :  #deselection
                             if self.objClicked != None:
-                                self.state.ip.dicRect[self.objClicked.id+"_input"]["text"] = self.state.ip.dicRect[self.objClicked.id+"_input"]["text"].replace("|","")
                                 self.objClicked = None
+
+                        for ip_port,btn in self.state.server_dispo.items():
+                            if btn.rect.collidepoint(event.pos):
+                                self.mod = "loading"
+                                print("loading")
+                                threading.Thread(target = self.connect_serv, args=(ip_port,)).start()
 
                     elif self.mod == "wait_serv":
 
@@ -132,7 +108,6 @@ class Main:
                             self.client.send_data({"id":"start game"})
                             self.Server.start_game()
 
-
                         elif self.state.menu.rect.collidepoint(event.pos):
                             if self.Server is not None:
                                 self.Server.stop_server()
@@ -145,7 +120,7 @@ class Main:
                         #if self.state.play.rect.collidepoint(event.pos):
                             #self.mod = "game"
                             #threading.Thread(target=self.client.connexion_serveur, args=("localhost", 5000)).start()                           
-    
+
 
             self.perform_event_queue()
 
@@ -168,9 +143,9 @@ class Main:
 
                 self.mod = "menu"
 
-    def connect_serv(self):
+    def connect_serv(self,ip_port):
         """Connecte au serveur"""
-        self.mod = self.state.connexion_serv(self.client)  #Connexion serv
+        self.mod = self.state.connexion_serv(self.client,ip_port)  #Connexion serv
         self.objClicked = None
 
     def wait_serv_created(self):
