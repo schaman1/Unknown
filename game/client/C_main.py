@@ -81,11 +81,7 @@ class Main:
                             self.mod = "loading"
                             print("loading")
                             threading.Thread(target = self.connect_serv).start()
-
-                        else :  #deselection
-                            if self.objClicked != None:
-                                self.objClicked = None
-
+                            
                         for ip_port,btn in self.state.server_dispo.items():
                             if btn.rect.collidepoint(event.pos):
                                 self.mod = "loading"

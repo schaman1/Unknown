@@ -1,7 +1,6 @@
-import pygame, heapq
+import pygame
 import numpy as np
 from numba import njit
-from numba.typed import List
 from serv.in_game.particles import Sand, Wood, Water, Fire
 
 class Read_map:
