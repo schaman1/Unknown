@@ -175,7 +175,7 @@ class Server:
         if self.server:
             self.server.close()
             self.server = None
-        print(self.lClient)
+
         print("Serveur arrêté.")
 
     def start_server(self, client):
@@ -193,7 +193,7 @@ class Server:
         self.is_running_menu = True
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
         self.broadcast_server_info(self.host,self.port,self.server_name)
-        client.connexion_serveur(f"{self.host}:{self.port}")
+        client.connexion_serveur(ip_port=f"{self.host}:{self.port}")
 
 
     def broadcast_server_info(self,ip,port,server_name):

@@ -59,7 +59,6 @@ class Main:
                             self.state.start.update_text("start","Lancement du serveur...")
                             self.mod = "host"
                             
-                            
                             print("Create serv et connection!")
 
                         elif self.state.join.rect.collidepoint(event.pos):
@@ -105,18 +104,15 @@ class Main:
                             self.Server.start_game()
 
                         elif self.state.menu.rect.collidepoint(event.pos):
+
+                            self.client.connected = False
+                            
                             if self.Server is not None:
                                 self.Server.stop_server()
                                 self.Server = None
                                 self.state.add_alert("Serveur stoppé",)
 
                             self.mod = "menu"
-                            self.client.connected = False
-
-                        #if self.state.play.rect.collidepoint(event.pos):
-                            #self.mod = "game"
-                            #threading.Thread(target=self.client.connexion_serveur, args=("localhost", 5000)).start()                           
-
 
             self.perform_event_queue()
 

@@ -7,7 +7,7 @@ class Client:
     def __init__(self, font,screen,main,ip="localhost", port=5000):
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client = None
         self.client_look_party = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         connect = False
         port = 37020
@@ -42,6 +42,8 @@ class Client:
             return None, None
         
     def connexion_serveur(self, ip_port="localhost:5000"):
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
         ip, port = self.return_ip(ip_port)
         if ip is None or port is None:
             return self.return_err("Utilisez le format ip:port")
@@ -94,11 +96,7 @@ class Client:
                 self.main.state.update_server_dispo(self.server_names)
 
             except socket.timeout :
-                continue
-
-            #except Exception as e:
-            #    print(f"Erreur réception: {e}")
-#                break            
+                continue       
 
     def loop_reception_server(self):
         """Fonction reception ser"""
@@ -116,15 +114,12 @@ class Client:
                         break
 
                     buffer += data.decode()
-                    #print("Data reçu",data)
 
                     # traiter tous les messages reçus séparés par "\n" car des fois des données peuvent être envoyé en même temps
                     while "\n" in buffer:
-                        #print("in buffer")
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
-                        #print(f"Data reçue : {data_json}")
-                        #print("2")
+
                         self.traiter_data(data_json)
 
                 except socket.timeout:
@@ -138,21 +133,24 @@ class Client:
             # Sortie de boucle
             if self.connected:
                 print("Serveur fermé ou erreur réseau")
-            else:
+                # Notifier le serveur de notre départ
+                try:
+                    self.client.send(json.dumps({"id": "remove client"}).encode())
+                except Exception:
+                    print(Exception)
+            else :
                 print("Déconnexion volontaire")
 
-            # Notifier le serveur de notre départ
-            try:
-                self.client.send(json.dumps({"id": "remove client"}).encode())
-            except Exception:
-                print(Exception)
+
+        finally: #Server stoppé
 
             self.client.close()
+            self.reset_values()
 
-        finally:
-            self.connected = False
-            self.lClient_id.clear()
-            event_queue.put({"type": "SERVER_DISCONNECTED"})
+    def reset_values(self):
+        self.pseudo = "Coming soon"
+        self.lClient_id.clear()
+        event_queue.put({"type": "SERVER_DISCONNECTED"})
 
     def update_canva(self,l):
         """Envoie a C_game pour update le canva qui sera blit plus tard"""
