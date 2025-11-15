@@ -75,11 +75,6 @@ class Main:
                         if self.state.menu.rect.collidepoint(event.pos):
                             self.objClicked = None
                             self.mod = "menu"
-
-                        elif self.state.connexion.rect.collidepoint(event.pos):
-                            self.mod = "loading"
-                            print("loading")
-                            threading.Thread(target = self.connect_serv).start()
                             
                         for ip_port,btn in self.state.server_dispo.items():
                             if btn.rect.collidepoint(event.pos):
@@ -106,7 +101,7 @@ class Main:
                         elif self.state.menu.rect.collidepoint(event.pos):
 
                             self.client.connected = False
-                            
+
                             if self.Server is not None:
                                 self.Server.stop_server()
                                 self.Server = None
