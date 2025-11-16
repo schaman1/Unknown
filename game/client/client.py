@@ -7,7 +7,7 @@ class Client:
     def __init__(self, font,screen,main,ip="localhost", port=5000):
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
-        self.client = None
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connected = None
         self.main = main
 
@@ -24,7 +24,10 @@ class Client:
     def return_ip(self,ip_port):
         """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
         try :
-            ip, port = ip_port.split(":")
+            ipshort, port = ip_port.split(":")
+            ip = f"{ipshort}.tcp.eu.ngrok.io"
+            port = port
+            print(ip,port)
             return ip, int(port)
 
         except ValueError:
@@ -89,6 +92,7 @@ class Client:
                         #print("in buffer")
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
+
                         #print(f"Data reçue : {data_json}")
                         #print("2")
                         self.traiter_data(data_json)
@@ -97,9 +101,9 @@ class Client:
                     # Pas de data → c’est normal
                     continue
 
-                except Exception as e:
-                    print(f"Erreur réception: {e}")
-                    break
+                #except Exception as e:
+                #    print(f"Erreur réception: {e}")
+                #    break
 
             # Sortie de boucle
             if self.connected:

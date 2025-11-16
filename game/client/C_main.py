@@ -74,15 +74,11 @@ class Main:
                         if self.state.host.rect.collidepoint(event.pos):
                             #("Play button clicked")
 
-                            self.state.show_ip.update_text("show_ip",f"ip:port = {self.client.ip}:{5000}")
+                            self.state.show_ip.update_text("show_ip",f"Waiting for creation...")
                             self.state.start.update_text("start","Lancement du serveur...")
                             self.mod = "host"
-                            
-                            self.Server = Server(var.intervalle_refresh_server_available,port = var.port)
-                            threading.Thread(target=self.Server.start_server, args = (self.client,)).start()
-                            threading.Thread(target=self.wait_serv_created).start()
-                            
-                            print("Create serv et connection!")
+
+                            threading.Thread(target = self.create_server_thread).start()
 
                         elif self.state.join.rect.collidepoint(event.pos):
                             print("join button clicked")
@@ -126,7 +122,7 @@ class Main:
                     
                     elif self.mod == "host":
 
-                        if self.state.start.rect.collidepoint(event.pos):
+                        if self.state.start.rect.collidepoint(event.pos) and self.client.connected :
                             self.Server = Server_game.from_server(self.Server)
                             self.client.send_data({"id":"start game"})
                             self.Server.start_game()
@@ -169,8 +165,13 @@ class Main:
         self.mod = self.state.connexion_serv(self.client)  #Connexion serv
         self.objClicked = None
 
-    def wait_serv_created(self):
-        while True :
-            if self.Server.is_running_menu :
-                self.state.start.update_text("start","Jouer")
-                return
+    def create_server_thread(self):
+        """Crée le serveur dans un thread séparé"""
+        self.Server = Server(var.intervalle_refresh_server_available,port = var.port)
+        ip,port = self.Server.start_server(self.client)
+
+        self.client.connexion_serveur(ip_port =f"{ip}:{port}")
+
+        self.state.show_ip.update_text("show_ip",f"ip:port = {ip}:{port}")
+        self.state.start.update_text("start","Jouer")
+        print("Create serv et connection!")
