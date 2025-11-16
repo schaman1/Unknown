@@ -4,6 +4,7 @@ fps = 30000
 bg = "assets/bgSand.png"
 cell_size = 10
 serv_size = (1920,1080)
+vision = 25 #Nbr de cellule que peut voir
 
 intervalle_refresh_server_available = 1
 port = 5000
