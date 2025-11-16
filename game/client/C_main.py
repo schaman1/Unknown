@@ -133,18 +133,15 @@ class Main:
 
 
                         elif self.state.menu.rect.collidepoint(event.pos):
+                            
+                            self.client.connected = False
+                            self.mod = "menu"
+
                             if self.Server is not None:
                                 self.Server.stop_server()
                                 self.Server = None
                                 self.state.add_alert("Serveur stoppé",)
 
-                            self.mod = "menu"
-                            self.client.connected = False
-
-                        #if self.state.play.rect.collidepoint(event.pos):
-                            #self.mod = "game"
-                            #threading.Thread(target=self.client.connexion_serveur, args=("localhost", 5000)).start()                           
-    
 
             self.perform_event_queue()
 
