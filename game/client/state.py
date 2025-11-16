@@ -64,18 +64,17 @@ class State:
 
                 btn.draw(self.screen)
 
+            #test_vision(self.screen,self.Size)
+
         elif state == "game":
 
             x,y = self.return_pos_blit()
-            self.screen.blit(self.game.bg,(0,0))
-            self.screen.blit(self.game.canva, (x, y))
+            self.game.draw(self.screen,x,y)
 
             #.drawAll()
 
         elif state == "wait_serv":
-
-            self.screen.fill(color["BLACK"])
-
+            
             for btn in self.dicWaiting.values():
                 btn.draw(self.screen)
 
@@ -160,3 +159,14 @@ class State:
     def add_alert(self,err_message,time=5):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
         self.alert.insert(0,Alert(self.screen,err_message,time))
+
+
+#def test_vision(screen,size):
+#    light = pygame.Surface((size[0],size[1]), pygame.SRCALPHA)
+#
+#    light.fill((0,0,0))
+#
+#    for i in range(10):
+#        pygame.draw.circle(light, (0,0,0,200 - (i+1)*20), (size[0]//2,size[1]//2), size[1]//3 - 2*i, width=0)
+#
+#    screen.blit(light,(0,0))
