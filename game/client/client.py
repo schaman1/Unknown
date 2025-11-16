@@ -7,7 +7,7 @@ class Client:
     def __init__(self, font,screen,main,ip="localhost", port=5000):
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client = None
         self.connected = None
         self.main = main
 
@@ -31,6 +31,10 @@ class Client:
             return None, None
         
     def connexion_serveur(self, ip_port="localhost:5000"):
+        "Create the client and connect to ther serveur"
+        
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
         ip, port = self.return_ip(ip_port)
         if ip is None or port is None:
             return self.return_err("Utilisez le format ip:port")
@@ -100,21 +104,24 @@ class Client:
             # Sortie de boucle
             if self.connected:
                 print("Serveur fermé ou erreur réseau")
-            else:
+                # Notifier le serveur de notre départ
+                try:
+                    self.client.send(json.dumps({"id": "remove client"}).encode())
+                except Exception:
+                    print(Exception)
+            else :
                 print("Déconnexion volontaire")
 
-            # Notifier le serveur de notre départ
-            try:
-                self.client.send(json.dumps({"id": "remove client"}).encode())
-            except Exception:
-                print(Exception)
+
+        finally: #Server stoppé
 
             self.client.close()
+            self.reset_values()
 
-        finally:
-            self.connected = False
-            self.lClient_id.clear()
-            event_queue.put({"type": "SERVER_DISCONNECTED"})
+    def reset_values(self):
+        self.pseudo = "Coming soon"
+        self.lClient_id.clear()
+        event_queue.put({"type": "SERVER_DISCONNECTED"})
 
     def update_canva(self,l):
         """Envoie a C_game pour update le canva qui sera blit plus tard"""
