@@ -1,4 +1,5 @@
-import socket, threading, json, time
+import socket, threading, json
+from pyngrok import ngrok
 #from serv.server_game import Server_game
 
 class Server:
@@ -8,7 +9,7 @@ class Server:
         self.host = host
         self.port = port
         self.server = None
-        self.serverUDP = None #Server qui "crie" a tout le monde le ip et port du serv
+        #self.serverUDP = None #Server qui "crie" a tout le monde le ip et port du serv
         self.is_running_menu = False
         self.is_running_game = True
         self.current_thread = None
@@ -84,11 +85,11 @@ class Server:
             for client in list(self.lClient.keys()):
                 meornot = (client == sender)
                 text = f"Player {self.nbr_player}"
-                self.send_data(json.dumps({
+                self.send_data({
                     "id": "new player",
                     "new connection": text,
                     "sender": meornot
-                }), client)
+                }, client)
 
             self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
 
@@ -99,10 +100,10 @@ class Server:
 
             for client in list(self.lClient.keys()):
                 print("Send data")
-                self.send_data(json.dumps({
+                self.send_data({
                     "id": "remove player",
                     "remove connection": removed_id
-                }), client)
+                }, client)
 
         elif data["id"] == "start game":
             #Redirige vers le game, stop le loop_server_in_menu pour start celui de in_game
@@ -117,11 +118,10 @@ class Server:
 
     def send_data_all(self,data : dict):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
-        message = json.dumps(data)
         def send_to(socket):
             try:
                 #print("Send successfuly")
-                self.send_data(message, socket)
+                self.send_data(data, socket)
             except:
                 print("Erreur envoi")
                 pass  # ou suppression du client mort
@@ -143,12 +143,13 @@ class Server:
 
         for socket, _ in self.lClient.items():
             if len(data[cnt]) != 1:
-                message = json.dumps({"id":"to change","updates":data[cnt][1:]})
+                message = {"id":"to change","updates":data[cnt][1:]}
                 cnt +=1
                 threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
 
-    def send_data(self, data : dict, client):
+    def send_data(self, dic : dict, client):
         """Envoie des données à un client spécifique."""
+        data = json.dumps(dic)
         data += "\n"
         try:
             client.send(data.encode())
@@ -174,43 +175,65 @@ class Server:
         if self.server:
             self.server.close()
             self.server = None
-        print(self.lClient)
+
+
         print("Serveur arrêté.")
 
     def start_server(self, client):
         """Lance le serveur"""
-        self.host = socket.gethostbyname(socket.gethostname())
+        #self.host = socket.gethostbyname(socket.gethostname())
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        self.serverUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.serverUDP.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #Permet d'envoyer des message a tt le monde = BORADCAST
+        #self.serverUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        #self.serverUDP.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #Permet d'envoyer des message a tt le monde = BORADCAST
 
         self.server.bind((self.host, self.port))
         print(f"Serveur lancé — host : {self.host}, port : {self.port}")
 
         self.server.listen() #Ecoute si des clients veulent se connecter
         self.is_running_menu = True
+
+        # ---- 2. Lancer ngrok automatiquement ----
+        public_url = ngrok.connect(self.port,"tcp")  # pour TCP brut
+
+        ip,port = self.transforme_ngrok_ip(public_url.public_url)
+        self.send_data({"id":"ngrok info","ip":ip,"port":port},client.client)
+
+        print("URL publique ngrok:", ip,port)
+
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
-        self.broadcast_server_info(self.host,self.port,"Serveur")
-        client.connexion_serveur(ip_port =f"{self.host}:{self.port}")
+
+        return ip,port
+        #self.broadcast_server_info(self.host,self.port,"Serveur")
+        #client.connexion_serveur(ip_port =f"{ip}:{port}")
 
 
-    def broadcast_server_info(self,ip,port,server_name):
-        """Annonce la présence du serveur sur le LAN via UDP broadcast."""
+    #def broadcast_server_info(self,ip,port,server_name):
+    #    """Annonce la présence du serveur sur le LAN via UDP broadcast."""
+#
+    #    data = json.dumps({"ip":ip,
+    #                        "port":port,
+    #                        "name":server_name
+    #    }).encode()
+#
+    #    threading.Thread(target = self.loop_send_data,args = (data,), daemon = True).start()
+#
+    #def loop_send_data(self,data):
+#
+    #    while self.is_running_menu :
+    #        print("Broadcast")
+    #        self.serverUDP.sendto(data,('255.255.255.255', self.port))
+    #        time.sleep(self.intervalle_available_server)
 
-        data = json.dumps({"ip":ip,
-                            "port":port,
-                            "name":server_name
-        }).encode()
-
-        threading.Thread(target = self.loop_send_data,args = (data,), daemon = True).start()
-
-    def loop_send_data(self,data):
-
-        while self.is_running_menu :
-            print("Broadcast")
-            self.serverUDP.sendto(data,('255.255.255.255', self.port))
-            time.sleep(self.intervalle_available_server)
+    def transforme_ngrok_ip(self,ngrok_url):
+        """Transforme l'url ngrok en ip et port"""
+        try :
+            url_parts = ngrok_url.split("tcp://")[1]
+            ip, port = url_parts.split(":")
+            return int(ip[0]), int(port)
+        except Exception as e:
+            print(f"Erreur transformation ngrok url: {e}")
+            return None, None
 
     def loop_server_menu(self):
         """Loop du serveur sachant qu'on est dans le menu = accept les demandes des clients pour venir"""
@@ -243,8 +266,8 @@ class Server:
         for socket,client in self.lClient.items():
             
             if socket != client_socket :
-                self.send_data(json.dumps({
+                self.send_data({
                     "id": "new player",
                     "new connection": client["id"],
                     "sender": False
-                }), client_socket)
+                }, client_socket)
