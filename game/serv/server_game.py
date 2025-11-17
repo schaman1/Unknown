@@ -66,4 +66,8 @@ class Server_game(Server) :
         result = self.init_canva()
         #if result != [] :
         self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
+
+        #self.init_mobs() #Avec la class monstre (plus tard)
+        #self.send_data_mobs()
+
         self.current_thread = threading.Thread(target=self.loop_server_game, daemon=True).start()
