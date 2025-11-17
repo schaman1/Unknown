@@ -1,0 +1,24 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Dossiers de build
+build/
+dist/
+*.egg-info/
+
+# Environnement virtuel
+venv/
+.env/
+.venv/
+
+# Fichiers d'environnement sensibles
+secret.env
+*.env
+
+# Cache divers
+.cache/
+.mypy_cache/
+.pytest_cache/
