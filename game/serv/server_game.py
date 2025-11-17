@@ -1,4 +1,4 @@
-from serv.in_game_test.read_map_test import Read_map
+from serv.in_game.read_map import Read_map
 import var #Fichier
 import pygame
 from serv.server import Server
