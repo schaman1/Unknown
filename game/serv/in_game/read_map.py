@@ -2,7 +2,6 @@ import pygame, heapq
 import numpy as np
 from numba import njit
 from numba.typed import List
-from serv.in_game.particles import Sand, Wood, Water, Fire
 
 class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
