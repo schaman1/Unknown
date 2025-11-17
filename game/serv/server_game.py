@@ -18,9 +18,8 @@ class Server_game(Server) :
         self.lInfoClient = []
         self.fps = var.fps
         self.fpsClock = pygame.time.Clock()
-        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
-
-
+        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements      
+        
     @classmethod
     def from_server(cls, server: "Server"):
         """Créer un Server_game à partir d’un Server existant"""
@@ -34,6 +33,7 @@ class Server_game(Server) :
             new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.cell_size
 
         return new
+
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
