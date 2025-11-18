@@ -178,7 +178,7 @@ def swap_cell(ToUpdate,temperature,grid_type,grid_color,x,y,nx,ny):
     grid_type[ny, nx] = tmp
     temperature[ny,nx] = degre
 
-    ToUpdate[y-1:y,x-1:x+1] = True #Met à jour les cells autour = Dis qu'elles devront voir si elles peuvent bouger
+    ToUpdate[y-1:y+1,x-1:x+2] = True #Met à jour les cells autour = Dis qu'elles devront voir si elles peuvent bouger
     ToUpdate[y,x] = grid_type[y,x]!=0#Dis qu'il faut plus update cette cell car elle a déjà bouge = Vide / Water
     ToUpdate[ny,nx] = True #Dis qu'il faut update cette cell car elle a reçu une nouvelle cell
 
@@ -350,10 +350,8 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
             elif typ == WATER :#or typ == EXPLO :
                 #continue
 
-                #if typ == WATER :
                 transmax = 255
-                #else :
-                #    transmax = 127
+
                 chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
                 if chg is True :
                     temperature[y,x] = -transmax
@@ -368,6 +366,7 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                         continue
 
                     chg,nx = move_r_or_l(ToUpdate,x,y,W,r_or_l,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
+                    
                     if chg is False :
                         if temperature[y,x] > -transmax :
                             temperature[y,x] -= 1
@@ -381,6 +380,8 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                         else :
                             ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
                         continue
+                    else :
+                        temperature[y,x] += 4
 
                 grid_color[y,x,3] = -temperature[y,x]
                 #else :
