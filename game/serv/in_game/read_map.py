@@ -20,6 +20,7 @@ class Read_map:
         self.grid_color = np.zeros((self.height, self.width, 4), dtype=np.uint8)
         self.r_or_l = np.zeros((self.height, self.width), dtype=np.bool) #If true = cell go left / else, cell go right
         self.temp = np.zeros((self.height, self.width), dtype=np.int16)
+        self.ToUpdate = np.ones((self.height,self.width),dtype = np.bool)
 
         self.visible = None
         self.xs = np.empty(1, dtype=np.int32)
@@ -90,10 +91,11 @@ class Read_map:
         self.grid_type[500,500] = self.type["WATER"]
         self.temp[500,500] = -255
 
-        self.visible = return_cell_update(InfoClient,self.height,self.width)
+        self.visible = return_cell_update(self.ToUpdate,InfoClient,self.height,self.width)
         self.ys , self.xs = return_x_y(self.visible)
 
         moved_cells = move_sand_fast(
+            self.ToUpdate,
             self.visible,
             self.xs,self.ys,
             self.grid_type,
@@ -154,7 +156,7 @@ def return_x_y(visible):
     return ys, xs
 
 @njit
-def return_cell_update(lClient,H,W):
+def return_cell_update(ToUpdate,lClient,H,W):
     visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
     for i,(x,y,screenx,screeny) in enumerate(lClient) :
         xs = max(x-screenx//2,0)
@@ -164,7 +166,9 @@ def return_cell_update(lClient,H,W):
 
         visible[i,ys:ye,xs:xe] = True
 
-    return visible
+    result = ToUpdate & visible
+
+    return result
 
 @njit
 def swap_cell(temperature,grid_type,grid_color,x,y,nx,ny):
@@ -300,7 +304,7 @@ def set_move(clientToUpdate,x,y,updated,moved_cells,grid_color):
     set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
 
 @njit
-def move_sand_fast(visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
+def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
 
     len_client,H, W = visible.shape
 
