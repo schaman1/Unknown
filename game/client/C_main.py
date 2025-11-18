@@ -75,7 +75,7 @@ class Main:
                             #("Play button clicked")
 
                             self.state.show_ip.update_text("show_ip",f"Waiting for creation...")
-                            self.state.start.update_text("start","Lancement du serveur...")
+                            self.state.start.update_text("start","...")
                             self.mod = "host"
 
                             threading.Thread(target = self.create_server_thread).start()
