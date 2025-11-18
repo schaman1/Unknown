@@ -171,12 +171,16 @@ def return_cell_update(ToUpdate,lClient,H,W):
     return result
 
 @njit
-def swap_cell(temperature,grid_type,grid_color,x,y,nx,ny):
+def swap_cell(ToUpdate,temperature,grid_type,grid_color,x,y,nx,ny):
     tmp,degre = grid_type[y, x],temperature[y,x]
     grid_type[y, x] = grid_type[ny, nx]
     temperature[y,x] = temperature[ny,nx]
     grid_type[ny, nx] = tmp
     temperature[ny,nx] = degre
+
+    ToUpdate[y-1:y,x-1:x+1] = True #Met à jour les cells autour = Dis qu'elles devront voir si elles peuvent bouger
+    ToUpdate[y,x] = grid_type[y,x]!=0#Dis qu'il faut plus update cette cell car elle a déjà bouge = Vide / Water
+    ToUpdate[ny,nx] = True #Dis qu'il faut update cette cell car elle a reçu une nouvelle cell
 
     # swap couleur
     for c in range(4):
@@ -204,11 +208,13 @@ def create_list_update(x,y,InfoClient):
     return clientToUpdate
 
 @njit
-def set_empty(nx,ny,temperature,grid_type,grid_color,EMPTY):
+def set_empty(ToUpdate,nx,ny,temperature,grid_type,grid_color,EMPTY):
     """Set nx,ny as an EMPTY cell"""
     temperature[ny,nx] = 0
     grid_type[ny,nx] = EMPTY
     grid_color[ny,nx] = (0,0,0,0)
+    ToUpdate[ny,nx] = False #Dis que doit plus l'update car est plus de l'eau = Empty
+
 
 @njit
 def set_fire(nx,ny,temperature,grid_type,grid_color,FIRE):
@@ -232,7 +238,7 @@ def swap_r_or_l(r_or_l,y,x,ny,nx):
     r_or_l[ny,nx] = tmp
 
 @njit
-def move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY): #ASEMPTY = empty pour la cell specifique
+def move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY): #ASEMPTY = empty pour la cell specifique
     """Return nx,ny if can move down, or down-right or down-left else : None"""
     ny = y + 1
     if ny >= H : 
@@ -250,11 +256,11 @@ def move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,E
 
     # swap type
     if grid_type[ny,nx] in BECOMEEMPTY:
-        set_empty(nx,ny,temperature,grid_type,grid_color,EMPTY)
+        set_empty(ToUpdate,nx,ny,temperature,grid_type,grid_color,EMPTY)
     return (True,nx,ny)
 
 @njit
-def move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY):
+def move_r_or_l(ToUpdate,x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY,EMPTY):
     if r_or_l[y,x] is True :
         dx = -1
     else : dx = 1
@@ -272,15 +278,15 @@ def move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPT
         return (False,0)
         
     if grid_type[y,nx] in BECOMEEMPTY :
-        set_empty(nx,y,temperature,grid_type,grid_color,EMPTY)
+        set_empty(ToUpdate,nx,y,temperature,grid_type,grid_color,EMPTY)
 
     return (True,nx)
 
 @njit
-def change_pos(clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color):
+def change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color):
     """Change the pos of the cell with it's nx,ny"""
     #else :
-    swap_cell(temperature,grid_type,grid_color,x,y,nx,ny)
+    swap_cell(ToUpdate,temperature,grid_type,grid_color,x,y,nx,ny)
 
     # on enregistre les 2 cases modifiées
     set_move(clientToUpdate,nx,ny,updated,moved_cells,grid_color)
@@ -330,16 +336,17 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
             if updated[y,x] : 
                 continue
 
-            #print("Inside loop")
-
             typ = grid_type[y, x]
 
             if typ == SAND:
                 #continue
-                chg,nx,ny = move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,(EMPTY,WATER,FIRE),(FIRE,),EMPTY)
+                chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,WATER,FIRE),(FIRE,),EMPTY)
                 if chg is True:
-                    change_pos(clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
+                    change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
                 
+                else :
+                    ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
+
             elif typ == WATER :#or typ == EXPLO :
                 #continue
 
@@ -347,7 +354,7 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                 transmax = 255
                 #else :
                 #    transmax = 127
-                chg,nx,ny = move_down_r_l(x,y,H,W,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
+                chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
                 if chg is True :
                     temperature[y,x] = -transmax
                     #set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color) #Test1
@@ -355,11 +362,12 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                 else:
                     ny = y
                     if -50 < temperature[y,x] : #cellule meurt
-                        set_empty(x,y,temperature,grid_type,grid_color,EMPTY)
+
+                        set_empty(ToUpdate,x,y,temperature,grid_type,grid_color,EMPTY)
                         #set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color) #Test1
                         continue
 
-                    chg,nx = move_r_or_l(x,y,W,r_or_l,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
+                    chg,nx = move_r_or_l(ToUpdate,x,y,W,r_or_l,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,),EMPTY)
                     if chg is False :
                         if temperature[y,x] > -transmax :
                             temperature[y,x] -= 1
@@ -369,11 +377,14 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
 
                             grid_color[y,x,3] = -temperature[y,x]
                             set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
+
+                        else :
+                            ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
                         continue
 
                 grid_color[y,x,3] = -temperature[y,x]
                 #else :
-                change_pos(clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
+                change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
                 swap_r_or_l(r_or_l,y,x,ny,nx)
 
                 # on enregistre les 2 cases modifiées
@@ -399,6 +410,8 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                         seuil = BurnaWood 
                         #else : seuil = BurnaExplo
                         if np.random.randint(0,100) > seuil :
+
+                            ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
                             set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
 
                             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
@@ -409,17 +422,19 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                 grid_color[y,x,3] = new_temp
 
                 if temperature[y,x] < 20 :
-                    set_empty(x,y,temperature,grid_type,grid_color,EMPTY)
+
+                    set_empty(ToUpdate,x,y,temperature,grid_type,grid_color,EMPTY)
                     # on enregistre les cases modifiées
                     set_move(clientToUpdate,x,y,updated,moved_cells,grid_color)
                     continue
-                
 
                 if np.random.randint(0,101) > 50:
                     choice = np.random.randint(-1, 2)
                     if 0< x + choice and x+choice < W and 0<y -1 and grid_type[y-1,x+choice] == EMPTY:
                         dy = y-1
                         dx = x + choice
+
+                        ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
                         set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
                         # on enregistre les cases modifiées
                         set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
@@ -464,8 +479,14 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                             if grid_type[ddy,ddx] == GRASS :
                                 nbrGrass +=1
                         if nbrGrass < 2 or nbrGrass == 4:
+
+                            ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
                             set_grass(dx,dy,temperature,grid_type,grid_color,GRASS)
                             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
+
+            
+            else :
+                ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
 
     #print(moved_cells)
     return moved_cells
