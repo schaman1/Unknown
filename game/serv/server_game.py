@@ -16,7 +16,7 @@ class Server_game(Server) :
 
         #self.lClient = None
         self.lInfoClient = []
-        self.fps = var.fps
+        self.fps = var.fpsCellsUpdate
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements      
         

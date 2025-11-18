@@ -21,7 +21,7 @@ class Main:
         self.font = pygame.font.SysFont(None, 48)
 
         #Set up the clock for managing the frame rate
-        self.fps = var.fps
+        self.fps = var.fpsClient
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
