@@ -1,7 +1,7 @@
-from serv.in_game.read_map import Read_map
+from serv.in_game.C_read_map import Read_map
 import var #Fichier
 import pygame
-from serv.server import Server
+from serv.C_server import Server
 import threading,numpy as np
 
 class Server_game(Server) :
