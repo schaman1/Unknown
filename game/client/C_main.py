@@ -11,7 +11,7 @@ import var
 
 class Main:
     """Class main = à on top le fichier main.py puis juste après le C_main"""
-    def __init__(self,cell_size):
+    def __init__(self):
         """Contient le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
         # Set up the display (width, height)
         self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.FULLSCREEN | pygame.SCALED)
@@ -21,7 +21,7 @@ class Main:
         self.font = pygame.font.SysFont(None, 48)
 
         #Set up the clock for managing the frame rate
-        self.fps = var.fpsClient
+        self.fps = var.FPS_CLIENT
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
@@ -32,7 +32,7 @@ class Main:
         self.mod = "menu" #menu/reglage/game
 
         self.client = Client(self.font,self.screen,self)
-        self.state = State(self.screen,self.screenSize,self.font,self.client,cell_size)
+        self.state = State(self.screen,self.screenSize,self.font,self.client,var.CELL_SIZE)
 
 
     def run(self):
@@ -167,7 +167,7 @@ class Main:
 
     def create_server_thread(self):
         """Crée le serveur dans un thread séparé"""
-        self.Server = Server(var.intervalle_refresh_server_available,port = var.port)
+        self.Server = Server(port = var.PORT)
         ip,port = self.Server.start_server(self.client)
 
         self.client.connexion_serveur(ip_port =f"{ip}:{port}")

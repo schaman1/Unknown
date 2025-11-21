@@ -10,13 +10,13 @@ class Server_game(Server) :
 
         super().__init__(host, port)  # <-- Appelle le constructeur de Server
 
-        self.map = Read_map(var.bg)
+        self.map = Read_map(var.BG_CELL)
         #self.canva_map = self.map.canva
         self.is_running_game = True
 
         #self.lClient = None
         self.lInfoClient = []
-        self.fps = var.fpsCellsUpdate
+        self.fps = var.FPS_CELL_UPDATE
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements      
         
@@ -29,8 +29,8 @@ class Server_game(Server) :
         new.server = server.server
         new.nbr_player = server.nbr_player
         for client in new.lClient.keys():
-            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.cell_size
-            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.cell_size
+            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.CELL_SIZE
+            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.CELL_SIZE
 
         return new
 

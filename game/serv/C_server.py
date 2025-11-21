@@ -4,7 +4,7 @@ from pyngrok import ngrok
 
 class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
-    def __init__(self, intervalle,port=5000,host='0.0.0.0'):
+    def __init__(self,port=5000,host='0.0.0.0'):
         self.lClient = {}
         self.host = host
         self.port = port
@@ -14,7 +14,7 @@ class Server:
         self.is_running_game = True
         self.current_thread = None
         self.nbr_player = 0
-        self.intervalle_available_server = intervalle
+        #self.intervalle_available_server = intervalle
 
     def handle_client(self, client_socket):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
