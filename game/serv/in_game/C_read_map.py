@@ -7,8 +7,8 @@ class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
     def __init__(self, filename):
 
-        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5, "GRASS":6 }#"EXPLO" : 5}
-        self.propagation = {"WOOD": 98}#, "EXPLO" : 1}
+        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5, "GRASS":6, "EXPLO" : 7}
+        self.propagation = {"WOOD": 98, "EXPLO" : 1}
 
         self.map = pygame.image.load(filename).convert()
         self.width, self.height = self.map.get_size()
@@ -38,7 +38,7 @@ class Read_map:
         mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_stone = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 127)
-        #mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
+        mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
 
         # Exemple de masque spécifique
         #mask_sand[120, 3] = True
@@ -48,21 +48,21 @@ class Read_map:
         self.grid_type[mask_wood] = self.type["WOOD"]
         self.grid_type[mask_fire] = self.type["FIRE"]
         self.grid_type[mask_stone] = self.type["STONE"]
-        #self.grid_type[mask_explo] = self.type["EXPLO"]
+        self.grid_type[mask_explo] = self.type["EXPLO"]
 
         self.grid_color[mask_sand] = self.random_color(mask_sand.sum(), (150, 200), (75, 140), (0, 0),255)
         self.grid_color[mask_water] = self.random_color(mask_water.sum(), (0, 20), (0, 20), (200, 255),255)
         self.grid_color[mask_wood] = self.random_color(mask_wood.sum(), (78, 88), (31, 41), (0, 0),255)
         self.grid_color[mask_fire] = self.random_color(mask_fire.sum(), (180, 255), (0, 20), (0, 0),255)
         self.grid_color[mask_stone] = self.random_color(mask_stone.sum(), (60, 75), (55, 65), (50, 60),255)
-        #self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
+        self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
 
         self.temp[mask_sand] = 60
         self.temp[mask_water] = -255
         self.temp[mask_fire] = 255
         self.temp[mask_wood] = 255
         self.temp[mask_stone] = 30
-        #self.temp[mask_explo] = 255
+        self.temp[mask_explo] = 255
 
     def random_color(self, num, r_range, g_range, b_range,transparence):
         r = np.random.randint(r_range[0], r_range[1]+1, num, dtype=np.uint8)
@@ -88,7 +88,7 @@ class Read_map:
 
         #Robinet
         self.grid_color[500,500] = (0,0,np.random.randint(200,255),255)
-        self.grid_type[500,500] = self.type["WATER"]
+        self.grid_type[500,500] = self.type["FIRE"]
         self.temp[500,500] = -255
 
         self.visible = return_cell_update(self.ToUpdate,InfoClient,self.height,self.width)
@@ -109,11 +109,11 @@ class Read_map:
             self.type["FIRE"],
             self.type["STONE"],
             self.type["GRASS"],
-            #self.type["EXPLO"],
-            #self.propagation["EXPLO"],
+            self.type["EXPLO"],
+            (self.type["EXPLO"],self.type["WOOD"]),
             self.propagation["WOOD"]
-        )
-        #print(moved_cells)
+        ) 
+
         return moved_cells
     
 @njit
@@ -310,7 +310,31 @@ def set_move(clientToUpdate,x,y,updated,moved_cells,grid_color):
     set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
 
 @njit
-def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,BurnaWood):
+def spread_fire(x,y,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,FIRE,IsBurnable,CanSpread,propagation):
+    """Spread fire to adjacente cell = du to Explosion"""
+    if propagation <= 0 :
+        return
+        
+    for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
+        dy = y + i
+        dx = x + j
+
+        if 0<= dy < H and 0<= dx < W and grid_type[dy,dx] in IsBurnable :
+
+            typ2 = grid_type[dy,dx]
+            ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
+            set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
+            set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
+
+            if typ2 in CanSpread:# or typ2 == EXPLO:
+                propagation = propagation-1
+            else :
+                propagation = 1
+
+            spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,FIRE,IsBurnable,CanSpread,propagation)
+
+@njit
+def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature, EMPTY,SAND,WOOD,WATER,FIRE,STONE,GRASS,EXPLO,IsBurnable,propagationWood):
 
     len_client,H, W = visible.shape
 
@@ -406,17 +430,21 @@ def move_sand_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperat
                     #if temp < 0 :
                     new_temp += temp
 
-                    if typ2 == WOOD :#or typ2 == EXPLO:
-                        #if typ2 == WOOD :
-                        seuil = BurnaWood 
-                        #else : seuil = BurnaExplo
-                        if np.random.randint(0,100) > seuil :
+                    if typ2 in IsBurnable:
+                        if typ2 == WOOD :
+                            seuil = propagationWood 
+                        #else : seuil = propagationExplo
+
+
+                        if typ2 == WOOD and np.random.randint(0,100) > seuil :
 
                             ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
                             set_fire(dx,dy,temperature,grid_type,grid_color,FIRE)
-
                             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
-                        #grid[self.dx][self.x+j] = Fire(self.dx,self.y+i,255)
+
+                        else :
+                            spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,FIRE,IsBurnable,(EXPLO,),propagation = 9999)
+
 
                 new_temp = (new_temp)//5-6
                 temperature[y,x] = new_temp

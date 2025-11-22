@@ -43,7 +43,6 @@ class Game :
 
         x,y,r,g,b,a = el
         color = (r,g,b,a)
-        #print(x,y) #!!!Le print alors que marche pas wtf
         #x,y,color = el
 
         #try : 
@@ -57,5 +56,5 @@ class Game :
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
-        screen.blit(self.light,(0,0))
+        #screen.blit(self.light,(0,0))
         
