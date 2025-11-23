@@ -181,7 +181,6 @@ class Server:
 
     def start_server(self, client):
         """Lance le serveur"""
-        #self.host = socket.gethostbyname(socket.gethostname())
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         #self.serverUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -193,19 +192,24 @@ class Server:
         self.server.listen() #Ecoute si des clients veulent se connecter
         self.is_running_menu = True
 
-        # ---- 2. Lancer ngrok automatiquement ----
-        public_url = ngrok.connect(self.port,"tcp")  # pour TCP brut
+        # ---- Avec ngrok : ----
+        #public_url = ngrok.connect(self.port,"tcp")  # pour TCP brut
 
-        ip,port = self.transforme_ngrok_ip(public_url.public_url)
-        self.send_data({"id":"ngrok info","ip":ip,"port":port},client.client)
+        #ip,port = self.transforme_ngrok_ip(public_url.public_url)
+        #print("URL publique ngrok:", ip,port)
+        #self.send_data({"id":"Server info","ip":ip,"port":port},client.client)
+        #self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
+        #return ip,port
 
-        print("URL publique ngrok:", ip,port)
-
+        # ---- Sans ngrok : ----
+        self.host = socket.gethostbyname(socket.gethostname())
+        self.send_data({"id":"Server info","ip":self.host,"port":self.port},client.client)
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
 
-        return ip,port
-        #self.broadcast_server_info(self.host,self.port,"Serveur")
-        #client.connexion_serveur(ip_port =f"{ip}:{port}")
+        return self.host,self.port
+
+
+        # -------------------------
 
 
     #def broadcast_server_info(self,ip,port,server_name):
