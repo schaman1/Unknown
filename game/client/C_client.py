@@ -44,7 +44,7 @@ class Client:
         #-------- Pour local = LAN --------
         ip, port = ip_port.split(":")
         #ip = ip.strip()
-        port = int(port)
+        port = int(port) #Has to be an integer
 
         if ip is None or port is None:
             return self.return_err("Utilisez le format ip:port")
