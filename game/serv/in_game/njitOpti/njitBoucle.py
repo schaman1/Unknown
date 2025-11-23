@@ -71,6 +71,11 @@ def return_cell_update(ToUpdate,lClient,H,W):
 
     return result
 
+
+@njit
+def neighborns_to_update(ToUpdate,x,y):
+    ToUpdate[y-1:y+2,x-1:x+2] = True
+
 @njit
 def swap_cell(ToUpdate,temperature,grid_type,grid_color,x,y,nx,ny):
     tmp,degre = grid_type[y, x],temperature[y,x]
@@ -79,7 +84,7 @@ def swap_cell(ToUpdate,temperature,grid_type,grid_color,x,y,nx,ny):
     grid_type[ny, nx] = tmp
     temperature[ny,nx] = degre
 
-    ToUpdate[y-1:y+1,x-1:x+2] = True #Met à jour les cells autour = Dis qu'elles devront voir si elles peuvent bouger
+    neighborns_to_update(ToUpdate,x,y)
     ToUpdate[y,x] = grid_type[y,x]!=0#Dis qu'il faut plus update cette cell car elle a déjà bouge = Vide / Water
     ToUpdate[ny,nx] = True #Dis qu'il faut update cette cell car elle a reçu une nouvelle cell
 
@@ -213,8 +218,6 @@ def set_move(clientToUpdate,x,y,updated,moved_cells,grid_color):
 @njit
 def spread_fire(x,y,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,CanSpread,propagation):
     """Spread fire to adjacente cell = du to Explosion"""
-    if propagation <= 0 :
-        return
         
     for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
         dy = y + i
@@ -227,10 +230,13 @@ def spread_fire(x,y,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate
             set_fire(dx,dy,temperature,grid_type,grid_color)
             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
 
-            if typ2 in CanSpread:# or typ2 == EXPLO:
-                propagation = propagation-1
-            else :
+            propagation = propagation-1
+            if propagation <= 0 :
+                return
+            
+            if typ2 not in CanSpread:# or typ2 == EXPLO:
                 propagation = 1
+                
 
             spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,CanSpread,propagation)
 
@@ -340,8 +346,11 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                         if typ2 == WOOD and np.random.randint(0,100) > seuil :
 
                             ToUpdate[dy,dx] = True #Dis qu'il faut update cette cell car y'a du feu qui monte
+                            neighborns_to_update(ToUpdate,x,y)
+                            
                             set_fire(dx,dy,temperature,grid_type,grid_color)
                             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
+                            #a
 
                         elif typ2 == EXPLO :
                             spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,(EXPLO,),propagation = 9999)
@@ -351,14 +360,16 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                 temperature[y,x] = new_temp
                 grid_color[y,x,3] = new_temp
 
-                if temperature[y,x] < 20 :
+                if temperature[y,x] < 50 :
 
                     set_empty(ToUpdate,x,y,temperature,grid_type,grid_color)
                     # on enregistre les cases modifiées
                     set_move(clientToUpdate,x,y,updated,moved_cells,grid_color)
+
+                    neighborns_to_update(ToUpdate,x,y)
                     continue
 
-                if np.random.randint(0,101) > 50:
+                if np.random.randint(0,101) > 60:
                     choice = np.random.randint(-1, 2)
                     if 0< x + choice and x+choice < W and 0<y -1 and grid_type[y-1,x+choice] == EMPTY:
                         dy = y-1
