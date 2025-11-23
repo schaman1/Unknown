@@ -4,7 +4,7 @@ FPS_SERVER = 60#Ce qui va tourner sur le serv
 FPS_CELL_UPDATE = 10 #Combien de fois par secondes on update les cells
 FPS_CLIENT = 60 #Ce qui va tourner sur  le client #!!! je crois pas utilisé ou pas besoin
 
-BG_CELL = "assets/bgSandExplo.png"
+BG_CELL = "assets/bgWater.png"
 CELL_SIZE = 8
 BG_SIZE_SERVER = (1920,1080)
 NBR_CELL_CAN_SEE = 60 #Nbr de cellule que peut voir

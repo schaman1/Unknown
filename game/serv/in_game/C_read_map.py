@@ -33,10 +33,10 @@ class Read_map:
         img_np = np.transpose(pygame.surfarray.array3d(self.map), (1, 0, 2))
 
         grid_pixels = img_np[0:self.height, 0:self.width]
-        #print(grid_pixels[150, :, 1])
+        #print(grid_pixels[450, 530, :])
         mask_sand = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 255) & (grid_pixels[:, :, 2] == 0)
         mask_water = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 255)
-        mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
+        mask_wood = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 0)
         mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_stone = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 127)
         mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
