@@ -8,6 +8,7 @@ class Read_map:
     def __init__(self, filename):
 
         self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5, "GRASS":6, "EXPLO" : 7}
+        
         #self.propagation = {"WOOD": 98, "EXPLO" : 1}
 
         self.map = pygame.image.load(filename).convert()
@@ -87,9 +88,9 @@ class Read_map:
         """Retourne les chg de pixels"""
 
         #Robinet
-        self.grid_color[500,500] = (0,0,np.random.randint(200,255),255)
-        self.grid_type[500,500] = self.type["FIRE"]
-        self.temp[500,500] = -255
+        self.grid_color[450,450] = (np.random.randint(200,255),0,0,255)
+        self.grid_type[450,450] = self.type["FIRE"]
+        self.temp[450,450] = 255
 
         self.visible = njitBoucle.return_cell_update(self.ToUpdate,InfoClient,self.height,self.width)
         self.ys , self.xs = njitBoucle.return_x_y(self.visible)
