@@ -21,7 +21,7 @@ class Client:
         self.screen = screen
         self.screen_size = self.screen.get_size()
 
-    def return_ip(self,ip_port):
+    def return_ip_ngrok(self,ip_port):
         """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
         try :
             ipshort, port = ip_port.split(":")
@@ -38,7 +38,14 @@ class Client:
         
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        ip, port = self.return_ip(ip_port)
+        #-------- Pour ngrok = Online² --------
+        #ip, port = self.return_ip_ngrok(ip_port)
+
+        #-------- Pour local = LAN --------
+        ip, port = ip_port.split(":")
+        #ip = ip.strip()
+        port = int(port)
+
         if ip is None or port is None:
             return self.return_err("Utilisez le format ip:port")
         #Créer le socket
