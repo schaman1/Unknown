@@ -315,7 +315,7 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
 
                 # on enregistre les 2 cases modifiées
 
-            elif typ == FIRE:
+            elif typ == FIRE :
                 #continue
                 new_temp = temperature[y,x]
                 #new_life = np.zeros(4,dtype = np.int16)
@@ -343,7 +343,7 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                             set_fire(dx,dy,temperature,grid_type,grid_color)
                             set_move(clientToUpdate,dx,dy,updated,moved_cells,grid_color)
 
-                        else :
+                        elif typ2 == EXPLO :
                             spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,(EXPLO,),propagation = 9999)
 
 
