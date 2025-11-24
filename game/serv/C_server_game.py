@@ -1,7 +1,7 @@
-from serv.in_game.read_map import Read_map
+from serv.in_game.C_read_map import Read_map
 import var #Fichier
 import pygame
-from serv.server import Server
+from serv.C_server import Server
 import threading,numpy as np
 
 class Server_game(Server) :
@@ -10,17 +10,16 @@ class Server_game(Server) :
 
         super().__init__(host, port)  # <-- Appelle le constructeur de Server
 
-        self.map = Read_map(var.bg)
+        self.map = Read_map(var.BG_CELL)
         #self.canva_map = self.map.canva
         self.is_running_game = True
 
         #self.lClient = None
         self.lInfoClient = []
-        self.fps = var.fps
+        self.fps = var.FPS_CELL_UPDATE
         self.fpsClock = pygame.time.Clock()
-        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
-
-
+        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements      
+        
     @classmethod
     def from_server(cls, server: "Server"):
         """Créer un Server_game à partir d’un Server existant"""
@@ -30,10 +29,11 @@ class Server_game(Server) :
         new.server = server.server
         new.nbr_player = server.nbr_player
         for client in new.lClient.keys():
-            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.cell_size
-            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.cell_size
+            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.CELL_SIZE
+            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.CELL_SIZE
 
         return new
+
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
@@ -66,4 +66,8 @@ class Server_game(Server) :
         result = self.init_canva()
         #if result != [] :
         self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
+
+        #self.init_mobs() #Avec la class monstre (plus tard)
+        #self.send_data_mobs()
+
         self.current_thread = threading.Thread(target=self.loop_server_game, daemon=True).start()

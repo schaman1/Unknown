@@ -11,5 +11,5 @@ pygame.display.set_caption('P_Marko')
 #Load cards :
 #load_cards()
 
-main = Main(var.cell_size)
+main = Main()
 main.run() #Lance le jeu

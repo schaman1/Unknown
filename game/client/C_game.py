@@ -12,13 +12,13 @@ class Game :
         self.bg = pygame.image.load("assets/bg1.png").convert()
         self.bg = pygame.transform.scale(self.bg, (canva_size[0],canva_size[1]))
         self.light = pygame.Surface((canva_size[0],canva_size[1]), pygame.SRCALPHA)
-        self.create_light(vision = var.vision)
+        self.create_light(vision = var.NBR_CELL_CAN_SEE)
 
         # pré-calcul des rects pour chaque cellule
         self.rect_grid = [
             [pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
-             for x in range(var.serv_size[0])]
-            for y in range(var.serv_size[1])
+             for x in range(var.BG_SIZE_SERVER[0])]
+            for y in range(var.BG_SIZE_SERVER[1])
         ]
 
 
@@ -43,7 +43,6 @@ class Game :
 
         x,y,r,g,b,a = el
         color = (r,g,b,a)
-        #print(x,y) #!!!Le print alors que marche pas wtf
         #x,y,color = el
 
         #try : 
@@ -57,5 +56,5 @@ class Game :
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
-        screen.blit(self.light,(0,0))
+        #screen.blit(self.light,(0,0))
         
