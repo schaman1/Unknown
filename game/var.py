@@ -1,10 +1,12 @@
 #Toutes les variables importantes du jeu sont ici
 
-fps = 30000
-bg = "assets/bgSand.png"
-cell_size = 10
-serv_size = (1920,1080)
-vision = 25 #Nbr de cellule que peut voir
+FPS_SERVER = 60#Ce qui va tourner sur le serv
+FPS_CELL_UPDATE = 10 #Combien de fois par secondes on update les cells
+FPS_CLIENT = 60 #Ce qui va tourner sur  le client #!!! je crois pas utilisé ou pas besoin
 
-intervalle_refresh_server_available = 1
-port = 5000
+BG_CELL = "assets/bgWater.png"
+CELL_SIZE = 8
+BG_SIZE_SERVER = (1920,1080)
+NBR_CELL_CAN_SEE = 60 #Nbr de cellule que peut voir
+
+PORT = 5000
