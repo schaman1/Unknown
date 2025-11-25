@@ -1,4 +1,4 @@
-import socket, json, threading, pygame
+import socket, json, threading
 import time
 from client.events import event_queue
 

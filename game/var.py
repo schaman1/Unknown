@@ -8,5 +8,6 @@ BG_CELL = "assets/bgWater.png"
 CELL_SIZE = 8
 BG_SIZE_SERVER = (1920,1080)
 NBR_CELL_CAN_SEE = 60 #Nbr de cellule que peut voir
+PADDING_CANVA = 4  #Combien de cellule en plus on charge autour de l'ecran du client
 
 PORT = 5000

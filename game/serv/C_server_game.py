@@ -18,7 +18,8 @@ class Server_game(Server) :
         self.lInfoClient = []
         self.fps = var.FPS_CELL_UPDATE
         self.fpsClock = pygame.time.Clock()
-        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements      
+        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
+           
         
     @classmethod
     def from_server(cls, server: "Server"):
@@ -28,9 +29,11 @@ class Server_game(Server) :
         new.lClient = server.lClient
         new.server = server.server
         new.nbr_player = server.nbr_player
+
         for client in new.lClient.keys():
-            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.CELL_SIZE
-            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.CELL_SIZE
+            #Met les screen_size à la bonne échelle
+            new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.CELL_SIZE + var.PADDING_CANVA
+            new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.CELL_SIZE + var.PADDING_CANVA
 
         return new
 
