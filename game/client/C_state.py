@@ -4,6 +4,7 @@ from client.C_button import Button
 from client.C_alert import Alert
 from client.C_load import Load
 from client.C_game import Game
+from client.Personnages_client.perso1 import Player
 
 class State:
     """Class qui affiche tout"""
@@ -17,6 +18,7 @@ class State:
         self.client = client
         self.load = Load(screen)
 
+        self.player = Player("../assets/playerImg.png", 500, 500)
         self.posClient = (500,500)#A modifier après
 
         self.game = Game(cell_size,self.Size)
@@ -102,9 +104,14 @@ class State:
 
         self.draw_alert()
 
-    def return_pos_blit(self):
-        x = -self.posClient[0]*self.cell_size + self.Size[0]//2
-        y = -self.posClient[1]*self.cell_size + self.Size[1]//2
+    def return_pos_blit(self):   
+        """
+        renvoie la position (x, y) à blit du perso
+        """
+        #x = -self.posClient[0]*self.cell_size + self.Size[0]//2
+        #y = -self.posClient[1]*self.cell_size + self.Size[1]//2
+        x = -self.player.pos_x*self.cell_size + self.Size[0]//2
+        y = -self.player.pos_y*self.cell_size + self.Size[1]//2
         return (x,y)
 
     def connexion_serv(self,client):

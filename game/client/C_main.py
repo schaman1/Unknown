@@ -4,6 +4,7 @@ from client.C_client import Client
 from serv.C_server_game import Server_game
 from serv.C_server import Server
 from client.events import event_queue
+from Personnages_client.perso1 import Player
 import var
 
 #from C_inGame import InGame
@@ -57,6 +58,8 @@ class Main:
                     elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect[self.objClicked.id+"_input"]["text"]
+
+                        self.state.player.pos_x +=1
 
                         if event.key == pygame.K_RETURN:
                             self.mod = "loading"
