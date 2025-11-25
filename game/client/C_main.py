@@ -48,7 +48,14 @@ class Main:
 
                 if event.type == pygame.KEYDOWN:
 
-                    if self.objClicked != None:
+                    if self.mod == "game":
+
+                        if event.key == pygame.K_ESCAPE:
+                            pass
+
+
+
+                    elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect[self.objClicked.id+"_input"]["text"]
 
