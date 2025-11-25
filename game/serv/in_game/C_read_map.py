@@ -71,7 +71,6 @@ class Read_map:
         b = np.random.randint(b_range[0], b_range[1]+1, num, dtype=np.uint8)
         a = np.full(num, transparence, dtype=np.uint8)
         return np.stack([r, g, b, a], axis=1)
-    
 
     def return_all(self,InfoClient):
         cells = []
