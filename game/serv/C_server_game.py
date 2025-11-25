@@ -34,9 +34,7 @@ class Server_game(Server) :
             #Met les screen_size à la bonne échelle
             new.lClient[client]["screen_size"][0] = new.lClient[client]["screen_size"][0]//var.CELL_SIZE + var.PADDING_CANVA
             new.lClient[client]["screen_size"][1] = new.lClient[client]["screen_size"][1]//var.CELL_SIZE + var.PADDING_CANVA
-
         return new
-
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
