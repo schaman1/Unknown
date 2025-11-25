@@ -57,4 +57,4 @@ class Game :
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
         #screen.blit(self.light,(0,0))
-        
+        screen.blit(pygame.image.load('playerlmg').convert_alpha, (0, 0))
