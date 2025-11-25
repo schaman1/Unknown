@@ -56,5 +56,6 @@ class Game :
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
-        #screen.blit(self.light,(0,0))
-        
+        screen.blit(self.light,(0,0))
+        a = pygame.image.load("assets/playerImg.png").convert_alpha()
+        screen.blit(a, (0, 0))
