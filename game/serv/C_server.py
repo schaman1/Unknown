@@ -176,7 +176,6 @@ class Server:
             self.server.close()
             self.server = None
 
-
         print("Serveur arrêté.")
 
     def start_server(self, client):
