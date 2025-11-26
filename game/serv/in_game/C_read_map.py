@@ -1,6 +1,5 @@
 import pygame
 import numpy as np
-from numba import njit
 import serv.in_game.njitOpti.njitBoucle as njitBoucle
 
 class Read_map:
@@ -13,9 +12,6 @@ class Read_map:
 
         self.map = pygame.image.load(filename).convert()
         self.width, self.height = self.map.get_size()
-
-        #print("image size :",self.map.get_size())
-        #self.map = pygame.transform.scale(self.map, (self.width, self.height))
 
         self.grid_type = np.zeros((self.height, self.width), dtype=np.uint8)
         self.grid_color = np.zeros((self.height, self.width, 4), dtype=np.uint8)
