@@ -1,4 +1,5 @@
 import pygame
+from client.Monster_client.C_monster_all import Monster_all
 import var
 
 class Game :
@@ -21,9 +22,8 @@ class Game :
             for y in range(var.BG_SIZE_SERVER[1])
         ]
 
+        self.monsters = Monster_all(cell_size,canva_size)
 
-        #print(f"Nbr Y : {self.canva_size[1]//self.cell_size +1}, nbr X : {self.canva_size[0]//self.cell_size +1}")
-    
     def update_canva(self,l):
         """Reçoit les données l du serveur et appelle update"""
         #print(l)
@@ -56,6 +56,8 @@ class Game :
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
-        screen.blit(self.light,(0,0))
+        screen.blit(self.monsters.canva_monster, (x, y))
+
+        #screen.blit(self.light,(0,0))
         a = pygame.image.load("assets/playerImg.png").convert_alpha()
         screen.blit(a, (0, 0))

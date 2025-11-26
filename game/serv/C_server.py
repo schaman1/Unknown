@@ -129,7 +129,7 @@ class Server:
         for socket, _ in self.lClient.items():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
-    def send_data_update(self,data : list):
+    def send_data_update(self,data : list,id):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
         def send_to(socket,message):
             try:
@@ -143,7 +143,7 @@ class Server:
 
         for socket, _ in self.lClient.items():
             if len(data[cnt]) != 1:
-                message = {"id":"to change","updates":data[cnt][1:]}
+                message = {"id":id,"updates":data[cnt][1:]}
                 cnt +=1
                 threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
 

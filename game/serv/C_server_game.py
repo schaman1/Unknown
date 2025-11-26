@@ -1,4 +1,5 @@
 from serv.in_game.C_read_map import Read_map
+from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
 import pygame
 from serv.C_server import Server
@@ -10,8 +11,9 @@ class Server_game(Server) :
 
         super().__init__(host, port)  # <-- Appelle le constructeur de Server
 
-        self.map = Read_map(var.BG_CELL)
-        #self.canva_map = self.map.canva
+        self.map_cell = Read_map(var.BG_CELL)
+        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER)
+        #self.canva_map = self.map_cell.canva
         self.is_running_game = True
 
         #self.lClient = None
@@ -41,12 +43,15 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            result = self.map.return_chg(self.lInfoClient)
+            result_cell = self.map_cell.return_chg(self.lInfoClient) #Mettre dt plus tard pour les particules
+            return_monster = self.map_monster.return_chg(self.lInfoClient) #Mettre dt plus tard pour les monstres
             
-            if len(result[0]) != 1:
-                #print("OK")
-                self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
-            
+            if len(result_cell[0]) != 1:
+                self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
+
+            if len(return_monster) != 0 :
+                self.send_data_update(return_monster, "to change monster")
+
             fps = self.fpsClock.get_fps()
             if fps < 60 : #Affiche le fps quand c'est critique
                 print(fps)
@@ -60,15 +65,15 @@ class Server_game(Server) :
             xscreen,yscreen = self.lClient[client]["screen_size"]
             self.lInfoClient[i,:] = [xpos,ypos,xscreen,yscreen]
 
-        return self.map.return_all(self.lInfoClient) #Renvoie tout les pixels à dessiner
-    
+        return self.map_cell.return_all(self.lInfoClient) #Renvoie tout les pixels à dessiner
+
     def start_game(self):
         self.send_data_all({"id":"start game"})
-        result = self.init_canva()
-        #if result != [] :
-        self.send_data_update(result) #Envoie à tt le monde tout les nouveau pixels à draw
 
-        #self.init_mobs() #Avec la class monstre (plus tard)
-        #self.send_data_mobs()
+        result_cell = self.init_canva()
+        result_monster = self.map_monster.return_all_monster(self.lInfoClient)
+
+        self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
+        self.send_data_update(result_monster,"set all monster") #Envoie à tt le monde tout les nouveau pixels à draw
 
         self.current_thread = threading.Thread(target=self.loop_server_game, daemon=True).start()
