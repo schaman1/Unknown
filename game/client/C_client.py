@@ -147,7 +147,7 @@ class Client:
             self.update_canva(data["updates"])
 
         elif id == "set all monster" :
-            print("Init monsters")
+            #print("Init monsters")
             self.main.state.game.monsters.init_monster(data["updates"])
 
         elif id == "new player" :

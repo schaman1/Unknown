@@ -66,12 +66,15 @@ class Server_game(Server) :
             self.lInfoClient[i,:] = [xpos,ypos,xscreen,yscreen]
 
         return self.map_cell.return_all(self.lInfoClient) #Renvoie tout les pixels à dessiner
+    
+    def init_mobs(self):
+        return self.map_monster.return_all_monster(self.lInfoClient)
 
     def start_game(self):
         self.send_data_all({"id":"start game"})
 
         result_cell = self.init_canva()
-        result_monster = self.map_monster.return_all_monster(self.lInfoClient)
+        result_monster = self.init_mobs()
 
         self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,"set all monster") #Envoie à tt le monde tout les nouveau pixels à draw

@@ -11,6 +11,7 @@ class Monster_all :
     def init_monster(self,l):
         """Initialise les monstres reçus du serv"""
         self.list_monster = l
+        #print(l)
 
         for monstre in l :
             #monstre[0] = pygame.image.load(f"assets/monsters/{monstre[0]}.png").convert_alpha()
