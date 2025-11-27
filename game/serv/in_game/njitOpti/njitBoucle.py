@@ -277,6 +277,13 @@ def WaterSimulation(x,y,H,W,transparenceMax,ISEMPTY,BECOMEEMPTY,ToUpdate,clientT
     swap_r_or_l(r_or_l,y,x,ny,nx)
 
 @njit
+def rem_first_element(lst):
+    """Remove the first element of each sublist in lst"""
+    for sublist in lst:
+        if len(sublist) > 0:
+            sublist.pop(0)
+
+@njit
 def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
 
     len_client,H, W = visible.shape
@@ -425,4 +432,5 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
             else :
                 ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
 
+    rem_first_element(moved_cells)
     return moved_cells

@@ -16,18 +16,19 @@ class Read_monster :
 
         for i in range(self.width//self.size_chunk+1) :
             for j in range(self.height//self.size_chunk+1) :
-                self.dic_monster[(i,j)] = []
+                self.dic_monster[f"{i},{j}"] = []
 
         self.create_list_monster()
 
     def return_all_monster(self,lInfoClient) :
-        print(self.dic_monster)
+
         list_modif = []
         for i in range(len(lInfoClient)):
-            list_modif.append([])
+            list_modif.append({})
             for key in self.dic_monster :
+                list_modif[i][key] = []
                 for monster in self.dic_monster[key] :
-                    list_modif[i].append((monster.name, monster.pos_x, monster.pos_y))
+                    list_modif[i][key].append((monster.id, monster.pos_x, monster.pos_y))
 
         return list_modif
 
@@ -36,10 +37,9 @@ class Read_monster :
                 for y in range(self.height):
                     color = self.map_monster.get_at((x, y))[:3]  # (r,g,b)
 
-                    #print(f"Création d'un Skeleton en ({x}, {y})")
                     if color == (0, 0, 0):      # pixel noir = skeleton
-
-                        self.dic_monster[(x//self.size_chunk,y//self.size_chunk)].append(Skeleton(x,y))
+                        #print(f"Création d'un Skeleton en ({x}, {y})")
+                        self.dic_monster[f"{x//self.size_chunk},{y//self.size_chunk}"].append(Skeleton(x,y,"{x},{y}"))
 
     def return_chg(self, lInfoClient) :
         list_modif = []
