@@ -26,10 +26,17 @@ class Game :
 
     def update_canva(self,l):
         """Reçoit les données l du serveur et appelle update"""
-        #print(l)
         for e in l :
             self.switch_cell(e)
-        #self.canva.fill((255,0,0,255),self.rect_grid[2][2])
+
+    def update_monster(self,data_monster):
+        """Reçoit les données des monstres du serv et les envoie à Monster_all"""
+
+        for chunk,list_monster in data_monster.items() :
+            for monster in list_monster :
+
+                self.monsters.list_monster[chunk][monster[0]].pos_x = monster[1]
+                self.monsters.list_monster[chunk][monster[0]].pos_y = monster[2]
 
     def create_light(self,vision:int = 10 ):
         """Permet de faire genre que le personnage voit à une certaine portée"""

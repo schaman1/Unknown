@@ -39,27 +39,65 @@ class Read_monster :
 
                     if color == (0, 0, 0):      # pixel noir = skeleton
                         #print(f"Création d'un Skeleton en ({x}, {y})")
-                        self.dic_monster[f"{x//self.size_chunk},{y//self.size_chunk}"].append(Skeleton(x,y,"{x},{y}"))
+                        self.dic_monster[f"{x//self.size_chunk},{y//self.size_chunk}"].append(Skeleton(x,y,f"{x},{y}"))
 
     def return_chg(self, lInfoClient) :
+
         list_modif = []
-        for i,info in enumerate(lInfoClient) :
-            xpos = info[0]
-            ypos = info[1]
-            xscreen = info[2]
-            yscreen = info[3]
 
-            x_start_chunk = (xpos)//self.size_chunk
-            y_start_chunk = (ypos)//self.size_chunk
-            x_end_chunk = (xpos + xscreen)//self.size_chunk
-            y_end_chunk = (ypos + yscreen)//self.size_chunk
+        list_chunk_client_see = self.return_list_chunk_client_see(lInfoClient,list_modif)
 
-            for x in range(x_start_chunk, x_end_chunk + 1) :
-                for y in range(y_start_chunk, y_end_chunk + 1) :
-                    key = (x,y)
-                    if key in self.dic_monster :
-                        for monster in self.dic_monster[key] :
-                            monster.move()
-                            list_modif.append( (i, monster.name, monster.pos_x, monster.pos_y) )
+        for x in range(self.width//self.size_chunk+1) :
+            for y in range(self.height//self.size_chunk+1) :
+
+                chunk = f'{x},{y}'
+
+                liste_client_see = self.return_client_see(x,y,list_chunk_client_see)
+                if liste_client_see != [] :
+
+                    for monster in self.dic_monster[chunk] :
+                        monster.move()
+                        for client in liste_client_see :
+                            list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
         return list_modif
+    
+    def init_list_modif_client(self,x_chunk,y_chunk,list_modif,i) :
+
+        for x in range(x_chunk - 2, x_chunk + 3) :
+                for y in range(y_chunk - 2, y_chunk + 3) :
+                    chunk = f"{x},{y}"
+                    list_modif[i][chunk] = []
+    
+    def return_list_chunk_client_see(self,lInfoClient,list_modif) :
+
+        list_chunk_client_see = []
+
+        for i,info in enumerate(lInfoClient) :
+            list_modif.append({})
+
+            xpos = info[0]
+            ypos = info[1]
+
+            x_chunk = xpos // self.size_chunk
+            y_chunk = ypos // self.size_chunk
+
+            list_chunk_client_see.append([x_chunk,y_chunk])
+
+            self.init_list_modif_client(x_chunk,y_chunk,list_modif,i)
+
+        return list_chunk_client_see
+    
+    def return_client_see(self,x,y,list_chunk_client_see,vision:int = 1) :
+
+        liste_client_see = []
+
+        for i,e in enumerate(list_chunk_client_see) :
+            x_chunk = e[0]
+            y_chunk = e[1]
+
+            if x_chunk - vision <= x <= x_chunk + vision and y_chunk - vision <= y <= y_chunk + vision :
+                liste_client_see.append(i)
+
+        return liste_client_see
+

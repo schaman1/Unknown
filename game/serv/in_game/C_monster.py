@@ -9,5 +9,6 @@ class Skeleton(mobs):
         self.pos_y = y
         
     def move(self):
-        self.pos_x += 1  # Exemple simple : le squelette se déplace vers la droite
+        self.pos_x -= 1  # Exemple simple : le squelette se déplace vers la droite
+        self.pos_y+=1
         pass

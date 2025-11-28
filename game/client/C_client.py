@@ -146,6 +146,9 @@ class Client:
         if id == "to change cell" :
             self.update_canva(data["updates"])
 
+        if id =="to change monster" :
+            self.update_monster(data["updates"])
+
         elif id == "set all monster" :
             #print("Init monsters")
             self.main.state.game.monsters.init_monster(data["updates"])
