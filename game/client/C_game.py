@@ -56,8 +56,16 @@ class Game :
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
+
+        self.update_canva_monster()
         screen.blit(self.monsters.canva_monster, (x, y))
 
         #screen.blit(self.light,(0,0))
         a = pygame.image.load("assets/playerImg.png").convert_alpha()
-        screen.blit(a, (0, 0))
+        e = pygame.transform.scale(a, (var.CELL_SIZE*20,var.CELL_SIZE*16))
+        screen.blit(e, (0, 0))
+
+
+    def update_canva_monster(self):
+        """Met à jour le canva des monstres"""
+        self.monsters.blit_all_monster()
