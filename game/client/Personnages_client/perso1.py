@@ -1,8 +1,5 @@
 import pygame
 
-
-
-
 class Player :
     '''
     Classe de test pour le perso de base
@@ -18,9 +15,6 @@ class Player :
         touche = pygame.key.get_pressed()
         #if touche[pygame.K_]
         pass
-
-
-
 
 #player = Player(x,y,img)
 #player.pos_x
