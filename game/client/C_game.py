@@ -33,6 +33,7 @@ class Game :
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
         for chunk,list_monster in data_monster.items() :
+            
             for monster in list_monster :
 
                 self.monsters.list_monster[chunk][monster[0]].pos_x = monster[1]

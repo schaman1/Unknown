@@ -3,7 +3,7 @@ from serv.in_game.C_monster import Skeleton
 
 class Read_monster :
 
-    def __init__(self,filename_map_monster,size_chunk,cell_dur,cell_vide_cell_liquid) :
+    def __init__(self,filename_map_monster,size_chunk,cell_dur,cell_vide,cell_liquid) :
 
         self.dic_monster = {}
         self.map_monster = pygame.image.load(filename_map_monster).convert()
@@ -11,8 +11,8 @@ class Read_monster :
         self.size_chunk = size_chunk
 
         self.cell_dur = cell_dur
-        self.cell_vide = cell_vide_cell_liquid
-        self.cell_liquid = cell_vide_cell_liquid
+        self.cell_vide = cell_vide
+        self.cell_liquid = cell_liquid
 
 
         self.init_dic_monster()
