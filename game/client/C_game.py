@@ -10,7 +10,7 @@ class Game :
         self.center = (self.canva_size[0]//2,self.canva_size[1]//2)
         self.canva = pygame.Surface((canva_size[0]*cell_size,canva_size[1]*cell_size), pygame.SRCALPHA)
         #self.canva_map = self.map.canva
-        self.bg = pygame.image.load("assets/bg1.png").convert()
+        self.bg = pygame.image.load("assets/bgGlobal.png").convert()
         self.bg = pygame.transform.scale(self.bg, (canva_size[0],canva_size[1]))
         self.light = pygame.Surface((canva_size[0],canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = var.NBR_CELL_CAN_SEE)
@@ -33,7 +33,7 @@ class Game :
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
         for chunk,list_monster in data_monster.items() :
-            
+
             for monster in list_monster :
 
                 self.monsters.list_monster[chunk][monster[0]].pos_x = monster[1]
