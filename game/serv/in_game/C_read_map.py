@@ -9,7 +9,7 @@ class Read_map:
         self.type = {"EMPTY": 0, "FIRE": 1, "STONE": 2, "GRASS": 3, "WOOD": 4, "SAND":5, "EXPLO":6, "WATER" : 7}
         self.dur = [self.type["STONE"],self.type["SAND"]] #Le min et le max
         self.vide = [self.type["EMPTY"],self.type["FIRE"]] #Le min et le max
-        self.liquid = [self.type["EPLO"],self.type["WATER"]] #Le min et le max
+        self.liquid = [self.type["EXPLO"],self.type["WATER"]] #Le min et le max
 
         self.map = pygame.image.load(filename).convert()
         self.width, self.height = self.map.get_size()

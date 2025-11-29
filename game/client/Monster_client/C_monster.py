@@ -8,3 +8,5 @@ class Skeleton :
         self.pos_y = y
         self.chunk = pos_chunk
         self.Img = pygame.image.load("assets/playerImg.png").convert_alpha()
+
+        self.width ,self.height = self.Img.get_size() #Get la taille de l'img

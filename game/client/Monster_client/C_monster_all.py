@@ -16,14 +16,18 @@ class Monster_all :
             self.list_monster[pos] = {}
 
             for monster in chunck :
-                if monster[3] == "skeleton" :
+                if monster[3] == "Skeleton" :
                     self.list_monster[pos][monster[0]] = Skeleton(monster[1],monster[2],pos)
                     self.blit_monster(self.list_monster[pos][monster[0]])
 
     def blit_monster(self,monster):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
-        self.canva_monster.blit(monster.Img, (monster.pos_x*self.cell_size,monster.pos_y*self.cell_size))
+        self.canva_monster.blit(monster.Img, self.calculate_pos_blit(monster))
 
+    def calculate_pos_blit(self,monster):
+        x = monster.pos_x * self.cell_size - monster.width//2
+        y = monster.pos_y * self.cell_size - monster.height
+        return (x,y)
     
     def blit_all_monster(self):
         """Blit tout les monstres sur le canva des monstres"""
