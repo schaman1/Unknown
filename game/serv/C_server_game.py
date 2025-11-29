@@ -12,7 +12,7 @@ class Server_game(Server) :
         super().__init__(host, port)  # <-- Appelle le constructeur de Server
 
         self.map_cell = Read_map(var.BG_CELL)
-        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER)
+        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
         #self.canva_map = self.map_cell.canva
         self.is_running_game = True
 
@@ -44,7 +44,7 @@ class Server_game(Server) :
             dt = self.fpsClock.tick(self.fps)/1000
 
             result_cell = self.map_cell.return_chg(self.lInfoClient) #Mettre dt plus tard pour les particules
-            return_monster = self.map_monster.return_chg(self.lInfoClient) #Mettre dt plus tard pour les monstres
+            return_monster = self.map_monster.return_chg(self.lInfoClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
             
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
