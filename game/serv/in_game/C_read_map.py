@@ -6,9 +6,10 @@ class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
     def __init__(self, filename):
 
-        self.type = {"EMPTY": 0, "SAND": 1, "WATER": 2, "WOOD": 3, "FIRE": 4, "STONE":5, "GRASS":6, "EXPLO" : 7}
-        
-        #self.propagation = {"WOOD": 98, "EXPLO" : 1}
+        self.type = {"EMPTY": 0, "FIRE": 1, "STONE": 2, "GRASS": 3, "WOOD": 4, "SAND":5, "EXPLO":6, "WATER" : 7}
+        self.dur = [self.type["STONE"],self.type["SAND"]] #Le min et le max
+        self.vide = [self.type["EMPTY"],self.type["FIRE"]] #Le min et le max
+        self.liquid = [self.type["EPLO"],self.type["WATER"]] #Le min et le max
 
         self.map = pygame.image.load(filename).convert()
         self.width, self.height = self.map.get_size()

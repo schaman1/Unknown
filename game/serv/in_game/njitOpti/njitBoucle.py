@@ -3,13 +3,13 @@ import numpy as np
 
 # ---- CONSTANTES (Numba les voit ici comme des LITERALS) ----
 EMPTY = 0
-SAND  = 1
-WATER = 2
-WOOD  = 3
-FIRE  = 4
-STONE = 5
-GRASS = 6
-EXPLO = 7
+FIRE  = 1
+STONE = 2
+GRASS  = 3
+WOOD  = 4
+SAND = 5
+EXPLO = 6
+WATER = 7
 
 IsBurnable = (WOOD,EXPLO)
 

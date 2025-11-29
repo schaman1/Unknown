@@ -16,8 +16,9 @@ class Monster_all :
             self.list_monster[pos] = {}
 
             for monster in chunck :
-                self.list_monster[pos][monster[0]] = Skeleton(monster[1],monster[2],pos)
-                self.blit_monster(self.list_monster[pos][monster[0]])
+                if monster[3] == "skeleton" :
+                    self.list_monster[pos][monster[0]] = Skeleton(monster[1],monster[2],pos)
+                    self.blit_monster(self.list_monster[pos][monster[0]])
 
     def blit_monster(self,monster):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
