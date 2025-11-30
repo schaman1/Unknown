@@ -1,5 +1,5 @@
 import socket, threading, json
-from pyngrok import ngrok
+from serv.in_game.C_player import Player
 #from serv.server_game import Server_game
 
 class Server:
@@ -51,7 +51,7 @@ class Server:
 
         finally:
                         # Déconnexion
-            is_host = self.lClient.get(client_socket, {}).get("Host", False)
+            is_host = self.lClient[client_socket].is_host
             if is_host:
                 print("Le host a quitté, fermeture du serveur.")
                 self.stop_server()
@@ -96,7 +96,7 @@ class Server:
 
         elif data["id"] == "remove client":
             print("Remove client")
-            removed_id = self.lClient[sender]["id"]
+            removed_id = self.lClient[sender].id
             self.remove_client(sender)
 
             for client in list(self.lClient.keys()):
@@ -111,14 +111,13 @@ class Server:
             print("start !")
             self.is_running_menu = False
             self.is_running_game = True
-            #self.server_game.lClient = self.lClient
 
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
         id = data["id"]
 
         if id == "move" :
-            print(self.lClient[sender])
+            self.lClient.move(data["deplacement"])
 
     def send_data_all(self,data : dict):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
@@ -130,7 +129,7 @@ class Server:
                 print("Erreur envoi, {e}")
                 pass  # ou suppression du client mort
 
-        for socket, _ in self.lClient.items():
+        for socket in self.lClient.keys():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
     def send_data_update(self,data : list,id):
@@ -146,7 +145,7 @@ class Server:
 
         cnt = 0
 
-        for socket, _ in self.lClient.items():
+        for socket in self.lClient.keys():
             if len(data[cnt]) != 0:
                 message = {"id":id,"updates":data[cnt]}
                 cnt +=1
@@ -262,17 +261,13 @@ class Server:
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = {"Host": is_host,
-                                       "id": f"Player {self.nbr_player}", #A changer, mettre cette ligne dans set param_on_client_arriving = pour le pseudo qui sera mis dans les data que le client envoie
-                                       "screen_size" : data["screen_size"],
-                                       "position" : (500,500)                                       
-                                       }
+        self.lClient[client_socket] = Player(pos = (500,500),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host,)
         
         for socket,client in self.lClient.items():
 
             if socket != client_socket :
                 self.send_data({
                     "id": "new player",
-                    "new connection": client["id"],
+                    "new connection": client.id,
                     "sender": False
                 }, client_socket)

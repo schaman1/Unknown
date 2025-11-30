@@ -78,15 +78,15 @@ class Read_monster :
                     chunk = f"{x},{y}"
                     list_modif[i][chunk] = []
     
-    def return_list_chunk_client_see(self,lInfoClient,list_modif) :
+    def return_list_chunk_client_see(self,lClient,list_modif) :
 
         list_chunk_client_see = []
 
-        for i,info in enumerate(lInfoClient) :
+        for i,client in enumerate(lClient.values()) :
             list_modif.append({})
 
-            xpos = info[0]
-            ypos = info[1]
+            xpos = client.pos_x
+            ypos = client.pos_y
 
             x_chunk = xpos // self.size_chunk
             y_chunk = ypos // self.size_chunk

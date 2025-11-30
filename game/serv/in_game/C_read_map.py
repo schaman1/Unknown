@@ -69,18 +69,20 @@ class Read_map:
         a = np.full(num, transparence, dtype=np.uint8)
         return np.stack([r, g, b, a], axis=1)
 
-    def return_all(self,InfoClient):
+    def return_all(self,lClient):
         cells = []
-        for i,info in enumerate(InfoClient):
+        for i,client in enumerate(lClient.values()):
             cells.append([])
-            for column in range (info[2]):
-                deltax = column-(info[2]//2)
-                deltay = -(info[3]//2)
-                cells[i]+=(njitBoucle.return_column(info[0]+deltax,info[1]+deltay,info[3],self.grid_color))
-
+            for column in range (client.screen_size[0]):
+                deltax = column-(client.screen_size[0]//2)
+                deltay = -(client.screen_size[1]//2)
+                cells[i]+=(njitBoucle.return_column(client.pos_x+deltax,client.pos_y+deltay,client.screen_size[1],self.grid_color))
+        
+        #print(cells)
+        
         return cells
 
-    def return_chg(self,InfoClient):
+    def return_chg(self,lClient):
         """Retourne les chg de pixels"""
 
         #Robinet
@@ -88,7 +90,8 @@ class Read_map:
         self.grid_type[450,450] = self.type["FIRE"]
         self.temp[450,450] = 255
 
-        self.visible = njitBoucle.return_cell_update(self.ToUpdate,InfoClient,self.height,self.width)
+        self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
+
         self.ys , self.xs = njitBoucle.return_x_y(self.visible)
 
         moved_cells = njitBoucle.move_fast(

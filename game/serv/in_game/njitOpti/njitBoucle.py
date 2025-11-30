@@ -56,14 +56,15 @@ def return_x_y(visible):
     xs = xs_temp[:count]
     return ys, xs
 
-@njit
+#@njit
 def return_cell_update(ToUpdate,lClient,H,W):
     visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
-    for i,(x,y,screenx,screeny) in enumerate(lClient) :
-        xs = max(x-screenx//2,0)
-        xe = min(x+screenx//2,W)
-        ys = max(y-screeny//2,0)
-        ye = min(y+screeny//2,H)
+    for i,client in enumerate(lClient) :
+
+        xs = max(client.pos_x-client.screen_size[0]//2,0)
+        xe = min(client.pos_x+client.screen_size[0]//2,W)
+        ys = max(client.pos_y-client.screen_size[1]//2,0)
+        ye = min(client.pos_y+client.screen_size[1]//2,H)
 
         visible[i,ys:ye,xs:xe] = True
 
@@ -295,6 +296,7 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
         moved_cells.append(sublist)
 
     updated = np.zeros((H, W), dtype=np.bool)  # masque des cellules déjà modifiées
+
 
     for i in range(len(xs)):
             x = xs[i]
