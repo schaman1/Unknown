@@ -35,9 +35,9 @@ class Client:
         
     def connexion_serveur(self, ip_port="localhost:5000"):
         "Create the client and connect to ther serveur"
-        
+
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
+
         #-------- Pour ngrok = Online² --------
         #ip, port = self.return_ip_ngrok(ip_port)
 
@@ -73,7 +73,7 @@ class Client:
         print("Connecté au serveur")
         self.connected = True
         threading.Thread(target=self.loop_reception_server, daemon=True).start()
-        
+
         self.send_data({"id":"new client connection","screen_size":self.screen_size})
 
     def loop_reception_server(self):
@@ -92,16 +92,12 @@ class Client:
                         break
 
                     buffer += data.decode()
-                    #print("Data reçu",data)
 
                     # traiter tous les messages reçus séparés par "\n" car des fois des données peuvent être envoyé en même temps
                     while "\n" in buffer:
                         #print("in buffer")
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
-
-                        #print(f"Data reçue : {data_json}")
-                        #print("2")
                         self.traiter_data(data_json)
 
                 except socket.timeout:
@@ -123,7 +119,6 @@ class Client:
             else :
                 print("Déconnexion volontaire")
 
-
         finally: #Server stoppé
 
             self.client.close()
@@ -138,15 +133,25 @@ class Client:
         """Envoie a C_game pour update le canva qui sera blit plus tard"""
         self.main.state.game.update_canva(l)
 
+    def update_monster(self,l):
+        """Envoie a C_game pour update les monstres qui seront blit plus tard"""
+        self.main.state.game.update_monster(l)
+
     def traiter_data(self,data):
         """Regarde quoi faire des datas reçus + Chaque data contient un id et c'est en fonction de lui qu'on traite les données"""
-                
+
         # Réception de la réponse
         id = data["id"]
 
-        if id == "to change" :
+        if id == "to change cell" :
             self.update_canva(data["updates"])
-            #print("ok")
+
+        if id =="to change monster" :
+            self.update_monster(data["updates"])
+
+        elif id == "set all monster" :
+            #print("Init monsters")
+            self.main.state.game.monsters.init_monster(data["updates"])
 
         elif id == "new player" :
             print(f"New connection : {data["new connection"]}")

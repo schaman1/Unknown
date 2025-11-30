@@ -130,28 +130,29 @@ class Server:
             try:
                 #print("Send successfuly")
                 self.send_data(data, socket)
-            except:
-                print("Erreur envoi")
+            except Exception as e:
+                print("Erreur envoi, {e}")
                 pass  # ou suppression du client mort
 
         for socket, _ in self.lClient.items():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
-    def send_data_update(self,data : list):
+    def send_data_update(self,data : list,id):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
+        #print(data)
         def send_to(socket,message):
             try:
                 #print("Send successfuly")
                 self.send_data(message, socket)
-            except:
-                print("Erreur envoi")
+            except Exception as e:
+                print("Erreur envoi ",e, message)
                 pass  # ou suppression du client mort
 
         cnt = 0
 
         for socket, _ in self.lClient.items():
-            if len(data[cnt]) != 1:
-                message = {"id":"to change","updates":data[cnt][1:]}
+            if len(data[cnt]) != 0:
+                message = {"id":id,"updates":data[cnt]}
                 cnt +=1
                 threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
 
