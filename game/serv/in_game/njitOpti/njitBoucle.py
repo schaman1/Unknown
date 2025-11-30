@@ -3,13 +3,13 @@ import numpy as np
 
 # ---- CONSTANTES (Numba les voit ici comme des LITERALS) ----
 EMPTY = 0
-SAND  = 1
-WATER = 2
-WOOD  = 3
-FIRE  = 4
-STONE = 5
-GRASS = 6
-EXPLO = 7
+FIRE  = 1
+STONE = 2
+GRASS  = 3
+WOOD  = 4
+SAND = 5
+EXPLO = 6
+WATER = 7
 
 IsBurnable = (WOOD,EXPLO)
 
@@ -241,6 +241,49 @@ def spread_fire(x,y,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate
             spread_fire(dx,dy,H,W,temperature,grid_type,grid_color,ToUpdate,clientToUpdate,updated,moved_cells,CanSpread,propagation)
 
 @njit
+def WaterSimulation(x,y,H,W,transparenceMax,ISEMPTY,BECOMEEMPTY,ToUpdate,clientToUpdate,updated,moved_cells,temperature,grid_type,grid_color,r_or_l):
+
+    chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY)
+    if chg is True :
+        grid_color[y,x,3] = transparenceMax
+
+    else:
+        ny = y
+        if grid_color[y,x,3] < 50 : #cellule meurt
+            neighborns_to_update(ToUpdate,x,y)
+            set_empty(ToUpdate,x,y,temperature,grid_type,grid_color)
+            return
+
+        chg,nx = move_r_or_l(ToUpdate,x,y,W,r_or_l,temperature,grid_type,grid_color,ISEMPTY,BECOMEEMPTY)
+        
+        if chg is False :
+            if grid_color[y,x,3] < transparenceMax :
+                grid_color[y,x,3] +=1
+
+                if grid_color[y,x,3] > transparenceMax :
+                    grid_color[y,x,3] = transparenceMax
+
+                set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
+
+            else :
+                ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
+            return
+        
+        else :
+            grid_color[y,x,3] -=4
+
+    #else :
+    change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
+    swap_r_or_l(r_or_l,y,x,ny,nx)
+
+@njit
+def rem_first_element(lst):
+    """Remove the first element of each sublist in lst"""
+    for sublist in lst:
+        if len(sublist) > 0:
+            sublist.pop(0)
+
+@njit
 def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
 
     len_client,H, W = visible.shape
@@ -252,8 +295,6 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
         moved_cells.append(sublist)
 
     updated = np.zeros((H, W), dtype=np.bool)  # masque des cellules déjà modifiées
-
-    #cell_visible = return_cell_update(InfoClient,H,W)
 
     for i in range(len(xs)):
             x = xs[i]
@@ -271,55 +312,18 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
 
             if typ == SAND:
                 #continue
-                chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,WATER,FIRE),(FIRE,))
+                chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,WATER,FIRE,EXPLO),(FIRE,))
                 if chg is True:
                     change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
                 
                 else :
                     ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
 
-            elif typ == WATER :#or typ == EXPLO :
-                #continue
+            elif typ == WATER :
+                WaterSimulation(x,y,H,W,255,(FIRE,EMPTY),(FIRE,),ToUpdate,clientToUpdate,updated,moved_cells,temperature,grid_type,grid_color,r_or_l)
 
-                transmax = 255
-
-                chg,nx,ny = move_down_r_l(ToUpdate,x,y,H,W,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,))
-                if chg is True :
-                    temperature[y,x] = -transmax
-                    #set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color) #Test1
-
-                else:
-                    ny = y
-                    if -50 < temperature[y,x] : #cellule meurt
-
-                        set_empty(ToUpdate,x,y,temperature,grid_type,grid_color)
-                        #set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color) #Test1
-                        continue
-
-                    chg,nx = move_r_or_l(ToUpdate,x,y,W,r_or_l,temperature,grid_type,grid_color,(EMPTY,FIRE),(FIRE,))
-                    
-                    if chg is False :
-                        if temperature[y,x] > -transmax :
-                            temperature[y,x] -= 1
-
-                            if temperature[y,x] < -transmax :
-                                temperature[y,x] = -transmax
-
-                            grid_color[y,x,3] = -temperature[y,x]
-                            set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
-
-                        else :
-                            ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
-                        continue
-                    else :
-                        temperature[y,x] += 4
-
-                grid_color[y,x,3] = -temperature[y,x]
-                #else :
-                change_pos(ToUpdate,clientToUpdate,x,y,nx,ny,moved_cells,updated,temperature,grid_type,grid_color)
-                swap_r_or_l(r_or_l,y,x,ny,nx)
-
-                # on enregistre les 2 cases modifiées
+            elif typ == EXPLO :
+                WaterSimulation(x,y,H,W,127,(EMPTY,),(),ToUpdate,clientToUpdate,updated,moved_cells,temperature,grid_type,grid_color,r_or_l)
 
             elif typ == FIRE :
                 #continue
@@ -341,7 +345,6 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                         if typ2 == WOOD :
                             seuil = propagationWood 
                         #else : seuil = propagationExplo
-
 
                         if typ2 == WOOD and np.random.randint(0,100) > seuil :
 
@@ -429,4 +432,5 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
             else :
                 ToUpdate[y,x] = False #Dis que doit plus l'update car arrive pas à bouger
 
+    rem_first_element(moved_cells)
     return moved_cells
