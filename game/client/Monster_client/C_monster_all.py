@@ -35,4 +35,5 @@ class Monster_all :
 
         for pos in self.list_monster :
             for id_monster in self.list_monster[pos] :
+                #print("monster")
                 self.blit_monster(self.list_monster[pos][id_monster])
