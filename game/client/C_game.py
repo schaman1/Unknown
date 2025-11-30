@@ -1,4 +1,5 @@
 import pygame
+from client.Personnages_client.perso1 import Player
 import var
 
 class Game :
@@ -12,7 +13,9 @@ class Game :
         self.bg = pygame.image.load("assets/bg1.png").convert()
         self.bg = pygame.transform.scale(self.bg, (canva_size[0],canva_size[1]))
         self.light = pygame.Surface((canva_size[0],canva_size[1]), pygame.SRCALPHA)
-        self.create_light(vision = var.NBR_CELL_CAN_SEE)
+        #self.create_light(vision = var.NBR_CELL_CAN_SEE)
+        self.player = Player("assets/playerImg.png",self.cell_size, 500, 500)
+
 
         # pré-calcul des rects pour chaque cellule
         self.rect_grid = [
@@ -57,5 +60,5 @@ class Game :
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
         screen.blit(self.light,(0,0))
-        a = pygame.image.load("assets/playerImg.png").convert_alpha()
-        screen.blit(a, (0, 0))
+        screen.blit(self.player.Img_perso, self.center)
+        #screen.blit(a, self.center)

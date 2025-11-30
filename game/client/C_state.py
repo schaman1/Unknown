@@ -18,8 +18,6 @@ class State:
         self.client = client
         self.load = Load(screen)
 
-        self.player = Player("../assets/playerImg.png", 500, 500)
-        self.posClient = (500,500)#A modifier après
 
         self.game = Game(cell_size,self.Size)
 
@@ -106,12 +104,13 @@ class State:
 
     def return_pos_blit(self):   
         """
-        renvoie la position (x, y) à blit du perso
+        renvoie la position (x, y) à blit du background
+        On bouge le background à la place du perso, pour les salles
         """
         #x = -self.posClient[0]*self.cell_size + self.Size[0]//2
         #y = -self.posClient[1]*self.cell_size + self.Size[1]//2
-        x = -self.player.pos_x*self.cell_size + self.Size[0]//2
-        y = -self.player.pos_y*self.cell_size + self.Size[1]//2
+        x = -self.game.player.pos_x*self.cell_size + self.Size[0]//2
+        y = -self.game.player.pos_y*self.cell_size + self.Size[1]//2
         return (x,y)
 
     def connexion_serv(self,client):

@@ -4,7 +4,6 @@ from client.C_client import Client
 from serv.C_server_game import Server_game
 from serv.C_server import Server
 from client.events import event_queue
-from Personnages_client.perso1 import Player
 import var
 
 #from C_inGame import InGame
@@ -17,7 +16,7 @@ class Main:
         # Set up the display (width, height)
         self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.FULLSCREEN | pygame.SCALED)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
-
+        
         #ecriture
         self.font = pygame.font.SysFont(None, 48)
 
@@ -53,13 +52,29 @@ class Main:
                         if event.key == pygame.K_ESCAPE:
                             pass
 
+                        
+                        elif event.key == pygame.K_z :
+                            #self.state.game.player.pos_y-=1
+                            self.client.send_data({"id":"move","deplacement":(0,-1)}) #lié au serveur les données
+
+                        elif event.key == pygame.K_s :
+                            self.state.game.player.pos_y+=1
+
+                        elif event.key == pygame.K_q :
+
+                            self.state.game.player.pos_x-=1
+
+                        elif event.key == pygame.K_d :
+                            threading.Thread(target = self.smoth_mov).start()
+                            #self.state.game.player.pos_x+=1
+
+
 
 
                     elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect[self.objClicked.id+"_input"]["text"]
 
-                        self.state.player.pos_x +=1
 
                         if event.key == pygame.K_RETURN:
                             self.mod = "loading"
@@ -185,3 +200,8 @@ class Main:
         self.state.show_ip.update_text("show_ip",f"ip:port = {ip}:{port}")
         self.state.start.update_text("start","Jouer")
         print("Create serv et connection!")
+
+    def smoth_mov(self):
+        for i in range(10):
+            self.state.game.player.pos_x += 0.1
+            #print("o")

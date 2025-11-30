@@ -32,7 +32,7 @@ class Server:
                     print(f"Reçu de {addr} : {data}")
                     if self.is_running_menu :
                         self.in_menu(data, client_socket)
-                    else :
+                    elif self.is_running_game :
                         self.in_game(data,client_socket)
 
                 except json.JSONDecodeError:
@@ -114,7 +114,15 @@ class Server:
 
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
-        pass
+        id = data["id"]
+
+        if id == "move" :
+            print("move o")
+
+            #self.perso.move_y(data["deplacement"])
+
+            #if bien deplace :
+                #self.send_data_all({"id":"player move","client":sender,"new_pos":(self.client.posx,self.client.pos_y)})
 
     def send_data_all(self,data : dict):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
