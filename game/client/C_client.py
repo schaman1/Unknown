@@ -104,10 +104,10 @@ class Client:
                     # Pas de data → c’est normal
                     continue
 
-                #except Exception as e:
-                #    print(f"Erreur réception: {e}")
-                #    break
-
+                except Exception as e:
+                    print(f"Erreur réception: {e}")
+                    break
+                
             # Sortie de boucle
             if self.connected:
                 print("Serveur fermé ou erreur réseau")

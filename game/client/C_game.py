@@ -54,26 +54,19 @@ class Game :
 
         x,y,r,g,b,a = el
         color = (r,g,b,a)
-        #x,y,color = el
-
-        #try : 
 
         self.canva.fill((0,255,0,255), pygame.Rect(500,500,50,50))
         self.canva.fill(color, self.rect_grid[y][x])
-        #except : 
-        #    None
-        #pygame.draw.rect(self.canva, color, self.rect_grid[y][x])
 
     def blit_monster(self,screen,x,y):
         self.monsters.blit_all_monster()
-        screen.blit(self.monsters.canva_monster(x,y))
+        screen.blit(self.monsters.canva_monster,(x,y))
 
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
 
         self.blit_monster(screen,x,y)
-
 
         screen.blit(self.light,(0,0))
         screen.blit(self.player.Img_perso, self.center)

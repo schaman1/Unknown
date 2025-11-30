@@ -10,15 +10,7 @@ class Player :
         self.pos_y = pos_y
         Img = pygame.image.load(Img_perso).convert() #convert_alpha() pour le fond vide
         self.Img_perso= pygame.transform.scale(Img,(10*cell_size,10*cell_size))
-        pass
 
     def deplacement_basic(self):
-        touche = pygame.key.get_pressed()
-        #if touche[pygame.K_]
+        #touche = pygame.key.get_pressed()
         pass
-
-#player = Player(x,y,img)
-#player.pos_x
-
-#player2 = Player(x,y)
-#player2.pos_x
