@@ -54,22 +54,18 @@ class Main:
 
                         
                         elif event.key == pygame.K_z :
-                            #self.state.game.player.pos_y-=1
                             self.client.send_data({"id":"move","deplacement":(0,-1)}) #lié au serveur les données
 
                         elif event.key == pygame.K_s :
-                            self.state.game.player.pos_y+=1
+                            self.client.send_data({"id":"move","deplacement":(0,1)}) #lié au serveur les données
+
 
                         elif event.key == pygame.K_q :
+                            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
 
-                            self.state.game.player.pos_x-=1
 
                         elif event.key == pygame.K_d :
-                            threading.Thread(target = self.smoth_mov).start()
-                            #self.state.game.player.pos_x+=1
-
-
-
+                            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
 
                     elif self.objClicked != None:
 

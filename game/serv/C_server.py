@@ -82,6 +82,8 @@ class Server:
 
         if data["id"] == "new client connection":
             print("New client connection")
+            self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
+            
             for client in list(self.lClient.keys()):
                 meornot = (client == sender)
                 text = f"Player {self.nbr_player}"
@@ -91,7 +93,6 @@ class Server:
                     "sender": meornot
                 }, client)
 
-            self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
 
         elif data["id"] == "remove client":
             print("Remove client")
@@ -117,12 +118,7 @@ class Server:
         id = data["id"]
 
         if id == "move" :
-            print("move o")
-
-            #self.perso.move_y(data["deplacement"])
-
-            #if bien deplace :
-                #self.send_data_all({"id":"player move","client":sender,"new_pos":(self.client.posx,self.client.pos_y)})
+            print(self.lClient[sender])
 
     def send_data_all(self,data : dict):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
@@ -259,24 +255,21 @@ class Server:
                 break
 
             print(f"Nouvelle connexion de {addr}")
-            self.set_param_on_client_connection(client_socket)
+            #self.set_param_on_client_connection(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
     def set_param_on_client_arriving(self,client_socket,data):
         """Set une fois qu'a reçu la 1er donnée du client"""
-        self.lClient[client_socket]["screen_size"] = data["screen_size"]
-        self.lClient[client_socket]["position"] = (500,500)
-
-    def set_param_on_client_connection(self, client_socket):
-        """client_socket = le client qui s'est connecté, ici set les valeurs par default = nom / si il est host ou pas"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
         self.lClient[client_socket] = {"Host": is_host,
                                        "id": f"Player {self.nbr_player}", #A changer, mettre cette ligne dans set param_on_client_arriving = pour le pseudo qui sera mis dans les data que le client envoie
+                                       "screen_size" : data["screen_size"],
+                                       "position" : (500,500)                                       
                                        }
-
+        
         for socket,client in self.lClient.items():
-            
+
             if socket != client_socket :
                 self.send_data({
                     "id": "new player",
