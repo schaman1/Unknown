@@ -164,6 +164,9 @@ class Client:
         elif id == "start game":
             self.main.mod = "game"
 
+        #elif id == "player move" :
+            #player[data["sender"]].pos = data["pos"]
+
     def display_clients_name(self):
         """Affiche le nom des clients"""
         for idx,client in enumerate(self.lClient_id):

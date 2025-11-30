@@ -8,10 +8,11 @@ class Player :
     Classe de test pour le perso de base
     '''
 
-    def __init__(self,Img_perso, pos_x = 500, pos_y=500):
+    def __init__(self,Img_perso,cell_size,pos_x = 500, pos_y=500):
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.Img_perso = Img_perso
+        Img = pygame.image.load(Img_perso).convert() #convert_alpha() pour le fond vide
+        self.Img_perso= pygame.transform.scale(Img,(10*cell_size,10*cell_size))
         pass
 
     def deplacement_basic(self):
