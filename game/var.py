@@ -1,7 +1,7 @@
 #Toutes les variables importantes du jeu sont ici
 
 FPS_SERVER = 60#Ce qui va tourner sur le serv
-FPS_CELL_UPDATE = 10 #Combien de fois par secondes on update les cells
+FPS_CELL_UPDATE = 100 #Combien de fois par secondes on update les cells
 FPS_CLIENT = 60 #Ce qui va tourner sur  le client #!!! je crois pas utilisé ou pas besoin
 
 BG_CELL = "assets/bgCell.png"
