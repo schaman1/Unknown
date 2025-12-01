@@ -117,7 +117,9 @@ class Server:
         id = data["id"]
 
         if id == "move" :
-            self.lClient.move(data["deplacement"])
+            delta = self.lClient[sender].move(data["deplacement"])
+
+            self.send_data_all({"id":"player move","player":self.lClient[sender].id,"delta":delta})
 
     def send_data_all(self,data : dict):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""

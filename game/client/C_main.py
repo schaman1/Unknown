@@ -61,11 +61,11 @@ class Main:
 
 
                         elif event.key == pygame.K_q :
-                            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
+                            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
 
 
                         elif event.key == pygame.K_d :
-                            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
+                            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
 
                     elif self.objClicked != None:
 

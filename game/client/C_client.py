@@ -14,9 +14,6 @@ class Client:
         self.pseudo = "Coming soon"
         self.err_message = ""
 
-        self.lClient_id = []
-        self.dic = {}
-
         self.font = font
         self.screen = screen
         self.screen_size = self.screen.get_size()
@@ -126,7 +123,7 @@ class Client:
 
     def reset_values(self):
         self.pseudo = "Coming soon"
-        self.lClient_id.clear()
+        self.main.state.game.player_all.dic_players.clear()
         event_queue.put({"type": "SERVER_DISCONNECTED"})
 
     def update_canva(self,l):
@@ -146,8 +143,11 @@ class Client:
         if id == "to change cell" :
             self.update_canva(data["updates"])
 
-        if id =="to change monster" :
+        elif id =="to change monster" :
             self.update_monster(data["updates"])
+
+        elif id == "player move":
+            self.main.state.game.player_all.dic_players[data["player"]].move(data["delta"])
 
         elif id == "set all monster" :
             #print("Init monsters")
@@ -160,11 +160,15 @@ class Client:
             if data["sender"]:
                 self.pseudo = text
                 text = f"{text} (vous)"
-            self.lClient_id.append(text)
+
+            self.main.state.game.player_all.add_Player(self.pseudo,
+                               Img_perso = "assets/playerImg.png",
+                               pos = (500,500),
+                               is_you = data["sender"])
 
         elif id == "remove player":
             print(f"Remove connection : {data['remove connection']}")
-            self.lClient_id.remove(data["remove connection"])
+            self.main.state.game.player_all.dic_players.remove(data["remove connection"])
 
         elif id == "start game":
             self.main.mod = "game"
@@ -174,8 +178,8 @@ class Client:
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
-        for idx,client in enumerate(self.lClient_id):
-            self.draw_text(self.screen,self.font,client,idx)
+        for idx,client_id in enumerate(self.main.state.game.player_all.dic_players.keys()):
+            self.draw_text(self.screen,self.font,client_id,idx)
 
     def send_data(self,data):
         """Envoi des données au serv. json.dumps permet de convertir des dicos en texte = peut être envoyé au serv"""

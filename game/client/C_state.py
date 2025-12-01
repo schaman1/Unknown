@@ -4,7 +4,6 @@ from client.C_button import Button
 from client.C_alert import Alert
 from client.C_load import Load
 from client.C_game import Game
-from client.Personnages_client.perso1 import Player
 
 class State:
     """Class qui affiche tout"""
@@ -109,8 +108,9 @@ class State:
         """
         #x = -self.posClient[0]*self.cell_size + self.Size[0]//2
         #y = -self.posClient[1]*self.cell_size + self.Size[1]//2
-        x = -self.game.player.pos_x*self.cell_size + self.Size[0]//2
-        y = -self.game.player.pos_y*self.cell_size + self.Size[1]//2
+        client_id = self.game.player_all.client_id
+        x = -self.game.player_all.dic_players[client_id].pos_x*self.cell_size + self.Size[0]//2
+        y = -self.game.player_all.dic_players[client_id].pos_y*self.cell_size + self.Size[1]//2
         return (x,y)
 
     def connexion_serv(self,client):
