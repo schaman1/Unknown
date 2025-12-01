@@ -1,5 +1,5 @@
 import pygame
-from client.Personnages_client.perso1 import Player
+from client.Personnages_client.player import Player_all
 from client.Monster_client.C_monster_all import Monster_all
 import var
 
@@ -15,7 +15,7 @@ class Game :
         self.bg = pygame.transform.scale(self.bg, (canva_size[0],canva_size[1]))
         self.light = pygame.Surface((canva_size[0],canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = var.NBR_CELL_CAN_SEE)
-        self.player = Player("assets/playerImg.png",self.cell_size, 500, 500)
+
 
 
         # pré-calcul des rects pour chaque cellule
@@ -26,6 +26,11 @@ class Game :
         ]
 
         self.monsters = Monster_all(cell_size,canva_size)
+
+        self.player_all = Player_all(canva_size,cell_size)
+        #self.player_all.add_Player("Coming soon",
+        #                       Img_perso = "assets/playerImg.png",
+        #                       pos = (500,500))
 
     def update_canva(self,l):
         """Reçoit les données l du serveur et appelle update"""
@@ -62,6 +67,10 @@ class Game :
         self.monsters.blit_all_monster()
         screen.blit(self.monsters.canva_monster,(x,y))
 
+    def blit_players(self,screen,x,y):
+        self.player_all.draw_players()
+        screen.blit(self.player_all.screen_Player,(x,y))
+
     def draw(self,screen,x,y):
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
@@ -69,4 +78,5 @@ class Game :
         self.blit_monster(screen,x,y)
 
         screen.blit(self.light,(0,0))
-        screen.blit(self.player.Img_perso, self.center)
+
+        self.blit_players(screen,x,y)
