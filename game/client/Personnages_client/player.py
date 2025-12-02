@@ -32,8 +32,8 @@ class Player_all :
 class Player :
 
     def __init__(self,Img_perso,cell_size,pos_x = 500, pos_y=500, pseudo = "Coming soon",is_you = False):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+        self.pos_x = 200#pos_x
+        self.pos_y = 200#pos_y
         self.cell_size = cell_size
         self.pseudo = pseudo
         Img = pygame.image.load(Img_perso).convert() #convert_alpha() pour le fond vide

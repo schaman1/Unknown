@@ -16,8 +16,6 @@ class Game :
         self.light = pygame.Surface((canva_size[0],canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = var.NBR_CELL_CAN_SEE)
 
-
-
         # pré-calcul des rects pour chaque cellule
         self.rect_grid = [
             [pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
@@ -60,7 +58,7 @@ class Game :
         x,y,r,g,b,a = el
         color = (r,g,b,a)
 
-        self.canva.fill((0,255,0,255), pygame.Rect(500,500,50,50))
+        #self.canva.fill((0,255,0,255), pygame.Rect(500,500,50,50))
         self.canva.fill(color, self.rect_grid[y][x])
 
     def blit_monster(self,screen,x,y):

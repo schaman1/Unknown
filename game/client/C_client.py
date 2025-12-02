@@ -96,6 +96,8 @@ class Client:
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
 
+                        #print(data_json)
+
                         self.traiter_data(data_json)
 
                 except socket.timeout:
