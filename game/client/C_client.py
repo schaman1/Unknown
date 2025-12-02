@@ -11,7 +11,7 @@ class Client:
         self.connected = None
         self.main = main
 
-        self.pseudo = "Coming soon"
+        self.id = "Coming soon"
         self.err_message = ""
 
         self.font = font
@@ -95,6 +95,7 @@ class Client:
                         #print("in buffer")
                         line, buffer = buffer.split("\n", 1)
                         data_json = json.loads(line)
+
                         self.traiter_data(data_json)
 
                 except socket.timeout:
@@ -122,7 +123,7 @@ class Client:
             self.reset_values()
 
     def reset_values(self):
-        self.pseudo = "Coming soon"
+        self.id = "Coming soon"
         self.main.state.game.player_all.dic_players.clear()
         event_queue.put({"type": "SERVER_DISCONNECTED"})
 
@@ -155,16 +156,18 @@ class Client:
 
         elif id == "new player" :
             print(f"New connection : {data["new connection"]}")
+
             text = data["new connection"]
+            self.id = data["new connection"]
 
             if data["sender"]:
-                self.pseudo = text
                 text = f"{text} (vous)"
 
-            self.main.state.game.player_all.add_Player(self.pseudo,
+            self.main.state.game.player_all.add_Player(self.id,
                                Img_perso = "assets/playerImg.png",
                                pos = (500,500),
-                               is_you = data["sender"])
+                               is_you = data["sender"],
+                               pseudo = text)
 
         elif id == "remove player":
             print(f"Remove connection : {data['remove connection']}")
@@ -178,8 +181,8 @@ class Client:
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
-        for idx,client_id in enumerate(self.main.state.game.player_all.dic_players.keys()):
-            self.draw_text(self.screen,self.font,client_id,idx)
+        for idx,client in enumerate(self.main.state.game.player_all.dic_players.values()):
+            self.draw_text(self.screen,self.font,client.pseudo,idx)
 
     def send_data(self,data):
         """Envoi des données au serv. json.dumps permet de convertir des dicos en texte = peut être envoyé au serv"""

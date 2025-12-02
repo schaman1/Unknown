@@ -196,8 +196,3 @@ class Main:
         self.state.show_ip.update_text("show_ip",f"ip:port = {ip}:{port}")
         self.state.start.update_text("start","Jouer")
         print("Create serv et connection!")
-
-    def smoth_mov(self):
-        for i in range(10):
-            self.state.game.player.pos_x += 0.1
-            #print("o")
