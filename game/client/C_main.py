@@ -40,6 +40,8 @@ class Main:
         running = True
         while running:
 
+            self.key_event()
+
             for event in pygame.event.get():
                 #Capture les events = touche /clique de la souris / clavier
                 if event.type == pygame.QUIT:
@@ -48,24 +50,7 @@ class Main:
                 if event.type == pygame.KEYDOWN:
 
                     if self.mod == "game":
-
-                        if event.key == pygame.K_ESCAPE:
-                            pass
-
-                        
-                        elif event.key == pygame.K_z :
-                            self.client.send_data({"id":"move","deplacement":(0,-1)}) #lié au serveur les données
-
-                        elif event.key == pygame.K_s :
-                            self.client.send_data({"id":"move","deplacement":(0,1)}) #lié au serveur les données
-
-
-                        elif event.key == pygame.K_q :
-                            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
-
-
-                        elif event.key == pygame.K_d :
-                            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
+                        pass
 
                     elif self.objClicked != None:
 
@@ -196,3 +181,21 @@ class Main:
         self.state.show_ip.update_text("show_ip",f"ip:port = {ip}:{port}")
         self.state.start.update_text("start","Jouer")
         print("Create serv et connection!")
+
+    def key_event(self):
+
+        key = pygame.key.get_pressed()
+
+        if key[pygame.K_z] :
+            self.client.send_data({"id":"move","deplacement":(0,-1)}) #lié au serveur les données
+
+        if key[pygame.K_s] :
+            self.client.send_data({"id":"move","deplacement":(0,1)}) #lié au serveur les données
+
+
+        if key[pygame.K_q] :
+            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
+
+
+        if key[pygame.K_d] :
+            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
