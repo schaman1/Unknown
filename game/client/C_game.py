@@ -68,15 +68,19 @@ class Game :
         screen.blit(self.monsters.canva_monster,(x,y))
 
     def blit_players(self,screen,x,y):
-        self.player_all.draw_players()
+        self.player_all.draw_players(screen,self.center)
         screen.blit(self.player_all.screen_Player,(x,y))
 
+
     def draw(self,screen,x,y):
+
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))
 
         self.blit_monster(screen,x,y)
+        self.blit_players(screen,x,y)
+
+
 
         screen.blit(self.light,(0,0))
 
-        self.blit_players(screen,x,y)

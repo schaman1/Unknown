@@ -33,31 +33,14 @@ def return_column(x:int,y:int,length:int,grid_color):
                         )
     return moved
 
-@njit
+#@njit
 def return_x_y(visible):
-    n_clients,H,W = visible.shape
-    max_cell = H*W
-    ys_temp = np.empty(max_cell, dtype=np.int32)
-    xs_temp = np.empty(max_cell, dtype=np.int32)
-    count = 0
-
-    # Parcourir toutes les cellules
-    for y in range(H):
-        for x in range(W):
-            for c in range(n_clients):
-                if visible[c, y, x]:
-                    ys_temp[count] = y
-                    xs_temp[count] = x
-                    count += 1
-                    break  # si un client voit la cellule, on peut passer à la suivante
-    
-    # Redimensionner les arrays pour retourner uniquement les cellules visibles
-    ys = ys_temp[:count]
-    xs = xs_temp[:count]
+    ys, xs = np.where(np.any(visible, axis=0))  # Trouver les indices où au moins un client voit la cellule
     return ys, xs
 
 #@njit
 def return_cell_update(ToUpdate,lClient,H,W):
+    
     visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
     for i,client in enumerate(lClient) :
 
@@ -68,10 +51,7 @@ def return_cell_update(ToUpdate,lClient,H,W):
 
         visible[i,ys:ye,xs:xe] = True
 
-    result = ToUpdate & visible
-
-    return result
-
+    return ToUpdate & visible
 
 @njit
 def neighborns_to_update(ToUpdate,x,y):
