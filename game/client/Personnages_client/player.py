@@ -10,8 +10,8 @@ class Player_all :
         self.screen_Player = pygame.Surface((canva_size[0]*cell_size,canva_size[1]*cell_size), pygame.SRCALPHA)
         self.client_id = None
 
-    def add_Player(self,id,Img_perso = None,pos = (500,500), is_you = False):
-        self.dic_players[id] = Player(Img_perso,self.cell_size,pos[0],pos[1])
+    def add_Player(self,id,Img_perso = None,pos = (500,500), is_you = False, pseudo = "Coming soon"):
+        self.dic_players[id] = Player(Img_perso,self.cell_size,pos[0],pos[1],pseudo)
 
         if is_you :
             self.client_id = id
@@ -26,10 +26,11 @@ class Player_all :
 
 class Player :
 
-    def __init__(self,Img_perso,cell_size,pos_x = 500, pos_y=500):
+    def __init__(self,Img_perso,cell_size,pos_x = 500, pos_y=500, pseudo = "Coming soon"):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.cell_size = cell_size
+        self.pseudo = pseudo
         Img = pygame.image.load(Img_perso).convert() #convert_alpha() pour le fond vide
         self.Img_perso= pygame.transform.scale(Img,(10*cell_size,10*cell_size))
 

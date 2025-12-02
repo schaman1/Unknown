@@ -29,7 +29,9 @@ class Server:
 
                     data = json.loads(data_recu.decode())
                     addr = self.safe_peername(client_socket)
-                    print(f"Reçu de {addr} : {data}")
+
+                    #print(f"Reçu de {addr} : {data}")
+                    
                     if self.is_running_menu :
                         self.in_menu(data, client_socket)
                     elif self.is_running_game :
@@ -81,18 +83,21 @@ class Server:
         """Traite les données sachant qu'on est dans le menu"""
 
         if data["id"] == "new client connection":
+
             print("New client connection")
+
+            self.send_client_already_her(sender)
+
             self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
+            text = f"Player {self.nbr_player}"
             
             for client in list(self.lClient.keys()):
                 meornot = (client == sender)
-                text = f"Player {self.nbr_player}"
                 self.send_data({
                     "id": "new player",
                     "new connection": text,
                     "sender": meornot
                 }, client)
-
 
         elif data["id"] == "remove client":
             print("Remove client")
@@ -259,17 +264,27 @@ class Server:
             #self.set_param_on_client_connection(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
+    def send_client_already_her(self,client):
+        #self.send_data({"id":"set client already connected","clients":self.lClient})
+
+        for player in self.lClient.values():
+            self.send_data({
+                    "id": "new player",
+                    "new connection": player.id,
+                    "sender": False
+                }, client)
+
     def set_param_on_client_arriving(self,client_socket,data):
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = (500,500),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host,)
+        self.lClient[client_socket] = Player(pos = (500,500),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host)
         
-        for socket,client in self.lClient.items():
-
-            if socket != client_socket :
-                self.send_data({
-                    "id": "new player",
-                    "new connection": client.id,
-                    "sender": False
-                }, client_socket)
+        #for socket,client in self.lClient.items():
+#
+        #    if socket != client_socket :
+        #        self.send_data({
+        #            "id": "new player",
+        #            "new connection": client.id,
+        #            "sender": False
+        #        }, client_socket)
