@@ -278,7 +278,7 @@ class Server:
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = (500,500),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host)
+        self.lClient[client_socket] = Player(pos = (200,200),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host)
         
         #for socket,client in self.lClient.items():
 #
