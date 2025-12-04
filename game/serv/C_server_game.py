@@ -42,11 +42,11 @@ class Server_game(Server) :
             result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
             
-            #if len(result_cell[0]) != 1:
-            #    self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
+            if len(result_cell[0]) != 1:
+                self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
 
-            #if len(return_monster) != 0 :
-            #    self.send_data_update(return_monster, "to change monster")
+            if len(return_monster) != 0 :
+                self.send_data_update(return_monster, "to change monster")
 
             fps = self.fpsClock.get_fps()
             #if fps < 60 : #Affiche le fps quand c'est critique
