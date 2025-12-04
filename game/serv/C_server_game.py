@@ -1,4 +1,3 @@
-from serv.in_game.C_read_map import Read_map
 from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
 import pygame
@@ -10,9 +9,7 @@ class Server_game(Server) :
     def __init__(self,host='0.0.0.0', port=5000):
 
         super().__init__(host, port)  # <-- Appelle le constructeur de Server
-
-        self.map_cell = Read_map(var.BG_CELL)
-        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+        
         #self.canva_map = self.map_cell.canva
         self.is_running_game = True
 
@@ -31,6 +28,8 @@ class Server_game(Server) :
         new.lClient = server.lClient
         new.server = server.server
         new.nbr_player = server.nbr_player
+        new.map_cell = server.map_cell
+        new.map_monster = server.map_monster
 
         return new
 
@@ -39,18 +38,19 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
+            #for i in range(100):  #20 fps si pas les thread reception et envoie
             result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
             
-            if len(result_cell[0]) != 1:
-                self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
+            #if len(result_cell[0]) != 1:
+            #    self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
 
-            if len(return_monster) != 0 :
-                self.send_data_update(return_monster, "to change monster")
+            #if len(return_monster) != 0 :
+            #    self.send_data_update(return_monster, "to change monster")
 
             fps = self.fpsClock.get_fps()
-            if fps < 60 : #Affiche le fps quand c'est critique
-                print(fps)
+            #if fps < 60 : #Affiche le fps quand c'est critique
+            print(fps)
 
         print("End boucle loop_server_game")
 
@@ -69,4 +69,4 @@ class Server_game(Server) :
         self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,"set all monster") #Envoie à tt le monde tout les nouveau pixels à draw
 
-        self.current_thread = threading.Thread(target=self.loop_server_game, daemon=True).start()
+        threading.Thread(target=self.loop_server_game, daemon=True).start()

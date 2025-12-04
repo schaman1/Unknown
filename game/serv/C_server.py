@@ -1,4 +1,7 @@
 import socket, threading, json
+from serv.in_game.C_read_map import Read_map
+from serv.in_game.C_read_monster import Read_monster
+import var #Fichier
 from serv.in_game.C_player import Player
 #from serv.server_game import Server_game
 
@@ -6,12 +9,16 @@ class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
     def __init__(self,port=5000,host='0.0.0.0'):
         self.lClient = {}
+
+        self.map_cell = Read_map(var.BG_CELL)
+        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+
         self.host = host
         self.port = port
         self.server = None
         #self.serverUDP = None #Server qui "crie" a tout le monde le ip et port du serv
-        self.is_running_menu = False
-        self.is_running_game = True
+        self.is_running_menu = True
+        self.is_running_game = False
         self.current_thread = None
         self.nbr_player = 0
         #self.intervalle_available_server = intervalle
@@ -123,7 +130,6 @@ class Server:
 
         if id == "move" :
             delta = self.lClient[sender].move(data["deplacement"])
-
             self.send_data_all({"id":"player move","player":self.lClient[sender].id,"delta":delta})
 
     def send_data_all(self,data : dict):
@@ -253,6 +259,7 @@ class Server:
         """Loop du serveur sachant qu'on est dans le menu = accept les demandes des clients pour venir"""
         self.server.settimeout(1)
         while self.is_running_menu:
+
             try:
                 client_socket, addr = self.server.accept() #Accept les clients qui veulent rejoindres #Peut faire un system de mdp ici
             except socket.timeout:
@@ -261,6 +268,7 @@ class Server:
                 break
 
             print(f"Nouvelle connexion de {addr}")
+            
             #self.set_param_on_client_connection(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 

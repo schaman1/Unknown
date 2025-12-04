@@ -81,6 +81,22 @@ class Read_map:
         #print(cells)
         
         return cells
+    
+    def return_colomn(self,client,nbr_column):
+        cells = []
+        deltay = -(client.screen_size[1]//2)
+
+        s = 1
+        
+        if nbr_column < 0 :
+            s = -1
+            nbr_column = -nbr_column
+
+        for column in range (abs(nbr_column)):
+
+            deltax = s*client.screen_size[0]// + s*column
+            cells +=(njitBoucle.return_column(client.pos_x+deltax,client.pos_y+deltay,client.screen_size[1],self.grid_color))
+
 
     def return_chg(self,lClient):
         """Retourne les chg de pixels"""
