@@ -150,6 +150,9 @@ class Main:
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.state.a_state(self.mod)
 
+            if self.client.connected :
+                self.client.poll_reception()
+
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 

@@ -1,4 +1,4 @@
-import socket, json, threading
+import socket, json, select
 import time
 from client.events import event_queue
 
@@ -13,6 +13,7 @@ class Client:
 
         self.id = "Coming soon"
         self.err_message = ""
+        self.buffer = "" #Pour décoder les mess / json reception
 
         self.font = font
         self.screen = screen
@@ -69,9 +70,57 @@ class Client:
         """Ici, lancé quand connection réussite = lance un thread = script qui va tourner à côté = reception serveurs"""
         print("Connecté au serveur")
         self.connected = True
-        threading.Thread(target=self.loop_reception_server, daemon=True).start()
+        self.client.setblocking(False) #Pour pas bloquer le script
+
+        #threading.Thread(target=self.loop_reception_server, daemon=True).start() #PLus besoin car le fait dans le main
 
         self.send_data({"id":"new client connection","screen_size":self.screen_size})
+
+    def poll_reception(self):
+        """Lit les données réseau sans jamais bloquer"""
+
+        readable, _, _ = select.select([self.client], [], [], 0)
+
+        if not readable:
+            return  # rien à lire → 0% coût CPU
+        
+        try:
+            data = self.client.recv(1024)  # ne bloque jamais
+
+        except BlockingIOError:
+            return  # rien à lire, c’est normal
+        
+        except Exception as e:
+            print(f"Erreur réception: {e}")
+                
+            if self.connected:
+                print("Serveur fermé ou erreur réseau")
+                # Notifier le serveur de notre départ
+                try:
+                    self.client.send(json.dumps({"id": "remove client"}).encode())
+                except Exception:
+                    print(Exception)
+            else :
+                print("Déconnexion volontaire")
+
+            self.client.close()
+            self.reset_values()
+
+        if not data:
+            print("Connexion perdue")
+            self.connected = False
+            return
+
+        # stockage du buffer
+        self.buffer += data.decode()
+
+        # traitement des messages
+        while "\n" in self.buffer:
+            line, self.buffer = self.buffer.split("\n", 1)
+            print("Inside")
+            data_json = json.loads(line)
+            self.traiter_data(data_json)
+
 
     def loop_reception_server(self):
         """Fonction reception ser"""
@@ -99,10 +148,6 @@ class Client:
                         #print(data_json)
 
                         self.traiter_data(data_json)
-
-                except socket.timeout:
-                    # Pas de data → c’est normal
-                    continue
 
                 except Exception as e:
                     print(f"Erreur réception: {e}")
