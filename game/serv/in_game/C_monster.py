@@ -1,6 +1,4 @@
-import pygame
 import math
-from C_player import Player
 
 
 class Monster:
@@ -73,6 +71,13 @@ class Monster:
         elif self.state == "attacking":
             self.attack(Player)
         
+
+
+
+
+
+
+
 
 class Skeleton(Monster):
     def __init__(self, x, y, id):
