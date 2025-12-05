@@ -7,7 +7,6 @@ class Player_all :
     def __init__(self,canva_size,cell_size):
         self.dic_players = {}
         self.cell_size = cell_size
-        self.screen_Player = pygame.Surface((canva_size[0]*cell_size,canva_size[1]*cell_size), pygame.SRCALPHA)
         self.client_id = None
 
     def add_Player(self,id,Img_perso = None,pos = (500,500), is_you = False, pseudo = "Coming soon"):
@@ -18,7 +17,6 @@ class Player_all :
 
     def draw_players(self,screen_global,center):
 
-        self.screen_Player.fill((0,0,0,0))
         for player in self.dic_players.values():
 
             if player.is_you :
@@ -27,7 +25,7 @@ class Player_all :
 
             else :
 
-                player.draw(self.screen_Player)
+                player.draw(screen_global)
 
 class Player :
 

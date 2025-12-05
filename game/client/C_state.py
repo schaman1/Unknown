@@ -54,50 +54,54 @@ class State:
     def a_state(self,state):
         """Prend en param l'état / state et dessine en fct ce qu'il doit être dessiner"""
 
-        if state not in self.no_black_screen:
-            self.screen.fill(color["BLACK"])
+        #if state not in self.no_black_screen:
+            #self.screen.fill(color["BLACK"])
 
-        if state == "menu":
-            
-            for btn in self.dicMenu.values():
-
-                btn.draw(self.screen)
-
-            #test_vision(self.screen,self.Size)
-
-        elif state == "game":
+        if state == "game":
 
             x,y = self.return_pos_blit()
             self.game.draw(self.screen,x,y)
 
-            #.drawAll()
+        else :
 
-        elif state == "wait_serv":
-            
-            for btn in self.dicWaiting.values():
-                btn.draw(self.screen)
+            self.screen.fill(color["BLACK"])
+            if state == "menu":
+                
+                for btn in self.dicMenu.values():
 
-            self.draw_waiting()
+                    btn.draw(self.screen)
 
-        elif state == "connexion":
+                #test_vision(self.screen,self.Size)
 
-            for btn in self.dicConnexion.values():
 
-                btn.draw(self.screen)
+                #.drawAll()
 
-        elif state == "host":
+            elif state == "wait_serv":
+                
+                for btn in self.dicWaiting.values():
+                    btn.draw(self.screen)
 
-            for btn in self.dicCreation.values():
+                self.draw_waiting()
 
-                btn.draw(self.screen)
+            elif state == "connexion":
 
-            self.client.display_clients_name()
+                for btn in self.dicConnexion.values():
 
-        elif state == "loading":
-            self.draw_load()
+                    btn.draw(self.screen)
 
-        else : 
-            pass
+            elif state == "host":
+
+                for btn in self.dicCreation.values():
+
+                    btn.draw(self.screen)
+
+                self.client.display_clients_name()
+
+            elif state == "loading":
+                self.draw_load()
+
+            else : 
+                pass
 
         self.draw_alert()
 

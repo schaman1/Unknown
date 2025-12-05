@@ -1,4 +1,4 @@
-import socket, threading, json
+import socket, threading, struct
 from serv.in_game.C_read_map import Read_map
 from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
@@ -25,28 +25,50 @@ class Server:
 
     def handle_client(self, client_socket):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
+        
         try:
+            buffer = bytearray()
             while True:
                 try:
-                    data_recu = client_socket.recv(1024)
+                    data = client_socket.recv(1024)
 
-                    if not data_recu:
+                    if not data:
                         print(f"Client déconnecté proprement.")
                         break
 
-                    data = json.loads(data_recu.decode())
-                    addr = self.safe_peername(client_socket)
+                    buffer.extend(data)
 
-                    #print(f"Reçu de {addr} : {data}")
-                    
-                    if self.is_running_menu :
-                        self.in_menu(data, client_socket)
-                    elif self.is_running_game :
-                        self.in_game(data,client_socket)
+                    while True:
+                        if len(buffer) < 1:
+                            break
 
-                except json.JSONDecodeError:
-                    print("Erreur JSON — données corrompues ou incomplètes.")
-                    continue
+                        msg_id = buffer[0]
+
+                        # Exemple : ID 0 = start_game (1 byte)
+                        if msg_id == 0: #Start game
+                            msg_len = 1
+
+                        elif msg_id == 1: #
+                            msg_len = 1 + 4 
+
+                        else:
+                            print("UNKNOWN MSG ID", msg_id)
+                            del buffer[0]
+                            continue
+
+                        if len(buffer) < msg_len:
+                            break  # message incomplet
+
+                        msg = buffer[:msg_len]
+                        del buffer[:msg_len]
+
+                        # Traitement
+                        if self.is_running_menu:
+                            self.in_menu(msg, client_socket)
+                        elif self.is_running_game:
+                            self.in_game(msg, client_socket)
+
+
 
                 except ConnectionResetError:
                     addr = self.safe_peername(client_socket)
@@ -88,37 +110,46 @@ class Server:
 
     def in_menu(self, data, sender):
         """Traite les données sachant qu'on est dans le menu"""
+        id_msg = struct.unpack("!B", data[0:1])[0]
 
-        if data["id"] == "new client connection":
+        if id_msg == 1: #New client connection
 
             print("New client connection")
 
             self.send_client_already_her(sender)
+            screen_size = struct.unpack("!HH", data[1:5])
 
-            self.set_param_on_client_arriving(sender,{"screen_size":data["screen_size"]})
-            text = f"Player {self.nbr_player}"
+            self.set_param_on_client_arriving(sender,screen_size)
             
             for client in list(self.lClient.keys()):
-                meornot = (client == sender)
-                self.send_data({
-                    "id": "new player",
-                    "new connection": text,
-                    "sender": meornot
-                }, client)
 
-        elif data["id"] == "remove client":
+                meornot = (client == sender)
+                packet = struct.pack("!BBB", 1, self.nbr_player, meornot)
+                self.send_data(packet,client)
+
+                #self.send_data({
+                #    "id": "new player",
+                #    "new connection": text,
+                #    "sender": meornot
+                #}, client)
+
+        elif id_msg == 2:
             print("Remove client")
             removed_id = self.lClient[sender].id
             self.remove_client(sender)
 
             for client in list(self.lClient.keys()):
-                print("Send data")
-                self.send_data({
-                    "id": "remove player",
-                    "remove connection": removed_id
-                }, client)
 
-        elif data["id"] == "start game":
+                packet = bytearray()
+                packet+=struct.pack("!BB", 2,removed_id)
+                self.send_data(packet,client)
+
+                #self.send_data({
+                #    "id": "remove player",
+                #    "remove connection": removed_id
+                #}, client)
+
+        elif id_msg == 0: #1 = start game
             #Redirige vers le game, stop le loop_server_in_menu pour start celui de in_game
             print("start !")
             self.is_running_menu = False
@@ -132,7 +163,7 @@ class Server:
             delta = self.lClient[sender].move(data["deplacement"])
             self.send_data_all({"id":"player move","player":self.lClient[sender].id,"delta":delta})
 
-    def send_data_all(self,data : dict):
+    def send_data_all(self,data):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
         def send_to(socket):
             try:
@@ -145,7 +176,7 @@ class Server:
         for socket in self.lClient.keys():
             threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
-    def send_data_update(self,data : list,id):
+    def send_data_update(self,data,id):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
         #print(data)
         def send_to(socket,message):
@@ -153,23 +184,62 @@ class Server:
                 #print("Send successfuly")
                 self.send_data(message, socket)
             except Exception as e:
-                print("Erreur envoi ",e, message)
+                print("Erreur envoi ",e)
                 pass  # ou suppression du client mort
 
-        cnt = 0
-
-        for socket in self.lClient.keys():
+        for cnt,socket in enumerate(self.lClient.keys()):
             if len(data[cnt]) != 0:
-                message = {"id":id,"updates":data[cnt]}
-                cnt +=1
-                threading.Thread(target=send_to, args=(socket,message), daemon=True).start()
 
-    def send_data(self, dic : dict, client):
+                threading.Thread(target=send_to, args=(socket,[id,data[cnt]]), daemon=True).start()
+
+    def pack_cells(self,cells,packet):
+
+        # nombre de cellules
+        packet += struct.pack("!H", len(cells))
+
+        # données des cellules
+        for (x, y, r, g, b, a) in cells:
+            packet += struct.pack("!HHBBBB", x, y, r, g, b, a)
+
+        return bytes(packet)
+    
+    def pack_monsters(self,monsters,packet):
+
+        # nombre de cellules
+        packet += struct.pack("!H", len(monsters))
+
+        # données des cellules
+        for (chunk, id, x, y) in monsters:
+            packet += struct.pack("!HLHH", chunk, id, x, y)
+
+        return bytes(packet)
+
+    def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
-        data = json.dumps(dic)
-        data += "\n"
+        packet = bytearray()
+        id = data[0]
+        packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
+
+        if id == 0 :
+            pass
+
+        elif id == 1 : 
+            packet+= struct.pack("!BB",data[1],data[2])
+
+        elif id == 2: #rem client
+            pass
+
+        elif id == 3:
+            self.pack_cells(data[1],packet)
+
+        elif id == 4:
+            self.pack_monsters(data[1],packet)
+
+        else :
+            print("Issue id not found : ",id)
+
         try:
-            client.send(data.encode())
+            client.send(packet)
         except OSError:
             # Déconnexion
             is_host = self.lClient.get(client, {}).get("Host", False)
@@ -219,7 +289,7 @@ class Server:
 
         # ---- Sans ngrok : ----
         self.host = socket.gethostbyname(socket.gethostname())
-        self.send_data({"id":"Server info","ip":self.host,"port":self.port},client.client)
+        #self.send_data([2,self.host,self.port],self.client)#{"id":"Server info","ip":self.host,"port":self.port},client.client)
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
 
         return self.host,self.port
@@ -276,17 +346,21 @@ class Server:
         #self.send_data({"id":"set client already connected","clients":self.lClient})
 
         for player in self.lClient.values():
-            self.send_data({
-                    "id": "new player",
-                    "new connection": player.id,
-                    "sender": False
-                }, client)
 
-    def set_param_on_client_arriving(self,client_socket,data):
+            packet = struct.pack("!BBB", 1, player.id, 0)
+
+            self.send_data(packet,client)
+                           #{
+                    #"id": "new player",
+                    #"new connection": player.id,
+                    #"sender": False
+                #}, client)
+
+    def set_param_on_client_arriving(self,client_socket,screen_size):
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = (200,200),id = f"Player {self.nbr_player}",screen_size = data["screen_size"],host = is_host)
+        self.lClient[client_socket] = Player(pos = (200,200),id = self.nbr_player,screen_size = screen_size,host = is_host)
         
         #for socket,client in self.lClient.items():
 #

@@ -130,7 +130,9 @@ class Main:
 
                         if self.state.start.rect.collidepoint(event.pos) and self.client.connected :
                             self.Server = Server_game.from_server(self.Server)
-                            self.client.send_data({"id":"start game"})
+
+                            self.client.send_data(id = 0) #Start game
+
                             self.Server.start_game()
 
 
@@ -145,7 +147,7 @@ class Main:
                                 self.state.add_alert("Serveur stoppé",)
 
 
-            self.perform_event_queue()
+            #self.perform_event_queue()
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.state.a_state(self.mod)
@@ -156,7 +158,7 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
-            self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
+            #self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
         pygame.quit()
 
