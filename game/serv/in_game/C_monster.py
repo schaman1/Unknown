@@ -2,7 +2,7 @@ from serv.in_game.C_mobs import mobs
 
 class Skeleton(mobs):
     def __init__(self, x,y, id):
-        self.name = "Skeleton"
+        self.name = 0 #"Skeleton"
         self.id = id
         self.pos_x = x
         self.pos_y = y

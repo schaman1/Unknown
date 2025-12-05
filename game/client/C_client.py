@@ -1,4 +1,4 @@
-import socket, json, select
+import socket, select, struct
 import time
 from client.events import event_queue
 
@@ -13,7 +13,7 @@ class Client:
 
         self.id = "Coming soon"
         self.err_message = ""
-        self.buffer = "" #Pour décoder les mess / json reception
+        self.buffer = bytearray()
 
         self.font = font
         self.screen = screen
@@ -74,100 +74,78 @@ class Client:
 
         #threading.Thread(target=self.loop_reception_server, daemon=True).start() #PLus besoin car le fait dans le main
 
-        self.send_data({"id":"new client connection","screen_size":self.screen_size})
+        self.send_data(id = 1,data = self.screen_size) #3 = client connection
 
     def poll_reception(self):
-        """Lit les données réseau sans jamais bloquer"""
+        """Version non bloquante de loop_reception_server(), appelée dans la boucle de jeu."""
 
+        # Vérifie si le socket est prêt (0 = instantané)
         readable, _, _ = select.select([self.client], [], [], 0)
-
         if not readable:
-            return  # rien à lire → 0% coût CPU
-        
+            return  # aucune donnée, ne bloque jamais
+
         try:
-            data = self.client.recv(1024)  # ne bloque jamais
+            data = self.client.recv(1024)
 
         except BlockingIOError:
-            return  # rien à lire, c’est normal
-        
+            return  # socket non prêt (rare si select utilisé)
+
         except Exception as e:
-            print(f"Erreur réception: {e}")
-                
-            if self.connected:
-                print("Serveur fermé ou erreur réseau")
-                # Notifier le serveur de notre départ
-                try:
-                    self.client.send(json.dumps({"id": "remove client"}).encode())
-                except Exception:
-                    print(Exception)
-            else :
-                print("Déconnexion volontaire")
+            print("Erreur réception:", e)
+            self.connected = False
+            return
 
-            self.client.close()
-            self.reset_values()
-
+        # Déconnexion détectée
         if not data:
             print("Connexion perdue")
             self.connected = False
             return
 
-        # stockage du buffer
-        self.buffer += data.decode()
+        # Ajoute les données au buffer
+        self.buffer.extend(data)
 
-        # traitement des messages
-        while "\n" in self.buffer:
-            line, self.buffer = self.buffer.split("\n", 1)
-            print("Inside")
-            data_json = json.loads(line)
-            self.traiter_data(data_json)
+        # ---- Traitement des messages ----
+        while True:
 
+            # Besoin d'au moins 1 byte → ID
+            if len(self.buffer) < 1:
+                break
 
-    def loop_reception_server(self):
-        """Fonction reception ser"""
-        self.client.settimeout(0.5)  # timeout pour ne pas bloquer recv
-        buffer = ""
+            msg_id = self.buffer[0]
 
-        try:
-            while self.connected:
-                try:
-                    # Lecture non bloquante (avec timeout)
-                    data = self.client.recv(1024)
-                    if not data:
-                        # si serveur coupé ou client déconnecté
-                        print("Connexion perdue (serveur fermé ?)")
-                        break
+            # Détermine la taille du message selon l'ID
+            if msg_id == 0:          # start_game
+                msg_size = 1
 
-                    buffer += data.decode()
+            elif msg_id == 1:        # new player
+                msg_size = 1 + 2
 
-                    # traiter tous les messages reçus séparés par "\n" car des fois des données peuvent être envoyé en même temps
-                    while "\n" in buffer:
-                        #print("in buffer")
-                        line, buffer = buffer.split("\n", 1)
-                        data_json = json.loads(line)
+            elif msg_id == 2:
+                msg_size = 1
 
-                        #print(data_json)
+            elif msg_id == 3:
+                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
 
-                        self.traiter_data(data_json)
+            elif msg_id == 4:
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*10
 
-                except Exception as e:
-                    print(f"Erreur réception: {e}")
-                    break
-                
-            # Sortie de boucle
-            if self.connected:
-                print("Serveur fermé ou erreur réseau")
-                # Notifier le serveur de notre départ
-                try:
-                    self.client.send(json.dumps({"id": "remove client"}).encode())
-                except Exception:
-                    print(Exception)
-            else :
-                print("Déconnexion volontaire")
+            else:
+                print("UNKNOWN MSG ID", msg_id)
+                self.buffer.pop(0)
+                continue
 
-        finally: #Server stoppé
+            # Attendre plus de data ?
+            if len(self.buffer) < msg_size:
+                break
 
-            self.client.close()
-            self.reset_values()
+            # Extraire le message complet
+            msg = self.buffer[:msg_size]
+
+            # Retirer du buffer
+            del self.buffer[:msg_size]
+
+            # Traiter
+            self.traiter_data(msg,msg_size)
 
     def reset_values(self):
         self.id = "Coming soon"
@@ -182,45 +160,57 @@ class Client:
         """Envoie a C_game pour update les monstres qui seront blit plus tard"""
         self.main.state.game.update_monster(l)
 
-    def traiter_data(self,data):
+    def traiter_data(self,data,size):
         """Regarde quoi faire des datas reçus + Chaque data contient un id et c'est en fonction de lui qu'on traite les données"""
+        id = data[0]
 
         # Réception de la réponse
-        id = data["id"]
 
-        if id == "to change cell" :
-            self.update_canva(data["updates"])
+        if id == 3 :
 
-        elif id =="to change monster" :
-            self.update_monster(data["updates"])
+            self.update_canva(
+                struct.unpack("!HHBBBB", data[3+i*8 : 11+i*8])
+                for i in range((size-3)//8)
+            )
+
+        elif id == 5 : #monsters update
+            self.update_monster(
+                struct.unpack("!HLHH", data[3+i*10 : 13+i*10])
+                for i in range((size-3)//10)
+            )
 
         elif id == "player move":
             self.main.state.game.player_all.dic_players[data["player"]].move(data["delta"])
 
-        elif id == "set all monster" :
-            #print("Init monsters")
-            self.main.state.game.monsters.init_monster(data["updates"])
+        elif id == 4 :#Init monsters
 
-        elif id == "new player" :
-            print(f"New connection : {data["new connection"]}")
+            cells = []
+            for i in range((size-3)//10):
+                cells.append(struct.unpack("!HLHH", data[3+i*10 : 13+i*10]))
 
-            text = data["new connection"]
-            self.id = data["new connection"]
+            self.main.state.game.monsters.init_monster(cells,self.screen)
 
-            if data["sender"]:
+        elif id == 1 :
+
+            print(f"New connection : {data[1]}")
+
+            text = f"Player {data[1]}"
+            self.id = data[1]
+
+            if data[2]:
                 text = f"{text} (vous)"
 
             self.main.state.game.player_all.add_Player(self.id,
                                Img_perso = "assets/playerImg.png",
                                pos = (500,500),
-                               is_you = data["sender"],
+                               is_you = data[2],
                                pseudo = text)
 
-        elif id == "remove player":
+        elif id == 2:
             print(f"Remove connection : {data['remove connection']}")
             self.main.state.game.player_all.dic_players.remove(data["remove connection"])
 
-        elif id == "start game":
+        elif id == 0:
             self.main.mod = "game"
 
         #elif id == "player move" :
@@ -231,9 +221,17 @@ class Client:
         for idx,client in enumerate(self.main.state.game.player_all.dic_players.values()):
             self.draw_text(self.screen,self.font,client.pseudo,idx)
 
-    def send_data(self,data):
+    def send_data(self,id = None,data = None):
         """Envoi des données au serv. json.dumps permet de convertir des dicos en texte = peut être envoyé au serv"""
-        self.client.send(json.dumps(data).encode())
+
+        packet = bytearray()
+        packet += struct.pack("!B", id)
+
+        if id == 1 :
+            packet += struct.pack("!HH", data[0], data[1])
+        
+        self.client.send(packet)
+        #self.client.send(json.dumps(data).encode())
 
     def draw_text(self,screen,font,text,idx):
             text = font.render(text, True, (255, 255, 255))
