@@ -1,6 +1,18 @@
-from serv.in_game.C_mobs import mobs
+class Monster:
+    def __init__(self, hp, damage):
+        self.hp = hp
+        self.damage = damage
 
-class Skeleton(mobs):
+    def is_alive(self):
+        return self.hp > 0
+
+    def take_damage(self, amount):
+        self.hp -= amount
+        if self.hp < 0:
+            self.hp = 0
+
+
+class Skeleton(Monster):
     def __init__(self, x,y, id):
         self.name = "Skeleton"
         self.id = id
