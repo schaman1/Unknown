@@ -22,53 +22,53 @@ class Monster:
         if self.hp < 0:
             self.hp = 0
             
-    def distance_to_player(self, Player):
+    #def distance_to_player(self, Player):
         """Distance euclidienne en cases entre le monstre et le joueur."""
-        return math.sqrt((self.pos_x - Player.pos_x) ** 2 + (self.pos_y - Player.pos_y) ** 2)
+    #    return math.sqrt((self.pos_x - Player.pos_x) ** 2 + (self.pos_y - Player.pos_y) ** 2)
     
-    def is_type(self, type_cell, type_check):
+    #def is_type(self, type_cell, type_check):
         """
         Vérifie si la cellule est du type spécifié.
         ex: type_check = cell_dur (= [2,5]) -> dur si 2 <= type_cell <= 5
         (DÉPLACÉ depuis Skeleton pour que tous les monstres puissent l'utiliser)
         """
-        if type_check[0] <= type_cell <= type_check[1]:
-            return True
-        return False
+    #    if type_check[0] <= type_cell <= type_check[1]:
+    #       return True
+    #    return False
     
     # --- Boucle de comportement basique pour tous les monstres ---
     
-    def update(self, cells_arr, cell_dur, cell_vide, cell_liquid, Player):
-        if not self.is_alive():
-            self.state = "dead"
-            return
+    #def update(self, cells_arr, cell_dur, cell_vide, cell_liquid, Player):
+    #    if not self.is_alive():
+    #        self.state = "dead"
+    #        return
         
-        dist = self.distance_to_player(Player)
+    #    dist = self.distance_to_player(Player)
+    #    
+    #    if self.state == "idle":
+    #        if dist <= self.radius:
+    #            self.state = "moving"
         
-        if self.state == "idle":
-            if dist <= self.radius:
-                self.state = "moving"
-        
-        elif self.state == "moving":
-            if dist <= self.attack_radius:
-                self.state = "attacking"
-            elif dist > self.radius * 1.2:
-                self.state = "idle"
+    #    elif self.state == "moving":
+    #        if dist <= self.attack_radius:
+    #            self.state = "attacking"
+    #        elif dist > self.radius * 1.2:
+    #            self.state = "idle"
                 
-        elif self.state == "attacking":
-            if dist > self.attack_radius:
+    #    elif self.state == "attacking":
+    #        if dist > self.attack_radius:
                 # Revenir à l'état de déplacement si le joueur s'éloigne
-                self.state = "moving"
+    #            self.state = "moving"
                 
         # --- Deplacement selon l'état ---
-        if self.state == "idle":
-            self.idle_behavior(cells_arr, cell_dur, cell_vide, cell_liquid)
+    #    if self.state == "idle":
+    #        self.idle_behavior(cells_arr, cell_dur, cell_vide, cell_liquid)
             
-        elif self.state == "moving":
-            self.moving_behavior(Player, cells_arr, cell_dur, cell_vide, cell_liquid)
+    #    elif self.state == "moving":
+    #        self.moving_behavior(Player, cells_arr, cell_dur, cell_vide, cell_liquid)
          
-        elif self.state == "attacking":
-            self.attack(Player)
+    #    elif self.state == "attacking":
+    #        self.attack(Player)
         
 
 
@@ -95,7 +95,6 @@ class Skeleton(Monster):
     #--------------------------------------------------------------------------
     
     def can_walk_on(self, cells_arr, cell_dur, cell_vide, cell_liquid, new_x, new_y):
-        """Vérifie si le squelette peut marcher sur la cellule ciblée."""
         cell_type = cells_arr[int(new_y)][int(new_x)]
         
         if self.is_type(cell_type, cell_dur):              #ne peux pas marcher sur les cellules dures
@@ -104,37 +103,37 @@ class Skeleton(Monster):
             return False
         return True                                        # peux marcher sur les autres cellules (vides, sols)
         
-    def idle_behavior(self, cells_arr, cell_dur, cell_vide, cell_liquid):
-        next_x = self.pos_x + self.direction * 0.05        # vitesse de patrouille en mode idle
-        next_y = self.pos_y                                # on reste sur la même ligne en mode idle
+    #def idle_behavior(self, cells_arr, cell_dur, cell_vide, cell_liquid):
+    #    next_x = self.pos_x + self.direction * 0.05        # vitesse de patrouille en mode idle
+    #    next_y = self.pos_y                                # on reste sur la même ligne en mode idle
         
         # si on sort de la zone de patrouille ou on tape un mur, on inverse la direction :
-        if (next_x < self.patrol_min_x or next_x > self.patrol_max_x or not self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid)):
-            self.direction *= -1
-            next_x = self.pos_x + self.direction * 0.05    # recalculer la prochaine position après inversion
+    #    if (next_x < self.patrol_min_x or next_x > self.patrol_max_x or not self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid)):
+    #        self.direction *= -1
+    #        next_x = self.pos_x + self.direction * 0.05    # recalculer la prochaine position après inversion
         
         # déplacement si la case est autorisée
-        if self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid):
-            self.pos_x = next_x
+    #    if self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid):
+    #        self.pos_x = next_x
             
             
-    def moving_behavior(self, Player, cells_arr, cell_dur, cell_vide, cell_liquid):
+    #def moving_behavior(self, Player, cells_arr, cell_dur, cell_vide, cell_liquid):
         # Déterminer la direction vers le joueur
-        if Player.pos_x > self.pos_x:
-            self.direction = 1
-        elif Player.pos_x < self.pos_x:
-            self.direction = -1
+    #    if Player.pos_x > self.pos_x:
+    #        self.direction = 1
+    #    elif Player.pos_x < self.pos_x:
+    #        self.direction = -1
 
-        next_x = self.pos_x + self.direction
-        next_y = self.pos_y
+    #    next_x = self.pos_x + self.direction
+    #    next_y = self.pos_y
 
         # on réutilise la même logique de collision
-        if self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid):
-            self.pos_x = next_x
+    #    if self.can_walk_on(cells_arr, next_x, next_y, cell_dur, cell_vide, cell_liquid):
+    #        self.pos_x = next_x
         
         
-    def attack(self, Player):
+    #def attack(self, Player):
         # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
-        for _ in range(self.attack_speed):
-            Player.take_damage(self.damage)
+    #    for _ in range(self.attack_speed):
+    #        Player.take_damage(self.damage)
         
