@@ -1,4 +1,3 @@
-import pygame
 import var
 from client.Monster_client.C_monster import Skeleton
 
