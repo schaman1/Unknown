@@ -21,7 +21,8 @@ class Player_all :
 
             if player.is_you :
 
-                screen_global.blit(player.Img_perso,center)
+                screen_global.blit(player.frame_perso[player.frame%4],center)
+                player.update_frame()
 
             else :
 
@@ -34,12 +35,32 @@ class Player :
         self.pos_y = 200#pos_y
         self.cell_size = cell_size
         self.pseudo = pseudo
-        Img = pygame.image.load(Img_perso).convert() #convert_alpha() pour le fond vide
+        Img = pygame.image.load(Img_perso).convert_alpha() #convert_alpha() pour le fond vide
         self.Img_perso= pygame.transform.scale(Img,(10*cell_size,10*cell_size))
         self.is_you = is_you
+        self.frame_perso = []
+        self.frame = 0
+        self.frame_multiplier = 0
+
+        self.init_Img(cell_size)
+
+    def init_Img(self,cell_size):
+        for i in range(4):
+            Img = pygame.image.load(f"assets/player_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.transform.scale(Img,(10*cell_size,10*cell_size))
+            self.frame_perso.append(Img)
+
+    def update_frame(self):
+        self.frame_multiplier +=1
+        if self.frame_multiplier >= 100 :
+            self.frame +=1
+            self.frame_multiplier = 0
 
     def draw(self,screen):
-        screen.blit(self.Img_perso,self.calculate_pos(self.pos_x,self.pos_y))
+
+        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos(self.pos_x,self.pos_y))
+
+        self.update_frame()
 
     def calculate_pos(self,x,y):
         return (x*self.cell_size,y*self.cell_size)
