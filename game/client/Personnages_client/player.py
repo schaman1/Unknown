@@ -25,7 +25,7 @@ class Player_all :
                 player.update_frame()
 
             else :
-
+                screen_global.blit(player.frame_perso[1],center)
                 player.draw(screen_global)
 
 class Player :

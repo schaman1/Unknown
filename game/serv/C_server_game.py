@@ -48,6 +48,7 @@ class Server_game(Server) :
 
             #if len(return_monster) != 0 :
             #    self.send_data_update(return_monster,5)
+            self.handle_clients()
 
             fps = self.fpsClock.get_fps()
             #if fps < 60 : #Affiche le fps quand c'est critique
