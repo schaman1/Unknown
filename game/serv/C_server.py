@@ -1,4 +1,4 @@
-import socket, threading, struct
+import socket, threading, struct, select
 from serv.in_game.C_read_map import Read_map
 from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
@@ -9,6 +9,7 @@ class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
     def __init__(self,port=5000,host='0.0.0.0'):
         self.lClient = {}
+        self.buffers = {}
 
         self.map_cell = Read_map(var.BG_CELL)
         self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
@@ -23,71 +24,74 @@ class Server:
         self.nbr_player = 0
         #self.intervalle_available_server = intervalle
 
-    def handle_client(self, client_socket):
+    def handle_clients(self):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
         
-        try:
-            buffer = bytearray()
-            while True:
-                try:
-                    data = client_socket.recv(1024)
+        #try:
+        #    buffer = bytearray()
+        #    while True:
 
-                    if not data:
-                        print(f"Client déconnecté proprement.")
-                        break
+        sockets = list(self.lClient.keys())
+              
+         # Ne pas appeler select sur une liste vide
+        if len(sockets) == 0:
+            return
+        
+        # select non bloquant (timeout = 0)
+        readable, _, _ = select.select(sockets, [], [], 0)
 
-                    buffer.extend(data)
+        for client_socket in readable :
+            try:
+                data = client_socket.recv(1024)
 
-                    while True:
-                        if len(buffer) < 1:
-                            break
+            except BlockingIOError as e:
+                    continue
+            
+            except Exception as e : 
+                    print("Erreur reception :",e)
 
-                        msg_id = buffer[0]
+            if not data:
+                print(f"Client déconnecté proprement.")
 
-                        # Exemple : ID 0 = start_game (1 byte)
-                        if msg_id == 0: #Start game
-                            msg_len = 1
-
-                        elif msg_id == 1: #
-                            msg_len = 1 + 4 
-
-                        else:
-                            print("UNKNOWN MSG ID", msg_id)
-                            del buffer[0]
-                            continue
-
-                        if len(buffer) < msg_len:
-                            break  # message incomplet
-
-                        msg = buffer[:msg_len]
-                        del buffer[:msg_len]
-
-                        # Traitement
-                        if self.is_running_menu:
-                            self.in_menu(msg, client_socket)
-                        elif self.is_running_game:
-                            self.in_game(msg, client_socket)
-
-
-
-                except ConnectionResetError:
-                    addr = self.safe_peername(client_socket)
-                    print(f"Déconnexion brutale de {addr}")
-                    break
-
-                except Exception as e:
-                    addr = self.safe_peername(client_socket)
-                    print(f"Erreur inattendue côté client {addr} : {e}")
-                    break
-
-        finally:
-                        # Déconnexion
-            is_host = self.lClient[client_socket].is_host
-            if is_host:
-                print("Le host a quitté, fermeture du serveur.")
-                self.stop_server()
-            else : 
                 self.remove_client(client_socket)
+                continue
+
+            # ajouter les données au buffer du client
+            buffer = self.buffers[client_socket]
+            buffer.extend(data)
+
+            while True:
+                if len(buffer) < 1:
+                    break
+
+                msg_id = buffer[0]
+
+                # Exemple : ID 0 = start_game (1 byte)
+                if msg_id == 0: #Start game
+                    msg_size = 1
+
+                elif msg_id == 1: #
+                    msg_size = 1 + 4 
+
+                else:
+                    print("UNKNOWN MSG ID", msg_id)
+                    del buffer[0]
+                    continue
+
+                if len(buffer) < msg_size:
+                    break  # message incomplet
+
+                msg = buffer[:msg_size]
+                del buffer[:msg_size]
+
+                # Traitement
+                self.process_message(client_socket,msg,msg_size)
+
+    def process_message(self,client_socket,msg,msg_size):
+        if self.is_running_menu:
+            self.in_menu(msg, client_socket)
+        elif self.is_running_game:
+            self.in_game(msg, client_socket)
 
     def safe_peername(self, sock):
         """Renvoie une adresse lisible ou 'inconnue' si la socket est fermée."""
@@ -98,7 +102,13 @@ class Server:
 
     def remove_client(self, client_socket):
         """Nettoyage propre d’un client déconnecté."""
-        if client_socket in self.lClient:
+        is_host = self.lClient[client_socket].is_host
+
+        if is_host:
+            print("Le host a quitté, fermeture du serveur.")
+            self.stop_server()
+
+        elif client_socket in self.lClient:
             print(f"Suppression du client {self.safe_peername(client_socket)}")
             try:
                 client_socket.close()
@@ -119,7 +129,7 @@ class Server:
             self.send_client_already_her(sender)
             screen_size = struct.unpack("!HH", data[1:5])
 
-            self.set_param_on_client_arriving(sender,screen_size)
+            self.set_screen_size_client(sender,screen_size)
             
             for client in list(self.lClient.keys()):
 
@@ -327,11 +337,13 @@ class Server:
 
     def loop_server_menu(self):
         """Loop du serveur sachant qu'on est dans le menu = accept les demandes des clients pour venir"""
-        self.server.settimeout(1)
+        self.server.settimeout(0.5)
         while self.is_running_menu:
 
+            self.handle_clients()
             try:
                 client_socket, addr = self.server.accept() #Accept les clients qui veulent rejoindres #Peut faire un system de mdp ici
+                self.set_param_on_client_arriving(client_socket)
             except socket.timeout:
                 continue
             except OSError:
@@ -339,8 +351,9 @@ class Server:
 
             print(f"Nouvelle connexion de {addr}")
             
+            
             #self.set_param_on_client_connection(client_socket)
-            threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
+            #threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
     def send_client_already_her(self,client):
         #self.send_data({"id":"set client already connected","clients":self.lClient})
@@ -356,11 +369,15 @@ class Server:
                     #"sender": False
                 #}, client)
 
-    def set_param_on_client_arriving(self,client_socket,screen_size):
+    def set_param_on_client_arriving(self,client_socket):
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = (200,200),id = self.nbr_player,screen_size = screen_size,host = is_host)
+        self.lClient[client_socket] = Player(pos = (200,200),id = self.nbr_player,screen_size = (None,None),host = is_host)
+        self.buffers[client_socket] = bytearray()
+
+    def set_screen_size_client(self,client_socket,screen_size):
+        self.lClient[client_socket].set_screen_size(screen_size)
         
         #for socket,client in self.lClient.items():
 #
