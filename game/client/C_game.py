@@ -38,12 +38,10 @@ class Game :
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
-        for chunk,list_monster in data_monster.items() :
-
-            for monster in list_monster :
-
-                self.monsters.list_monster[chunk][monster[0]].pos_x = monster[1]
-                self.monsters.list_monster[chunk][monster[0]].pos_y = monster[2]
+        for (chunk, id, x, y) in data_monster :
+                
+            self.monsters.list_monster[chunk][id].pos_x = x
+            self.monsters.list_monster[chunk][id].pos_y = y
 
     def create_light(self,vision:int = 10 ):
         """Permet de faire genre que le personnage voit à une certaine portée"""
@@ -62,13 +60,12 @@ class Game :
         self.canva.fill(color, self.rect_grid[y][x])
 
     def blit_monster(self,screen,x,y):
-        self.monsters.blit_all_monster()
-        screen.blit(self.monsters.canva_monster,(x,y))
+        self.monsters.blit_all_monster(screen)
+        #screen.blit(self.monsters.canva_monster,(x,y))
 
     def blit_players(self,screen,x,y):
         self.player_all.draw_players(screen,self.center)
-        screen.blit(self.player_all.screen_Player,(x,y))
-
+        #screen.blit(self.player_all.screen_Player,(x,y))
 
     def draw(self,screen,x,y):
 
@@ -78,7 +75,4 @@ class Game :
         self.blit_monster(screen,x,y)
         self.blit_players(screen,x,y)
 
-
-
-        screen.blit(self.light,(0,0))
-
+        #screen.blit(self.light,(0,0))
