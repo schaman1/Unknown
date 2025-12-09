@@ -49,4 +49,5 @@ class Player :
     def move(self,delta):
         self.pos_x += delta[0]
         self.pos_y += delta[1]
+        
 
