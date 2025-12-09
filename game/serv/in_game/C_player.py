@@ -18,7 +18,7 @@ class Player :
         self.id = id
         self.is_host = host
         self.screen_size = [None,None]
-        self.set_screen_size(screen_size)
+        #self.set_screen_size(screen_size)
 
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//var.CELL_SIZE + var.PADDING_CANVA
