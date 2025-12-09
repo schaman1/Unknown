@@ -190,15 +190,22 @@ class Main:
         key = pygame.key.get_pressed()
 
         if key[pygame.K_z] :
-            self.client.send_data({"id":"move","deplacement":(0,-1)}) #lié au serveur les données
+            self.client.send_data({"id":"move","deplacement":"move up"}) #lié au serveur les données
 
         if key[pygame.K_s] :
-            self.client.send_data({"id":"move","deplacement":(0,1)}) #lié au serveur les données
+            self.client.send_data({"id":"move","deplacement":"move down"}) #lié au serveur les données
 
 
         if key[pygame.K_q] :
-            self.client.send_data({"id":"move","deplacement":(-1,0)}) #lié au serveur les données
+            self.client.send_data({"id":"move","deplacement":"move left"}) #lié au serveur les données
 
 
         if key[pygame.K_d] :
-            self.client.send_data({"id":"move","deplacement":(1,0)}) #lié au serveur les données
+            self.client.send_data({"id":"move","deplacement":"move right"}) #lié au serveur les données
+        
+
+        #if key[pygame.K_k] :
+        #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0
+
+        #if key[pygame.K_SPACE] : #futur saut (vitesse y)
+        #    self.client.send_data("id":"move", "deplacement":"jump") 
