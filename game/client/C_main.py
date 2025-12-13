@@ -192,18 +192,17 @@ class Main:
         key = pygame.key.get_pressed()
 
         if key[pygame.K_z] :
-            self.client.send_data({"id":"move","deplacement":"move up"}) #lié au serveur les données
+            self.client.send_data(id=3,data=[0]) #lié au serveur les données/haut
 
         if key[pygame.K_s] :
-            self.client.send_data({"id":"move","deplacement":"move down"}) #lié au serveur les données
-
+            self.client.send_data(id=3,data=[1]) #lié au serveur les données/bas
 
         if key[pygame.K_q] :
-            self.client.send_data({"id":"move","deplacement":"move left"}) #lié au serveur les données
+            self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
 
 
         if key[pygame.K_d] :
-            self.client.send_data({"id":"move","deplacement":"move right"}) #lié au serveur les données
+            self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
         
 
         #if key[pygame.K_k] :

@@ -13,6 +13,7 @@ class Client:
 
         self.id = "Coming soon"
         self.err_message = ""
+
         self.buffer = bytearray()
 
         self.font = font
@@ -113,6 +114,12 @@ class Client:
 
             msg_id = self.buffer[0]
 
+            if len(self.buffer)<2 and msg_id!=0 and msg_id!=2:
+                break
+
+            elif len(self.buffer)<3 and msg_id==3 or msg_id==4 or msg_id == 5:
+                break
+
             # Détermine la taille du message selon l'ID
             if msg_id == 0:          # start_game
                 msg_size = 1
@@ -128,6 +135,12 @@ class Client:
 
             elif msg_id == 4:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*10
+
+            elif msg_id==5:
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*10
+
+            elif msg_id==6:
+                msg_size = 1+5
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -167,28 +180,31 @@ class Client:
         # Réception de la réponse
 
         if id == 3 :
+            #cells = struct.iter_unpack("!hhBBBB", data[3:])
 
+                #struct.unpack("!hhBBBB", data[3+i*8 : 11+i*8])
+                #for i in range((size-3)//8)
             self.update_canva(
-                struct.unpack("!HHBBBB", data[3+i*8 : 11+i*8])
-                for i in range((size-3)//8)
+                data
             )
 
-        elif id == 5 : #monsters update
+        elif id == 4 : #monsters update
             self.update_monster(
                 struct.unpack("!HLHH", data[3+i*10 : 13+i*10])
                 for i in range((size-3)//10)
             )
 
-        elif id == "player move":
-            self.main.state.game.player_all.dic_players[data["player"]].move(data["delta"])
-
-        elif id == 4 :#Init monsters
+        elif id == 5 :#Init monsters
 
             cells = []
             for i in range((size-3)//10):
                 cells.append(struct.unpack("!HLHH", data[3+i*10 : 13+i*10]))
 
             self.main.state.game.monsters.init_monster(cells,self.screen)
+
+        elif id==6:
+            id_player,pos_x,pos_y=struct.unpack("!Bhh",data[1:6])
+            self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
 
         elif id == 1 :
 
@@ -229,7 +245,10 @@ class Client:
 
         if id == 1 :
             packet += struct.pack("!HH", data[0], data[1])
-        
+            
+        elif id == 3 :
+            packet+= struct.pack("!B",data[0])
+
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())
 

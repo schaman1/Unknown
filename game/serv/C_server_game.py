@@ -29,7 +29,10 @@ class Server_game(Server) :
         new.server = server.server
         new.nbr_player = server.nbr_player
         new.map_cell = server.map_cell
+        new.buffers = server.buffers
         new.map_monster = server.map_monster
+        new.is_running_menu=False
+        new.is_running_game=True
 
         return new
 
@@ -44,14 +47,13 @@ class Server_game(Server) :
             
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,3)
-                #self.send_data_update(result_cell,"to change cell") #Envoie à tt le monde tout les nouveau pixels à draw
 
             #if len(return_monster) != 0 :
-            #    self.send_data_update(return_monster,5)
+            #    self.send_data_update(return_monster,4)
             self.handle_clients()
 
             fps = self.fpsClock.get_fps()
-            #if fps < 60 : #Affiche le fps quand c'est critique
+            #if fps < 220 : #Affiche le fps quand c'est critique
             print(fps)
 
         print("End boucle loop_server_game")
@@ -66,9 +68,9 @@ class Server_game(Server) :
         self.send_data_all([0]) #0 pour start game
 
         result_cell = self.init_canva()
-        result_monster = self.init_mobs()
+        #result_monster = self.init_mobs()
 
         self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
-        self.send_data_update(result_monster,4) #Envoie à tt le monde tout les nouveau pixels à draw
+        #self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau pixels à draw
 
         threading.Thread(target=self.loop_server_game, daemon=True).start()

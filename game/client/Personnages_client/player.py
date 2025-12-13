@@ -15,7 +15,7 @@ class Player_all :
         if is_you :
             self.client_id = id
 
-    def draw_players(self,screen_global,center):
+    def draw_players(self,screen_global,center,xscreen,yscreen):
 
         for player in self.dic_players.values():
 
@@ -25,8 +25,8 @@ class Player_all :
                 player.update_frame()
 
             else :
-                screen_global.blit(player.frame_perso[1],center)
-                player.draw(screen_global)
+                #screen_global.blit(player.frame_perso[1],(player.pos_x,player.pos_y))
+                player.draw(screen_global,xscreen,yscreen)
 
 class Player :
 
@@ -46,7 +46,7 @@ class Player :
 
     def init_Img(self,cell_size):
         for i in range(4):
-            Img = pygame.image.load(f"assets/monster frame/monster_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.image.load(f"assets/player_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(10*cell_size,10*cell_size))
             self.frame_perso.append(Img)
 
@@ -56,14 +56,13 @@ class Player :
             self.frame +=1
             self.frame_multiplier = 0
 
-    def draw(self,screen):
-
-        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos(self.pos_x,self.pos_y))
-
+    def draw(self,screen,xscreen,yscreen):
+        
+        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos(self.pos_x,self.pos_y,xscreen,yscreen))
         self.update_frame()
 
-    def calculate_pos(self,x,y):
-        return (x*self.cell_size,y*self.cell_size)
+    def calculate_pos(self,x,y,xscreen,yscreen):
+        return (x*self.cell_size+xscreen,y*self.cell_size+yscreen)
 
     def move(self,delta):
         self.pos_x += delta[0]

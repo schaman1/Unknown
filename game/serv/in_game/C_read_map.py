@@ -33,7 +33,7 @@ class Read_map:
         #print(grid_pixels[450, 530, :])
         mask_sand = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 255) & (grid_pixels[:, :, 2] == 0)
         mask_water = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 255)
-        mask_wood = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 0)
+        mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_stone = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 127)
         mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
@@ -68,6 +68,35 @@ class Read_map:
         b = np.random.randint(b_range[0], b_range[1]+1, num, dtype=np.uint8)
         a = np.full(num, transparence, dtype=np.uint8)
         return np.stack([r, g, b, a], axis=1)
+    
+    def return_cells_delta(self, client, delta):
+        # 1. Préparer les paramètres (comme avant)
+        cells_of_columns = []
+        signex = 1
+        signey = 1
+
+        if delta[0] < 0:
+            signex = -1
+
+        # 2. Collecter les listes de colonnes (pas de concaténation ici !)
+        for i in range(delta[0] * signex):
+            deltax = (i + client.screen_size[0] // 2) * signex
+            deltay = -(client.screen_size[1]//2)
+            
+            # Nous stockons la liste retournée dans notre liste de listes
+            cells_of_columns.append(
+                njitBoucle.return_column(client.pos_x + deltax, 
+                                        client.pos_y + deltay, 
+                                        client.screen_size[1], 
+                                        self.grid_color)
+            )
+            
+        # 3. Aplatir toutes les listes collectées en une seule passe
+        # La compréhension de liste est TRES rapide pour cela.
+        cells = [cell for sublist in cells_of_columns for cell in sublist]
+        
+        # 4. Retour
+        return cells
 
     def return_all(self,lClient):
         cells = []
@@ -77,9 +106,7 @@ class Read_map:
                 deltax = column-(client.screen_size[0]//2)
                 deltay = -(client.screen_size[1]//2)
                 cells[i]+=(njitBoucle.return_column(client.pos_x+deltax,client.pos_y+deltay,client.screen_size[1],self.grid_color))
-        
-        #print(cells)
-        
+
         return cells
     
     def return_colomn(self,client,nbr_column):
@@ -106,8 +133,9 @@ class Read_map:
         #self.grid_type[450,450] = self.type["FIRE"]
         #self.temp[450,450] = 255
 
-        self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
 
+        self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
+        #return([[0],])
         self.ys , self.xs = njitBoucle.return_x_y(self.visible)
 
         moved_cells = njitBoucle.move_fast(

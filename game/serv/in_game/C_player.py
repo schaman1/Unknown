@@ -26,11 +26,41 @@ class Player :
         
     def move(self,delta,cells_arr = None,cell_dur= None,cell_vide= None,cell_liquid= None): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
+
+        if delta==0:
+            delta = self.move_up()
+
+        elif delta==1:
+            delta = self.move_down()
+
+        elif delta==2:
+            delta = self.move_left()
+
+        elif delta==3:
+            delta = self.move_right()
+
+        return delta#(self.pos_x,self.pos_y)
         
-        delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
-        self.pos_x += delta_collision[0] 
-        self.pos_y += delta_collision[1] 
-        return delta_collision
+        #delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
+        #self.pos_x += delta_collision[0] 
+        #self.pos_y += delta_collision[1] 
+        #return delta_collision
+    
+    def move_up(self):
+        self.pos_y-=1
+        return (0,-1)
+
+    def move_down(self):
+        self.pos_y+=1
+        return(0,1)
+
+    def move_left(self):
+        self.pos_x-=1
+        return (-1,0)
+
+    def move_right(self):
+        self.pos_x+=1
+        return(1,0)
     
 
     def gravite(self, vitesse_y, cells_arr,cell_dur,cell_vide,cell_liquid):
@@ -46,7 +76,6 @@ class Player :
         elif self.is_type(cells_arr[self.pos_x, self.pos_y +1], cell_liquid) and self.vitesse_y<-4:
             self.vitesse_y-=0,5 #si liquide vitesse_y diminue petit à petit jusqu'à -vitesse_y pour remontée petit à petit
 
-          
 
     def colision(self, delta, cells_arr,cell_dur,cell_vide,cell_liquid):
         '''Gère les collisions eau/solide avec le décor'''
