@@ -34,8 +34,26 @@ def return_column(x:int,y:int,length:int,grid_color):
     return moved
 
 #@njit
+#def return_x_y(visible):
+#    ys, xs = np.where(np.any(visible, axis=0))  # Trouver les indices où au moins un client voit la cellule
+#    return ys, xs
+
+@njit
 def return_x_y(visible):
-    ys, xs = np.where(np.any(visible, axis=0))  # Trouver les indices où au moins un client voit la cellule
+    # visible a la forme (N_CLIENTS, H, W)
+    # Remplacer np.any(visible, axis=0) par une boucle Numba-friendly
+    
+    N_CLIENTS, H, W = visible.shape
+    
+    # Créer le masque 2D résultat, initialisé à False
+    visible_2d = np.zeros((H, W), dtype=np.bool_)
+    
+    # Parcourir les clients (l'axe 0) et faire un OR logique
+    # Ceci est l'équivalent de np.any(visible, axis=0)
+    for i in range(N_CLIENTS):
+        visible_2d |= visible[i, :, :]
+        
+    ys, xs = np.where(visible_2d)  # Trouver les indices où au moins un client voit la cellule
     return ys, xs
 
 #@njit

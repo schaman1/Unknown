@@ -1,6 +1,7 @@
 import pygame
 from client.Personnages_client.player import Player_all
 from client.Monster_client.C_monster_all import Monster_all
+import client.njitBoucleClient as njClient
 import var
 
 class Game :
@@ -10,6 +11,7 @@ class Game :
         self.cell_size = cell_size
         self.center = (self.canva_size[0]//2,self.canva_size[1]//2)
         self.canva = pygame.Surface((canva_size[0]*cell_size,canva_size[1]*cell_size), pygame.SRCALPHA)
+        #self.canva.set_colorkey((0,0,0))
         #self.canva_map = self.map.canva
         self.bg = pygame.image.load("assets/bgGlobal.png").convert()
         self.bg = pygame.transform.scale(self.bg, (canva_size[0],canva_size[1]))
@@ -32,8 +34,8 @@ class Game :
 
     def update_canva(self,l):
         """Reçoit les données l du serveur et appelle update"""
-        for e in l :
-            self.switch_cell(e)
+        #njClient.update_canva_njit(self.canva,self.rect_grid,l)
+        njClient.update_canva_surfarray(self.canva,l,self.cell_size)
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -50,24 +52,17 @@ class Game :
         for i in range(10):
             pygame.draw.circle(self.light, (0,0,0,200 - (i+1)*20), self.center, (vision+2-i/5)*self.cell_size, width=0)
 
-    def switch_cell(self,el:tuple):
-        """Chaque donné contient le x/y et les couleurs = dessine sur le canva !IMPORTANT : dessine pas sur le screen"""
-
-        x,y,r,g,b,a = el
-        color = (r,g,b,a)
-
-        #self.canva.fill((0,255,0,255), pygame.Rect(500,500,50,50))
-        self.canva.fill(color, self.rect_grid[y][x])
 
     def blit_monster(self,screen,x,y):
         self.monsters.blit_all_monster(screen)
         #screen.blit(self.monsters.canva_monster,(x,y))
 
     def blit_players(self,screen,x,y):
-        self.player_all.draw_players(screen,self.center)
+        self.player_all.draw_players(screen,self.center,x,y)
         #screen.blit(self.player_all.screen_Player,(x,y))
 
     def draw(self,screen,x,y):
+        """Blit le canva sur le screen à la position x,y"""
 
         screen.blit(self.bg,(0,0))
         screen.blit(self.canva, (x, y))

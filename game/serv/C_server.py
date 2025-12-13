@@ -1,4 +1,4 @@
-import socket, threading, struct, select
+import socket, threading, struct, select, sys
 from serv.in_game.C_read_map import Read_map
 from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
@@ -73,6 +73,10 @@ class Server:
                 elif msg_id == 1: #
                     msg_size = 1 + 4 
 
+                elif msg_id==3:
+                    msg_size=1+1
+                    #print(len(buffer))
+
                 else:
                     print("UNKNOWN MSG ID", msg_id)
                     del buffer[0]
@@ -88,6 +92,7 @@ class Server:
                 self.process_message(client_socket,msg,msg_size)
 
     def process_message(self,client_socket,msg,msg_size):
+
         if self.is_running_menu:
             self.in_menu(msg, client_socket)
         elif self.is_running_game:
@@ -103,6 +108,7 @@ class Server:
     def remove_client(self, client_socket):
         """Nettoyage propre d’un client déconnecté."""
         is_host = self.lClient[client_socket].is_host
+        print("Suppression d'un client")
 
         if is_host:
             print("Le host a quitté, fermeture du serveur.")
@@ -114,6 +120,10 @@ class Server:
                 client_socket.close()
             except:
                 pass
+
+            if client_socket in self.buffers:
+                del self.buffers[client_socket]
+
             del self.lClient[client_socket]
         else:
             print(f"Tentative de suppression d’un client déjà supprimé.")
@@ -167,11 +177,20 @@ class Server:
 
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
-        id = data["id"]
 
-        if id == "move" :
-            delta = self.lClient[sender].move(data["deplacement"])
-            self.send_data_all({"id":"player move","player":self.lClient[sender].id,"delta":delta})
+        id_msg = struct.unpack("!B", data[0:1])[0]
+
+        if id_msg == 3 :
+
+            dep = struct.unpack("!B", data[1:2])[0]
+            delta = self.lClient[sender].move(dep,self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+            self.send_data_all((6,self.lClient[sender].id,delta[0],delta[1]))
+
+            cell = self.map_cell.return_cells_delta(self.lClient[sender],delta)
+            self.send_data_all([3,cell])
+
+        else :
+            print(id_msg)
 
     def send_data_all(self,data):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
@@ -180,7 +199,8 @@ class Server:
                 #print("Send successfuly")
                 self.send_data(data, socket)
             except Exception as e:
-                print("Erreur envoi, {e}")
+                #print(data)
+                print(f"Erreur envoi, {e}",file=sys.stderr)
                 pass  # ou suppression du client mort
 
         for socket in self.lClient.keys():
@@ -194,7 +214,7 @@ class Server:
                 #print("Send successfuly")
                 self.send_data(message, socket)
             except Exception as e:
-                print("Erreur envoi ",e)
+                print(f"Erreur envoi bis {e}",file=sys.stderr)
                 pass  # ou suppression du client mort
 
         for cnt,socket in enumerate(self.lClient.keys()):
@@ -209,7 +229,7 @@ class Server:
 
         # données des cellules
         for (x, y, r, g, b, a) in cells:
-            packet += struct.pack("!HHBBBB", x, y, r, g, b, a)
+            packet += struct.pack("!hhBBBB", x, y, r, g, b, a)
 
         return bytes(packet)
     
@@ -226,6 +246,7 @@ class Server:
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
+
         packet = bytearray()
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
@@ -244,6 +265,12 @@ class Server:
 
         elif id == 4:
             self.pack_monsters(data[1],packet)
+
+        elif id==5:
+            self.pack_monsters(data[1],packet)
+
+        elif id==6:
+            packet+=struct.pack("!Bhh",data[1],data[2],data[3])
 
         else :
             print("Issue id not found : ",id)
