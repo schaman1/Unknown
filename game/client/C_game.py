@@ -1,7 +1,7 @@
 import pygame
 from client.Personnages_client.player import Player_all
 from client.Monster_client.C_monster_all import Monster_all
-import client.njitBoucleClient as njClient
+import client.OptiClient as njClient
 import var
 
 class Game :

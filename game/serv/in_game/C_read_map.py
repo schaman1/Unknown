@@ -78,25 +78,48 @@ class Read_map:
         if delta[0] < 0:
             signex = -1
 
+        if delta[1] < 0:
+            signey = -1
+
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
         for i in range(delta[0] * signex):
-            deltax = (i + client.screen_size[0] // 2) * signex
+
+            deltax = (i + client.screen_size[0] // 2 -1) * signex
             deltay = -(client.screen_size[1]//2)
+            if signey==-1:
+                deltay+=delta[1]
             
             # Nous stockons la liste retournée dans notre liste de listes
             cells_of_columns.append(
                 njitBoucle.return_column(client.pos_x + deltax, 
-                                        client.pos_y + deltay, 
-                                        client.screen_size[1], 
+                                        client.pos_y + deltay,
+                                        client.screen_size[1]+delta[1]*signey, 
                                         self.grid_color)
             )
+
+        # 2. Collecter les listes de colonnes (pas de concaténation ici !)
+        for i in range(delta[1] * signey):
+
+            deltax = -(client.screen_size[0] // 2)
+            deltay = (i + client.screen_size[1]//2)*signey
+            if signex==-1:
+                deltax+=delta[0]
             
+            # Nous stockons la liste retournée dans notre liste de listes
+            cells_of_columns.append(
+                njitBoucle.return_raw(client.pos_x + deltax, 
+                                        client.pos_y + deltay,
+                                        client.screen_size[0]+delta[0]*signex, 
+                                        self.grid_color)
+            )
         # 3. Aplatir toutes les listes collectées en une seule passe
         # La compréhension de liste est TRES rapide pour cela.
         cells = [cell for sublist in cells_of_columns for cell in sublist]
         
         # 4. Retour
         return cells
+            
+            
 
     def return_all(self,lClient):
         cells = []
