@@ -1,6 +1,5 @@
 #from numba import njit
 
-#@njit
 import pygame.surfarray as surfarray
 import struct
 

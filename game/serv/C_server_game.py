@@ -54,7 +54,7 @@ class Server_game(Server) :
 
             fps = self.fpsClock.get_fps()
             #if fps < 220 : #Affiche le fps quand c'est critique
-            print(fps)
+            #print(fps)
 
         print("End boucle loop_server_game")
 

@@ -25,11 +25,27 @@ def return_column(x:int,y:int,length:int,grid_color):
         ys = y+i
         if grid_color[ys, x, 3] != 0 :
             moved.append((x,
-                        y+i,                            
+                        ys,                            
                         grid_color[ys, x, 0],
                         grid_color[ys, x, 1],
                         grid_color[ys, x, 2],
                         grid_color[ys, x, 3])
+                        )
+    return moved
+
+@njit
+def return_raw(x:int,y:int,length:int,grid_color):
+    """Return colonne = column"""
+    moved = [(0,0,0,0,0,0)]
+    for i in range(length):
+        xs = x+i
+        if grid_color[y, xs, 3] != 0 :
+            moved.append((xs,
+                        y,                            
+                        grid_color[y, xs, 0],
+                        grid_color[y, xs, 1],
+                        grid_color[y, xs, 2],
+                        grid_color[y, xs, 3])
                         )
     return moved
 
