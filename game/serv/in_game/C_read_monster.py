@@ -31,11 +31,11 @@ class Read_monster :
         for i in range(len(lInfoClient)):
             #list_modif.append({})
             list_modif.append([])
-            for key in self.dic_monster :
+            for chunk in self.dic_monster :
                 #list_modif[i] = []
-                for monster in self.dic_monster[key] :
+                for monster in self.dic_monster[chunk] :
 
-                    list_modif[i].append((key,monster.id, monster.pos_x, monster.pos_y))
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y))
 
         return list_modif
 

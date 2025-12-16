@@ -214,7 +214,7 @@ class Server:
                 #print("Send successfuly")
                 self.send_data(message, socket)
             except Exception as e:
-                print(f"Erreur envoi bis {e}",file=sys.stderr)
+                print(f"Erreur envoi bis {e}")#,file=sys.stderr)
                 pass  # ou suppression du client mort
 
         for cnt,socket in enumerate(self.lClient.keys()):
@@ -234,6 +234,8 @@ class Server:
         return bytes(packet)
     
     def pack_monsters(self,monsters,packet):
+
+        #print("Pack monsters")
 
         # nombre de cellules
         packet += struct.pack("!H", len(monsters))
@@ -268,7 +270,7 @@ class Server:
 
         elif id==5:
             self.pack_monsters(data[1],packet)
-
+            
         elif id==6:
             packet+=struct.pack("!Bhh",data[1],data[2],data[3])
 
@@ -276,13 +278,18 @@ class Server:
             print("Issue id not found : ",id)
 
         try:
+
             client.send(packet)
+
         except OSError:
             # Déconnexion
             is_host = self.lClient.get(client, {}).get("Host", False)
             if is_host:
                 print("Le host a quitté, fermeture du serveur.")
                 self.stop_server()
+
+        except Exception as e:
+            print(f"Erreur envoi: {e}")
 
     def stop_server(self):
         """Arrête le serveur et déconnecte tous les clients."""

@@ -68,9 +68,11 @@ class Server_game(Server) :
         self.send_data_all([0]) #0 pour start game
 
         result_cell = self.init_canva()
-        #result_monster = self.init_mobs()
+        result_monster = self.init_mobs()
+
+        print(result_monster)
 
         self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
-        #self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau pixels à draw
+        self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
 
         threading.Thread(target=self.loop_server_game, daemon=True).start()

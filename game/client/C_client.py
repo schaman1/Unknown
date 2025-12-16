@@ -89,6 +89,7 @@ class Client:
             data = self.client.recv(1024)
 
         except BlockingIOError:
+            print("Erreur socket non prêt")
             return  # socket non prêt (rare si select utilisé)
 
         except Exception as e:
@@ -114,10 +115,10 @@ class Client:
 
             msg_id = self.buffer[0]
 
-            if len(self.buffer)<2 and msg_id!=0 and msg_id!=2:
+            if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and msg_id==3 or msg_id==4 or msg_id == 5:
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -195,7 +196,7 @@ class Client:
             )
 
         elif id == 5 :#Init monsters
-
+            print("Init monsters received")
             cells = []
             for i in range((size-3)//10):
                 cells.append(struct.unpack("!HLHH", data[3+i*10 : 13+i*10]))
@@ -217,8 +218,6 @@ class Client:
                 text = f"{text} (vous)"
 
             self.main.state.game.player_all.add_Player(self.id,
-                               Img_perso = "assets/playerImg.png",
-                               pos = (500,500),
                                is_you = data[2],
                                pseudo = text)
 
