@@ -54,7 +54,7 @@ class Game :
 
 
     def blit_monster(self,screen,x,y):
-        self.monsters.blit_all_monster(screen)
+        self.monsters.blit_all_monster(screen,x,y)
         #screen.blit(self.monsters.canva_monster,(x,y))
 
     def blit_players(self,screen,x,y):

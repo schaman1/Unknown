@@ -1,4 +1,6 @@
 import pygame
+from client.C_mob import Mob
+
 
 class Player_all :
     '''
@@ -8,9 +10,10 @@ class Player_all :
         self.dic_players = {}
         self.cell_size = cell_size
         self.client_id = None
+        self.spawn_point = (200,200)
 
-    def add_Player(self,id,Img_perso = None,pos = (500,500), is_you = False, pseudo = "Coming soon"):
-        self.dic_players[id] = Player(Img_perso,self.cell_size,pos[0],pos[1],pseudo,is_you)
+    def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
+        self.dic_players[id] = Player(self.cell_size,self.spawn_point,pseudo,is_you)
 
         if is_you :
             self.client_id = id
@@ -21,22 +24,21 @@ class Player_all :
 
             if player.is_you :
 
-                screen_global.blit(player.frame_perso[player.frame%4],center)
-                player.update_frame()
+                #screen_global.blit(player.frame_perso[player.frame%4],center)
+                player.draw(screen_global,xscreen,yscreen)
+                #player.update_frame()
 
             else :
                 #screen_global.blit(player.frame_perso[1],(player.pos_x,player.pos_y))
                 player.draw(screen_global,xscreen,yscreen)
 
-class Player :
+class Player(Mob) :
 
-    def __init__(self,Img_perso,cell_size,pos_x = 500, pos_y=500, pseudo = "Coming soon",is_you = False):
-        self.pos_x = 200#pos_x
-        self.pos_y = 200#pos_y
-        self.cell_size = cell_size
+    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
+
+        super().__init__(pos[0],pos[1],cell_size,size=(5,5))
+
         self.pseudo = pseudo
-        Img = pygame.image.load(Img_perso).convert_alpha() #convert_alpha() pour le fond vide
-        self.Img_perso= pygame.transform.scale(Img,(10*cell_size,10*cell_size))
         self.is_you = is_you
         self.frame_perso = []
         self.frame = 0
@@ -58,11 +60,11 @@ class Player :
 
     def draw(self,screen,xscreen,yscreen):
         
-        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos(self.pos_x,self.pos_y,xscreen,yscreen))
+        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos_blit(xscreen,yscreen))
         self.update_frame()
 
-    def calculate_pos(self,x,y,xscreen,yscreen):
-        return (x*self.cell_size+xscreen,y*self.cell_size+yscreen)
+    #def calculate_pos(self,xscreen,yscreen):
+    #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
 
     def move(self,delta):
         self.pos_x += delta[0]
