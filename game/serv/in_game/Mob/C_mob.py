@@ -1,6 +1,5 @@
 import var
 
-
 class Mob:
 
     def __init__(self,pos,hp = 100,id=None):
@@ -22,15 +21,23 @@ class Mob:
             self.vitesse_y += self.acceleration
 
         i=0
-        while i<self.vitesse_y and not self.is_type(grid_cell[self.pos_y+i,self.pos_x],cell_dur) :
+        while i<self.vitesse_y and not self.touch_wall(i,0,grid_cell,cell_dur):#self.is_type(grid_cell[self.pos_y+i,self.pos_x],cell_dur) :
             i+=1
         
         if i != self.vitesse_y :
             self.vitesse_y=0
 
+    def touch_wall(self,i,j,grid_cell,cell_dur):
+        return self.is_type(grid_cell[self.pos_y+i,self.pos_x+j],cell_dur)
 
     def is_type(self, type_cell, type_check):
         """Vérifie si la cellule à la position (x,y) est du type spécifié"""
         if type_check[0] <= type_cell <= type_check[1]:
             return True
         return False
+    
+    def return_signe(self,e):
+        if e<0:
+            return -1
+        else :
+            return 1
