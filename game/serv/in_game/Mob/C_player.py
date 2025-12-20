@@ -23,9 +23,17 @@ class Player(Mob) :
         self.screen_size[1] = screen_size[1]//var.CELL_SIZE + var.PADDING_CANVA
 
 
-    def return_delta_vitesse(self):
+    def return_delta_vitesse(self,grid_cell,cell_dur):
 
         if self.vitesse_x+self.pos_x>=self.screen_global_size[0] or self.vitesse_x+self.pos_x<0:
+            self.vitesse_x=0
+
+        j=0
+        s = self.return_signe(self.vitesse_x)
+        while j<self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
+            j+=1
+        
+        if j!=self.vitesse_x*s :
             self.vitesse_x=0
 
         if self.vitesse_y+self.pos_y>=self.screen_global_size[1] or self.vitesse_y+self.pos_y<0:
@@ -49,7 +57,7 @@ class Player(Mob) :
 
     def add_vitesse_to_pos(self,delta):
 
-        print(self.pos_x,self.pos_y,self.screen_global_size)
+        #print(self.pos_x,self.pos_y,self.screen_global_size)
 
         self.pos_x+=delta[0]
 
@@ -59,7 +67,7 @@ class Player(Mob) :
 
         self.gravity_effect(grid_cell,dur)
 
-        delta = self.return_delta_vitesse()
+        delta = self.return_delta_vitesse(grid_cell,dur)
 
         self.add_vitesse_to_pos(delta)
 
