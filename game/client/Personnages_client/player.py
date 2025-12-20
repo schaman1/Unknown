@@ -36,7 +36,7 @@ class Player(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
 
-        super().__init__(pos[0],pos[1],cell_size,size=(5,5))
+        super().__init__(pos[0],pos[1],cell_size,size=(10,10))
 
         self.pseudo = pseudo
         self.is_you = is_you
@@ -49,7 +49,7 @@ class Player(Mob) :
     def init_Img(self,cell_size):
         for i in range(4):
             Img = pygame.image.load(f"assets/player_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
-            Img = pygame.transform.scale(Img,(10*cell_size,10*cell_size))
+            Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
             self.frame_perso.append(Img)
 
     def update_frame(self):
@@ -59,9 +59,16 @@ class Player(Mob) :
             self.frame_multiplier = 0
 
     def draw(self,screen,xscreen,yscreen):
+
         
         screen.blit(self.frame_perso[self.frame%4],self.calculate_pos_blit(xscreen,yscreen))
         self.update_frame()
+        
+        #pygame.draw.rect( #Pour voir ou le perso est en temps reel
+        #    screen,
+        #    (255, 255, 255),  # couleur (blanc)
+        #    pygame.Rect(self.pos_x*self.cell_size+xscreen, self.pos_y*self.cell_size+yscreen, self.cell_size, self.cell_size)
+        #)
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)

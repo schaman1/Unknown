@@ -1,14 +1,14 @@
 import math
+from serv.in_game.Mob.C_mob import Mob
 
-class Monster:
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1):
+class Monster(Mob):
+    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None):
+
+        super().__init__((x,y),hp,id)
+
         self.hp = hp
         self.damage = damage
         
-        self.pos_x = x
-        self.pos_y = y
-        
-        self.radius = rad
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
         
@@ -22,8 +22,6 @@ class Monster:
         if self.hp < 0:
             self.hp = 0
         
-    
-            
     #def distance_to_player(self, Player):
         """Distance euclidienne en cases entre le monstre et le joueur."""
     #    return math.sqrt((self.pos_x - Player.pos_x) ** 2 + (self.pos_y - Player.pos_y) ** 2)
@@ -71,22 +69,13 @@ class Monster:
          
     #    elif self.state == "attacking":
     #        self.attack(Player)
-        
-
-
-
-
-
-
-
 
 class Skeleton(Monster):
     def __init__(self, x, y, id):
         
-        super().__init__(hp=50, damage=10, x=x, y=y, rad=10, atk_rad=1.5, atk_speed=1)
+        super().__init__(hp=50, damage=10, x=x, y=y, rad=10, atk_rad=1.5, atk_speed=1, id = id)
         
         self.name = 0 #:"Skeleton"
-        self.id = id
 
         self.direction = 1        # 1 = va vers la droite, -1 = vers la gauche
         self.idle_min_x = x - 3   # borne gauche de patrouille (idle) (3 cases autour de la position de spawn)

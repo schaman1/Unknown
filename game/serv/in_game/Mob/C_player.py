@@ -1,51 +1,67 @@
 import var
+from serv.in_game.Mob.C_mob import Mob
 
 
-class Player :
+class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire) et les sauts (vitesse verticale négative)'''
 
-    def __init__(self,pos,id,screen_size,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
-        self.pos_x = pos[0]
-        self.pos_y = pos[1]
+    def __init__(self,pos,id,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
+
+        super().__init__(pos,hp,id)
+
         self.hp = hp
 
-        # Vitesse de déplacement
-        self.vitesse_x = 0#vitesse_x #bassée à 1 pour les cellules
-        self.vitesse_y = 0#vitesse_y
-
         self.damage_taken = damage
-        self.id = id
         self.is_host = host
+        self.vitesse_max = 1
+
         self.screen_size = [None,None]
-        #self.set_screen_size(screen_size)
 
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//var.CELL_SIZE + var.PADDING_CANVA
         self.screen_size[1] = screen_size[1]//var.CELL_SIZE + var.PADDING_CANVA
 
+
     def return_delta_vitesse(self):
+
+        if self.vitesse_x+self.pos_x>=self.screen_global_size[0] or self.vitesse_x+self.pos_x<0:
+            self.vitesse_x=0
+
+        if self.vitesse_y+self.pos_y>=self.screen_global_size[1] or self.vitesse_y+self.pos_y<0:
+            self.vitesse_y=0
+
         return (self.vitesse_x,self.vitesse_y)
-    
+
     def update_vitesse(self):
 
         if self.vitesse_x<0:
-            self.vitesse_x+=1
+            self.vitesse_x+=self.acceleration
 
         elif self.vitesse_x>0:
-            self.vitesse_x-=1
+            self.vitesse_x-=self.acceleration
 
-        if self.vitesse_y<0:
-            self.vitesse_y+=1
+        #if self.vitesse_y<0:
+        #    self.vitesse_y+=1
+#
+        #elif self.vitesse_y>0:
+        #    self.vitesse_y-=1
 
-        elif self.vitesse_y>0:
-            self.vitesse_y-=1
+    def add_vitesse_to_pos(self,delta):
 
-    def update_pos(self):
+        print(self.pos_x,self.pos_y,self.screen_global_size)
+
+        self.pos_x+=delta[0]
+
+        self.pos_y+=delta[1]
+
+    def update_pos(self,grid_cell,dur,vide,liquid):
+
+        self.gravity_effect(grid_cell,dur)
 
         delta = self.return_delta_vitesse()
-        self.pos_x+=delta[0]
-        self.pos_y+=delta[1]
+
+        self.add_vitesse_to_pos(delta)
 
         self.update_vitesse()
 
@@ -73,23 +89,23 @@ class Player :
     
     def move_up(self):
         #self.pos_y-=1
-        if self.vitesse_y>-3:
-            self.vitesse_y-=1
+        if self.vitesse_y>-self.vitesse_max:
+            self.vitesse_y-=self.acceleration
 
     def move_down(self):
         #self.pos_y+=1
-        if self.vitesse_y<3:
-            self.vitesse_y+=1
+        if self.vitesse_y<self.vitesse_max:
+            self.vitesse_y+=self.acceleration
 
     def move_left(self):
         #self.pos_x-=1
-        if self.vitesse_x>-3:
-            self.vitesse_x-=1
+        if self.vitesse_x>-self.vitesse_max:
+            self.vitesse_x-=self.acceleration
 
     def move_right(self):
         #self.pos_x+=1
-        if self.vitesse_x<3:
-            self.vitesse_x+=1
+        if self.vitesse_x<self.vitesse_max:
+            self.vitesse_x+=self.acceleration
     
     def gravite(self, vitesse_y, cells_arr,cell_dur,cell_vide,cell_liquid):
         '''Gravité simple'''
@@ -117,13 +133,6 @@ class Player :
             delta[0]=1
         
         return delta
-
-
-    def is_type(self, type_cell, type_check):
-        """Vérifie si la cellule à la position (x,y) est du type spécifié"""
-        if type_check[0] <= type_cell <= type_check[1]:
-            return True
-        return False
     
     
     def take_damage(self, amount):

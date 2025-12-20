@@ -2,7 +2,7 @@ import socket, threading, struct, select, sys
 from serv.in_game.C_read_map import Read_map
 from serv.in_game.C_read_monster import Read_monster
 import var #Fichier
-from serv.in_game.C_player import Player
+from serv.in_game.Mob.C_player import Player
 #from serv.server_game import Server_game
 
 class Server:
@@ -184,10 +184,6 @@ class Server:
 
             dep = struct.unpack("!B", data[1:2])[0]
             self.lClient[sender].move_from_key(dep,self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
-            #self.send_data_all((6,self.lClient[sender].id,delta[0],delta[1]))
-
-            #cell = self.map_cell.return_cells_delta(self.lClient[sender],delta)
-            #self.send_data_all([3,cell])
 
         else :
             print(id_msg)
@@ -408,7 +404,7 @@ class Server:
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = var.SPAWN_POINT,id = self.nbr_player,screen_size = (None,None),host = is_host)
+        self.lClient[client_socket] = Player(pos = var.SPAWN_POINT,id = self.nbr_player,host = is_host)
         self.buffers[client_socket] = bytearray()
 
     def set_screen_size_client(self,client_socket,screen_size):
