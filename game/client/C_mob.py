@@ -6,6 +6,7 @@ class Mob:
         self.pos_y = y
         self.cell_size = cell_size
         self.width,self.height = size
+        #print(size)
 
     def calculate_pos_blit(self,x,y):
         xs = self.pos_x * self.cell_size - self.width//2*self.cell_size +x

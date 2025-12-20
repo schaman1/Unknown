@@ -18,7 +18,7 @@ class State:
         self.load = Load(screen)
 
 
-        self.game = Game(cell_size,self.Size)
+        self.game = Game(cell_size)
 
         self.join = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Rejoindre une partie",self.font,"join")
         self.host = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Creer une partie",self.font,"host")
