@@ -4,6 +4,7 @@ import pygame.surfarray as surfarray
 import struct
 
 def update_canva_surfarray(canva, data, CELL):
+    #CELL = 1 #Pour voir toute la map
     rgb = surfarray.pixels3d(canva)
     alpha = surfarray.pixels_alpha(canva)
 

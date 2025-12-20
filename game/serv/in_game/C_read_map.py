@@ -84,7 +84,7 @@ class Read_map:
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
         for i in range(delta[0] * signex):
 
-            deltax = (i + client.screen_size[0] // 2 -1) * signex
+            deltax = (-i + client.screen_size[0] // 2 -1) * signex #On fais -i car le player a deja bougé donc sa pos_x a deja change !
             deltay = -(client.screen_size[1]//2)
             if signey==-1:
                 deltay+=delta[1]
@@ -101,7 +101,7 @@ class Read_map:
         for i in range(delta[1] * signey):
 
             deltax = -(client.screen_size[0] // 2)
-            deltay = (i + client.screen_size[1]//2)*signey
+            deltay = (-i + client.screen_size[1]//2)*signey #On fais -i car le player a deja bougé donc sa pos_x a deja change !
             if signex==-1:
                 deltax+=delta[0]
             

@@ -11,8 +11,8 @@ class Player :
         self.hp = hp
 
         # Vitesse de déplacement
-        self.vitesse_x = vitesse_x #bassée à 1 pour les cellules
-        #self.vitesse_y = vitesse_y
+        self.vitesse_x = 0#vitesse_x #bassée à 1 pour les cellules
+        self.vitesse_y = 0#vitesse_y
 
         self.damage_taken = damage
         self.id = id
@@ -23,23 +23,48 @@ class Player :
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//var.CELL_SIZE + var.PADDING_CANVA
         self.screen_size[1] = screen_size[1]//var.CELL_SIZE + var.PADDING_CANVA
+
+    def return_delta_vitesse(self):
+        return (self.vitesse_x,self.vitesse_y)
+    
+    def update_vitesse(self):
+
+        if self.vitesse_x<0:
+            self.vitesse_x+=1
+
+        elif self.vitesse_x>0:
+            self.vitesse_x-=1
+
+        if self.vitesse_y<0:
+            self.vitesse_y+=1
+
+        elif self.vitesse_y>0:
+            self.vitesse_y-=1
+
+    def update_pos(self):
+
+        delta = self.return_delta_vitesse()
+        self.pos_x+=delta[0]
+        self.pos_y+=delta[1]
+
+        self.update_vitesse()
+
+        return delta
         
-    def move(self,delta,cells_arr = None,cell_dur= None,cell_vide= None,cell_liquid= None): 
+    def move_from_key(self,delta,cells_arr = None,cell_dur= None,cell_vide= None,cell_liquid= None): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
         if delta==0:
-            delta = self.move_up()
+            self.move_up()
 
         elif delta==1:
-            delta = self.move_down()
+            self.move_down()
 
         elif delta==2:
-            delta = self.move_left()
+            self.move_left()
 
         elif delta==3:
-            delta = self.move_right()
-
-        return delta#(self.pos_x,self.pos_y)
+            self.move_right()
         
         #delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
         #self.pos_x += delta_collision[0] 
@@ -47,22 +72,25 @@ class Player :
         #return delta_collision
     
     def move_up(self):
-        self.pos_y-=1
-        return (0,-1)
+        #self.pos_y-=1
+        if self.vitesse_y>-3:
+            self.vitesse_y-=1
 
     def move_down(self):
-        self.pos_y+=1
-        return(0,1)
+        #self.pos_y+=1
+        if self.vitesse_y<3:
+            self.vitesse_y+=1
 
     def move_left(self):
-        self.pos_x-=1
-        return (-1,0)
+        #self.pos_x-=1
+        if self.vitesse_x>-3:
+            self.vitesse_x-=1
 
     def move_right(self):
-        self.pos_x+=1
-        return(1,0)
+        #self.pos_x+=1
+        if self.vitesse_x<3:
+            self.vitesse_x+=1
     
-
     def gravite(self, vitesse_y, cells_arr,cell_dur,cell_vide,cell_liquid):
         '''Gravité simple'''
         self.vitesse_y = vitesse_y
@@ -75,7 +103,6 @@ class Player :
 
         elif self.is_type(cells_arr[self.pos_x, self.pos_y +1], cell_liquid) and self.vitesse_y<-4:
             self.vitesse_y-=0,5 #si liquide vitesse_y diminue petit à petit jusqu'à -vitesse_y pour remontée petit à petit
-
 
     def colision(self, delta, cells_arr,cell_dur,cell_vide,cell_liquid):
         '''Gère les collisions eau/solide avec le décor'''

@@ -183,11 +183,11 @@ class Server:
         if id_msg == 3 :
 
             dep = struct.unpack("!B", data[1:2])[0]
-            delta = self.lClient[sender].move(dep,self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
-            self.send_data_all((6,self.lClient[sender].id,delta[0],delta[1]))
+            self.lClient[sender].move_from_key(dep,self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+            #self.send_data_all((6,self.lClient[sender].id,delta[0],delta[1]))
 
-            cell = self.map_cell.return_cells_delta(self.lClient[sender],delta)
-            self.send_data_all([3,cell])
+            #cell = self.map_cell.return_cells_delta(self.lClient[sender],delta)
+            #self.send_data_all([3,cell])
 
         else :
             print(id_msg)
@@ -238,6 +238,7 @@ class Server:
         #print("Pack monsters")
 
         # nombre de cellules
+
         packet += struct.pack("!H", len(monsters))
 
         # données des cellules
@@ -407,7 +408,7 @@ class Server:
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = (200,200),id = self.nbr_player,screen_size = (None,None),host = is_host)
+        self.lClient[client_socket] = Player(pos = var.SPAWN_POINT,id = self.nbr_player,screen_size = (None,None),host = is_host)
         self.buffers[client_socket] = bytearray()
 
     def set_screen_size_client(self,client_socket,screen_size):

@@ -14,7 +14,7 @@ class Monster_all :
             for j in range(canva_size[1]//var.SIZE_CHUNK_MONSTER+1) :
                 self.dic_monster[i*100+j] = {}
 
-    def init_monster(self,lchunck_monsters,screen):
+    def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 
         for (chunk, id, x, y) in lchunck_monsters :

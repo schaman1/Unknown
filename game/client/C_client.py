@@ -201,7 +201,7 @@ class Client:
             for i in range((size-3)//10):
                 cells.append(struct.unpack("!HLHH", data[3+i*10 : 13+i*10]))
 
-            self.main.state.game.monsters.init_monster(cells,self.screen)
+            self.main.state.game.monsters.init_monster(cells)
 
         elif id==6:
             id_player,pos_x,pos_y=struct.unpack("!Bhh",data[1:6])

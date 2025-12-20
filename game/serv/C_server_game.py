@@ -41,22 +41,36 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            #for i in range(100):  #20 fps si pas les thread reception et envoie
             result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
-            #return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
+            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
             
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,3)
 
-            #if len(return_monster) != 0 :
-            #    self.send_data_update(return_monster,4)
+            #print(return_monster)
+            if len(return_monster[0]) != 0 :
+                self.send_data_update(return_monster,4)
+
             self.handle_clients()
+            self.handle_player()
 
             fps = self.fpsClock.get_fps()
             #if fps < 220 : #Affiche le fps quand c'est critique
             #print(fps)
 
         print("End boucle loop_server_game")
+
+    def handle_player(self): #Player = key/input/le nain a l'écran quoi pas les msg
+
+        for socket in self.lClient.keys():
+
+            delta = self.lClient[socket].update_pos()
+
+
+            cell = self.map_cell.return_cells_delta(self.lClient[socket],delta)
+            self.send_data([3,cell],socket)
+            self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
+            
 
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner
@@ -70,7 +84,7 @@ class Server_game(Server) :
         result_cell = self.init_canva()
         result_monster = self.init_mobs()
 
-        print(result_monster)
+        #print(result_monster)
 
         self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw

@@ -4,6 +4,8 @@ FPS_SERVER = 120#Ce qui va tourner sur le serv
 FPS_CELL_UPDATE = 120 #Combien de fois par secondes on update les cells
 FPS_CLIENT = 120 #Ce qui va tourner sur  le client #!!! je crois pas utilisé ou pas besoin
 
+SPAWN_POINT = (500,140)
+
 BG_CELL = "assets/bgCell.png"
 CELL_SIZE = 12
 BG_MONSTER = "assets/bgMonster.png"
