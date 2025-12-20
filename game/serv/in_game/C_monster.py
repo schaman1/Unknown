@@ -21,6 +21,8 @@ class Monster:
         self.hp -= amount
         if self.hp < 0:
             self.hp = 0
+        
+    
             
     #def distance_to_player(self, Player):
         """Distance euclidienne en cases entre le monstre et le joueur."""
@@ -93,6 +95,9 @@ class Skeleton(Monster):
     #--------------------------------------------------------------------------
     #             --- Deplacements spécifiques au squelette ---
     #--------------------------------------------------------------------------
+
+    def move(self,cells_arr,cell_dur,cell_vide,cell_liquid): #Appele a chaque iteration mais pourra changer après
+        return (0,0)
     
     def can_walk_on(self, cells_arr, cell_dur, cell_vide, cell_liquid, new_x, new_y):
         cell_type = cells_arr[int(new_y)][int(new_x)]

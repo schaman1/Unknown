@@ -68,24 +68,26 @@ class Read_monster :
 
                         monster.move(cells_arr,self.cell_dur,self.cell_vide,self.cell_liquid)
 
-                        for client in liste_client_see :
-                            list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
+                        for client_idx in liste_client_see :
+                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y))
+                            #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
         return list_modif
     
     def init_list_modif_client(self,x_chunk,y_chunk,list_modif,i) :
 
-        for x in range(x_chunk - 2, x_chunk + 3) :
-                for y in range(y_chunk - 2, y_chunk + 3) :
-                    chunk = f"{x},{y}"
-                    list_modif[i][chunk] = []
+        pass
+        #for x in range(x_chunk - 2, x_chunk + 3) :
+        #        for y in range(y_chunk - 2, y_chunk + 3) :
+        #            chunk = x*100+y
+        #            list_modif[i][chunk] = []
     
     def return_list_chunk_client_see(self,lClient,list_modif) :
 
         list_chunk_client_see = []
 
         for i,client in enumerate(lClient.values()) :
-            list_modif.append({})
+            list_modif.append([])
 
             xpos = client.pos_x
             ypos = client.pos_y

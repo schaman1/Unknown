@@ -1,4 +1,4 @@
-import pygame
+import pygame,var
 from client.C_mob import Mob
 
 
@@ -10,7 +10,7 @@ class Player_all :
         self.dic_players = {}
         self.cell_size = cell_size
         self.client_id = None
-        self.spawn_point = (200,200)
+        self.spawn_point = var.SPAWN_POINT
 
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
         self.dic_players[id] = Player(self.cell_size,self.spawn_point,pseudo,is_you)
