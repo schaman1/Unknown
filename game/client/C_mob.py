@@ -10,5 +10,5 @@ class Mob:
 
     def calculate_pos_blit(self,x,y):
         xs = self.pos_x * self.cell_size - self.width//2*self.cell_size +x
-        ys = self.pos_y * self.cell_size - self.height*self.cell_size +y
+        ys = (self.pos_y+1) * self.cell_size - self.height*self.cell_size +y #Regle un petit soucis
         return (xs,ys)
