@@ -1,7 +1,7 @@
 #Toutes les variables importantes du jeu sont ici
 
-FPS_SERVER = 120#Ce qui va tourner sur le serv
-FPS_CELL_UPDATE = 120 #Combien de fois par secondes on update les cells
+FPS_SERVER = 60#Ce qui va tourner sur le serv
+FPS_CELL_UPDATE = 45 #Combien de fois par secondes on update les cells
 FPS_CLIENT = 120 #Ce qui va tourner sur  le client #!!! je crois pas utilisé ou pas besoin
 
 SPAWN_POINT = (500,140)

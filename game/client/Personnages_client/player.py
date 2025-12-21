@@ -64,11 +64,11 @@ class Player(Mob) :
         screen.blit(self.frame_perso[self.frame%4],self.calculate_pos_blit(xscreen,yscreen))
         self.update_frame()
         
-        #pygame.draw.rect( #Pour voir ou le perso est en temps reel
-        #    screen,
-        #    (255, 255, 255),  # couleur (blanc)
-        #    pygame.Rect(self.pos_x*self.cell_size+xscreen, self.pos_y*self.cell_size+yscreen, self.cell_size, self.cell_size)
-        #)
+        pygame.draw.rect( #Pour voir ou le perso est en temps reel
+            screen,
+            (255, 255, 255),  # couleur (blanc)
+            pygame.Rect(self.pos_x*self.cell_size+xscreen, self.pos_y*self.cell_size+yscreen, self.cell_size, self.cell_size)
+        )
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)

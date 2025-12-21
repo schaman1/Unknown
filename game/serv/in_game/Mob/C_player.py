@@ -28,12 +28,12 @@ class Player(Mob) :
         if self.vitesse_x+self.pos_x>=self.screen_global_size[0] or self.vitesse_x+self.pos_x<0:
             self.vitesse_x=0
 
-        j=0
+        j=1
         s = self.return_signe(self.vitesse_x)
-        while j<self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
+        while j<=self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
             j+=1
         
-        if j!=self.vitesse_x*s :
+        if j-1!=self.vitesse_x*s :
             self.vitesse_x=0
 
         if self.vitesse_y+self.pos_y>=self.screen_global_size[1] or self.vitesse_y+self.pos_y<0:
@@ -79,7 +79,7 @@ class Player(Mob) :
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
         if delta==0:
-            self.move_up()
+            self.move_up(cells_arr,cell_dur)
 
         elif delta==1:
             self.move_down()
@@ -95,10 +95,11 @@ class Player(Mob) :
         #self.pos_y += delta_collision[1] 
         #return delta_collision
     
-    def move_up(self):
+    def move_up(self,grid_cell,cell_dur):
         #self.pos_y-=1
-        if self.vitesse_y>-self.vitesse_max:
-            self.vitesse_y-=self.acceleration
+        #if self.vitesse_y>-self.vitesse_max*5:
+        if self.touch_ground(grid_cell,cell_dur):
+            self.vitesse_y=-10
 
     def move_down(self):
         #self.pos_y+=1
