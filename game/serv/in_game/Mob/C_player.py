@@ -1,6 +1,6 @@
 import var
 from serv.in_game.Mob.C_mob import Mob
-
+from math import floor
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -28,18 +28,18 @@ class Player(Mob) :
         if self.vitesse_x+self.pos_x>=self.screen_global_size[0] or self.vitesse_x+self.pos_x<0:
             self.vitesse_x=0
 
-        j=1
-        s = self.return_signe(self.vitesse_x)
-        while j<=self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
-            j+=1
+        #j=1
+        #s = self.return_signe(self.vitesse_x)
+        #while j<=self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
+        #    j+=1
         
-        if j-1!=self.vitesse_x*s :
-            self.vitesse_x=0
+        #if j-1 < self.vitesse_x*s and self.vitesse_x*s>=1:
+        #    self.vitesse_x=0
 
         if self.vitesse_y+self.pos_y>=self.screen_global_size[1] or self.vitesse_y+self.pos_y<0:
             self.vitesse_y=0
 
-        return (self.vitesse_x,self.vitesse_y)
+        return (floor(self.vitesse_x),floor(self.vitesse_y))
 
     def update_vitesse(self):
 
@@ -65,13 +65,19 @@ class Player(Mob) :
 
     def update_pos(self,grid_cell,dur,vide,liquid):
 
+        print(self.vitesse_x)
+
         self.gravity_effect(grid_cell,dur)
 
         delta = self.return_delta_vitesse(grid_cell,dur)
 
         self.add_vitesse_to_pos(delta)
 
+        print(self.vitesse_x,"Two")
+
         self.update_vitesse()
+
+        print(self.vitesse_x)
 
         return delta
         
@@ -99,7 +105,7 @@ class Player(Mob) :
         #self.pos_y-=1
         #if self.vitesse_y>-self.vitesse_max*5:
         if self.touch_ground(grid_cell,cell_dur):
-            self.vitesse_y=-10
+            self.vitesse_y=-5
 
     def move_down(self):
         #self.pos_y+=1
