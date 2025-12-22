@@ -11,12 +11,12 @@ class Mob:
         self.acceleration = 1
         self.vitesse_x = 0
         self.vitesse_y = 0
-        
+
         self.hp = hp
         self.id = id
 
     def gravity_effect(self,grid_cell,cell_dur):
-        
+
         if self.vitesse_y < 5:
             self.vitesse_y += self.acceleration
 
@@ -25,7 +25,7 @@ class Mob:
         while i<=self.vitesse_y*s and not self.touch_wall(i*s,0,grid_cell,cell_dur):#self.is_type(grid_cell[self.pos_y+i,self.pos_x],cell_dur) :
             i+=1
         
-        if i-1 != self.vitesse_y*s :
+        if i-1 < self.vitesse_y*s and self.vitesse_y*s>=1:
             self.vitesse_y=i-1
 
     def touch_wall(self,i,j,grid_cell,cell_dur):
