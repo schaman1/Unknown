@@ -12,7 +12,7 @@ class Server:
         self.buffers = {}
 
         self.map_cell = Read_map(var.BG_CELL)
-        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,var.RATIO,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
 
         self.host = host
         self.port = port

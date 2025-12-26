@@ -74,14 +74,18 @@ def return_x_y(visible):
 
 #@njit
 def return_cell_update(ToUpdate,lClient,H,W):
-    
+
+
     visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
     for i,client in enumerate(lClient) :
 
-        xs = max(client.pos_x-client.screen_size[0]//2,0)
-        xe = min(client.pos_x+client.screen_size[0]//2,W)
-        ys = max(client.pos_y-client.screen_size[1]//2,0)
-        ye = min(client.pos_y+client.screen_size[1]//2,H)
+        client_x = client.convert_from_base(client.pos_x)
+        client_y = client.convert_from_base(client.pos_y)
+        
+        xs = max(client_x-client.screen_size[0]//2,0)
+        xe = min(client_x+client.screen_size[0]//2,W)
+        ys = max(client_y-client.screen_size[1]//2,0)
+        ye = min(client_y+client.screen_size[1]//2,H)
 
         visible[i,ys:ye,xs:xe] = True
 

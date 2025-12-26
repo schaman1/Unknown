@@ -17,6 +17,7 @@ class Server_game(Server) :
 
         self.fps = var.FPS_CELL_UPDATE
         self.fpsClock = pygame.time.Clock()
+        self.base_movement = var.RATIO
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
            
         
@@ -56,7 +57,7 @@ class Server_game(Server) :
 
             fps = self.fpsClock.get_fps()
             #if fps < 220 : #Affiche le fps quand c'est critique
-            #print(fps)
+            #    print(fps)
 
         print("End boucle loop_server_game")
 
@@ -66,11 +67,10 @@ class Server_game(Server) :
 
             delta = self.lClient[socket].update_pos(self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
 
-            cell = self.map_cell.return_cells_delta(self.lClient[socket],delta)
+            cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
             self.send_data([3,cell],socket)
             self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
             
-
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner
     
@@ -89,3 +89,9 @@ class Server_game(Server) :
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
 
         threading.Thread(target=self.loop_server_game, daemon=True).start()
+
+    def convert_to_base(self,nbr):
+        return nbr//self.base_movement
+    
+    def convert_list_base(self,list):
+        return [self.convert_to_base(list[i]) for i in range(len(list))]

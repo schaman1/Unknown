@@ -1,6 +1,5 @@
 import var
 from serv.in_game.Mob.C_mob import Mob
-from math import floor
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -14,7 +13,7 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 1
+        self.vitesse_max = 1*self.base_movement
 
         self.screen_size = [None,None]
 
@@ -25,21 +24,19 @@ class Player(Mob) :
 
     def return_delta_vitesse(self,grid_cell,cell_dur):
 
-        if self.vitesse_x+self.pos_x>=self.screen_global_size[0] or self.vitesse_x+self.pos_x<0:
+        self.gravity_effect(grid_cell,cell_dur)
+
+        self.collision_right(grid_cell,cell_dur)
+
+        if self.convert_from_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0] or self.convert_from_base(self.vitesse_x+self.pos_x)<0:
             self.vitesse_x=0
 
-        #j=1
-        #s = self.return_signe(self.vitesse_x)
-        #while j<=self.vitesse_x*s and not self.touch_wall(0,(j)*s,grid_cell,cell_dur):
-        #    j+=1
-        
-        #if j-1 < self.vitesse_x*s and self.vitesse_x*s>=1:
-        #    self.vitesse_x=0
-
-        if self.vitesse_y+self.pos_y>=self.screen_global_size[1] or self.vitesse_y+self.pos_y<0:
+        if self.convert_from_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_from_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
-        return (floor(self.vitesse_x),floor(self.vitesse_y))
+
+        return (self.vitesse_x,self.vitesse_y)
+
 
     def update_vitesse(self):
 
@@ -49,15 +46,7 @@ class Player(Mob) :
         elif self.vitesse_x>0:
             self.vitesse_x-=self.acceleration
 
-        #if self.vitesse_y<0:
-        #    self.vitesse_y+=1
-#
-        #elif self.vitesse_y>0:
-        #    self.vitesse_y-=1
-
     def add_vitesse_to_pos(self,delta):
-
-        #print(self.pos_x,self.pos_y,self.screen_global_size)
 
         self.pos_x+=delta[0]
 
@@ -65,19 +54,12 @@ class Player(Mob) :
 
     def update_pos(self,grid_cell,dur,vide,liquid):
 
-        print(self.vitesse_x)
-
-        self.gravity_effect(grid_cell,dur)
-
         delta = self.return_delta_vitesse(grid_cell,dur)
 
         self.add_vitesse_to_pos(delta)
 
-        print(self.vitesse_x,"Two")
-
         self.update_vitesse()
 
-        print(self.vitesse_x)
 
         return delta
         
@@ -100,12 +82,11 @@ class Player(Mob) :
         #self.pos_x += delta_collision[0] 
         #self.pos_y += delta_collision[1] 
         #return delta_collision
-    
+
     def move_up(self,grid_cell,cell_dur):
         #self.pos_y-=1
-        #if self.vitesse_y>-self.vitesse_max*5:
         if self.touch_ground(grid_cell,cell_dur):
-            self.vitesse_y=-5
+            self.vitesse_y=-20*self.acceleration
 
     def move_down(self):
         #self.pos_y+=1
@@ -149,7 +130,6 @@ class Player(Mob) :
         
         return delta
     
-    
     def take_damage(self, amount):
         self.hp -= amount
         if self.hp < 0:
@@ -157,6 +137,3 @@ class Player(Mob) :
     
     def is_alive(self):
         return self.hp > 0
-    
-
-        

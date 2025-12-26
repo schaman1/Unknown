@@ -75,11 +75,16 @@ class Read_map:
         signex = 1
         signey = 1
 
+        client_x = client.convert_from_base(client.pos_x)
+        client_y = client.convert_from_base(client.pos_y)
+
         if delta[0] < 0:
             signex = -1
+        delta[0]+=signex
 
         if delta[1] < 0:
             signey = -1
+        delta[1]+=signey
 
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
         for i in range(delta[0] * signex):
@@ -91,8 +96,8 @@ class Read_map:
             
             # Nous stockons la liste retournée dans notre liste de listes
             cells_of_columns.append(
-                njitBoucle.return_column(client.pos_x + deltax, 
-                                        client.pos_y + deltay,
+                njitBoucle.return_column(client_x + deltax, 
+                                        client_y + deltay,
                                         client.screen_size[1]+delta[1]*signey, 
                                         self.grid_color)
             )
@@ -107,8 +112,8 @@ class Read_map:
             
             # Nous stockons la liste retournée dans notre liste de listes
             cells_of_columns.append(
-                njitBoucle.return_raw(client.pos_x + deltax, 
-                                        client.pos_y + deltay,
+                njitBoucle.return_raw(client_x + deltax, 
+                                        client_y + deltay,
                                         client.screen_size[0]+delta[0]*signex, 
                                         self.grid_color)
             )
@@ -118,21 +123,27 @@ class Read_map:
         
         # 4. Retour
         return cells
-            
-            
 
     def return_all(self,lClient):
         cells = []
         for i,client in enumerate(lClient.values()):
+
+            client_x = client.convert_from_base(client.pos_x)
+            client_y = client.convert_from_base(client.pos_y)
+
             cells.append([])
             for column in range (client.screen_size[0]):
                 deltax = column-(client.screen_size[0]//2)
                 deltay = -(client.screen_size[1]//2)
-                cells[i]+=(njitBoucle.return_column(client.pos_x+deltax,client.pos_y+deltay,client.screen_size[1],self.grid_color))
+                cells[i]+=(njitBoucle.return_column(client_x+deltax,client_y+deltay,client.screen_size[1],self.grid_color))
 
         return cells
     
     def return_colomn(self,client,nbr_column):
+
+        client_x = client.convert_from_base(client.pos_x)
+        client_y = client.convert_from_base(client.pos_y)
+
         cells = []
         deltay = -(client.screen_size[1]//2)
 
@@ -145,7 +156,7 @@ class Read_map:
         for column in range (abs(nbr_column)):
 
             deltax = s*client.screen_size[0]// + s*column
-            cells +=(njitBoucle.return_column(client.pos_x+deltax,client.pos_y+deltay,client.screen_size[1],self.grid_color))
+            cells +=(njitBoucle.return_column(client_x+deltax,client_y+deltay,client.screen_size[1],self.grid_color))
 
 
     def return_chg(self,lClient):
@@ -155,7 +166,6 @@ class Read_map:
         #self.grid_color[450,450] = (np.random.randint(200,255),0,0,255)
         #self.grid_type[450,450] = self.type["FIRE"]
         #self.temp[450,450] = 255
-
 
         self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
         #return([[0],])
