@@ -3,12 +3,13 @@ from serv.in_game.Mob.C_monster import Skeleton
 
 class Read_monster :
 
-    def __init__(self,filename_map_monster,size_chunk,cell_dur,cell_vide,cell_liquid) :
+    def __init__(self,filename_map_monster,base_movement,size_chunk,cell_dur,cell_vide,cell_liquid) :
 
         self.dic_monster = {}
         self.map_monster = pygame.image.load(filename_map_monster).convert()
         self.width, self.height = self.map_monster.get_size()
         self.size_chunk = size_chunk
+        self.base_movement = base_movement
 
         self.cell_dur = cell_dur
         self.cell_vide = cell_vide
@@ -46,7 +47,8 @@ class Read_monster :
 
                     if color == (0, 0, 0):      # pixel noir = skeleton
                         #print(f"Création d'un Skeleton en ({x}, {y})")
-                        self.dic_monster[x//self.size_chunk*100+y//self.size_chunk].append(Skeleton(x,y,x*1000+y))
+                        
+                        self.dic_monster[x//self.size_chunk*100+y//self.size_chunk].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
 
 
     def return_chg(self, lInfoClient, cells_arr) :
@@ -89,8 +91,8 @@ class Read_monster :
         for i,client in enumerate(lClient.values()) :
             list_modif.append([])
 
-            xpos = client.pos_x
-            ypos = client.pos_y
+            xpos = client.convert_from_base(client.pos_x)
+            ypos = client.convert_from_base(client.pos_y)
 
             x_chunk = xpos // self.size_chunk
             y_chunk = ypos // self.size_chunk

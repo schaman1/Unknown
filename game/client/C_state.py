@@ -113,8 +113,8 @@ class State:
         #x = -self.posClient[0]*self.cell_size + self.Size[0]//2
         #y = -self.posClient[1]*self.cell_size + self.Size[1]//2
         client_id = self.game.player_all.client_id
-        x = -self.game.player_all.dic_players[client_id].pos_x*self.cell_size + self.Size[0]//2
-        y = -self.game.player_all.dic_players[client_id].pos_y*self.cell_size + self.Size[1]//2
+        x = self.game.convert_from_base(-self.game.player_all.dic_players[client_id].pos_x*self.cell_size) + self.Size[0]//2
+        y = self.game.convert_from_base(-self.game.player_all.dic_players[client_id].pos_y*self.cell_size) + self.Size[1]//2
         return (x,y)
 
     def connexion_serv(self,client):

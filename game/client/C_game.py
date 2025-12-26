@@ -8,6 +8,8 @@ class Game :
     """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
     def __init__(self, cell_size):
         self.canva_size = var.BG_SIZE_SERVER
+        self.base_movement = var.RATIO
+
         self.cell_size = cell_size
         self.center = (self.canva_size[0]//2,self.canva_size[1]//2)
         self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
@@ -73,3 +75,6 @@ class Game :
         self.blit_players(screen,x,y)
 
         #screen.blit(self.light,(0,0))
+
+    def convert_from_base(self,nbr):
+        return nbr//self.base_movement
