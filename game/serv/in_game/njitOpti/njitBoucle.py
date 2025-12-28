@@ -1,5 +1,6 @@
 from numba import njit
 import numpy as np
+import var
 
 # ---- CONSTANTES (Numba les voit ici comme des LITERALS) ----
 EMPTY = 0
@@ -15,14 +16,20 @@ IsBurnable = (WOOD,EXPLO)
 
 propagationWood = 98
 
+canva_size_x,canva_size_y = var.BG_SIZE_SERVER
+
 # ---- FONCTIONS NUMBA ----
 
 @njit
 def return_column(x:int,y:int,length:int,grid_color):
     """Return colonne = column"""
     moved = [(0,0,0,0,0,0)]
-    for i in range(length):
+    i=0
+    while i < length and y+i < canva_size_y and x >= 0 and x<canva_size_x:
+
+
         ys = y+i
+        i+=1
         if grid_color[ys, x, 3] != 0 :
             moved.append((x,
                         ys,                            
@@ -37,8 +44,10 @@ def return_column(x:int,y:int,length:int,grid_color):
 def return_raw(x:int,y:int,length:int,grid_color):
     """Return colonne = column"""
     moved = [(0,0,0,0,0,0)]
-    for i in range(length):
+    i=0
+    while i<length and x+i < canva_size_x and y>= 0 and y < canva_size_y:
         xs = x+i
+        i+=1
         if grid_color[y, xs, 3] != 0 :
             moved.append((xs,
                         y,                            

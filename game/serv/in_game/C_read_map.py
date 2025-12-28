@@ -88,13 +88,13 @@ class Read_map:
 
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
         for i in range(delta[0] * signex):
-
             deltax = (-i + client.screen_size[0] // 2 -1) * signex #On fais -i car le player a deja bougé donc sa pos_x a deja change !
             deltay = -(client.screen_size[1]//2)
             if signey==-1:
                 deltay+=delta[1]
             
             # Nous stockons la liste retournée dans notre liste de listes
+            #length = min(client.screen_size[1]+delta[1]*signey,self.height-client_y)
             cells_of_columns.append(
                 njitBoucle.return_column(client_x + deltax, 
                                         client_y + deltay,
@@ -111,16 +111,17 @@ class Read_map:
                 deltax+=delta[0]
             
             # Nous stockons la liste retournée dans notre liste de listes
+            length = min(client.screen_size[0]+delta[0]*signex,self.width-client_x)
             cells_of_columns.append(
                 njitBoucle.return_raw(client_x + deltax, 
                                         client_y + deltay,
-                                        client.screen_size[0]+delta[0]*signex, 
+                                        length, 
                                         self.grid_color)
             )
+
         # 3. Aplatir toutes les listes collectées en une seule passe
         # La compréhension de liste est TRES rapide pour cela.
         cells = [cell for sublist in cells_of_columns for cell in sublist]
-        
         # 4. Retour
         return cells
 
