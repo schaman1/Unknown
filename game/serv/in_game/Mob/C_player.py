@@ -33,14 +33,14 @@ class Player(Mob) :
         if self.convert_from_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_from_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
-        smooth_move_y = self.collision_right(grid_cell,cell_dur)
+        deltax = self.collision_right(grid_cell,cell_dur)
 
-        self.collision_down(grid_cell,cell_dur)
+        deltay = self.collision_down(grid_cell,cell_dur)
 
 
         #print(self.pos_x,self.vitesse_x,self.convert_from_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
 
-        return (self.vitesse_x,self.vitesse_y+smooth_move_y)
+        return (deltax,deltay)
 
     def update_vitesse(self):
 
@@ -52,9 +52,11 @@ class Player(Mob) :
 
     def add_vitesse_to_pos(self,delta):
 
-        self.pos_x+=delta[0]
+        pass
 
-        self.pos_y+=delta[1]
+        #self.pos_x+=delta[0]
+
+        #self.pos_y+=delta[1]
 
     def update_pos(self,grid_cell,dur,vide,liquid):
 

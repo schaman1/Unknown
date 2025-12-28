@@ -141,7 +141,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*10
 
             elif msg_id==6:
-                msg_size = 1+5
+                msg_size = 1+9
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -204,7 +204,7 @@ class Client:
             self.main.state.game.monsters.init_monster(cells)
 
         elif id==6:
-            id_player,pos_x,pos_y=struct.unpack("!Bhh",data[1:6])
+            id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
             self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
 
         elif id == 1 :

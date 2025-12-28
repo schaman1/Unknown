@@ -32,48 +32,65 @@ class Mob:
 
     def collision_down(self,grid_cell,cell_dur):
 
-        for j in range(-1*self.base_movement,2*self.base_movement,self.base_movement):
+        #for j in range(-1*self.base_movement,2*self.base_movement,self.base_movement): #A implementer
 
-            s = self.return_signe(self.vitesse_y)
-            i=(self.vitesse_y*s)%self.base_movement
-            while i<=self.vitesse_y*s and not self.touch_wall(i*s,j+self.vitesse_x,grid_cell,cell_dur):#self.is_type(grid_cell[self.pos_y+i,self.pos_x],cell_dur) :
-                i+=self.base_movement
+        pos_before = self.pos_y
+
+        s = self.return_signe(self.vitesse_y)
+        remaining = self.vitesse_y*s
+
+        while remaining > 0 :
+
+            dist = self.base_movement
+
+            if self.touch_wall((self.base_movement)*s,0,grid_cell,cell_dur) :
+                dist = self.base_movement - self.pos_y%self.base_movement -1
+
+                if dist < remaining :
+                    self.vitesse_y = 0
+
+            #if self.vitesse_y != 10 :
+            #    print("dist, rem",dist,remaining)
+            #    print("pos",self.pos_y,self.vitesse_y)
+
+            if dist < remaining :
+                self.pos_y+=dist*s
             
-            if i<=self.vitesse_y*s :
+            else :
+                self.pos_y+= remaining*s
 
-                if i >= self.base_movement: #Si bouge plus que d'un carreau
-                    i-=self.base_movement
+            remaining -= self.base_movement
 
-                self.vitesse_y = (i-i%self.base_movement+(-self.pos_y)%self.base_movement-1)*s
+        return self.pos_y - pos_before
 
     def collision_right(self,grid_cell,cell_dur):
 
+        pos_before = self.pos_x
+
         s = self.return_signe(self.vitesse_x)
-        i=(self.vitesse_x*s)%self.base_movement
-        while i<=self.vitesse_x*s and not self.touch_wall(-self.base_movement,(i+1*self.base_movement)*s,grid_cell,cell_dur):
-            i+=self.base_movement
-        
+        remaining = self.vitesse_x*s
 
-        if i<=self.vitesse_x*s: #Pour faire en gros si touche un mur avec la vitesse x sans la y alors stoppe.
-            #Au contraire, la y teste pas si touche le mur sans la x, si touche avec la x alors s'arrete obligatoirement.
+        while remaining > 0 :
 
-            #print("vitesse x, pos",self.vitesse_x,self.pos_x) #Pour le débogage
-            #print("i",i,i-i%self.base_movement)
-            #print("tt",(i-i%self.base_movement+(-self.pos_x*s)%self.base_movement-1)*s)
+            dist = self.base_movement
+
+            if self.touch_wall(0,(self.base_movement+1*self.base_movement)*s,grid_cell,cell_dur) :
+                dist = self.base_movement - self.pos_x%self.base_movement -1
+
+            #print("dist, rem",dist,remaining)
+            #print("pos",self.pos_y,self.vitesse_y)
+
+            if dist < remaining :
+                self.vitesse_x = 0
+                self.pos_x+=dist*s
             
-            if i >= self.base_movement:
-                i-=self.base_movement
+            else :
+                self.pos_x+= remaining*s
 
-            self.vitesse_x = (i-i%self.base_movement+(-self.pos_x*s)%self.base_movement-1)*s
+            remaining -= self.base_movement
 
-        elif self.touch_wall(0,(i+1*self.base_movement)*s,grid_cell,cell_dur) :
-            if i >= self.base_movement:
-                i-=self.base_movement
-            #self.pos_y-=1*self.base_movement
-            return -1*self.base_movement
+        return self.pos_x-pos_before
         
-        return 0
-
     def touch_wall(self,i,j,grid_cell,cell_dur):
         return self.is_type(grid_cell[self.convert_from_base(self.pos_y+i),self.convert_from_base(self.pos_x+j)],cell_dur)
     

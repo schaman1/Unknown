@@ -69,7 +69,8 @@ class Server_game(Server) :
             cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
             
             self.send_data([3,cell],socket)
-            self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
+            #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
+            self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
             
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner

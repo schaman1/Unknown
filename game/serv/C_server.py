@@ -269,7 +269,7 @@ class Server:
             self.pack_monsters(data[1],packet)
             
         elif id==6:
-            packet+=struct.pack("!Bhh",data[1],data[2],data[3])
+            packet+=struct.pack("!BLL",data[1],data[2],data[3])
 
         else :
             print("Issue id not found : ",id)

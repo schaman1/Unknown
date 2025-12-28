@@ -74,7 +74,7 @@ class Player(Mob) :
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
 
     def move(self,delta):
-        self.pos_x += delta[0]
-        self.pos_y += delta[1]
+        self.pos_x = delta[0]
+        self.pos_y = delta[1]
         
 
