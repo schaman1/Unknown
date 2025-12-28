@@ -66,8 +66,8 @@ class Server_game(Server) :
         for socket in self.lClient.keys():
 
             delta = self.lClient[socket].update_pos(self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
-
             cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
+            
             self.send_data([3,cell],socket)
             self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
             

@@ -16,6 +16,7 @@ class Player(Mob) :
         self.vitesse_max = 1*self.base_movement
 
         self.screen_size = [None,None]
+        self.size_x = 2
 
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//var.CELL_SIZE + var.PADDING_CANVA
@@ -26,17 +27,20 @@ class Player(Mob) :
 
         self.gravity_effect(grid_cell,cell_dur)
 
-        self.collision_right(grid_cell,cell_dur)
-
-        if self.convert_from_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0] or self.convert_from_base(self.vitesse_x+self.pos_x)<0:
+        if self.convert_from_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_from_base(self.vitesse_x+self.pos_x)<0:
             self.vitesse_x=0
 
         if self.convert_from_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_from_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
+        smooth_move_y = self.collision_right(grid_cell,cell_dur)
 
-        return (self.vitesse_x,self.vitesse_y)
+        self.collision_down(grid_cell,cell_dur)
 
+
+        #print(self.pos_x,self.vitesse_x,self.convert_from_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
+
+        return (self.vitesse_x,self.vitesse_y+smooth_move_y)
 
     def update_vitesse(self):
 
@@ -59,7 +63,6 @@ class Player(Mob) :
         self.add_vitesse_to_pos(delta)
 
         self.update_vitesse()
-
 
         return delta
         
