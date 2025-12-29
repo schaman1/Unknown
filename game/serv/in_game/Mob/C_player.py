@@ -7,7 +7,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
 
-        super().__init__(pos,hp,id)
+        super().__init__(pos,hp,id,var.PLAYER_SIZE_WIDTH,var.PLAYER_SIZE_HEIGHT)
 
         self.hp = hp
 
@@ -34,9 +34,9 @@ class Player(Mob) :
         if self.convert_from_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_from_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
-        deltax = self.collision_right(grid_cell,cell_dur)
+        deltax = self.collision_x(grid_cell,cell_dur)
 
-        deltay = self.collision_down(grid_cell,cell_dur)
+        deltay = self.collision_y(grid_cell,cell_dur)
 
 
         #print(self.pos_x,self.vitesse_x,self.convert_from_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
@@ -46,24 +46,14 @@ class Player(Mob) :
     def update_vitesse(self):
 
         if self.vitesse_x<0:
-            self.vitesse_x+=self.acceleration
+            self.vitesse_x+=self.acceleration*self.acceleration_x
 
         elif self.vitesse_x>0:
-            self.vitesse_x-=self.acceleration
-
-    def add_vitesse_to_pos(self,delta):
-
-        pass
-
-        #self.pos_x+=delta[0]
-
-        #self.pos_y+=delta[1]
+            self.vitesse_x-=self.acceleration*self.acceleration_x
 
     def update_pos(self,grid_cell,dur,vide,liquid):
 
         delta = self.return_delta_vitesse(grid_cell,dur)
-
-        self.add_vitesse_to_pos(delta)
 
         self.update_vitesse()
 
@@ -92,22 +82,22 @@ class Player(Mob) :
     def move_up(self,grid_cell,cell_dur):
         #self.pos_y-=1
         if self.touch_ground(grid_cell,cell_dur):
-            self.vitesse_y=-20*self.acceleration
+            self.vitesse_y=-self.gravity_power*self.acceleration_y
 
     def move_down(self):
         #self.pos_y+=1
         if self.vitesse_y<self.vitesse_max:
-            self.vitesse_y+=self.acceleration
+            self.vitesse_y+=self.acceleration*self.acceleration_x
 
     def move_left(self):
         #self.pos_x-=1
         if self.vitesse_x>-self.vitesse_max:
-            self.vitesse_x-=self.acceleration
+            self.vitesse_x-=self.acceleration*self.acceleration_x
 
     def move_right(self):
         #self.pos_x+=1
         if self.vitesse_x<self.vitesse_max:
-            self.vitesse_x+=self.acceleration
+            self.vitesse_x+=self.acceleration*self.acceleration_x
     
     def gravite(self, vitesse_y, cells_arr,cell_dur,cell_vide,cell_liquid):
         '''Gravité simple'''
