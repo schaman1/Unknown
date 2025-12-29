@@ -164,9 +164,10 @@ class Read_map:
         """Retourne les chg de pixels"""
 
         #Robinet
-        #self.grid_color[450,450] = (np.random.randint(200,255),0,0,255)
-        #self.grid_type[450,450] = self.type["FIRE"]
-        #self.temp[450,450] = 255
+        self.grid_color[170,740] = (np.random.randint(0,20),np.random.randint(0,20),np.random.randint(200,255),255)
+        self.grid_type[170,740] = self.type["WATER"]
+        self.temp[170,740] = -255
+        self.ToUpdate[170,740] = True
 
         self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
         #return([[0],])

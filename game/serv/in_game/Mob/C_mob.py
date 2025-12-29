@@ -32,7 +32,6 @@ class Mob:
 
     def collision_down(self,grid_cell,cell_dur):
 
-        #for j in range(-1*self.base_movement,2*self.base_movement,self.base_movement): #A implementer
 
         pos_before = self.pos_y
 
@@ -43,11 +42,12 @@ class Mob:
 
             dist = self.base_movement
 
-            if self.touch_wall((self.base_movement)*s,0,grid_cell,cell_dur) :
-                dist = self.base_movement - self.pos_y%self.base_movement -1
+            for j in range(-1*self.base_movement,2*self.base_movement,self.base_movement): #A implementer
+                if self.touch_wall((self.base_movement)*s,j,grid_cell,cell_dur) :
+                    dist = self.base_movement - self.pos_y%self.base_movement -1
 
-                if dist < remaining :
-                    self.vitesse_y = 0
+                    if dist < remaining :
+                        self.vitesse_y = 0
 
             #if self.vitesse_y != 10 :
             #    print("dist, rem",dist,remaining)
