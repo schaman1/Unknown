@@ -26,6 +26,7 @@ class Player(Mob) :
     def return_delta_vitesse(self,grid_cell,cell_dur):
 
         self.gravity_effect(grid_cell,cell_dur)
+        #print(self.pos_x,self.pos_y)
 
         if self.convert_from_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_from_base(self.vitesse_x+self.pos_x)<0:
             self.vitesse_x=0

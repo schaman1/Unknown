@@ -329,6 +329,10 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
             x = xs[i]
             y = ys[i]
 
+            if x == 750 and y == 250 :
+                print("Here on water")
+                print(grid_type[y, x],WATER)
+
             clientToUpdate = np.nonzero(visible[:,y,x])[0]
 
             if len(clientToUpdate) == 0 :
