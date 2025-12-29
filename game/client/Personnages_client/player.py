@@ -36,7 +36,7 @@ class Player(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
 
-        super().__init__(pos[0],pos[1],cell_size,size=(10,10))
+        super().__init__(pos[0],pos[1],cell_size,size=(var.PLAYER_SIZE_WIDTH,var.PLAYER_SIZE_HEIGHT))
 
         self.pseudo = pseudo
         self.is_you = is_you
