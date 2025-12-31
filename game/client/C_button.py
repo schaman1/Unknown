@@ -2,7 +2,7 @@ import pygame
 
 class Button:
     """Est utilise pour les bouttons du menu"""
-    def __init__(self,pos,size,img,text,font,id):
+    def __init__(self,pos,size,img,img_hover,text,font,id):
         self.id = id
         self.size = size
         self.text = text
@@ -11,21 +11,33 @@ class Button:
         self.img = pygame.image.load(img).convert_alpha()
         self.img = pygame.transform.scale(self.img,size)
 
+        self.img_hover = pygame.image.load(img_hover).convert_alpha()
+        self.img_hover = pygame.transform.scale(self.img_hover,size)
+
+        self.lImg = [self.img,self.img_hover]
+
         self.rect = self.img.get_rect(center=pos)
         self.alignement = "center"
+
         self.clicked = False
+        self.hover = False
 
         self.text_color = (0,0,0)
 
         self.dicRect_input = {}
+
+    def change_image(self):
+        self.lImg[0],self.lImg[1] = self.lImg[1],self.lImg[0]
         
     def get_rect(self):
         return self.rect
 
-    def draw(self,screen):
+    def draw(self,screen,mouse_pos):
         """Permet de draw le boutton = doit être appele pour chaque boutton crée"""
 
-        screen.blit(self.img,self.rect)
+        self.check_hover(mouse_pos)
+
+        screen.blit(self.lImg[0],self.rect)
         text = self.font.render(self.text,True, self.text_color)  # True = anti-aliasing
         text_rect = text.get_rect(**{self.alignement: getattr(self.rect, self.alignement)})
         screen.blit(text, text_rect)
@@ -38,6 +50,12 @@ class Button:
             text_rect = text.get_rect(center=ele["rect"].center)
 
             screen.blit(text, text_rect)
+
+    def check_hover(self,mouse_pos):
+
+        if self.hover != self.rect.collidepoint(mouse_pos) :
+            self.change_image()
+            self.hover = not self.hover
 
     def create_input(self,rect,color,text,border):
         """Permet de creer l'input de la zone du texte dans join"""

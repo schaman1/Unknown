@@ -21,18 +21,18 @@ class State:
 
         self.game = Game(cell_size)
 
-        self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Rejoindre une partie",self.font,"join")
-        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Creer une partie",self.font,"host")
-        self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Quit",self.font,"quit")
+        self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Rejoindre une partie",self.font,"join")
+        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Creer une partie",self.font,"host")
+        self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Quit",self.font,"quit")
 
-        self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Ip:port",self.font,"ip")
+        self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Ip:port",self.font,"ip")
         self.ip.create_input("RIGHT",color["BLACK"],"",20)
-        self.connexion = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Se connecter",self.font,"connexion")
+        self.connexion = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Se connecter",self.font,"connexion")
 
-        self.start = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Lancer la partie",self.font,"start")
-        self.show_ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"ip:port = ",self.font,"show_ip")
+        self.start = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Lancer la partie",self.font,"start")
+        self.show_ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"ip:port = ",self.font,"show_ip")
 
-        self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,"Menu",self.font,"menu")
+        self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
         #dic boutton menu : 1= rect, 2=couleur, 3=texte
@@ -66,11 +66,13 @@ class State:
         else :
 
             self.screen.fill(color["BLACK"])
+            mouse_pos = pygame.mouse.get_pos()
+
             if state == "menu":
                 
                 for btn in self.dicMenu.values():
 
-                    btn.draw(self.screen)
+                    btn.draw(self.screen,mouse_pos)
 
                 #test_vision(self.screen,self.Size)
 
@@ -80,7 +82,7 @@ class State:
             elif state == "wait_serv":
                 
                 for btn in self.dicWaiting.values():
-                    btn.draw(self.screen)
+                    btn.draw(self.screen,mouse_pos)
 
                 self.draw_waiting()
 
@@ -88,13 +90,13 @@ class State:
 
                 for btn in self.dicConnexion.values():
 
-                    btn.draw(self.screen)
+                    btn.draw(self.screen,mouse_pos)
 
             elif state == "host":
 
                 for btn in self.dicCreation.values():
 
-                    btn.draw(self.screen)
+                    btn.draw(self.screen,mouse_pos)
 
                 self.client.display_clients_name()
 
@@ -170,6 +172,7 @@ class State:
     def add_alert(self,err_message,time=5):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
         self.alert.insert(0,Alert(self.screen,err_message,time))
+
 
 
 #def test_vision(screen,size):

@@ -8,6 +8,7 @@ BG_CELL = "assets/bgCell.png"
 BG_MONSTER = "assets/bgMonster.png"
 BG_GLOBAL = "assets/bgGlobal.png"
 BTN = "assets/btn.png"
+BTN_HOVER = "assets/btn_hover.png"
 
 CELL_SIZE = 12
 RATIO = 100
