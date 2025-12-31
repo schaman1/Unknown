@@ -2,49 +2,60 @@ import pygame
 
 class Button:
     """Est utilise pour les bouttons du menu"""
-    def __init__(self,rect,color,text,font,id,border=10):
-        self.rect = rect
-        self.color = color
-        self.border = border
+    def __init__(self,pos,size,img,text,font,id):
+        self.id = id
+        self.size = size
         self.text = text
         self.font = font
-        self.id = id
-        self.pos = self.rect.center
+
+        self.img = pygame.image.load(img).convert_alpha()
+        self.img = pygame.transform.scale(self.img,size)
+
+        self.rect = self.img.get_rect(center=pos)
         self.alignement = "center"
         self.clicked = False
 
-        self.dicRect = {self.id:{
-                                "rect":rect,
-                                "color":color,
-                                "font":font,
-                                "border":border,
-                                "text":text,
-                                "text_color":(0,0,0)
-                                }}
+        self.text_color = (0,0,0)
 
+        self.dicRect_input = {}
+        
+    def get_rect(self):
+        return self.rect
 
     def draw(self,screen):
         """Permet de draw le boutton = doit être appele pour chaque boutton crée"""
-        for ele in self.dicRect.values():
+
+        screen.blit(self.img,self.rect)
+        text = self.font.render(self.text,True, self.text_color)  # True = anti-aliasing
+        text_rect = text.get_rect(**{self.alignement: getattr(self.rect, self.alignement)})
+        screen.blit(text, text_rect)
+
+        for ele in self.dicRect_input.values():
 
             pygame.draw.rect(screen,ele["color"],ele["rect"],border_radius = ele["border"])
             # Centrer le texte dans le rectangle
-            text = self.font.render(ele["text"],True, ele["text_color"])  # True = anti-aliasing
-            text_rect = text.get_rect(**{self.alignement: getattr(ele["rect"], self.alignement)})
+            text = ele["font"].render(ele["text"],True, ele["text_color"])  # True = anti-aliasing
+            text_rect = text.get_rect(center=ele["rect"].center)
+
             screen.blit(text, text_rect)
 
-    def create_input(self,rect,color,text):
+    def create_input(self,rect,color,text,border):
         """Permet de creer l'input de la zone du texte dans join"""
         if rect == "RIGHT":
-            rect = pygame.Rect(self.rect.left + self.rect.width/3 - self.rect.height*0.2, self.rect.top + self.rect.height*0.2, self.rect.width*2/3, self.rect.height*0.6)
+            rect = pygame.Rect(self.rect.left + 3*self.rect.width/22, self.rect.top + self.rect.height/3, 8*self.rect.width/11, 2*self.rect.height/5)
 
-        self.dicRect[self.id+"_input"] = {"rect":rect,"color":color,"font":self.font,"border":self.border,"text":text,"text_color":(255,255,255 )}
-        self.alignement = "midleft"
+        self.dicRect_input[self.id+"_input"] = {"rect":rect,"color":color,"font":self.font,"border":border,"text":text,"text_color":(255,255,255)}
+        self.alignement = "midtop"
+        self.text_color = (255,255,255)
  
     def update_text(self,id,new_text):
         """Change le texte affiche dans le boutton"""
-        if id in self.dicRect:
-            self.dicRect[id]["text"] = new_text
-        
-        else:
+
+        if id == self.id :
+            self.text = new_text
+
+        elif id in self.dicRect_input:
+            self.dicRect_input[id]["text"] = new_text
+
+        else :
             print(f"Erreur : L'ID '{id}' n'existe pas dans dicRect.")

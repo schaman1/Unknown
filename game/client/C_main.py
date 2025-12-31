@@ -40,7 +40,8 @@ class Main:
         running = True
         while running:
 
-            self.key_event()
+            if self.mod == "game":
+                self.key_event()
 
             for event in pygame.event.get():
                 #Capture les events = touche /clique de la souris / clavier
@@ -54,30 +55,29 @@ class Main:
 
                     elif self.objClicked != None:
 
-                        txt = self.objClicked.dicRect[self.objClicked.id+"_input"]["text"]
-
+                        txt = self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"]
 
                         if event.key == pygame.K_RETURN:
                             self.mod = "loading"
                             print("Loading")
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
+                            self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
                             threading.Thread(target = self.connect_serv).start()
 
                         elif event.key == pygame.K_ESCAPE:
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
+                            self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
                             self.objClicked = None
 
                         elif event.key == pygame.K_BACKSPACE:
-                            self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt[:-2] + "|"
+                            self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt[:-2] + "|"
 
                         else :
                             if len(txt) < 30: #max char
-                                self.objClicked.dicRect[self.objClicked.id+"_input"]["text"] = txt[:-1] + str(event.unicode) + txt[-1]
+                                self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt[:-1] + str(event.unicode) + txt[-1]
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.mod == "menu":
-                        if self.state.host.rect.collidepoint(event.pos):
+                        if self.state.host.get_rect().collidepoint(event.pos):
                             #("Play button clicked")
 
                             self.state.show_ip.update_text("show_ip",f"Waiting for creation...")
@@ -86,40 +86,40 @@ class Main:
 
                             threading.Thread(target = self.create_server_thread).start()
 
-                        elif self.state.join.rect.collidepoint(event.pos):
+                        elif self.state.join.get_rect().collidepoint(event.pos):
                             print("join button clicked")
                             self.mod = "connexion"
 
-                        elif self.state.quit.rect.collidepoint(event.pos):
+                        elif self.state.quit.get_rect().collidepoint(event.pos):
                             #("Quit button clicked")
                             running = False
 
                     elif self.mod == "connexion":
 
-                        if self.state.ip.rect.collidepoint(event.pos):
+                        if self.state.ip.get_rect().collidepoint(event.pos):
 
                             if self.objClicked == None:
-                                self.state.ip.dicRect[self.state.ip.id+"_input"]["text"] += "|"
+                                self.state.ip.dicRect_input[self.state.ip.id+"_input"]["text"] += "|"
                                 self.objClicked = self.state.ip
 
-                        elif self.state.menu.rect.collidepoint(event.pos):
+                        elif self.state.menu.get_rect().collidepoint(event.pos):
                             self.objClicked = None
-                            self.state.ip.dicRect[self.state.ip.id+"_input"]["text"] = self.state.ip.dicRect[self.state.ip.id+"_input"]["text"].replace("|","")
+                            self.state.ip.dicRect_input[self.state.ip.id+"_input"]["text"] = self.state.ip.dicRect_input[self.state.ip.id+"_input"]["text"].replace("|","")
                             self.mod = "menu"
 
-                        elif self.state.connexion.rect.collidepoint(event.pos):
+                        elif self.state.connexion.get_rect().collidepoint(event.pos):
                             self.mod = "loading"
                             print("loading")
                             threading.Thread(target = self.connect_serv).start()
 
                         else :  #deselection
                             if self.objClicked != None:
-                                self.state.ip.dicRect[self.objClicked.id+"_input"]["text"] = self.state.ip.dicRect[self.objClicked.id+"_input"]["text"].replace("|","")
+                                self.state.ip.dicRect_input[self.objClicked.id+"_input"]["text"] = self.state.ip.dicRect_input[self.objClicked.id+"_input"]["text"].replace("|","")
                                 self.objClicked = None
 
                     elif self.mod == "wait_serv":
 
-                        if self.state.menu.rect.collidepoint(event.pos):
+                        if self.state.menu.get_rect().collidepoint(event.pos):
                             if self.client.connected is True :
                                 self.client.connected = False
                                 print("Connected = false")
@@ -128,7 +128,7 @@ class Main:
                     
                     elif self.mod == "host":
 
-                        if self.state.start.rect.collidepoint(event.pos) and self.client.connected :
+                        if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             self.Server = Server_game.from_server(self.Server)
 
                             self.client.send_data(id = 0) #Start game
@@ -136,7 +136,7 @@ class Main:
                             self.Server.start_game()
 
 
-                        elif self.state.menu.rect.collidepoint(event.pos):
+                        elif self.state.menu.get_rect().collidepoint(event.pos):
                             
                             self.client.connected = False
                             self.mod = "menu"
