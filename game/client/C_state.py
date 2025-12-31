@@ -4,6 +4,7 @@ from client.C_button import Button
 from client.C_alert import Alert
 from client.C_load import Load
 from client.C_game import Game
+import var
 
 class State:
     """Class qui affiche tout"""
@@ -20,18 +21,18 @@ class State:
 
         self.game = Game(cell_size)
 
-        self.join = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Rejoindre une partie",self.font,"join")
-        self.host = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Creer une partie",self.font,"host")
-        self.quit = Button(pygame.Rect(self.Size[0]/3, 12*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["RED"],"Quit",self.font,"quit")
+        self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Rejoindre une partie",self.font,"join")
+        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Creer une partie",self.font,"host")
+        self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Quit",self.font,"quit")
 
-        self.ip = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"Ip:port",self.font,"ip")
-        self.ip.create_input("RIGHT",color["BLACK"],"")
-        self.connexion = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Se connecter",self.font,"connexion")
+        self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Ip:port",self.font,"ip")
+        self.ip.create_input("RIGHT",color["BLACK"],"",20)
+        self.connexion = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Se connecter",self.font,"connexion")
 
-        self.start = Button(pygame.Rect(self.Size[0]/3, 2*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREEN"],"Lancer la partie",self.font,"start")
-        self.show_ip = Button(pygame.Rect(self.Size[0]/3, 7*self.Size[1]/18, self.Size[0]/3, self.Size[1]/6),color["GREY"],"ip:port = ",self.font,"show_ip")
+        self.start = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"Lancer la partie",self.font,"start")
+        self.show_ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,"ip:port = ",self.font,"show_ip")
 
-        self.menu = Button(pygame.Rect(self.Size[0]*2.5/6, 15.5*self.Size[1]/18, self.Size[0]/6, self.Size[1]/12),color["RED"],"Menu",self.font,"menu")
+        self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
         #dic boutton menu : 1= rect, 2=couleur, 3=texte

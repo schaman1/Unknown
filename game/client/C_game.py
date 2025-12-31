@@ -15,8 +15,9 @@ class Game :
         self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         #self.canva.set_colorkey((0,0,0))
         #self.canva_map = self.map.canva
-        self.bg = pygame.image.load("assets/bgGlobal.png").convert()
+        self.bg = pygame.image.load(var.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
+        
         self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = var.NBR_CELL_CAN_SEE)
 
