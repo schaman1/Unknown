@@ -76,7 +76,19 @@ class Main:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
-                    if self.mod == "menu":
+                    if self.mod=="game":
+                        if self.state.map_btn.get_rect().collidepoint(event.pos):
+
+                            if self.state.game.draw_map :
+                                self.state.game.draw_map = False
+                                self.state.map_btn.update_text("map","MAP")
+
+                            else :
+                                self.state.game.draw_map = True
+                                self.state.map_btn.update_text("map","ESCAPE")
+
+
+                    elif self.mod == "menu":
                         if self.state.host.get_rect().collidepoint(event.pos):
                             #("Play button clicked")
 

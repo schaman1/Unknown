@@ -32,6 +32,9 @@ class Game :
         self.monsters = Monster_all(cell_size,self.canva_size)
 
         self.player_all = Player_all(self.canva_size,cell_size)
+
+
+        self.draw_map = False
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
         #                       pos = (500,500))
@@ -76,6 +79,10 @@ class Game :
         self.blit_players(screen,x,y)
 
         #screen.blit(self.light,(0,0))
+        
+        if self.draw_map :
+            screen.fill((0,0,0))
+
 
     def convert_from_base(self,nbr):
         return nbr//self.base_movement

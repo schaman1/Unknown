@@ -2,7 +2,7 @@ import pygame
 
 class Button:
     """Est utilise pour les bouttons du menu"""
-    def __init__(self,pos,size,img,img_hover,text,font,id):
+    def __init__(self,pos,size,img,img_hover,text,font,id,where_blit="center"):
         self.id = id
         self.size = size
         self.text = text
@@ -15,8 +15,6 @@ class Button:
         self.img_hover = pygame.transform.scale(self.img_hover,size)
 
         self.lImg = [self.img,self.img_hover]
-
-        self.rect = self.img.get_rect(center=pos)
         self.alignement = "center"
 
         self.clicked = False
@@ -25,6 +23,19 @@ class Button:
         self.text_color = (0,0,0)
 
         self.dicRect_input = {}
+
+        self.set_rect(where_blit,pos)
+    
+    def set_rect(self,where_blit,pos):
+        if where_blit=="center":
+            self.rect = self.img.get_rect(center=pos)
+        
+        elif where_blit=="topright":
+            self.rect = self.img.get_rect(topright=pos)
+
+        else :
+            print("UNKNOWN pos (try center, topright ?)")
+
 
     def change_image(self):
         self.lImg[0],self.lImg[1] = self.lImg[1],self.lImg[0]
