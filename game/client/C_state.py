@@ -35,6 +35,8 @@ class State:
         self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
+        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"MAP",self.font,"map","topright")
+
         #dic boutton menu : 1= rect, 2=couleur, 3=texte
         self.dicMenu = {"join": self.join,
                         "host": self.host,
@@ -49,6 +51,8 @@ class State:
                             "ip": self.show_ip}
         
         self.dicWaiting = {"menu": self.menu}
+
+        self.dicGame = {"map":self.map_btn}
         
         self.no_black_screen = ""#"loading"
 
@@ -57,46 +61,38 @@ class State:
 
         #if state not in self.no_black_screen:
             #self.screen.fill(color["BLACK"])
+        mouse_pos = pygame.mouse.get_pos()
 
         if state == "game":
 
             x,y = self.return_pos_blit()
             self.game.draw(self.screen,x,y)
 
+            self.draw_btn(self.dicGame,mouse_pos)
+
         else :
 
             self.screen.fill(color["BLACK"])
-            mouse_pos = pygame.mouse.get_pos()
 
             if state == "menu":
-                
-                for btn in self.dicMenu.values():
 
-                    btn.draw(self.screen,mouse_pos)
-
-                #test_vision(self.screen,self.Size)
-
+                self.draw_btn(self.dicMenu,mouse_pos)
 
                 #.drawAll()
 
             elif state == "wait_serv":
                 
-                for btn in self.dicWaiting.values():
-                    btn.draw(self.screen,mouse_pos)
+                self.draw_btn(self.dicWaiting,mouse_pos)
 
                 self.draw_waiting()
 
             elif state == "connexion":
 
-                for btn in self.dicConnexion.values():
-
-                    btn.draw(self.screen,mouse_pos)
+                self.draw_btn(self.dicConnexion,mouse_pos)
 
             elif state == "host":
 
-                for btn in self.dicCreation.values():
-
-                    btn.draw(self.screen,mouse_pos)
+                self.draw_btn(self.dicCreation,mouse_pos)
 
                 self.client.display_clients_name()
 
@@ -122,7 +118,7 @@ class State:
 
     def connexion_serv(self,client):
         """renvoie le mode de jeu apres connexion"""
-        ip_port = self.ip.dicRect[self.ip.id+"_input"]["text"].replace("|","")
+        ip_port = self.ip.dicRect_input[self.ip.id+"_input"]["text"].replace("|","")
 
         self.start.update_text("start","Connexion...")
         client.connected = None
@@ -172,6 +168,11 @@ class State:
     def add_alert(self,err_message,time=5):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
         self.alert.insert(0,Alert(self.screen,err_message,time))
+
+    def draw_btn(self,dic:dict,mouse_pos):
+
+        for btn in dic.values():
+            btn.draw(self.screen,mouse_pos)
 
 
 
