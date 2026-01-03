@@ -1,8 +1,8 @@
 import socket, threading, struct, select, sys
-from serv.in_game.C_read_map import Read_map
-from serv.in_game.C_read_monster import Read_monster
+from serv.systems.map.C_read_map import Read_map
+from serv.systems.monster.C_read_monster import Read_monster
 import var #Fichier
-from serv.in_game.Mob.C_player import Player
+from serv.domain.mob.C_player import Player
 #from serv.server_game import Server_game
 
 class Server:

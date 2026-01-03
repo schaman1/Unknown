@@ -1,5 +1,5 @@
 import var
-from client.Monster_client.C_monster import Skeleton
+from client.domain.mob.monster.monster import Skeleton
 
 class Monster_all :
 

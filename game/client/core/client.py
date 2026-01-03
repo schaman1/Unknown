@@ -1,6 +1,5 @@
 import socket, select, struct
 import time
-from client.events import event_queue
 
 class Client:
     """Class client, traite les envoies de données et les receptions avec le serv"""
@@ -164,7 +163,6 @@ class Client:
     def reset_values(self):
         self.id = "Coming soon"
         self.main.state.game.player_all.dic_players.clear()
-        event_queue.put({"type": "SERVER_DISCONNECTED"})
 
     def update_canva(self,l):
         """Envoie a C_game pour update le canva qui sera blit plus tard"""

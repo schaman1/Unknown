@@ -1,7 +1,7 @@
-from serv.in_game.C_read_monster import Read_monster
+from serv.systems.monster.C_read_monster import Read_monster
 import var #Fichier
 import pygame
-from serv.C_server import Server
+from serv.core.C_server import Server
 import threading,numpy as np
 
 class Server_game(Server) :

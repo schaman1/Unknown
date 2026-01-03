@@ -1,5 +1,5 @@
 import pygame
-from client.C_mob import Mob
+from game.client.domain.mob.mob import Mob
 
 class Skeleton(Mob) :
 

@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-import serv.in_game.njitOpti.njitBoucle as njitBoucle
+import serv.optimization.njitOpti.njitBoucle as njitBoucle
 
 class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""

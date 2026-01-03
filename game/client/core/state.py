@@ -1,9 +1,9 @@
 import pygame, threading
-from client.rendering.texture import color
-from client.C_button import Button
-from client.C_alert import Alert
-from client.C_load import Load
-from client.C_game import Game
+from assets.rendering.texture import color
+from client.ui.button import Button
+from client.ui.alert import Alert
+from client.ui.load import Load
+from client.core.game import Game
 import var
 
 class State:
@@ -35,7 +35,7 @@ class State:
         self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
-        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"MAP",self.font,"map","topright")
+        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/10, self.Size[1]/20),var.BTN,var.BTN_HOVER,"MAP",self.font,"map","topright")
 
         #dic boutton menu : 1= rect, 2=couleur, 3=texte
         self.dicMenu = {"join": self.join,

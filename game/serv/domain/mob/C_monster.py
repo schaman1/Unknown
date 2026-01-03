@@ -1,5 +1,5 @@
 import math
-from serv.in_game.Mob.C_mob import Mob
+from serv.domain.mob.C_mob import Mob
 
 class Monster(Mob):
     def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None):
