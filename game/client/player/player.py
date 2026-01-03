@@ -1,5 +1,5 @@
 import pygame,var
-from client.C_mob import Mob
+from game.client.domain.mob.mob import Mob
 
 
 class Player_all :

@@ -1,5 +1,5 @@
 import pygame
-from serv.in_game.Mob.C_monster import Skeleton
+from serv.domain.mob.C_monster import Skeleton
 
 class Read_monster :
 

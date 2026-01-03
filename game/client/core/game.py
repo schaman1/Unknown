@@ -1,7 +1,10 @@
 import pygame
-from client.Personnages_client.player import Player_all
-from client.Monster_client.C_monster_all import Monster_all
-import client.OptiClient as njClient
+import pygame.surfarray as surfarray
+import struct
+
+from client.domain.mob.player.player import Player_all
+from client.domain.mob.monster.monster_all import Monster_all
+#import client.OptiClient as njClient
 import var
 
 class Game :
@@ -39,10 +42,19 @@ class Game :
         #                       Img_perso = "assets/playerImg.png",
         #                       pos = (500,500))
 
-    def update_canva(self,l):
+    def update_canva(self,data):
         """Reçoit les données l du serveur et appelle update"""
-        #njClient.update_canva_njit(self.canva,self.rect_grid,l)
-        njClient.update_canva_surfarray(self.canva,l,self.cell_size)
+
+        rgb = surfarray.pixels3d(self.canva)
+        alpha = surfarray.pixels_alpha(self.canva)
+
+        for x, y, r, g, b, a in struct.iter_unpack("!hhBBBB", data[3:]):
+            px = x * self.cell_size
+            py = y * self.cell_size
+            rgb[px:px+self.cell_size, py:py+self.cell_size] = (r, g, b)
+            alpha[px:px+self.cell_size, py:py+self.cell_size] = a
+
+        del rgb, alpha
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""

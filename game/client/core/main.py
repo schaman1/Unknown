@@ -1,9 +1,8 @@
 import pygame, threading
-from client.C_state import State
-from client.C_client import Client
-from serv.C_server_game import Server_game
-from serv.C_server import Server
-from client.events import event_queue
+from client.core.state import State
+from client.core.client import Client
+from serv.core.C_server_game import Server_game
+from serv.core.C_server import Server
 import var
 
 #from C_inGame import InGame
@@ -159,8 +158,6 @@ class Main:
                                 self.state.add_alert("Serveur stoppé",)
 
 
-            #self.perform_event_queue()
-
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.state.a_state(self.mod)
 
@@ -173,15 +170,6 @@ class Main:
             #self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
         pygame.quit()
-
-    def perform_event_queue(self):
-        """Traite les évenements globaux"""
-        while not event_queue.empty():
-            event = event_queue.get()
-            if event["type"] == "SERVER_DISCONNECTED":
-                self.state.add_alert("Déconnecté du serveur",5)
-
-                self.mod = "menu"
 
     def connect_serv(self):
         """Connecte au serveur"""
