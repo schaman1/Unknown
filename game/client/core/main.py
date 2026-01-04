@@ -3,7 +3,7 @@ from client.core.state import State
 from client.core.client import Client
 from serv.core.C_server_game import Server_game
 from serv.core.C_server import Server
-import var
+from shared.constants import fps,world
 
 #from C_inGame import InGame
 #from C_card import Card
@@ -20,7 +20,7 @@ class Main:
         self.font = pygame.font.SysFont(None, 48)
 
         #Set up the clock for managing the frame rate
-        self.fps = var.FPS_CLIENT
+        self.fps = fps.FPS_CLIENT
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
@@ -31,7 +31,7 @@ class Main:
         self.mod = "menu" #menu/reglage/game
 
         self.client = Client(self.font,self.screen,self)
-        self.state = State(self.screen,self.screenSize,self.font,self.client,var.CELL_SIZE)
+        self.state = State(self.screen,self.screenSize,self.font,self.client,world.CELL_SIZE)
 
 
     def run(self):
@@ -178,7 +178,7 @@ class Main:
 
     def create_server_thread(self):
         """Crée le serveur dans un thread séparé"""
-        self.Server = Server(port = var.PORT)
+        self.Server = Server()
         ip,port = self.Server.start_server(self.client)
 
         self.client.connexion_serveur(ip_port =f"{ip}:{port}")

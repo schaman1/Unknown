@@ -1,18 +1,20 @@
 import socket, threading, struct, select, sys
 from serv.systems.map.C_read_map import Read_map
 from serv.systems.monster.C_read_monster import Read_monster
-import var #Fichier
+from shared.constants import world
+
+from serv.config import network,assets
 from serv.domain.mob.C_player import Player
 #from serv.server_game import Server_game
 
 class Server:
     """Class mere mais ! 1 pour tout le jeu = on partage tous la même"""
-    def __init__(self,port=5000,host='0.0.0.0'):
+    def __init__(self,port=network.PORT,host='0.0.0.0'):
         self.lClient = {}
         self.buffers = {}
 
-        self.map_cell = Read_map(var.BG_CELL)
-        self.map_monster = Read_monster(var.BG_MONSTER,var.SIZE_CHUNK_MONSTER,var.RATIO,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+        self.map_cell = Read_map(assets.BG_CELL)
+        self.map_monster = Read_monster(assets.BG_MONSTER,world.SIZE_CHUNK_MONSTER,world.RATIO,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
 
         self.host = host
         self.port = port
@@ -404,7 +406,7 @@ class Server:
         """Set une fois qu'a reçu la 1er donnée du client"""
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
-        self.lClient[client_socket] = Player(pos = var.SPAWN_POINT,id = self.nbr_player,host = is_host)
+        self.lClient[client_socket] = Player(pos = world.SPAWN_POINT,id = self.nbr_player,host = is_host)
         self.buffers[client_socket] = bytearray()
 
     def set_screen_size_client(self,client_socket,screen_size):

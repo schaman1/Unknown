@@ -1,4 +1,4 @@
-import var
+from shared.constants import world
 from serv.domain.mob.C_mob import Mob
 
 class Player(Mob) :
@@ -7,7 +7,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
 
-        super().__init__(pos,hp,id,var.PLAYER_SIZE_WIDTH,var.PLAYER_SIZE_HEIGHT)
+        super().__init__(pos,hp,id,world.PLAYER_SIZE_WIDTH,world.PLAYER_SIZE_HEIGHT)
 
         self.hp = hp
 
@@ -19,8 +19,8 @@ class Player(Mob) :
         self.size_x = 2
 
     def set_screen_size(self,screen_size):
-        self.screen_size[0] = screen_size[0]//var.CELL_SIZE + var.PADDING_CANVA
-        self.screen_size[1] = screen_size[1]//var.CELL_SIZE + var.PADDING_CANVA
+        self.screen_size[0] = screen_size[0]//world.CELL_SIZE + world.PADDING_CANVA
+        self.screen_size[1] = screen_size[1]//world.CELL_SIZE + world.PADDING_CANVA
 
 
     def return_delta_vitesse(self,grid_cell,cell_dur):

@@ -4,7 +4,7 @@ from client.ui.button import Button
 from client.ui.alert import Alert
 from client.ui.load import Load
 from client.core.game import Game
-import var
+from client.config import assets
 
 class State:
     """Class qui affiche tout"""
@@ -18,24 +18,23 @@ class State:
         self.client = client
         self.load = Load(screen)
 
-
         self.game = Game(cell_size)
 
-        self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Rejoindre une partie",self.font,"join")
-        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Creer une partie",self.font,"host")
-        self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Quit",self.font,"quit")
+        self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Rejoindre une partie",self.font,"join")
+        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Creer une partie",self.font,"host")
+        self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Quit",self.font,"quit")
 
-        self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Ip:port",self.font,"ip")
+        self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Ip:port",self.font,"ip")
         self.ip.create_input("RIGHT",color["BLACK"],"",20)
-        self.connexion = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Se connecter",self.font,"connexion")
+        self.connexion = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Se connecter",self.font,"connexion")
 
-        self.start = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"Lancer la partie",self.font,"start")
-        self.show_ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),var.BTN,var.BTN_HOVER,"ip:port = ",self.font,"show_ip")
+        self.start = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Lancer la partie",self.font,"start")
+        self.show_ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"ip:port = ",self.font,"show_ip")
 
-        self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),var.BTN,var.BTN_HOVER,"Menu",self.font,"menu")
+        self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),assets.BTN,assets.BTN_HOVER,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
-        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/10, self.Size[1]/20),var.BTN,var.BTN_HOVER,"MAP",self.font,"map","topright")
+        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/10, self.Size[1]/20),assets.BTN,assets.BTN_HOVER,"MAP",self.font,"map","topright")
 
         #dic boutton menu : 1= rect, 2=couleur, 3=texte
         self.dicMenu = {"join": self.join,
