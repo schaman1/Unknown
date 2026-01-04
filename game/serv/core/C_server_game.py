@@ -1,5 +1,5 @@
 from serv.systems.monster.C_read_monster import Read_monster
-import var #Fichier
+from shared.constants import fps,world
 import pygame
 from serv.core.C_server import Server
 import threading,numpy as np
@@ -15,9 +15,9 @@ class Server_game(Server) :
 
         #self.lClient = None
 
-        self.fps = var.FPS_CELL_UPDATE
+        self.fps = fps.FPS_CELL_UPDATE
         self.fpsClock = pygame.time.Clock()
-        self.base_movement = var.RATIO
+        self.base_movement = world.RATIO
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
            
         

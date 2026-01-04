@@ -1,6 +1,7 @@
-import pygame,var
+import pygame
 from client.domain.mob.mob import Mob
-
+from client.config import assets
+from shared.constants import world
 
 class Player_all :
     '''
@@ -10,7 +11,7 @@ class Player_all :
         self.dic_players = {}
         self.cell_size = cell_size
         self.client_id = None
-        self.spawn_point = var.SPAWN_POINT
+        self.spawn_point = world.SPAWN_POINT
 
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
         self.dic_players[id] = Player(self.cell_size,self.spawn_point,pseudo,is_you)
@@ -36,7 +37,7 @@ class Player(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
 
-        super().__init__(pos[0],pos[1],cell_size,size=(var.PLAYER_SIZE_WIDTH,var.PLAYER_SIZE_HEIGHT))
+        super().__init__(pos[0],pos[1],cell_size,size=(world.PLAYER_SIZE_WIDTH,world.PLAYER_SIZE_HEIGHT))
 
         self.pseudo = pseudo
         self.is_you = is_you
@@ -48,7 +49,7 @@ class Player(Mob) :
 
     def init_Img(self,cell_size):
         for i in range(4):
-            Img = pygame.image.load(f"assets/player_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.image.load(assets.PLAYER_IDLE+f"{i+1}"+".png").convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
             self.frame_perso.append(Img)
 

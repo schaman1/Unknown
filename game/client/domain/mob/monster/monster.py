@@ -1,4 +1,5 @@
 import pygame
+from client.config import assets
 from client.domain.mob.mob import Mob
 
 class Skeleton(Mob) :
@@ -18,7 +19,7 @@ class Skeleton(Mob) :
 
     def init_Img(self,cell_size):
         for i in range(4):
-            Img = pygame.image.load(f"assets/monster frame/monster_frame_{i+1}.png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.image.load(assets.MONSTER_IDLE+f"{i+1}"+".png").convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(10*cell_size,10*cell_size))
             self.frame_perso.append(Img)
 

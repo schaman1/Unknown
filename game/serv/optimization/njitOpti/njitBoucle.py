@@ -1,6 +1,6 @@
 from numba import njit
 import numpy as np
-import var
+from shared.constants import world
 
 # ---- CONSTANTES (Numba les voit ici comme des LITERALS) ----
 EMPTY = 0
@@ -16,7 +16,7 @@ IsBurnable = (WOOD,EXPLO)
 
 propagationWood = 98
 
-canva_size_x,canva_size_y = var.BG_SIZE_SERVER
+canva_size_x,canva_size_y = world.BG_SIZE_SERVER
 
 # ---- FONCTIONS NUMBA ----
 

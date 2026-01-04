@@ -1,4 +1,4 @@
-import var
+from shared.constants import world
 from client.domain.mob.monster.monster import Skeleton
 
 class Monster_all :
@@ -10,8 +10,8 @@ class Monster_all :
         self.cell_size = cell_size
 
     def init_dico_dic_monsters(self,canva_size):
-        for i in range(canva_size[0]//var.SIZE_CHUNK_MONSTER+1) :
-            for j in range(canva_size[1]//var.SIZE_CHUNK_MONSTER+1) :
+        for i in range(canva_size[0]//world.SIZE_CHUNK_MONSTER+1) :
+            for j in range(canva_size[1]//world.SIZE_CHUNK_MONSTER+1) :
                 self.dic_monster[i*100+j] = {}
 
     def init_monster(self,lchunck_monsters):

@@ -5,31 +5,30 @@ import struct
 from client.domain.mob.player.player import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 #import client.OptiClient as njClient
-import var
+from client.config import assets
+from shared.constants import world
 
 class Game :
     """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
     def __init__(self, cell_size):
-        self.canva_size = var.BG_SIZE_SERVER
-        self.base_movement = var.RATIO
+        self.canva_size = world.BG_SIZE_SERVER
+        self.base_movement = world.RATIO
 
         self.cell_size = cell_size
         self.center = (self.canva_size[0]//2,self.canva_size[1]//2)
         self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
-        #self.canva.set_colorkey((0,0,0))
-        #self.canva_map = self.map.canva
-        self.bg = pygame.image.load(var.BG_GLOBAL).convert()
+        self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
         
         self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
-        self.create_light(vision = var.NBR_CELL_CAN_SEE)
+        self.create_light(vision = world.NBR_CELL_CAN_SEE)
 
         # pré-calcul des rects pour chaque cellule
         self.rect_grid = [
             #[pygame.Rect(x * 1, y * 1, 1, 1) #Pour voir toute la map se dessiner
             [pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
-             for x in range(var.BG_SIZE_SERVER[0])]
-            for y in range(var.BG_SIZE_SERVER[1])
+             for x in range(self.canva_size[0])]
+            for y in range(self.canva_size[1])
         ]
 
         self.monsters = Monster_all(cell_size,self.canva_size)
@@ -74,11 +73,9 @@ class Game :
 
     def blit_monster(self,screen,x,y):
         self.monsters.blit_all_monster(screen,x,y)
-        #screen.blit(self.monsters.canva_monster,(x,y))
 
     def blit_players(self,screen,x,y):
         self.player_all.draw_players(screen,self.center,x,y)
-        #screen.blit(self.player_all.screen_Player,(x,y))
 
     def draw(self,screen,x,y):
         """Blit le canva sur le screen à la position x,y"""
@@ -95,6 +92,5 @@ class Game :
         if self.draw_map :
             screen.fill((0,0,0))
 
-
-    def convert_from_base(self,nbr):
+    def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement

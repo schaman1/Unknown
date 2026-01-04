@@ -1,4 +1,4 @@
-import var
+from shared.constants import world
 
 class Mob:
 
@@ -7,14 +7,14 @@ class Mob:
         self.pos_y = pos[1]
 
 
-        self.screen_global_size = var.BG_SIZE_SERVER
+        self.screen_global_size = world.BG_SIZE_SERVER
 
         self.acceleration = 1
         self.gravity_power = 10
         self.acceleration_x = 10
         self.acceleration_y = 20
 
-        self.base_movement = var.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
+        self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
         
         self.width = (width-2)*self.base_movement
         self.half_width = self.width//2

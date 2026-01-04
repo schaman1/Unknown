@@ -1,4 +1,3 @@
-import math
 from serv.domain.mob.C_mob import Mob
 
 class Monster(Mob):
