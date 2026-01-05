@@ -1,4 +1,7 @@
 BG_GLOBAL = "assets/background/global/back.png"
+MAP_SEEN = "assets/background/entities/cell.png"
+MAP_UNSEEN = "assets/background/entities/monster.png"
+
 BTN = "assets/ui/buttons/btn_default.png"
 BTN_HOVER = "assets/ui/buttons/btn_hover.png"
 

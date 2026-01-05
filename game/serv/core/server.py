@@ -1,10 +1,10 @@
 import socket, threading, struct, select, sys
-from serv.systems.map.C_read_map import Read_map
-from serv.systems.monster.C_read_monster import Read_monster
+from serv.systems.map.read_map import Read_map
+from serv.systems.monster.read_monster import Read_monster
 from shared.constants import world
 
 from serv.config import network,assets
-from serv.domain.mob.C_player import Player
+from serv.domain.mob.player import Player
 #from serv.server_game import Server_game
 
 class Server:
@@ -77,7 +77,9 @@ class Server:
 
                 elif msg_id==3:
                     msg_size=1+1
-                    #print(len(buffer))
+                
+                elif msg_id==4:
+                    msg_size=1
 
                 else:
                     print("UNKNOWN MSG ID", msg_id)
@@ -187,8 +189,12 @@ class Server:
             dep = struct.unpack("!B", data[1:2])[0]
             self.lClient[sender].move_from_key(dep,self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
 
+        elif id_msg == 4 :
+            pass
+
+
         else :
-            print(id_msg)
+            print("What to do with this id send ? ",id_msg)
 
     def send_data_all(self,data):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""

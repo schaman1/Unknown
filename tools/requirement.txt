@@ -1,0 +1,5 @@
+pygame==2.5.2
+numpy>=1.24.0
+numba>=0.61
+pyngrok>=7.4.1
+dotenv>=0.9.9

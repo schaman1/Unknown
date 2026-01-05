@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.mob.C_mob import Mob
+from serv.domain.mob.mob import Mob
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
