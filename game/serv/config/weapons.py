@@ -1,0 +1,2 @@
+LIFE_PIOCHE = 5
+V_PIOCHE = 0

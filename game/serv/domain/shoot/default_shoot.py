@@ -2,16 +2,18 @@ import time
 
 class Shoot :
 
-    def __init__(self,pos,vx,vy,life_time,img,id):
+    def __init__(self,pos,life_time,id,angle,vitesse):
         self.pos = pos
-        self.vx,self.vy=vx,vy
         self.life_time = life_time
         self.id=id
         self.spawn_time = time.time()
 
-        self.img = img
+        self.vx,self.vy = self.return_vx_vy(angle,vitesse)
 
-    def trigger(self,dt):
+    def return_vx_vy(self,angle,vitesse):
+        return (0*vitesse,0*vitesse)
+
+    def move(self,dt):
 
         self.pos[0]+=self.vx
         self.pos[1]+=self.vy

@@ -133,7 +133,7 @@ class Main:
                     elif self.mod == "host":
 
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
-                            self.Server = Server_game.from_server(self.Server)
+                            #self.Server = Server_game.from_server(self.Server)
 
                             self.client.send_data(id = 0) #Start game
 
@@ -171,7 +171,7 @@ class Main:
 
     def create_server_thread(self):
         """Crée le serveur dans un thread séparé"""
-        self.Server = Server()
+        self.Server = Server_game()
         ip,port = self.Server.start_server(self.client)
 
         self.client.connexion_serveur(ip_port =f"{ip}:{port}")
