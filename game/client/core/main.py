@@ -1,8 +1,8 @@
 import pygame, threading
 from client.core.state import State
 from client.core.client import Client
-from serv.core.C_server_game import Server_game
-from serv.core.C_server import Server
+from serv.core.server_game import Server_game
+from serv.core.server import Server
 from shared.constants import fps,world
 
 #from C_inGame import InGame
@@ -50,8 +50,9 @@ class Main:
                 if event.type == pygame.KEYDOWN:
 
                     if self.mod == "game":
-                        pass
-
+                        if event.key == pygame.K_p :
+                            self.state.game.map.draw = not self.state.game.map.draw
+                        
                     elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"]
@@ -76,15 +77,7 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.mod=="game":
-                        if self.state.map_btn.get_rect().collidepoint(event.pos):
-
-                            if self.state.game.draw_map :
-                                self.state.game.draw_map = False
-                                self.state.map_btn.update_text("map","MAP")
-
-                            else :
-                                self.state.game.draw_map = True
-                                self.state.map_btn.update_text("map","ESCAPE")
+                        pass
 
 
                     elif self.mod == "menu":
@@ -190,6 +183,7 @@ class Main:
     def key_event(self):
 
         key = pygame.key.get_pressed()
+        buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
 
         if key[pygame.K_z] :
             self.client.send_data(id=3,data=[0]) #lié au serveur les données/haut
@@ -200,10 +194,11 @@ class Main:
         if key[pygame.K_q] :
             self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
 
-
         if key[pygame.K_d] :
             self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
-        
+
+        if buttons[0] : 
+            self.client.send_data(id=4,data=[])
 
         #if key[pygame.K_k] :
         #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0

@@ -1,7 +1,7 @@
-from serv.systems.monster.C_read_monster import Read_monster
+from serv.systems.monster.read_monster import Read_monster
 from shared.constants import fps,world
 import pygame
-from serv.core.C_server import Server
+from serv.core.server import Server
 import threading,numpy as np
 
 class Server_game(Server) :

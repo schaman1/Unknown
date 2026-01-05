@@ -34,7 +34,7 @@ class State:
         self.menu = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/6, self.Size[1]/12),assets.BTN,assets.BTN_HOVER,"Menu",self.font,"menu")
         self.alert = [] #L'ensemble des alertes qui doivent être affiché
 
-        self.map_btn = Button((self.Size[0], 0), (self.Size[0]/10, self.Size[1]/20),assets.BTN,assets.BTN_HOVER,"MAP",self.font,"map","topright")
+        #self.map_btn = Button((self.Size[0], 0), (self.Size[0]/10, self.Size[1]/20),assets.BTN,assets.BTN_HOVER,"MAP",self.font,"map","topright")
 
         #dic boutton menu : 1= rect, 2=couleur, 3=texte
         self.dicMenu = {"join": self.join,
@@ -51,7 +51,7 @@ class State:
         
         self.dicWaiting = {"menu": self.menu}
 
-        self.dicGame = {"map":self.map_btn}
+        #self.dicGame = {"map":self.map_btn}
         
         self.no_black_screen = ""#"loading"
 
@@ -67,7 +67,7 @@ class State:
             x,y = self.return_pos_blit()
             self.game.draw(self.screen,x,y)
 
-            self.draw_btn(self.dicGame,mouse_pos)
+            #self.draw_btn(self.dicGame,mouse_pos)
 
         else :
 

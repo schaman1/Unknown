@@ -2,8 +2,9 @@ import pygame
 import pygame.surfarray as surfarray
 import struct
 
-from client.domain.mob.player.player import Player_all
+from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
+from client.domain.actions.map import Map
 #import client.OptiClient as njClient
 from client.config import assets
 from shared.constants import world
@@ -19,7 +20,7 @@ class Game :
         self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
-        
+
         self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = world.NBR_CELL_CAN_SEE)
 
@@ -33,10 +34,10 @@ class Game :
 
         self.monsters = Monster_all(cell_size,self.canva_size)
 
-        self.player_all = Player_all(self.canva_size,cell_size)
+        self.player_all = Player_all(cell_size)
 
+        self.map = Map(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
-        self.draw_map = False
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
         #                       pos = (500,500))
@@ -63,13 +64,15 @@ class Game :
             self.monsters.dic_monster[chunk][id].pos_x = x
             self.monsters.dic_monster[chunk][id].pos_y = y
 
-    def create_light(self,vision:int = 10 ):
+    def create_light(self,vision):
         """Permet de faire genre que le personnage voit à une certaine portée"""
         self.light.fill((0,0,0))
 
         for i in range(10):
-            pygame.draw.circle(self.light, (0,0,0,200 - (i+1)*20), self.center, (vision+2-i/5)*self.cell_size, width=0)
+            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/5)*self.cell_size)
 
+    def draw_circle(self,screen,color,pos,r,width=0):
+        pygame.draw.circle(screen, color, pos, r, width)
 
     def blit_monster(self,screen,x,y):
         self.monsters.blit_all_monster(screen,x,y)
@@ -88,9 +91,9 @@ class Game :
         self.blit_players(screen,x,y)
 
         #screen.blit(self.light,(0,0))
+        pos = self.player_all.return_pos()
+        pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
+        self.map.draw_map(screen,pos)
         
-        if self.draw_map :
-            screen.fill((0,0,0))
-
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
