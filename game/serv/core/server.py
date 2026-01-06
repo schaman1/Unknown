@@ -2,6 +2,7 @@ import socket, threading, sys
 from serv.core.network_handler import Network_handler
 from serv.systems.map.read_map import Read_map
 from serv.systems.monster.read_monster import Read_monster
+from serv.domain.projectile.projectile_manager import ProjectileManager
 from shared.constants import world
 
 from serv.config import network,assets
@@ -16,6 +17,8 @@ class Server:
         self.network_handler = Network_handler(self)
         self.map_cell = Read_map(assets.BG_CELL)
         self.map_monster = Read_monster(assets.BG_MONSTER,world.SIZE_CHUNK_MONSTER,world.RATIO,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
+        self.projectile_manager = ProjectileManager()
+
 
         self.host = host
         self.port = port
