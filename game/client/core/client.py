@@ -205,6 +205,12 @@ class Client:
             id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
             self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
 
+        elif id==7:
+            pass
+
+        elif id==8:
+            pass
+
         elif id == 1 :
 
             print(f"New connection : {data[1]}")

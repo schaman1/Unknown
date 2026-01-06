@@ -141,7 +141,7 @@ class Network_handler :
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell.grid_type,self.server.map_cell.dur,self.server.map_cell.vide,self.server.map_cell.liquid)
 
         elif id_msg == 4 :
-            pass
+            self.server.projectile_manager.create_shoot("pioche",0,self.server.lClient[sender].return_pos())
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -204,6 +204,24 @@ class Network_handler :
             packet += struct.pack("!HLHH", chunk, id, x, y)
 
         return bytes(packet)
+    
+    def pack_projectile_create(self,projectiles,packet):
+
+        packet += struct.pack("!H", len(projectiles))
+
+        for (id,pos_x,pos_y,angle,v) in projectiles :
+            packet+= struct.pack("!LLLHH",id,pos_x,pos_y,angle,v)
+
+        return bytes(packet)
+    
+    def pack_projectile_die(self,projectiles,packet):
+
+        packet += struct.pack("!H", len(projectiles))
+
+        for id in projectiles :
+            packet+= struct.pack("!L",id)
+
+        return bytes(packet)
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
@@ -232,6 +250,12 @@ class Network_handler :
             
         elif id==6:
             packet+=struct.pack("!BLL",data[1],data[2],data[3])
+
+        elif id==7:
+            self.pack_projectile_create(data[1],packet)
+
+        elif id==8:
+            self.pack_projectile_die(data[1],packet)
 
         else :
             print("Issue id not found : ",id)

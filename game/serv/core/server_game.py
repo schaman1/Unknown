@@ -17,23 +17,6 @@ class Server_game(Server) :
         self.base_movement = world.RATIO
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
            
-        
-    #@classmethod
-    #def from_server(cls, server: "Server"):
-    #    """Créer un Server_game à partir d’un Server existant"""
-    #    new = cls(server.host, server.port)
-    #    # Copier les infos du lobby
-    #    new.lClient = server.lClient
-    #    new.server = server.server
-    #    new.nbr_player = server.nbr_player
-    #    new.map_cell = server.map_cell
-    #    new.network_handler = server.network_handler
-    #    new.map_monster = server.map_monster
-    #    new.is_running_menu=False
-    #    new.is_running_game=True
-#
-    #    return new
-#
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
         while self.is_running_game :
@@ -41,12 +24,19 @@ class Server_game(Server) :
 
             result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
-            
+            result_projectile = self.projectile_manager.return_chg(self.lClient)
+
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,3)
 
             if len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
+
+            if len(result_projectile)!= 0 :
+                self.send_data_update(result_projectile[0],7)
+
+            if len(result_projectile)!= 0 :
+                self.send_data_update(result_projectile[1],8)
 
             self.handle_clients()
             self.handle_player()
