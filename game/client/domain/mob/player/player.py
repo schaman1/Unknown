@@ -1,13 +1,13 @@
 import pygame
 from client.domain.mob.mob import Mob
 from client.config import assets
-from shared.constants import world
+from shared.constants import size_display
 
 class Player(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
 
-        super().__init__(pos[0],pos[1],cell_size,size=(world.PLAYER_SIZE_WIDTH,world.PLAYER_SIZE_HEIGHT))
+        super().__init__(pos[0],pos[1],cell_size,size=(size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT))
 
         self.pseudo = pseudo
         self.is_you = is_you

@@ -24,7 +24,7 @@ class Monster_all :
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
         monster.blit(screen,x,y)
     
-    def blit_all_monster(self,screen,x,y):
+    def blit_all_monsters(self,screen,x,y):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.dic_monster :

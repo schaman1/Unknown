@@ -20,7 +20,7 @@ class Player_all :
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y
 
-    def draw_players(self,screen_global,center,xscreen,yscreen):
+    def blit_players(self,screen_global,center,xscreen,yscreen):
 
         for player in self.dic_players.values():
 

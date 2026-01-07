@@ -132,5 +132,5 @@ class Mob:
         else :
             return 1
         
-    def retrun_pos(self):
-        return (self.pos_x,self.pos_y)
+    def return_pos(self):
+        return [self.pos_x,self.pos_y]

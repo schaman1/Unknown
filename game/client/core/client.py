@@ -117,7 +117,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -141,6 +141,12 @@ class Client:
 
             elif msg_id==6:
                 msg_size = 1+9
+            
+            elif msg_id==7:
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*17
+
+            elif msg_id==8:
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -206,10 +212,14 @@ class Client:
             self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
 
         elif id==7:
-            pass
+            for i in range((size-3)//17):
+                id,pos_x,pos_y,angle,vitesse,id_img = struct.unpack("!LLLHHB", data[3+i*17 : 20+i*17])
+                self.main.state.game.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
 
         elif id==8:
-            pass
+            for i in range((size-3)//4):
+                id = struct.unpack("!L",data[3+i*4:7+i*4])[0]
+                self.main.state.game.projectiles.remove_projectile(id)
 
         elif id == 1 :
 
