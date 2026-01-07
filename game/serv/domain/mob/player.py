@@ -1,4 +1,4 @@
-from shared.constants import world
+from shared.constants import world,size_display
 from serv.domain.mob.mob import Mob
 
 class Player(Mob) :
@@ -7,7 +7,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
 
-        super().__init__(pos,hp,id,world.PLAYER_SIZE_WIDTH,world.PLAYER_SIZE_HEIGHT)
+        super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT)
 
         self.hp = hp
 

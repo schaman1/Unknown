@@ -5,6 +5,7 @@ import struct
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.actions.map import Map
+from client.domain.projectile.projectile_manager import ProjectileManager
 #import client.OptiClient as njClient
 from client.config import assets
 from shared.constants import world
@@ -37,6 +38,8 @@ class Game :
         self.player_all = Player_all(cell_size)
 
         self.map = Map(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
+
+        self.projectiles = ProjectileManager(self.cell_size)
 
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
@@ -74,11 +77,15 @@ class Game :
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
 
-    def blit_monster(self,screen,x,y):
-        self.monsters.blit_all_monster(screen,x,y)
+    def blit_monsters(self,screen,x,y):
+        self.monsters.blit_all_monsters(screen,x,y)
 
     def blit_players(self,screen,x,y):
-        self.player_all.draw_players(screen,self.center,x,y)
+        self.player_all.blit_players(screen,self.center,x,y)
+
+    def blit_projectiles(self,screen,x,y):
+
+        self.projectiles.blit_projectiles(screen,x,y)
 
     def draw(self,screen,x,y):
         """Blit le canva sur le screen à la position x,y"""
@@ -87,8 +94,9 @@ class Game :
         screen.blit(self.canva, (x, y))
         #screen.blit(self.canva,(0,0)) #Pour voir la map en entier
 
-        self.blit_monster(screen,x,y)
+        self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y)
+        self.blit_projectiles(screen,x,y)
 
         #screen.blit(self.light,(0,0))
         pos = self.player_all.return_pos()

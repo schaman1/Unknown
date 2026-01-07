@@ -209,8 +209,8 @@ class Network_handler :
 
         packet += struct.pack("!H", len(projectiles))
 
-        for (id,pos_x,pos_y,angle,v) in projectiles :
-            packet+= struct.pack("!LLLHH",id,pos_x,pos_y,angle,v)
+        for (id,pos_x,pos_y,angle,v,id_img) in projectiles :
+            packet+= struct.pack("!LLLHHB",id,pos_x,pos_y,angle,v,id_img)
 
         return bytes(packet)
     

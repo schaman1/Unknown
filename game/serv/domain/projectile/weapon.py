@@ -7,8 +7,4 @@ class Pioche(Projectile) :
 
         self.life_time = weapons.LIFE_PIOCHE
 
-
-        super.__init__(pos,self.life_time,id,angle,vitesse = weapons.V_PIOCHE)
-
-
-
+        super().__init__(pos,self.life_time,id,angle,vitesse = weapons.V_PIOCHE,id_img = 0)

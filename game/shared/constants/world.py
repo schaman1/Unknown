@@ -1,5 +1,3 @@
-PLAYER_SIZE_HEIGHT = 10
-PLAYER_SIZE_WIDTH = 10
 CELL_SIZE = 12
 SIZE_CHUNK_MONSTER = 100  #Taille d'un chunk de monstre en pixel
 
