@@ -68,7 +68,7 @@ class Read_monster :
 
                     for monster in self.dic_monster[chunk] :
 
-                        monster.move(cells_arr,self.cell_dur,self.cell_vide,self.cell_liquid)
+                        monster.update(cells_arr,self.cell_dur,self.cell_vide,self.cell_liquid,lInfoClient)
 
                         for client_idx in liste_client_see :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y))
