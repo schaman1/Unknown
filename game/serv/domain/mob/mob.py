@@ -134,3 +134,6 @@ class Mob:
         
     def return_pos(self):
         return [self.pos_x,self.pos_y]
+    
+    def take_damage(self,damage):
+        self.hp-=damage

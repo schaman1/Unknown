@@ -201,7 +201,7 @@ class Network_handler :
 
         # données des cellules
         for (chunk, id, x, y) in monsters:
-            packet += struct.pack("!HLHH", chunk, id, x, y)
+            packet += struct.pack("!HLLL", chunk, id, x, y)
 
         return bytes(packet)
     
