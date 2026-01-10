@@ -6,7 +6,7 @@ from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.actions.map import Map
 from client.domain.projectile.projectile_manager import ProjectileManager
-#import client.OptiClient as njClient
+
 from client.config import assets
 from shared.constants import world
 
@@ -44,6 +44,16 @@ class Game :
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
         #                       pos = (500,500))
+
+    def draw_intro_start(self,screen):
+
+        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0))
+
+    def draw_intro_end(self,screen):
+
+        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+
+        return True #If end animation else return False
 
     def update_canva(self,data):
         """Reçoit les données l du serveur et appelle update"""
@@ -90,9 +100,11 @@ class Game :
     def draw(self,screen,x,y):
         """Blit le canva sur le screen à la position x,y"""
 
+        #x,y = 0,0  #Pour voir toute la map
+
         screen.blit(self.bg,(0,0))
+
         screen.blit(self.canva, (x, y))
-        #screen.blit(self.canva,(0,0)) #Pour voir la map en entier
 
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y)

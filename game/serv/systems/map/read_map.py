@@ -26,6 +26,22 @@ class Read_map:
 
         self.create_map()
 
+    def dummy_compilation(self,lClient):
+        ToUpdateDummy = np.zeros((1,1),dtype = np.bool)
+
+        VisibleDummy = np.ones((len(lClient),1,1),dtype=np.bool_)
+        self.ys , self.xs = njitBoucle.return_x_y(VisibleDummy)
+
+        moved_cells = njitBoucle.move_fast(
+            ToUpdateDummy,
+            VisibleDummy,
+            self.xs,self.ys,
+            self.grid_type,
+            self.r_or_l,
+            self.grid_color,
+            self.temp,
+        ) 
+
     def create_map(self):
         img_np = np.transpose(pygame.surfarray.array3d(self.map), (1, 0, 2))
 
@@ -163,11 +179,7 @@ class Read_map:
     def return_chg(self,lClient):
         """Retourne les chg de pixels"""
 
-        #Robinet
-        self.grid_color[170,740] = (np.random.randint(0,20),np.random.randint(0,20),np.random.randint(200,255),255)
-        self.grid_type[170,740] = self.type["WATER"]
-        self.temp[170,740] = -255
-        self.ToUpdate[170,740] = True
+        self.flow_water()
 
         self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
         #return([[0],])
@@ -184,3 +196,10 @@ class Read_map:
         ) 
 
         return moved_cells
+    
+    def flow_water(self):
+        #Robinet
+        self.grid_color[170,740] = (np.random.randint(0,20),np.random.randint(0,20),np.random.randint(200,255),255)
+        self.grid_type[170,740] = self.type["WATER"]
+        self.temp[170,740] = -255
+        self.ToUpdate[170,740] = True

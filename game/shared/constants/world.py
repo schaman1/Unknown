@@ -1,4 +1,5 @@
 CELL_SIZE = 12
+
 SIZE_CHUNK_MONSTER = 100  #Taille d'un chunk de monstre en pixel
 
 RATIO = 100

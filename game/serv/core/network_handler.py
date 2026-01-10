@@ -124,12 +124,6 @@ class Network_handler :
                 #    "remove connection": removed_id
                 #}, client)
 
-        elif id_msg == 0: #1 = start game
-            #Redirige vers le game, stop le loop_server_in_menu pour start celui de in_game
-            print("start !")
-            self.is_running_menu = False
-            self.is_running_game = True
-
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
 
@@ -230,14 +224,11 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 :
+        if id == 0 or id==2 or id==9:
             pass
 
         elif id == 1 : 
             packet+= struct.pack("!BB",data[1],data[2])
-
-        elif id == 2: #rem client
-            pass
 
         elif id == 3:
             self.pack_cells(data[1],packet)
