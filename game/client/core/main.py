@@ -2,7 +2,6 @@ import pygame, threading
 from client.core.state import State
 from client.core.client import Client
 from serv.core.server_game import Server_game
-from serv.core.server import Server
 from shared.constants import fps,world
 
 #from C_inGame import InGame
@@ -28,8 +27,6 @@ class Main:
         self.Server = None
         self.objClicked = None
 
-        self.mod = "menu" #menu/reglage/game
-
         self.client = Client(self.font,self.screen,self)
         self.state = State(self.screen,self.screenSize,self.font,self.client,world.CELL_SIZE)
 
@@ -39,7 +36,7 @@ class Main:
         running = True
         while running:
 
-            if self.mod == "game":
+            if self.state.mod == "game":
                 self.key_event()
 
             for event in pygame.event.get():
@@ -49,7 +46,7 @@ class Main:
 
                 if event.type == pygame.KEYDOWN:
 
-                    if self.mod == "game":
+                    if self.state.mod == "game":
                         if event.key == pygame.K_p :
                             self.state.game.map.draw = not self.state.game.map.draw
                         
@@ -58,7 +55,7 @@ class Main:
                         txt = self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"]
 
                         if event.key == pygame.K_RETURN:
-                            self.mod = "loading"
+                            self.state.mod = "loading"
                             print("Loading")
                             self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt.replace("|","")
                             threading.Thread(target = self.connect_serv).start()
@@ -76,29 +73,29 @@ class Main:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
-                    if self.mod=="game":
+                    if self.state.mod=="game":
                         pass
 
 
-                    elif self.mod == "menu":
+                    elif self.state.mod == "menu":
                         if self.state.host.get_rect().collidepoint(event.pos):
                             #("Play button clicked")
 
                             self.state.show_ip.update_text("show_ip",f"Waiting for creation...")
                             self.state.start.update_text("start","...")
-                            self.mod = "host"
+                            self.state.mod = "host"
 
                             threading.Thread(target = self.create_server_thread).start()
 
                         elif self.state.join.get_rect().collidepoint(event.pos):
                             print("join button clicked")
-                            self.mod = "connexion"
+                            self.state.mod = "connexion"
 
                         elif self.state.quit.get_rect().collidepoint(event.pos):
                             #("Quit button clicked")
                             running = False
 
-                    elif self.mod == "connexion":
+                    elif self.state.mod == "connexion":
 
                         if self.state.ip.get_rect().collidepoint(event.pos):
 
@@ -109,10 +106,10 @@ class Main:
                         elif self.state.menu.get_rect().collidepoint(event.pos):
                             self.objClicked = None
                             self.state.ip.dicRect_input[self.state.ip.id+"_input"]["text"] = self.state.ip.dicRect_input[self.state.ip.id+"_input"]["text"].replace("|","")
-                            self.mod = "menu"
+                            self.state.mod = "menu"
 
                         elif self.state.connexion.get_rect().collidepoint(event.pos):
-                            self.mod = "loading"
+                            self.state.mod = "loading"
                             print("loading")
                             threading.Thread(target = self.connect_serv).start()
 
@@ -121,29 +118,28 @@ class Main:
                                 self.state.ip.dicRect_input[self.objClicked.id+"_input"]["text"] = self.state.ip.dicRect_input[self.objClicked.id+"_input"]["text"].replace("|","")
                                 self.objClicked = None
 
-                    elif self.mod == "wait_serv":
+                    elif self.state.mod == "wait_serv":
 
                         if self.state.menu.get_rect().collidepoint(event.pos):
                             if self.client.connected is True :
                                 self.client.connected = False
                                 print("Connected = false")
 
-                            self.mod = "menu"
+                            self.state.mod = "menu"
                     
-                    elif self.mod == "host":
+                    elif self.state.mod == "host":
 
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
+                            
 
-                            self.client.send_data(id = 0) #Start game
-
-                            self.Server.start_game()
+                            self.start_game()
 
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
                             
                             self.client.connected = False
-                            self.mod = "menu"
+                            self.state.mod = "menu"
 
                             if self.Server is not None:
                                 self.Server.stop_server()
@@ -152,7 +148,7 @@ class Main:
 
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
-            self.state.a_state(self.mod)
+            self.state.a_state()
 
             if self.client.connected :
                 self.client.poll_reception()
@@ -164,9 +160,13 @@ class Main:
 
         pygame.quit()
 
+    def start_game(self):
+
+        threading.Thread(target=self.Server.start_game, daemon=True).start()
+
     def connect_serv(self):
         """Connecte au serveur"""
-        self.mod = self.state.connexion_serv(self.client)  #Connexion serv
+        self.state.mod = self.state.connexion_serv(self.client)  #Connexion serv
         self.objClicked = None
 
     def create_server_thread(self):

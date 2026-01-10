@@ -40,12 +40,13 @@ class Client:
         #ip, port = self.return_ip_ngrok(ip_port)
 
         #-------- Pour local = LAN --------
-        ip, port = ip_port.split(":")
+        try : 
+            ip, port = ip_port.split(":")
+        except : 
+            return self.return_err("Utilisez le format ip:port")
         #ip = ip.strip()
         port = int(port) #Has to be an integer
 
-        if ip is None or port is None:
-            return self.return_err("Utilisez le format ip:port")
         #Créer le socket
 
         for essais in range(3): #Test 3 fois de se connecter 
@@ -121,7 +122,7 @@ class Client:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0:          # start_game
+            if msg_id == 0 or msg_id == 9:          # start_game / load fini
                 msg_size = 1
 
             elif msg_id == 1:        # new player
@@ -240,7 +241,10 @@ class Client:
             self.main.state.game.player_all.dic_players.remove(data["remove connection"])
 
         elif id == 0:
-            self.main.mod = "game"
+            self.main.state.mod = "intro start"
+
+        elif id == 9 :
+            self.main.state.mod = "intro end"
 
         #elif id == "player move" :
             #player[data["sender"]].pos = data["pos"]

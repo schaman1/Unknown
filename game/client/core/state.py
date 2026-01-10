@@ -16,6 +16,8 @@ class State:
         self.cell_size = cell_size
         self.font = font
         self.client = client
+        self.mod = "menu"
+
         self.load = Load(screen)
 
         self.game = Game(cell_size)
@@ -55,14 +57,14 @@ class State:
         
         self.no_black_screen = ""#"loading"
 
-    def a_state(self,state):
-        """Prend en param l'état / state et dessine en fct ce qu'il doit être dessiner"""
+    def a_state(self):
+        """Prend en param l'état / self.mod et dessine en fct ce qu'il doit être dessiner"""
 
-        #if state not in self.no_black_screen:
+        #if self.mod not in self.no_black_screen:
             #self.screen.fill(color["BLACK"])
         mouse_pos = pygame.mouse.get_pos()
 
-        if state == "game":
+        if self.mod == "game":
 
             x,y = self.return_pos_blit()
             self.game.draw(self.screen,x,y)
@@ -73,33 +75,44 @@ class State:
 
             self.screen.fill(color["BLACK"])
 
-            if state == "menu":
+            if self.mod == "menu":
 
                 self.draw_btn(self.dicMenu,mouse_pos)
 
                 #.drawAll()
 
-            elif state == "wait_serv":
+            elif self.mod == "wait_serv":
                 
                 self.draw_btn(self.dicWaiting,mouse_pos)
 
                 self.draw_waiting()
 
-            elif state == "connexion":
+            elif self.mod == "connexion":
 
                 self.draw_btn(self.dicConnexion,mouse_pos)
 
-            elif state == "host":
+            elif self.mod == "host":
 
                 self.draw_btn(self.dicCreation,mouse_pos)
 
                 self.client.display_clients_name()
 
-            elif state == "loading":
+            elif self.mod == "loading":
                 self.draw_load()
 
+            elif self.mod == "intro start":
+                self.game.draw_intro_start(self.screen)
+
+            elif self.mod == "intro end":
+
+                finish = self.game.draw_intro_end(self.screen)
+                
+                if finish :
+                    self.mod = "game"
+
+
             else : 
-                pass
+                print("Unknown self.mod")
 
         self.draw_alert()
 
