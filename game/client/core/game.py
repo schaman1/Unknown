@@ -103,6 +103,7 @@ class Game :
         #x,y = 0,0  #Pour voir toute la map
 
         screen.blit(self.bg,(0,0))
+        #screen.fill((0,0,0))
 
         screen.blit(self.canva, (x, y))
 
