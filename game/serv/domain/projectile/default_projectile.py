@@ -14,10 +14,9 @@ class Projectile :
         self.vx,self.vy = self.return_vx_vy(angle,vitesse)
 
     def return_vx_vy(self,angle,vitesse):
-        return (0*vitesse,0*vitesse)
+        return (1*vitesse,0*vitesse)
 
     def move(self,dt):
-
         self.pos[0]+=self.vx*dt
         self.pos[1]+=self.vy*dt
 
@@ -26,4 +25,4 @@ class Projectile :
         return time.time() - self.spawn_time >= self.life_time
     
     def return_info(self):
-        return [self.id,self.pos[0],self.pos[1],self.vitesse,self.angle,self.id_img]
+        return [self.id,self.pos[0],self.pos[1],self.angle,self.vitesse,self.id_img]

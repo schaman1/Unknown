@@ -15,8 +15,9 @@ class ProjectileManager :
 
         del self.d_Projectile[id]
 
-    def blit_projectiles(self,screen,x,y):
+    def blit_projectiles(self,screen,x,y,dt):
 
-        for projectiles in self.d_Projectile.values():
+        for projectile in self.d_Projectile.values():
 
-            projectiles.blit(screen,x,y)
+            projectile.move(dt)
+            projectile.blit(screen,x,y)

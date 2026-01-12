@@ -18,7 +18,7 @@ class DefaultProjectile :
 
     def create_vx_vy(self,angle,vitesse):
 
-        return 0,0
+        return (1*vitesse,0*vitesse)
     
     def move(self,dt):
 

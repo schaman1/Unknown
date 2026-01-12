@@ -17,7 +17,7 @@ class ProjectileManager :
         if type_weapon == "pioche" :
             projectile = weapon.Pioche(self.generate_id(),angle,pos) #0 = pioche
             self.l_Projectile.append(projectile)
-            self.projectile_create.append(projectile.return_info())
+            self.projectile_create.append(projectile)
         else :
             print("Unknown weapon")
 
@@ -29,7 +29,7 @@ class ProjectileManager :
 
         for projectile in self.projectile_create :
 
-            self.add_on_client_see(lClient,l,projectile,projectiles_create,"Create")
+            self.add_on_client_see_create(lClient,projectile,projectiles_create)
 
         self.projectile_create.clear()
 
@@ -41,26 +41,27 @@ class ProjectileManager :
 
             if self.l_Projectile[i].should_destroy() :
                 
-                self.add_on_client_see(lClient,l,self.l_Projectile[i],projectiles_die,"Die")
+                self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
 
                 del self.l_Projectile[i]
                 
-                #comment faire de maniere opti la de supprimer ce projectile de l_self.lProjectile
-
         return [projectiles_create,projectiles_die]
-
-    def add_on_client_see(self,lClient,len_clients,projectile,projectiles,state):
-
+    
+    def add_on_client_see_create(self,lClient,projectile,projectiles):
 
         for i,clients in enumerate(lClient.values()):
 
             if self.client_see(clients,projectile) :
-                if state == "Die" :
-                    projectiles[i].append(self.add_when_destroy(projectile))
 
-                elif state == "Create" :
-                    projectiles[i].append(self.add_when_create(projectile))
+                projectiles[i].append(projectile.return_info())
 
+    def add_on_client_see_die(self,lClient,projectile,projectiles):
+
+        for i,clients in enumerate(lClient.values()):
+
+            if self.client_see(clients,projectile) :
+                    
+                projectiles[i].append(self.add_when_destroy(projectile))
 
     def add_when_destroy(self,projectile):
         return projectile.id

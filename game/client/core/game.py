@@ -93,11 +93,11 @@ class Game :
     def blit_players(self,screen,x,y):
         self.player_all.blit_players(screen,self.center,x,y)
 
-    def blit_projectiles(self,screen,x,y):
+    def blit_projectiles(self,screen,x,y,dt):
 
-        self.projectiles.blit_projectiles(screen,x,y)
+        self.projectiles.blit_projectiles(screen,x,y,dt)
 
-    def draw(self,screen,x,y):
+    def draw(self,screen,x,y,dt):
         """Blit le canva sur le screen à la position x,y"""
 
         #x,y = 0,0  #Pour voir toute la map
@@ -108,7 +108,7 @@ class Game :
 
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y)
-        self.blit_projectiles(screen,x,y)
+        self.blit_projectiles(screen,x,y,dt)
 
         #screen.blit(self.light,(0,0))
         pos = self.player_all.return_pos()
