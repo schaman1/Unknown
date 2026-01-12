@@ -1,4 +1,4 @@
-import pygame, threading
+import pygame, threading, time
 from client.core.state import State
 from client.core.client import Client
 from serv.core.server_game import Server_game
@@ -22,6 +22,8 @@ class Main:
         self.fps = fps.FPS_CLIENT
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
+        self.last_shot = time.time()
+        self.rechargement = 0.5
 
         #self.Game = InGame(self.screen,self.screenSize,self.font,self.cards)
         self.Server = None
@@ -36,6 +38,8 @@ class Main:
         running = True
         while running:
 
+            self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
+            
             if self.state.mod == "game":
                 self.key_event()
 
@@ -148,7 +152,7 @@ class Main:
 
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
-            self.state.a_state()
+            self.state.a_state(self.dt)
 
             if self.client.connected :
                 self.client.poll_reception()
@@ -156,7 +160,6 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
-            #self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
         pygame.quit()
 
@@ -198,7 +201,10 @@ class Main:
             self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
 
         if buttons[0] : 
-            self.client.send_data(id=4,data=[])
+
+            if time.time() - self.last_shot > self.rechargement :
+                self.last_shot = time.time()
+                self.client.send_data(id=4,data=[])
 
         #if key[pygame.K_k] :
         #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0

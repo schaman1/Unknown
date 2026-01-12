@@ -57,7 +57,7 @@ class State:
         
         self.no_black_screen = ""#"loading"
 
-    def a_state(self):
+    def a_state(self,dt):
         """Prend en param l'état / self.mod et dessine en fct ce qu'il doit être dessiner"""
 
         #if self.mod not in self.no_black_screen:
@@ -67,7 +67,7 @@ class State:
         if self.mod == "game":
 
             x,y = self.return_pos_blit()
-            self.game.draw(self.screen,x,y)
+            self.game.draw(self.screen,x,y,dt)
 
             #self.draw_btn(self.dicGame,mouse_pos)
 
@@ -107,6 +107,10 @@ class State:
 
                 finish = self.game.draw_intro_end(self.screen)
                 
+                #En fonction de ce que tu fais mais la comme ça, si tu fais du fondu, les persos sont déjà désinné
+                x,y = self.return_pos_blit()
+                self.game.draw(self.screen,x,y,dt)
+
                 if finish :
                     self.mod = "game"
 
