@@ -27,17 +27,16 @@ def return_column(x:int,y:int,length:int,grid_color):
     i=0
     while i < length and y+i < canva_size_y and x >= 0 and x<canva_size_x:
 
-
         ys = y+i
         i+=1
-        if grid_color[ys, x, 3] != 0 :
-            moved.append((x,
-                        ys,                            
-                        grid_color[ys, x, 0],
-                        grid_color[ys, x, 1],
-                        grid_color[ys, x, 2],
-                        grid_color[ys, x, 3])
-                        )
+        #if grid_color[ys, x, 3] != 0 :
+        moved.append((x,
+                    ys,                            
+                    grid_color[ys, x, 0],
+                    grid_color[ys, x, 1],
+                    grid_color[ys, x, 2],
+                    grid_color[ys, x, 3])
+                    )
     return moved
 
 @njit
@@ -48,14 +47,14 @@ def return_raw(x:int,y:int,length:int,grid_color):
     while i<length and x+i < canva_size_x and y>= 0 and y < canva_size_y:
         xs = x+i
         i+=1
-        if grid_color[y, xs, 3] != 0 :
-            moved.append((xs,
-                        y,                            
-                        grid_color[y, xs, 0],
-                        grid_color[y, xs, 1],
-                        grid_color[y, xs, 2],
-                        grid_color[y, xs, 3])
-                        )
+        #if grid_color[y, xs, 3] != 0 :
+        moved.append((xs,
+                    y,                            
+                    grid_color[y, xs, 0],
+                    grid_color[y, xs, 1],
+                    grid_color[y, xs, 2],
+                    grid_color[y, xs, 3])
+                    )
     return moved
 
 #@njit
