@@ -12,7 +12,7 @@ class Server_game(Server) :
 
         #self.lClient = None
 
-        self.fps = fps.FPS_CELL_UPDATE
+        self.fps = fps.FPS_SERVER
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
@@ -29,10 +29,8 @@ class Server_game(Server) :
 
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,3)
-
             if len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
-
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
 
@@ -44,7 +42,7 @@ class Server_game(Server) :
 
             fps = self.fpsClock.get_fps()
             #if fps < 220 : #Affiche le fps quand c'est critique
-            #    print(fps)
+            print(fps)
 
         print("End boucle loop_server_game")
 
@@ -53,11 +51,14 @@ class Server_game(Server) :
         for socket in self.lClient.keys():
 
             delta = self.lClient[socket].update_pos(self.map_cell.grid_type,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
-            cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
             
-            self.send_data([3,cell],socket)
+            cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
+
+            if cell != []:
+                self.send_data([3,cell],socket)
             #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
-            self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
+            if delta != (0,0):
+                self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
             
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner

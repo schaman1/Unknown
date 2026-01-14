@@ -29,14 +29,14 @@ def return_column(x:int,y:int,length:int,grid_color):
 
         ys = y+i
         i+=1
-        #if grid_color[ys, x, 3] != 0 :
-        moved.append((x,
-                    ys,                            
-                    grid_color[ys, x, 0],
-                    grid_color[ys, x, 1],
-                    grid_color[ys, x, 2],
-                    grid_color[ys, x, 3])
-                    )
+        if grid_color[ys, x, 3] != 0 :
+            moved.append((x,
+                        ys,                            
+                        grid_color[ys, x, 0],
+                        grid_color[ys, x, 1],
+                        grid_color[ys, x, 2],
+                        grid_color[ys, x, 3])
+                        )
     return moved
 
 @njit
@@ -47,14 +47,14 @@ def return_raw(x:int,y:int,length:int,grid_color):
     while i<length and x+i < canva_size_x and y>= 0 and y < canva_size_y:
         xs = x+i
         i+=1
-        #if grid_color[y, xs, 3] != 0 :
-        moved.append((xs,
-                    y,                            
-                    grid_color[y, xs, 0],
-                    grid_color[y, xs, 1],
-                    grid_color[y, xs, 2],
-                    grid_color[y, xs, 3])
-                    )
+        if grid_color[y, xs, 3] != 0 :
+            moved.append((xs,
+                        y,                            
+                        grid_color[y, xs, 0],
+                        grid_color[y, xs, 1],
+                        grid_color[y, xs, 2],
+                        grid_color[y, xs, 3])
+                        )
     return moved
 
 #@njit
@@ -418,7 +418,7 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                 set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
                 
             elif typ == STONE :
-                #continue
+                continue
                 r = np.random.randint(0,100000)
 
                 ny = y + 1
@@ -439,6 +439,7 @@ def move_fast(ToUpdate,visible,xs,ys,grid_type, r_or_l,grid_color, temperature):
                         set_moved_cells(clientToUpdate,x,y,moved_cells,grid_color)
 
             elif typ == GRASS :
+                continue
                 nbrGrass = 0
                 for i, j in [(-1,0),(1,0),(0,-1),(0,1)]:
                     dy = y +i

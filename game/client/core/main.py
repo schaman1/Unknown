@@ -135,7 +135,6 @@ class Main:
 
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
-                            
 
                             self.start_game()
 
@@ -149,7 +148,6 @@ class Main:
                                 self.Server.stop_server()
                                 self.Server = None
                                 self.state.add_alert("Serveur stoppé",)
-
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.state.a_state(self.dt)
