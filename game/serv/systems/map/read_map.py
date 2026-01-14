@@ -21,8 +21,6 @@ class Read_map:
         self.ToUpdate = np.ones((self.height,self.width),dtype = np.bool)
 
         self.visible = None
-        self.xs = np.empty(1, dtype=np.int32)
-        self.ys = np.empty(1, dtype=np.int32)
 
         self.create_map()
 
@@ -30,12 +28,12 @@ class Read_map:
         ToUpdateDummy = np.zeros((1,1),dtype = np.bool)
 
         VisibleDummy = np.ones((len(lClient),1,1),dtype=np.bool_)
-        self.ys , self.xs = njitBoucle.return_x_y(VisibleDummy)
+        ys , xs = njitBoucle.return_x_y(VisibleDummy)
 
         moved_cells = njitBoucle.move_fast(
             ToUpdateDummy,
             VisibleDummy,
-            self.xs,self.ys,
+            xs,ys,
             self.grid_type,
             self.r_or_l,
             self.grid_color,
@@ -96,14 +94,14 @@ class Read_map:
 
         if delta[0] < 0:
             signex = -1
-        delta[0]+=signex
+        #delta[0]+=signex
 
         if delta[1] < 0:
             signey = -1
-        delta[1]+=signey
+        #delta[1]+=signey
 
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
-        for i in range(delta[0] * signex):
+        for i in range((delta[0]+signex) * signex):
             deltax = (-i + client.screen_size[0] // 2 -1) * signex #On fais -i car le player a deja bougé donc sa pos_x a deja change !
             deltay = -(client.screen_size[1]//2)
             if signey==-1:
@@ -119,7 +117,7 @@ class Read_map:
             )
 
         # 2. Collecter les listes de colonnes (pas de concaténation ici !)
-        for i in range(delta[1] * signey):
+        for i in range((delta[1]+signey) * signey):
 
             deltax = -(client.screen_size[0] // 2)
             deltay = (-i + client.screen_size[1]//2)*signey #On fais -i car le player a deja bougé donc sa pos_x a deja change !
@@ -183,12 +181,12 @@ class Read_map:
 
         self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
         #return([[0],])
-        self.ys , self.xs = njitBoucle.return_x_y(self.visible)
+        ys , xs = njitBoucle.return_x_y(self.visible)
 
         moved_cells = njitBoucle.move_fast(
             self.ToUpdate,
             self.visible,
-            self.xs,self.ys,
+            xs,ys,
             self.grid_type,
             self.r_or_l,
             self.grid_color,

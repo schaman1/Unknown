@@ -149,6 +149,7 @@ class Client:
             elif msg_id==8:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
