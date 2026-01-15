@@ -1,4 +1,5 @@
-from serv.domain.projectile import weapon
+from serv.domain.projectile import projectile_type
+import time
 
 class ProjectileManager :
 
@@ -7,21 +8,24 @@ class ProjectileManager :
         self.l_Projectile = []
         self.projectile_create = []
         self.projectile_die = []
+        self.next_allowed_shot = 0
 
     def generate_id(self):
         self.next_id = (self.next_id+1) % 65536 #Maximum pour uint16
         return self.next_id
     
-    def create_shoot(self,type_weapon,angle,pos):
+    def create_shoot(self,weapon,angle,pos):
+
+        now = time.perf_counter()
         
-        if type_weapon == "pioche" :
-            projectile = weapon.Pioche(self.generate_id(),angle,pos) #0 = pioche
+        if now >= self.next_allowed_shot :
+            self.next_allowed_shot = now + weapon.loading_time/1000
+            projectile = weapon.create_projectile(self.generate_id(),angle,pos)
             self.l_Projectile.append(projectile)
             self.projectile_create.append(projectile)
-        else :
-            print("Unknown weapon")
 
-    def return_chg(self,lClient,dt):
+
+    def return_chg(self,lClient,dt,grid_type,cell_dur):
 
         l = len(lClient)
 
@@ -39,7 +43,7 @@ class ProjectileManager :
 
             self.l_Projectile[i].move(dt)
 
-            if self.l_Projectile[i].should_destroy() :
+            if self.l_Projectile[i].should_destroy(grid_type,cell_dur) :
                 
                 self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
 

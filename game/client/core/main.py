@@ -22,8 +22,8 @@ class Main:
         self.fps = fps.FPS_CLIENT
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
-        self.last_shot = time.time()
-        self.rechargement = 0.5
+        self.next_allowed_shot = 0
+        self.rechargement=0
 
         #self.Game = InGame(self.screen,self.screenSize,self.font,self.cards)
         self.Server = None
@@ -200,8 +200,10 @@ class Main:
 
         if buttons[0] : 
 
-            if time.time() - self.last_shot > self.rechargement :
-                self.last_shot = time.time()
+            now = time.perf_counter()
+
+            if now >= self.next_allowed_shot :
+                #self.next_allowed_shot = now+self.rechargement/1000
                 self.client.send_data(id=4,data=[])
 
         #if key[pygame.K_k] :
@@ -209,3 +211,6 @@ class Main:
 
         #if key[pygame.K_SPACE] : #futur saut (vitesse y)
         #    self.client.send_data("id":"move", "deplacement":"jump") 
+
+    def update_next_allowed_shot(self):
+        self.next_allowed_shot = time.perf_counter()

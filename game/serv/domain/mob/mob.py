@@ -27,12 +27,12 @@ class Mob:
         self.hp = hp
         self.id = id
 
-    def convert_from_base(self,nbr):
-        """Retourne le nbr en 1 pour 1"""
+    def convert_to_base(self,nbr):
+        """Retourne le nbr en 100 pour 1"""
         return nbr//self.base_movement
     
-    def convert_to_base(self,nbr):
-        """Retourne le nbr en 1 pour 100 = la base du serv car peut pas travailler avec des chiffres à virgule !"""
+    def convert_from_base(self,nbr):
+        """Retourne le nbr en 1 pour 100"""
         return nbr*self.base_movement
 
     def gravity_effect(self,grid_cell,cell_dur):
@@ -107,7 +107,7 @@ class Mob:
         return self.pos_x-pos_before
         
     def touch_wall(self,i,j,grid_cell,cell_dur):
-        return self.is_type(grid_cell[self.convert_from_base(self.pos_y+i-self.half_height),self.convert_from_base(self.pos_x+j)],cell_dur)
+        return self.is_type(grid_cell[self.convert_to_base(self.pos_y+i-self.half_height),self.convert_to_base(self.pos_x+j)],cell_dur)
     
     def touch_ground(self,grid_cell,cell_dur):
         j = -self.half_width

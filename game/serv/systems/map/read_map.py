@@ -89,8 +89,8 @@ class Read_map:
         signex = 1
         signey = 1
 
-        client_x = client.convert_from_base(client.pos_x)
-        client_y = client.convert_from_base(client.pos_y)
+        client_x = client.convert_to_base(client.pos_x)
+        client_y = client.convert_to_base(client.pos_y)
 
         if delta[0] < 0:
             signex = -1
@@ -143,8 +143,8 @@ class Read_map:
         cells = []
         for i,client in enumerate(lClient.values()):
 
-            client_x = client.convert_from_base(client.pos_x)
-            client_y = client.convert_from_base(client.pos_y)
+            client_x = client.convert_to_base(client.pos_x)
+            client_y = client.convert_to_base(client.pos_y)
 
             cells.append([])
             for column in range (client.screen_size[0]):
@@ -156,8 +156,8 @@ class Read_map:
     
     def return_colomn(self,client,nbr_column):
 
-        client_x = client.convert_from_base(client.pos_x)
-        client_y = client.convert_from_base(client.pos_y)
+        client_x = client.convert_to_base(client.pos_x)
+        client_y = client.convert_to_base(client.pos_y)
 
         cells = []
         deltay = -(client.screen_size[1]//2)
