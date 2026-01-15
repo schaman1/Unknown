@@ -87,8 +87,8 @@ def return_cell_update(ToUpdate,lClient,H,W):
     visible = np.zeros((len(lClient),H,W),dtype=np.bool_)
     for i,client in enumerate(lClient) :
 
-        client_x = client.convert_from_base(client.pos_x)
-        client_y = client.convert_from_base(client.pos_y)
+        client_x = client.convert_to_base(client.pos_x)
+        client_y = client.convert_to_base(client.pos_y)
         
         xs = max(client_x-client.screen_size[0]//2,0)
         xe = min(client_x+client.screen_size[0]//2,W)

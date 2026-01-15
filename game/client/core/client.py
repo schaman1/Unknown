@@ -149,6 +149,9 @@ class Client:
             elif msg_id==8:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
+            elif msg_id==10:
+                msg_size = 1+4
+
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -202,7 +205,6 @@ class Client:
             )
 
         elif id == 5 :#Init monsters
-            print("Init monsters received")
             cells = []
             for i in range((size-3)//14):
                 cells.append(struct.unpack("!HLLL", data[3+i*14 : 17+i*14]))
@@ -217,6 +219,7 @@ class Client:
             for i in range((size-3)//17):
                 id,pos_x,pos_y,angle,vitesse,id_img = struct.unpack("!LLLHHB", data[3+i*17 : 20+i*17])
                 self.main.state.game.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
+                self.main.update_next_allowed_shot()
 
         elif id==8:
             for i in range((size-3)//4):
@@ -246,6 +249,14 @@ class Client:
 
         elif id == 9 :
             self.main.state.mod = "intro end"
+
+        elif id==10:
+
+            id_player,id_weapon,loading_time = struct.unpack("!BBH",data[1:5])
+            if id_player==self.id :
+                self.main.rechargement = loading_time
+
+            #self.main.state.game.create_weapon()
 
         #elif id == "player move" :
             #player[data["sender"]].pos = data["pos"]

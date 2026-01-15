@@ -1,5 +1,6 @@
 from shared.constants import world,size_display
 from serv.domain.mob.mob import Mob
+from serv.domain.weapon.pioche import PiocheWeapon
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -18,6 +19,12 @@ class Player(Mob) :
         self.screen_size = [None,None]
         self.size_x = 2
 
+        self.weapon = PiocheWeapon()
+
+    def return_weapon_info(self):
+
+        return self.weapon.id,self.weapon.loading_time
+
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//world.CELL_SIZE + world.PADDING_CANVA
         self.screen_size[1] = screen_size[1]//world.CELL_SIZE + world.PADDING_CANVA
@@ -28,10 +35,10 @@ class Player(Mob) :
         self.gravity_effect(grid_cell,cell_dur)
         #print(self.pos_x,self.pos_y)
 
-        if self.convert_from_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_from_base(self.vitesse_x+self.pos_x)<0:
+        if self.convert_to_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_to_base(self.vitesse_x+self.pos_x)<0:
             self.vitesse_x=0
 
-        if self.convert_from_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_from_base(self.vitesse_y+self.pos_y)<0:
+        if self.convert_to_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
         deltax = self.collision_x(grid_cell,cell_dur)
@@ -39,7 +46,7 @@ class Player(Mob) :
         deltay = self.collision_y(grid_cell,cell_dur)
 
 
-        #print(self.pos_x,self.vitesse_x,self.convert_from_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
+        #print(self.pos_x,self.vitesse_x,self.convert_to_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
 
         return (deltax,deltay)
 

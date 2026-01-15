@@ -16,7 +16,7 @@ class Server_game(Server) :
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
-           
+
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
 
@@ -25,7 +25,7 @@ class Server_game(Server) :
 
             result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell.grid_type) #Mettre dt plus tard pour les monstres
-            result_projectile = self.projectile_manager.return_chg(self.lClient,dt)
+            result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell.grid_type,self.map_cell.dur)
 
             if len(result_cell[0]) != 1:
                 self.send_data_update(result_cell,3)
@@ -41,8 +41,8 @@ class Server_game(Server) :
             self.handle_player()
 
             fps = self.fpsClock.get_fps()
-            #if fps < 220 : #Affiche le fps quand c'est critique
-            print(fps)
+            #if fps < 30 : #Affiche le fps quand c'est critique
+            #    print(fps)
 
         print("End boucle loop_server_game")
 
@@ -75,6 +75,9 @@ class Server_game(Server) :
         self.change_state()
 
         self.send_data_all([0]) #0 pour start game
+
+        for client in self.lClient.values():
+            self.send_data_all([10,client.return_weapon_info(),client.id])
 
         result_cell = self.init_canva()
         result_monster = self.init_mobs()
