@@ -1,6 +1,6 @@
 from shared.constants import world,size_display
 from serv.domain.mob.mob import Mob
-from serv.domain.weapon.pioche import PiocheWeapon
+from serv.domain.weapon.weapon_manager import WeaponManager
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -19,11 +19,14 @@ class Player(Mob) :
         self.screen_size = [None,None]
         self.size_x = 2
 
-        self.weapon = PiocheWeapon()
+        self.weapons = WeaponManager()
 
     def return_weapon_info(self):
+        return self.weapons.return_all_weapon()
+    
+    def return_weapon_select(self):
 
-        return self.weapon.id,self.weapon.loading_time
+        return self.weapons.return_weapon_select()
 
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//world.CELL_SIZE + world.PADDING_CANVA

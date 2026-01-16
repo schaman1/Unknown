@@ -3,18 +3,21 @@ from shared.constants.world import RATIO
 
 class Projectile :
 
-    def __init__(self,pos,life_time,id,angle,vitesse,id_img):
+    def __init__(self,pos,life_time,angle,vitesse,id_img):
         self.pos = pos
         self.life_time = life_time
-        self.id=id
+        self.id=None
         self.spawn_time = time.time()
         self.angle = angle
-        self.vitesse = vitesse
+        self.vitesse = int(vitesse)
         self.id_img = id_img
 
         self.base_movement = RATIO #A changer
 
         self.vx,self.vy = self.return_vx_vy(angle,vitesse)
+
+    def set_id(self,id):
+        self.id = id
 
     def return_vx_vy(self,angle,vitesse):
         return (1*vitesse,0*vitesse)
@@ -48,6 +51,7 @@ class Projectile :
             return False
     
     def return_info(self):
+
         return [self.id,self.pos[0],self.pos[1],self.angle,self.vitesse,self.id_img]
     
     def is_type(self, type_cell, type_check):
