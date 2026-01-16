@@ -20,7 +20,7 @@ class State:
 
         self.load = Load(screen)
 
-        self.game = Game(cell_size)
+        self.game = Game(cell_size, screenSize)
 
         self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Rejoindre une partie",self.font,"join")
         self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Creer une partie",self.font,"host")
@@ -67,7 +67,7 @@ class State:
         if self.mod == "game":
 
             x,y = self.return_pos_blit()
-            self.game.draw(self.screen,x,y,dt)
+            self.game.draw(self.screen,x,y,dt,mouse_pos)
 
             #self.draw_btn(self.dicGame,mouse_pos)
 
@@ -109,7 +109,7 @@ class State:
                 
                 #En fonction de ce que tu fais mais la comme ça, si tu fais du fondu, les persos sont déjà désinné
                 x,y = self.return_pos_blit()
-                self.game.draw(self.screen,x,y,dt)
+                self.game.draw(self.screen,x,y,dt, mouse_pos)
 
                 if finish :
                     self.mod = "game"
