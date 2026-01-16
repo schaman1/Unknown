@@ -42,11 +42,11 @@ class Player(Mob) :
         return mouse_angle
         
     
-    def draw_weapon(self,screen,center, mouse_pos,pos):
+    def draw_weapon(self,screen, mouse_pos,pos):
         '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''
-        self.angle = self.get_angle(center, mouse_pos)
+        self.angle = self.get_angle(pos, mouse_pos)
         rotated_img = pygame.transform.rotate(self.img_weapon, self.angle)
-        rotated_polish = rotated_img.get_rect(center = center)
+        rotated_polish = rotated_img.get_rect(center = pos)
         screen.blit(rotated_img, rotated_polish.topleft)
         self.update_frame()
 
@@ -56,7 +56,7 @@ class Player(Mob) :
         screen.blit(self.frame_perso[self.frame%4],pos)
         self.update_frame()
 
-        self.draw_weapon(screen,center,mouse_pos,pos)
+        self.draw_weapon(screen,mouse_pos,pos)
         
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
