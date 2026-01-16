@@ -251,7 +251,7 @@ class Client:
             self.main.state.mod = "intro end"
 
         elif id==10:
-
+ 
             id_player,id_weapon,loading_time = struct.unpack("!BBH",data[1:5])
             if id_player==self.id :
                 self.main.rechargement = loading_time
