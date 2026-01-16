@@ -66,6 +66,15 @@ class Server_game(Server) :
     def init_mobs(self):
         return self.map_monster.return_all_monster(self.lClient)
     
+    def init_weapon(self):
+
+        for client in self.lClient.values():
+            weapons_info = client.return_weapon_info()
+
+            for weapon in weapons_info :
+
+                self.send_data_all([weapon,client.id])
+    
     def change_state(self):
         self.is_running_game = not self.is_running_game
         self.is_running_menu = not self.is_running_menu
@@ -76,8 +85,6 @@ class Server_game(Server) :
 
         self.send_data_all([0]) #0 pour start game
 
-        for client in self.lClient.values():
-            self.send_data_all([10,client.return_weapon_info(),client.id])
 
         result_cell = self.init_canva()
         result_monster = self.init_mobs()

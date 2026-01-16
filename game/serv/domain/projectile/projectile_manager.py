@@ -20,10 +20,14 @@ class ProjectileManager :
         
         if now >= self.next_allowed_shot :
             self.next_allowed_shot = now + weapon.loading_time/1000
-            projectile = weapon.create_projectile(self.generate_id(),angle,pos)
-            self.l_Projectile.append(projectile)
-            self.projectile_create.append(projectile)
+            projectiles = weapon.create_projectile(angle,pos)
 
+            for projectile in projectiles :
+
+                projectile.set_id(self.generate_id())
+
+                self.l_Projectile.append(projectile)
+                self.projectile_create.append(projectile)
 
     def return_chg(self,lClient,dt,grid_type,cell_dur):
 

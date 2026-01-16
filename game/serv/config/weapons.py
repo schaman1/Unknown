@@ -1,7 +1,9 @@
 from shared.constants.world import RATIO
 
-LOAD_PIOCHE = int(1*1000)
-DAMAGE_PIOCHE = 10
-LIFE_PIOCHE = 2
-V_PIOCHE = 200 * RATIO #Bouge de 10 cellules par secondes
-ID_PIOCHE = 0
+LIFE_FIREBALL = 2
+V_FIREBALL = 20 * RATIO #Bouge de 20 cellules par secondes
+
+LOAD_WEAPON1 = int(0.1*1000)
+NBR_SLOT_WEAPON1 = 3
+NBR_UPGRADES_TRIGGER_WEAPON1 = 1
+ID_WEAPON1 = 0
