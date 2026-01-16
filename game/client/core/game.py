@@ -12,12 +12,12 @@ from shared.constants import world
 
 class Game :
     """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
-    def __init__(self, cell_size):
+    def __init__(self, cell_size, screenSize):
         self.canva_size = world.BG_SIZE_SERVER
         self.base_movement = world.RATIO
 
         self.cell_size = cell_size
-        self.center = (self.canva_size[0]//2,self.canva_size[1]//2)
+        self.center = (screenSize[0]//2,screenSize[1]//2)
         self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
@@ -90,14 +90,14 @@ class Game :
     def blit_monsters(self,screen,x,y):
         self.monsters.blit_all_monsters(screen,x,y)
 
-    def blit_players(self,screen,x,y):
-        self.player_all.blit_players(screen,self.center,x,y)
+    def blit_players(self,screen,x,y,mouse_pos):
+        self.player_all.blit_players(screen,self.center,x,y,mouse_pos)
 
     def blit_projectiles(self,screen,x,y,dt):
 
         self.projectiles.blit_projectiles(screen,x,y,dt)
 
-    def draw(self,screen,x,y,dt):
+    def draw(self,screen,x,y,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
 
         #x,y = 0,0  #Pour voir toute la map
@@ -108,7 +108,7 @@ class Game :
         screen.blit(self.canva, (x, y))
 
         self.blit_monsters(screen,x,y)
-        self.blit_players(screen,x,y)
+        self.blit_players(screen,x,y, mouse_pos)
         self.blit_projectiles(screen,x,y,dt)
 
         #screen.blit(self.light,(0,0))

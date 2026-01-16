@@ -20,14 +20,14 @@ class Player_all :
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y
 
-    def blit_players(self,screen_global,center,xscreen,yscreen):
+    def blit_players(self,screen_global,center,xscreen,yscreen, mouse_pos):
 
         for player in self.dic_players.values():
 
             if player.is_you :
 
                 #screen_global.blit(player.frame_perso[player.frame%4],center)
-                player.draw(screen_global,xscreen,yscreen)
+                player.draw(screen_global,xscreen,yscreen, mouse_pos,center)
                 #player.update_frame()
 
             else :
