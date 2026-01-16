@@ -150,7 +150,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
             elif msg_id==10:
-                msg_size = 1+4
+                msg_size = 1+5
 
 
             else:
@@ -252,7 +252,7 @@ class Client:
 
         elif id==10:
  
-            id_player,id_weapon,loading_time = struct.unpack("!BBH",data[1:5])
+            id_player,idx_weapon_pos,id_weapon,loading_time = struct.unpack("!BBBH",data[1:6])
             if id_player==self.id :
                 self.main.rechargement = loading_time
 

@@ -135,11 +135,10 @@ class Network_handler :
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell.grid_type,self.server.map_cell.dur,self.server.map_cell.vide,self.server.map_cell.liquid)
 
         elif id_msg == 4 :
-            self.server.projectile_manager.create_shoot(self.server.lClient[sender].weapon,0,self.server.lClient[sender].return_pos())
+            self.server.projectile_manager.create_shoot(self.server.lClient[sender].return_weapon_select(),0,self.server.lClient[sender].return_pos())
 
         else :
             print("What to do with this id send ? ",id_msg)
-
 
     def send_client_already_her(self,client):
         #self.send_data({"id":"set client already connected","clients":self.lClient})
@@ -149,11 +148,6 @@ class Network_handler :
             packet = struct.pack("!BBB", 1, player.id, 0)
 
             self.send_data(packet,client)
-                           #{
-                    #"id": "new player",
-                    #"new connection": player.id,
-                    #"sender": False
-                #}, client)
 
     def set_screen_size_client(self,client_socket,screen_size):
         self.server.lClient[client_socket].set_screen_size(screen_size)
@@ -219,9 +213,9 @@ class Network_handler :
         return bytes(packet)
     
     def pack_weapon(self,weapon_info,client_id,packet):
-        id_weapon,loading_time = weapon_info
+        idx_weapon_pos,id_weapon,loading_time = weapon_info
         
-        packet+= struct.pack("!BBH",client_id,id_weapon,loading_time)
+        packet+= struct.pack("!BBBH",client_id,idx_weapon_pos,id_weapon,loading_time)
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
