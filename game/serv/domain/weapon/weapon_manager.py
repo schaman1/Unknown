@@ -1,4 +1,5 @@
 from serv.config import weapons
+from shared.constants.world import NBRWEAPONSTOCK
 from serv.domain.weapon.weapon1 import Weapon1
 
 class WeaponManager :
@@ -13,7 +14,7 @@ class WeaponManager :
 
     def init_lWeapons(self):
 
-        for _ in range(weapons.NBRWEAPONSTOCK):
+        for _ in range(NBRWEAPONSTOCK):
 
             self.lWeapons.append(Weapon1())
 
@@ -22,7 +23,7 @@ class WeaponManager :
         res = []
 
         for i,weapon in enumerate(self.lWeapons):
-            res.append([10,i,weapon.id,weapon.loading_time])
+            res.append([10,i,weapon.return_info()])
 
         return res
     

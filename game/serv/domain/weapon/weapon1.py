@@ -17,10 +17,14 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.create_fireball)
-        self.fill_slot(1,upgrades.add_speed)
-        self.fill_slot(2,upgrades.create_fireball)
-    
+        self.fill_slot(0,upgrades.DoubleSpell())
+        self.fill_slot(1,upgrades.CreateFireball())
+        self.fill_slot(2,upgrades.CreateFireball())
+
     def fill_slot(self,idx,function):
 
-        self.spells_on_shot[idx]=function
+        if idx >= len(self.spells_on_shot):
+            print("Unable to fill spot in weapon bcs idx tooo high")
+
+        else :
+            self.spells_on_shot[idx]=function

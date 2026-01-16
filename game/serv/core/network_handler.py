@@ -209,13 +209,14 @@ class Network_handler :
 
         for id in projectiles :
             packet+= struct.pack("!L",id)
-
-        return bytes(packet)
     
     def pack_weapon(self,weapon_info,client_id,packet):
-        idx_weapon_pos,id_weapon,loading_time = weapon_info
+        idx_weapon_pos,id_weapon,loading_time,nbr_spells_max,spells_id = weapon_info
         
-        packet+= struct.pack("!BBBH",client_id,idx_weapon_pos,id_weapon,loading_time)
+        packet+= struct.pack("!BBBBH",nbr_spells_max,client_id,idx_weapon_pos,id_weapon,loading_time)
+
+        for id_spell in spells_id:
+            packet+= struct.pack("!B",id_spell)
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""

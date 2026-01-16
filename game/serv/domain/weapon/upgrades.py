@@ -1,9 +1,41 @@
 from serv.domain.projectile import projectile_type
 
-def create_fireball(weapon):
+class Upgrade:
 
-    weapon.projectile_shot.append(projectile_type.Fireball(weapon.angle,weapon.pos,weapon.speed_mult))
+    def __init__(self,id):
 
-def add_speed(weapon):
+        self.id = id
 
-    weapon.speed_mult+=2
+class CreateFireball(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 1)
+
+    def trigger(self,weapon):
+
+        weapon.projectile_shot.append(projectile_type.Fireball(weapon.angle,weapon.pos,weapon.speed_mult))
+
+        return 1
+    
+class AddSpeed(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 2)
+
+    def trigger(self,weapon):
+
+        weapon.speed_mult+=2
+
+        return 0
+    
+class DoubleSpell(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 3)
+
+    def trigger(self,weapon):
+
+        return -1 #Done un slot de plus de disponible
