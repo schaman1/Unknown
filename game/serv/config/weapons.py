@@ -1,7 +1,5 @@
 from shared.constants.world import RATIO
 
-NBRWEAPONSTOCK = 2
-
 LIFE_FIREBALL = 2
 V_FIREBALL = 20 * RATIO #Bouge de 20 cellules par secondes
 

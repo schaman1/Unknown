@@ -118,7 +118,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -150,8 +150,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
             elif msg_id==10:
-                msg_size = 1+5
-
+                msg_size = 1+6+struct.unpack("!B",self.buffer[1:2])
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -252,14 +251,17 @@ class Client:
 
         elif id==10:
  
-            id_player,idx_weapon_pos,id_weapon,loading_time = struct.unpack("!BBBH",data[1:6])
+            client_id,idx_weapon_pos,id_weapon,loading_time = struct.unpack("!BBBH",data[2:7])
+            spells_id = []
+
+            for i in range(size-7):
+
+                spells_id.append(struct.unpack("!B",data[7+i:8+i]))
+
             if id_player==self.id :
                 self.main.rechargement = loading_time
 
             #self.main.state.game.create_weapon()
-
-        #elif id == "player move" :
-            #player[data["sender"]].pos = data["pos"]
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
