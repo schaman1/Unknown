@@ -1,6 +1,5 @@
 from shared.constants import world,size_display
 from serv.domain.mob.mob import Mob
-from serv.domain.weapon.pioche import PiocheWeapon
 from serv.domain.weapon.weapon_manager import WeaponManager
 
 class Player(Mob) :
@@ -21,8 +20,6 @@ class Player(Mob) :
         self.size_x = 2
 
         self.weapons = WeaponManager()
-
-        #self.weapon = PiocheWeapon()
 
     def return_weapon_info(self):
         return self.weapons.return_all_weapon()

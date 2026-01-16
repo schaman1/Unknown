@@ -1,10 +1,10 @@
 from serv.domain.projectile.default_projectile import Projectile
 from serv.config import weapons
 
-class Pioche(Projectile) :
+class Fireball(Projectile) :
 
-    def __init__(self,id,angle,pos):
+    def __init__(self,angle,pos,speed_mult):
 
-        self.life_time = weapons.LIFE_PIOCHE
+        self.life_time = weapons.LIFE_FIREBALL
 
-        super().__init__(pos,self.life_time,id,angle,vitesse = weapons.V_PIOCHE,id_img = 0)
+        super().__init__(pos,self.life_time,angle,vitesse = weapons.V_FIREBALL*speed_mult,id_img = 0)

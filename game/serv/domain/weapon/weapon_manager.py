@@ -1,5 +1,5 @@
 from serv.config import weapons
-from serv.domain.weapon.pioche import PiocheWeapon
+from serv.domain.weapon.weapon1 import Weapon1
 
 class WeaponManager :
 
@@ -11,12 +11,11 @@ class WeaponManager :
 
         self.init_lWeapons()
 
-
     def init_lWeapons(self):
 
         for _ in range(weapons.NBRWEAPONSTOCK):
 
-            self.lWeapons.append(PiocheWeapon())
+            self.lWeapons.append(Weapon1())
 
     def return_all_weapon(self):
 
