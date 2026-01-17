@@ -91,8 +91,8 @@ class Read_monster :
         for i,client in enumerate(lClient.values()) :
             list_modif.append([])
 
-            xpos = client.convert_from_base(client.pos_x)
-            ypos = client.convert_from_base(client.pos_y)
+            xpos = client.convert_to_base(client.pos_x)
+            ypos = client.convert_to_base(client.pos_y)
 
             x_chunk = xpos // self.size_chunk
             y_chunk = ypos // self.size_chunk
