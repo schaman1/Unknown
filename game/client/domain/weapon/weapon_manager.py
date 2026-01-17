@@ -19,6 +19,6 @@ class WeaponManager:
 
         self.lWeapons[i] = Weapon(id_weapon,loading_time,nbr_spell_max)
 
-    def draw_weapon(self,screen,angle,pos_player):
+    def draw_weapon(self,screen,angle,pos_player, frame):
 
-        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player)
+        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player, frame)
