@@ -217,8 +217,8 @@ class Client:
         elif id==7:
             for i in range((size-3)//17):
                 id,pos_x,pos_y,angle,vitesse,id_img = struct.unpack("!LLLHHB", data[3+i*17 : 20+i*17])
-                self.main.state.game.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
-                self.main.update_next_allowed_shot()
+
+                self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
 
         elif id==8:
             for i in range((size-3)//4):
@@ -258,8 +258,7 @@ class Client:
                 spells_id.append(struct.unpack("!B",data[7+i:8+i]))
 
             if client_id==self.id :
-                self.main.state.game.player_all.dic_players[client_id].add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7)
-                self.main.rechargement = loading_time
+                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7)
 
             else:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)

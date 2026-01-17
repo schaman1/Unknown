@@ -1,6 +1,5 @@
-import pygame
+import pygame,struct
 import pygame.surfarray as surfarray
-import struct
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
@@ -39,7 +38,9 @@ class Game :
 
         self.map = Map(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
-        self.projectiles = ProjectileManager(self.cell_size)
+        self.projectiles = ProjectileManager(cell_size)
+
+        self.player_command = []
 
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
@@ -84,6 +85,9 @@ class Game :
         for i in range(10):
             self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/5)*self.cell_size)
 
+    def shot(self):
+        self.player_command.append(self.player_all.me.shot())
+
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
 
@@ -118,3 +122,8 @@ class Game :
         
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
+    
+    def create_projectile(self,id,pos_x,pos_y,angle,vitesse,id_img):
+
+        self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
+        self.player_all.me.weapons.result_shot()
