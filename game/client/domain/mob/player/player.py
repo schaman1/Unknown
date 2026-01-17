@@ -57,9 +57,10 @@ class Player_you(Mob) :
             screen.blit(perso_left,pos)
         else :
             screen.blit(perso_right, pos)
-        self.update_frame()
 
         self.draw_weapon(screen,self.angle_weapon,pos)
+
+        self.update_frame()
         
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
@@ -69,7 +70,7 @@ class Player_you(Mob) :
 
     def draw_weapon(self,screen,angle,pos_draw) :
 
-        self.weapons.draw_weapon(screen,angle,pos_draw)
+        self.weapons.draw_weapon(screen,angle,pos_draw, self.frame)
 
     def add_weapon(self,i,id_weapon,loading_time,nbr_spell_max):
         self.weapons.add_weapon(i,id_weapon,loading_time,nbr_spell_max)
@@ -85,6 +86,10 @@ class Player_you(Mob) :
         self.pos_x = delta[0]
         self.pos_y = delta[1]
 
+
+
+
+
 class Player_not_you(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
@@ -97,7 +102,7 @@ class Player_not_you(Mob) :
         self.frame_perso_right = []
         self.img_weapon = "incoming"
         self.angle = 90
-        #self.frame_weapon = []
+        self.frame_weapon = []
         self.frame = 0
         self.frame_multiplier = 0
 
@@ -112,7 +117,6 @@ class Player_not_you(Mob) :
             Img_flip = pygame.transform.flip(Img, True, False)
             self.frame_perso_right.append(Img)
             self.frame_perso_left.append(Img_flip)
-        #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
         self.frame_multiplier +=1
@@ -127,15 +131,16 @@ class Player_not_you(Mob) :
         
         perso_right = self.frame_perso_right[self.frame%4]
         perso_left = self.frame_perso_left[self.frame%4]
+        self.dr_weapon = self.frame_weapon[self.frame%6]
 
         if 90<self.angle%360<270: #affiche le perso regardant une dirrection en fonction de la souris
             screen.blit(perso_right,pos)
         else :
             screen.blit(perso_left, pos)
 
-        self.update_frame()
-
         self.draw_weapon(screen,pos)
+
+        self.update_frame()
 
         self.update_angle()
 
@@ -144,14 +149,23 @@ class Player_not_you(Mob) :
 
     def draw_weapon(self,screen,pos):
 
-        rotated_img = pygame.transform.rotate(self.img_weapon, self.angle)
+        rotated_img = pygame.transform.rotate(self.dr_weapon, self.angle)
         rotated_polish = rotated_img.get_rect(center = pos)
         screen.blit(rotated_img, rotated_polish.topleft)
 
     def add_weapon(self,id_weapon):
 
-        self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
-        self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size, weapon.WIDTH_WEAPON1*self.cell_size))
+        for i in range(4):
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
+            self.frame_weapon.append(img_weapon)
+
+        for i in range(2, 0, -1):
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
+            self.frame_weapon.append(img_weapon)
+        #self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
+        #self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size, weapon.WIDTH_WEAPON1*self.cell_size))
 
     def move(self,delta):
         self.pos_x = delta[0]
