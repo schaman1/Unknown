@@ -167,7 +167,7 @@ class Monster(Mob):
 
 class Skeleton(Monster):
     def __init__(self, x, y, id):
-        super().__init__(hp=50, damage=10, x=x, y=y, rad=10, atk_rad=1.5, atk_speed=1, id=id)
+        super().__init__(hp=50, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id)
 
         self.name = 0
         self.direction = 1
