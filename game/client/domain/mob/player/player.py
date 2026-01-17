@@ -1,6 +1,6 @@
 import pygame, math
 from client.domain.mob.mob import Mob
-from client.config import assets
+from client.config import assets,weapon
 from shared.constants import size_display
 from client.domain.weapon.weapon_manager import WeaponManager
 
@@ -147,7 +147,7 @@ class Player_not_you(Mob) :
     def add_weapon(self,id_weapon):
 
         self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
-        self.img_weapon = pygame.transform.scale(self.img_weapon,(self.width*16, self.height*16))
+        self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size, weapon.WIDTH_WEAPON1*self.cell_size))
 
     def move(self,delta):
         self.pos_x = delta[0]
