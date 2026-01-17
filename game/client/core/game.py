@@ -5,7 +5,6 @@ import struct
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.projectile.projectile_manager import ProjectileManager
-from client.domain.weapon.weapon_manager import WeaponManager
 from client.domain.actions.map import Map
 
 from client.config import assets
@@ -41,8 +40,6 @@ class Game :
         self.map = Map(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
         self.projectiles = ProjectileManager(self.cell_size)
-
-        self.weapons = WeaponManager()
 
         #self.player_all.add_Player("Coming soon",
         #                       Img_perso = "assets/playerImg.png",
@@ -112,7 +109,6 @@ class Game :
 
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y, mouse_pos)
-        self.weapons.draw_weapon(screen,mouse_pos,self.center)
         self.blit_projectiles(screen,x,y,dt)
 
         #screen.blit(self.light,(0,0))

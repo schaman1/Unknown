@@ -230,12 +230,12 @@ class Client:
             print(f"New connection : {data[1]}")
 
             text = f"Player {data[1]}"
-            self.id = data[1]
 
             if data[2]:
+                self.id = data[1]
                 text = f"{text} (vous)"
 
-            self.main.state.game.player_all.add_Player(self.id,
+            self.main.state.game.player_all.add_Player(data[1],
                                is_you = data[2],
                                pseudo = text)
 
@@ -257,10 +257,12 @@ class Client:
 
                 spells_id.append(struct.unpack("!B",data[7+i:8+i]))
 
-            self.main.state.game.weapons.add_weapon(i,id_weapon,loading_time,size-7)
-
-            if id_player==self.id :
+            if client_id==self.id :
+                self.main.state.game.player_all.dic_players[client_id].add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7)
                 self.main.rechargement = loading_time
+
+            else:
+                self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
             #self.main.state.game.create_weapon()
 

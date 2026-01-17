@@ -105,11 +105,11 @@ class State:
 
             elif self.mod == "intro end":
 
-                finish = self.game.draw_intro_end(self.screen)
-                
                 #En fonction de ce que tu fais mais la comme ça, si tu fais du fondu, les persos sont déjà désinné
                 x,y = self.return_pos_blit()
                 self.game.draw(self.screen,x,y,dt, mouse_pos)
+
+                finish = self.game.draw_intro_end(self.screen)
 
                 if finish :
                     self.mod = "game"

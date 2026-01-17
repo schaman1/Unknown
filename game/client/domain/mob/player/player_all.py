@@ -1,5 +1,5 @@
 from shared.constants import world
-from client.domain.mob.player.player import Player
+from client.domain.mob.player.player import Player_you,Player_not_you
 
 class Player_all :
     '''
@@ -12,10 +12,13 @@ class Player_all :
         self.spawn_point = world.SPAWN_POINT
 
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
-        self.dic_players[id] = Player(self.cell_size,self.spawn_point,pseudo,is_you)
 
-        if is_you :
+        if is_you == 1:
+            self.dic_players[id] = Player_you(self.cell_size,self.spawn_point,pseudo,is_you)
             self.client_id = id
+
+        else :
+            self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,is_you)
 
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y
@@ -26,10 +29,8 @@ class Player_all :
 
             if player.is_you :
 
-                #screen_global.blit(player.frame_perso[player.frame%4],center)
                 player.draw(screen_global,xscreen,yscreen, mouse_pos,center)
-                #player.update_frame()
 
             else :
-                #screen_global.blit(player.frame_perso[1],(player.pos_x,player.pos_y))
+
                 player.draw(screen_global,xscreen,yscreen)

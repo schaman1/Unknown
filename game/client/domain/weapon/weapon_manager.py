@@ -8,6 +8,8 @@ class WeaponManager:
         self.lWeapons = []
         self.weapon_select = 0
 
+        self.init_lWeapons()
+
     def init_lWeapons(self):
 
         for _ in range(NBRWEAPONSTOCK):
@@ -17,6 +19,6 @@ class WeaponManager:
 
         self.lWeapons[i] = Weapon(id_weapon,loading_time,nbr_spell_max)
 
-    def draw_weapon(self,screen,mouse_pos,center):
+    def draw_weapon(self,screen,angle,pos_player):
 
-        self.lWeapons[self.weapon_select].draw(screen,mouse_pos,center)
+        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player)

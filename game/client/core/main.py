@@ -138,7 +138,6 @@ class Main:
 
                             self.start_game()
 
-
                         elif self.state.menu.get_rect().collidepoint(event.pos):
                             
                             self.client.connected = False
