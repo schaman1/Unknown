@@ -143,11 +143,13 @@ class Network_handler :
     def send_client_already_her(self,client):
         #self.send_data({"id":"set client already connected","clients":self.lClient})
 
-        for player in self.server.lClient.values():
+        for socket,player in self.server.lClient.items():
 
-            packet = struct.pack("!BBB", 1, player.id, 0)
+            if socket != client :
 
-            self.send_data(packet,client)
+                packet = struct.pack("!BBB", 1, player.id, 0)
+
+                self.send_data(packet,client)
 
     def set_screen_size_client(self,client_socket,screen_size):
         self.server.lClient[client_socket].set_screen_size(screen_size)
