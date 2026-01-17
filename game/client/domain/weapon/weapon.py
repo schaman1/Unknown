@@ -9,12 +9,24 @@ class Weapon :
         self.loading_time = loading_time
         self.id_weapon = id_weapon
         self.nbr_spell_max = nbr_spell_max
+        self.frame_weapon = []
 
-        self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha() #pour l'instant c'est juste un projectile
-        self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE, weapon.WIDTH_WEAPON1*CELL_SIZE)) #Setup sa taille après 
+        for i in range(4):
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
+            self.frame_weapon.append(img_weapon)
 
-    def draw(self,screen,angle,pos_player):
+        for i in range(2, 0, -1):
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
+            self.frame_weapon.append(img_weapon)
+
+        #self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
+        #self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE, weapon.WIDTH_WEAPON1*CELL_SIZE)) #Setup sa taille après 
+
+    def draw(self,screen,angle,pos_player, frame):
         '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''
-        rotated_img = pygame.transform.rotate(self.img_weapon, angle)
+        fr_weapon = self.frame_weapon[frame%6]
+        rotated_img = pygame.transform.rotate(fr_weapon, angle)
         rotated_polish = rotated_img.get_rect(center = pos_player)
         screen.blit(rotated_img, rotated_polish.topleft)
