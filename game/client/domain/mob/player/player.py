@@ -74,6 +74,10 @@ class Player_you(Mob) :
     def add_weapon(self,i,id_weapon,loading_time,nbr_spell_max):
         self.weapons.add_weapon(i,id_weapon,loading_time,nbr_spell_max)
 
+    def shot(self):
+
+        return self.weapons.shot(self.angle_weapon)
+
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
 
