@@ -1,6 +1,6 @@
 from client.config import assets
 from shared.constants import size_display,world
-import pygame
+import pygame,math
 
 class DefaultProjectile :
 
@@ -17,8 +17,10 @@ class DefaultProjectile :
         self.img = self.create_img(id_img,cell_size)
 
     def create_vx_vy(self,angle,vitesse):
-
-        return (1*vitesse,0*vitesse)
+        rad = math.radians(angle)
+        vx = int(math.cos(rad)*vitesse)
+        vy = -int(math.sin(rad)*vitesse)
+        return vx,vy
     
     def move(self,dt):
 

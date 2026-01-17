@@ -13,21 +13,6 @@ class ProjectileManager :
     def generate_id(self):
         self.next_id = (self.next_id+1) % 65536 #Maximum pour uint16
         return self.next_id
-    
-    def create_shoot(self,weapon,angle,pos):
-
-        now = time.perf_counter()
-        
-        if now >= self.next_allowed_shot :
-            self.next_allowed_shot = now + weapon.loading_time/1000
-            projectiles = weapon.create_projectile(angle,pos)
-
-            for projectile in projectiles :
-
-                projectile.set_id(self.generate_id())
-
-                self.l_Projectile.append(projectile)
-                self.projectile_create.append(projectile)
 
     def return_chg(self,lClient,dt,grid_type,cell_dur):
 

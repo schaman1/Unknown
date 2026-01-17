@@ -1,6 +1,6 @@
-from serv.config import weapons
 from shared.constants.world import NBRWEAPONSTOCK
 from serv.domain.weapon.weapon1 import Weapon1
+import time
 
 class WeaponManager :
 
@@ -30,3 +30,16 @@ class WeaponManager :
     def return_weapon_select(self):
 
         return self.lWeapons[self.weapon_select]
+    
+    def create_shot(self,angle,pos):
+
+        weapon = self.lWeapons[self.weapon_select]
+
+        now = time.perf_counter()
+        
+        if now >= weapon.next_allowed_shot :
+            weapon.next_allowed_shot = now + weapon.loading_time/1000
+            return weapon.create_projectile(angle,pos)
+        
+        else :
+            return

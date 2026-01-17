@@ -42,7 +42,7 @@ class Player_you(Mob) :
         oppose = mouse_pos[1] - pos[1]
         adjacent = mouse_pos[0] - pos[0]
         mouse_angle = int(math.degrees(math.atan2(-oppose,adjacent))) #comme atan() mais en 2D
-        return mouse_angle
+        return mouse_angle%360
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
@@ -72,8 +72,8 @@ class Player_you(Mob) :
 
         self.weapons.draw_weapon(screen,angle,pos_draw, self.frame)
 
-    def add_weapon(self,i,id_weapon,loading_time,nbr_spell_max):
-        self.weapons.add_weapon(i,id_weapon,loading_time,nbr_spell_max)
+    def add_weapon(self,i,id_weapon,loading_time,nbr_spell_max,spells_id):
+        self.weapons.add_weapon(i,id_weapon,loading_time,nbr_spell_max,spells_id)
 
     def shot(self):
 

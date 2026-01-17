@@ -223,6 +223,6 @@ class Main:
 
             if id==4 :
 
-                self.client.send_data(id=4,data=input[1])
+                self.client.send_data(id=4,data=[input[1]])
 
         events.clear()

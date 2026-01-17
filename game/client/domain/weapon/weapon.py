@@ -4,13 +4,14 @@ from shared.constants.world import CELL_SIZE
 
 class Weapon :
 
-    def __init__(self,id_weapon,loading_time,nbr_spell_max):
+    def __init__(self,id_weapon,loading_time,nbr_spell_max,spells_id):
 
         self.loading_time = loading_time
         self.id_weapon = id_weapon
         self.nbr_spell_max = nbr_spell_max
         self.next_allowed_shot = 0
         self.frame_weapon = []
+        self.spells_id = spells_id
 
         for i in range(4):
             img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()

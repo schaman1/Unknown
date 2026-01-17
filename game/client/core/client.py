@@ -258,7 +258,7 @@ class Client:
                 spells_id.append(struct.unpack("!B",data[7+i:8+i]))
 
             if client_id==self.id :
-                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7)
+                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7,spells_id)
 
             else:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
@@ -281,6 +281,9 @@ class Client:
             
         elif id == 3 :
             packet+= struct.pack("!B",data[0])
+
+        elif id == 4:
+            packet+= struct.pack("!H",data[0])
 
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())

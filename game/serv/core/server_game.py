@@ -108,3 +108,17 @@ class Server_game(Server) :
     
     def load_njit(self):
         self.map_cell.dummy_compilation(self.lClient)
+
+    def handle_shot(self,angle,sender):
+
+        projectiles = self.lClient[sender].weapons.create_shot(angle,self.lClient[sender].return_pos())
+
+        if projectiles == None :
+            return
+
+        for projectile in projectiles :
+
+            projectile.set_id(self.projectile_manager.generate_id())
+
+            self.projectile_manager.l_Projectile.append(projectile)
+            self.projectile_manager.projectile_create.append(projectile)
