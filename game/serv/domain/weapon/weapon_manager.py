@@ -23,7 +23,7 @@ class WeaponManager :
         res = []
 
         for i,weapon in enumerate(self.lWeapons):
-            res.append([10,i,weapon.return_info()])
+            res.append(weapon.return_info(i))
 
         return res
     

@@ -212,6 +212,7 @@ class Network_handler :
     
     def pack_weapon(self,weapon_info,client_id,packet):
         idx_weapon_pos,id_weapon,loading_time,nbr_spells_max,spells_id = weapon_info
+        print(nbr_spells_max,client_id,idx_weapon_pos,id_weapon,loading_time)
         
         packet+= struct.pack("!BBBBH",nbr_spells_max,client_id,idx_weapon_pos,id_weapon,loading_time)
 

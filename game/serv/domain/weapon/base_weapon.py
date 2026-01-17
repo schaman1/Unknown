@@ -4,7 +4,7 @@ class Weapon :
 
     def __init__(self,loading_time,nbr_slot,nbr_upgrades_trigger,id):
         
-        self.loading_time = loading_time
+        self.loading_time = int(loading_time)
         self.id = id
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]
@@ -19,12 +19,16 @@ class Weapon :
         self.pos = 0
         self.idx = 0
 
-    def return_info(self):
+    def return_info(self,i):
         spells_id = []
         for weapon in self.spells_on_shot :
-            spells_id.append(weapon.id)
+            if weapon == None :
+                spells_id.append(0)
+                
+            else :
+                spells_id.append(weapon.id)
 
-        return self.id,self.loading_time,self.nbr_spells_max,spells_id
+        return i,self.id,self.loading_time,self.nbr_spells_max,spells_id
 
     def reset_values(self):
         self.projectile_shot.clear()

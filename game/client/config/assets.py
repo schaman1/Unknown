@@ -10,3 +10,4 @@ PLAYER_IDLE = "assets/sprites/player/idle/player_idle_" #+ 0à4.png
 MONSTER_IDLE = "assets/sprites/monster/idle/monster_idle_" #+ 0à4.png
 
 PIOCHE = "assets/sprites/projectile/pioche.png"
+RANGED_WEAPON = "assets/sprites/weapon/idle/ranged_weapon_1_" #+ 1-2.png
