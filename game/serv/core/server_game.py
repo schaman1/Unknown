@@ -73,7 +73,8 @@ class Server_game(Server) :
 
             for weapon in weapons_info :
 
-                self.send_data_all([weapon,client.id])
+                print(weapon)
+                self.send_data_all([10,weapon,client.id])
     
     def change_state(self):
         self.is_running_game = not self.is_running_game
@@ -88,6 +89,7 @@ class Server_game(Server) :
 
         result_cell = self.init_canva()
         result_monster = self.init_mobs()
+        self.init_weapon()
 
         #print(result_monster)
 

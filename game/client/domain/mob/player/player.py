@@ -23,8 +23,6 @@ class Player(Mob) :
             Img = pygame.image.load(assets.PLAYER_IDLE+f"{i+1}"+".png").convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
             self.frame_perso.append(Img)
-        self.img_weapon = pygame.image.load(assets.PIOCHE).convert_alpha() #pour l'instant c'est juste un projectile
-        self.img_weapon = pygame.transform.scale(self.img_weapon,(self.width*cell_size, self.height*cell_size)) 
         #self.frame_weapon.append(Img_weapon)
 
 
@@ -40,23 +38,12 @@ class Player(Mob) :
         adjacent = mouse_pos[0] - center[0]
         mouse_angle = int(math.degrees(math.atan2(-oppose,adjacent))) #comme atan() mais en 2D
         return mouse_angle
-        
-    
-    def draw_weapon(self,screen,center, mouse_pos,pos):
-        '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''
-        self.angle = self.get_angle(center, mouse_pos)
-        rotated_img = pygame.transform.rotate(self.img_weapon, self.angle)
-        rotated_polish = rotated_img.get_rect(center = center)
-        screen.blit(rotated_img, rotated_polish.topleft)
-        self.update_frame()
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
         pos = self.calculate_pos_blit(xscreen,yscreen)
         screen.blit(self.frame_perso[self.frame%4],pos)
         self.update_frame()
-
-        self.draw_weapon(screen,center,mouse_pos,pos)
         
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
