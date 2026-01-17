@@ -150,7 +150,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
             elif msg_id==10:
-                msg_size = 1+6+struct.unpack("!B",self.buffer[1:2])
+                msg_size = 1+6+struct.unpack("!B",self.buffer[1:2])[0]
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -250,13 +250,14 @@ class Client:
             self.main.state.mod = "intro end"
 
         elif id==10:
- 
             client_id,idx_weapon_pos,id_weapon,loading_time = struct.unpack("!BBBH",data[2:7])
             spells_id = []
 
             for i in range(size-7):
 
                 spells_id.append(struct.unpack("!B",data[7+i:8+i]))
+
+            self.main.state.game.weapons.add_weapon(i,id_weapon,loading_time,size-7)
 
             if id_player==self.id :
                 self.main.rechargement = loading_time
