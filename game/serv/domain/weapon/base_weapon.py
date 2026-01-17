@@ -12,6 +12,7 @@ class Weapon :
         self.nbr_upgrades_trigger_max = nbr_upgrades_trigger
         self.nbr_upgrades_trigger = 0
         self.nbr_spells_max = len(self.spells_on_shot)
+        self.next_allowed_shot = 0
 
         self.speed_mult = 1
 

@@ -59,7 +59,7 @@ class Network_handler :
                     msg_size=1+1
                 
                 elif msg_id==4:
-                    msg_size=1
+                    msg_size=1+2
 
                 else:
                     print("UNKNOWN MSG ID", msg_id)
@@ -135,7 +135,8 @@ class Network_handler :
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell.grid_type,self.server.map_cell.dur,self.server.map_cell.vide,self.server.map_cell.liquid)
 
         elif id_msg == 4 :
-            self.server.projectile_manager.create_shoot(self.server.lClient[sender].return_weapon_select(),0,self.server.lClient[sender].return_pos())
+            angle = struct.unpack("!H",data[1:3])[0]
+            self.server.handle_shot(angle,sender)
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -162,6 +163,7 @@ class Network_handler :
                 #print("Send successfuly")
                 self.send_data(message, socket)
             except Exception as e:
+                print(message)
                 print(f"Erreur envoi bis {e}")#,file=sys.stderr)
                 pass  # ou suppression du client mort
 
