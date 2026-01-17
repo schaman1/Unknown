@@ -73,7 +73,6 @@ class Server_game(Server) :
 
             for weapon in weapons_info :
 
-                print(weapon)
                 self.send_data_all([10,weapon,client.id])
     
     def change_state(self):
@@ -85,7 +84,6 @@ class Server_game(Server) :
         self.change_state()
 
         self.send_data_all([0]) #0 pour start game
-
 
         result_cell = self.init_canva()
         result_monster = self.init_mobs()
