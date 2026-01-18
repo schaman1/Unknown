@@ -15,7 +15,7 @@ class CreateFireball(Upgrade):
 
     def trigger(self,weapon):
 
-        weapon.projectile_shot.append(projectile_type.Fireball(weapon.angle,weapon.pos,weapon.speed_mult))
+        weapon.add_projectile(projectile_type.Fireball)
 
         return 1
     
@@ -31,6 +31,7 @@ class AddSpeed(Upgrade):
 
         return 0
     
+    
 class DoubleSpell(Upgrade):
 
     def __init__(self):
@@ -40,3 +41,15 @@ class DoubleSpell(Upgrade):
     def trigger(self,weapon):
 
         return -1 #Done un slot de plus de disponible
+    
+class AddRebond(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 4,time_take=0)
+
+    def trigger(self,weapon):
+
+        weapon.add_rebond=True
+
+        return 0
