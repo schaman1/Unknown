@@ -23,9 +23,11 @@ class Player_you(Mob) :
         self.weapons = WeaponManager()
 
     def init_Img(self,cell_size):
+        
         for i in range(4):
-            Img = pygame.image.load(assets.PLAYER_IDLE+f"{i+1}"+".png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.image.load(assets.PLAYER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
+
             Img_flip = pygame.transform.flip(Img, True, False)
             self.frame_perso_right.append(Img)
             self.frame_perso_left.append(Img_flip)

@@ -12,12 +12,12 @@ class Weapon :
         self.spells_id = spells_id
 
         for i in range(4):
-            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
             img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
             self.frame_weapon.append(img_weapon)
 
         for i in range(2, 0, -1):
-            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
             img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
             self.frame_weapon.append(img_weapon)
 

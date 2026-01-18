@@ -1,7 +1,7 @@
 from shared.constants.world import RATIO
 
 LIFE_FIREBALL = 2
-V_FIREBALL = 20 * RATIO #Bouge de 20 cellules par secondes
+V_FIREBALL = 200 * RATIO #Bouge de 20 cellules par secondes
 
 REFILL_TIME_WEAPON1 = 1
 SPELL_TIME_WEAPON1 = 0.2
