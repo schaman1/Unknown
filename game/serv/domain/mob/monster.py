@@ -1,3 +1,4 @@
+from matplotlib.pyplot import step
 from serv.domain.mob.mob import Mob
 import math
 
@@ -79,10 +80,11 @@ class Monster(Mob):
 
     # --- Déplacement pour gestion des collisions ---
 
+    # Vérifie si une cellule est bloquante (dure ou liquide)
     def is_blocking_cell(self, cell_type, cell_dur, cell_liquid):
         return self.is_type(cell_type, cell_dur) or self.is_type(cell_type, cell_liquid)
 
-
+    # Essayer de déplacer le monstre selon l'axe X en gérant les collisions
     def try_move_axis_x(self, dx, cells_arr, cell_dur, cell_liquid):
         if dx == 0:
             return 0
@@ -124,6 +126,7 @@ class Monster(Mob):
 
         return moved
 
+    # Essayer de déplacer le monstre selon l'axe Y en gérant les collisions
     def try_move_axis_y(self, dy, cells_arr, cell_dur, cell_liquid):
         if dy == 0:
             return 0
@@ -164,17 +167,70 @@ class Monster(Mob):
             remaining -= step
 
         return moved
+    
+    # Vérifie si le monstre chevauche une cellule dure
+    def overlaps_dur(self, grid_cell, cell_dur):
+        i = -self.half_height
+        while i <= self.half_height:
+            j = -self.half_width
+            while j <= self.half_width:
+                if self.touch_wall(i, j, grid_cell, cell_dur):
+                    return True
+                j += self.base_movement
+            i += self.base_movement
+        return False
+
+    # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
+    def try_step_up_1(self, grid_cell, cell_dur, intended_vx):
+        if intended_vx == 0:
+            return 0
+
+        if not self.touch_ground(grid_cell, cell_dur):
+            return 0
+
+        old_x = self.pos_x
+        old_y = self.pos_y
+        old_vx = self.vitesse_x
+
+        self.pos_y = old_y - self.base_movement
+        if self.overlaps_dur(grid_cell, cell_dur):
+            self.pos_x = old_x
+            self.pos_y = old_y
+            self.vitesse_x = old_vx
+            return 0
+        self.vitesse_x = intended_vx
+        moved = self.collision_x(grid_cell, cell_dur)
+
+        if moved == 0:
+            self.pos_x = old_x
+            self.pos_y = old_y
+            self.vitesse_x = old_vx
+            return 0
+        return moved
+
+
+#Creation d'un monstre spécifique : le squelette
 
 class Skeleton(Monster):
     def __init__(self, x, y, id):
         super().__init__(hp=50, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id)
 
         self.name = 0
+        
+        #idle state preset, peux chnanger selon le monstre
         self.direction = 1
-        self.idle_min_x = x - 3 *self.base_movement
-        self.idle_max_x = x + 3 *self.base_movement
+        self.idle_min_x = x - 30 *self.base_movement
+        self.idle_max_x = x + 30 *self.base_movement
+        
+        #diffent speed selon l'etat
         self.speed_idle = max(1, self.base_movement // 8)
         self.speed_chase = max(1, self.base_movement // 5)
+        self.speed_max = max(1, self.base_movement // 5)
+        
+        #pour le stepup et le no turn lors de l'idle
+        self.step_lock = 0
+        self.no_turn = 0
+        self.idle_stuck = 0
 
     def update(self, cells_arr, cell_dur, cell_vide, cell_liquid, lPlayer):
         
@@ -207,47 +263,89 @@ class Skeleton(Monster):
             return False                                   # ne peut pas marcher sur les liquides
         return True                                        # peux marcher sur les autres cellules (vides, sols)
         
-    def idle_behavior(self, cells_arr, cell_dur, cell_vide, cell_liquid):
-        dx = self.direction * self.speed_idle
-        next_x = self.pos_x + dx
+        #--- Comportements spécifiques ---
         
-        out_patrol = next_x < self.idle_min_x or next_x > self.idle_max_x
-        if out_patrol :
-            self.direction *= -1
-            dx = self.direction * self.speed_idle
+    #comportement en mode idle : patrouille entre deux points fixes
+    def idle_behavior(self, cells_arr, cell_dur, cell_vide, cell_liquid):
+        intended_vx = self.direction * self.speed_idle
+        if intended_vx == 0:
+            intended_vx = self.direction * max(1, self.base_movement // 8)
 
-        moved = self.try_move_axis_x(dx, cells_arr, cell_dur, cell_liquid)
-        if moved == 0:
+        if self.pos_x + intended_vx < self.idle_min_x or self.pos_x + intended_vx > self.idle_max_x:
             self.direction *= -1
-           
+            intended_vx = self.direction * max(1, self.base_movement // 8)
+
+        self.gravity_effect(cells_arr, cell_dur)
+        self.vitesse_x = intended_vx
+        moved_x = self.collision_x(cells_arr, cell_dur)
+        self.collision_y(cells_arr, cell_dur)
+
+        if moved_x == 0 and intended_vx != 0:
+            stepped = self.try_step_up_1(cells_arr, cell_dur, intended_vx)
+            if stepped != 0:
+                self.step_lock = 4
+                self.no_turn = 6
+                moved_x = stepped
+                self.vitesse_x = intended_vx
+                self.collision_x(cells_arr, cell_dur)
+            self.collision_y(cells_arr, cell_dur)
+
+        if moved_x == 0:
+            self.idle_stuck += 1
+        else:
+            self.idle_stuck = 0
+
+        if self.step_lock > 0:
+            self.step_lock -= 1
+        if self.no_turn > 0:
+            self.no_turn -= 1
+
+        if moved_x == 0:
+            if self.idle_stuck >= 10:
+                self.direction *= -1
+                self.idle_stuck = 0
+                self.no_turn = 0
+                self.step_lock = 0
+            elif self.no_turn == 0 and self.step_lock == 0:
+                self.direction *= -1
+                
+    # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, cells_arr, cell_dur, cell_vide, cell_liquid):
         target, _ = self.distance_to_nearest_player(lPlayer)
         if target is None:
             return
 
         dx = target.pos_x - self.pos_x
-        dy = target.pos_y - self.pos_y
-        
-        step_x = 0
-        step_y = 0
-        if abs(dx) > 0:
-            step_x = self.speed_chase if dx > 0 else -self.speed_chase
-        if abs(dy) > 0:
-            step_y = self.speed_chase if dy > 0 else -self.speed_chase
-            
-        moved = 0
-        if abs(dx) >= abs(dy):
-            moved = self.try_move_axis_x(step_x, cells_arr, cell_dur, cell_liquid)
-            if moved == 0:
-                self.try_move_axis_y(step_y, cells_arr, cell_dur, cell_liquid)
+        if abs(dx) < self.base_movement // 10:
+            intended_vx = 0
         else:
-            moved = self.try_move_axis_y(step_y, cells_arr, cell_dur, cell_liquid)
-            if moved == 0:
-                self.try_move_axis_x(step_x, cells_arr, cell_dur, cell_liquid)
+            intended_vx = self.speed_max if dx > 0 else -self.speed_max
 
-        if step_x != 0:
-            self.direction = 1 if step_x > 0 else -1
+        self.gravity_effect(cells_arr, cell_dur)
+        self.vitesse_x = intended_vx
+        moved_x = self.collision_x(cells_arr, cell_dur)
+        self.collision_y(cells_arr, cell_dur)
         
+        if moved_x == 0 and intended_vx != 0:
+            stepped = self.try_step_up_1(cells_arr, cell_dur, intended_vx)
+            if stepped != 0:
+                self.step_lock = 4
+                self.no_turn = 6
+                moved_x = stepped
+                self.vitesse_x = intended_vx
+                self.collision_x(cells_arr, cell_dur)
+            self.collision_y(cells_arr, cell_dur)
+        
+        if self.step_lock > 0:
+            self.step_lock -= 1
+
+        if self.no_turn > 0:
+            self.no_turn -= 1
+            
+        if intended_vx != 0:
+            self.direction = 1 if intended_vx > 0 else -1
+            
+    # attaque le joueur le plus proche    
     def attack(self, lPlayer):
        # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
         for _ in range(self.attack_speed):
