@@ -22,8 +22,6 @@ class Main:
         self.fps = fps.FPS_CLIENT
         self.fpsClock = pygame.time.Clock()
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
-        self.next_allowed_shot = 0
-        self.rechargement=0
 
         #self.Game = InGame(self.screen,self.screenSize,self.font,self.cards)
         self.Server = None
@@ -154,6 +152,8 @@ class Main:
             if self.client.connected :
                 self.client.poll_reception()
 
+            self.handle_events()
+
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
@@ -199,11 +199,9 @@ class Main:
 
         if buttons[0] : 
 
-            now = time.perf_counter()
-
-            if now >= self.next_allowed_shot :
-                #self.next_allowed_shot = now+self.rechargement/1000
-                self.client.send_data(id=4,data=[])
+            #self.next_allowed_shot = now+self.rechargement/1000
+            self.state.game.shot()
+            #self.client.send_data(id=4,data=[self.])
 
         #if key[pygame.K_k] :
         #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0
@@ -211,5 +209,20 @@ class Main:
         #if key[pygame.K_SPACE] : #futur saut (vitesse y)
         #    self.client.send_data("id":"move", "deplacement":"jump") 
 
-    def update_next_allowed_shot(self):
-        self.next_allowed_shot = time.perf_counter()
+    def handle_events(self):
+
+        events = self.state.game.player_command
+
+        for input in events :
+
+            if input == None:
+
+                continue
+
+            id = input[0]
+
+            if id==4 :
+
+                self.client.send_data(id=4,data=[input[1]])
+
+        events.clear()

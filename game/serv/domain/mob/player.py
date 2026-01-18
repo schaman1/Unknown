@@ -21,12 +21,26 @@ class Player(Mob) :
 
         self.weapons = WeaponManager()
 
+        self.next_allowed_shot = 0
+        self.time_shot_update = False
+
     def return_weapon_info(self):
         return self.weapons.return_all_weapon()
     
     def return_weapon_select(self):
 
         return self.weapons.return_weapon_select()
+    
+    def update_next_allowed_shot(self,next_allowed_shot):
+        self.next_allowed_shot = next_allowed_shot
+        self.time_shot_update = True
+
+    def return_next_allowed_shot(self):
+        if self.time_shot_update :
+            self.time_shot_update=False
+            return [self.next_allowed_shot]
+        else :
+            return []
 
     def set_screen_size(self,screen_size):
         self.screen_size[0] = screen_size[0]//world.CELL_SIZE + world.PADDING_CANVA

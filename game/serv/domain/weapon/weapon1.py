@@ -8,7 +8,8 @@ class Weapon1(Weapon) :
     def __init__(self):
 
         super().__init__(
-            loading_time = weapons.LOAD_WEAPON1,
+            refill_time = weapons.REFILL_TIME_WEAPON1,
+            spell_time= weapons.SPELL_TIME_WEAPON1,
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
             id = weapons.ID_WEAPON1
@@ -17,7 +18,7 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.DoubleSpell())
+        self.fill_slot(0,upgrades.CreateFireball())
         self.fill_slot(1,upgrades.CreateFireball())
         self.fill_slot(2,upgrades.CreateFireball())
 
