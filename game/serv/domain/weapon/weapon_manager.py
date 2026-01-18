@@ -1,6 +1,6 @@
-from serv.config import weapons
 from shared.constants.world import NBRWEAPONSTOCK
 from serv.domain.weapon.weapon1 import Weapon1
+import time
 
 class WeaponManager :
 
@@ -30,3 +30,9 @@ class WeaponManager :
     def return_weapon_select(self):
 
         return self.lWeapons[self.weapon_select]
+    
+    def create_shot(self,angle,pos):
+
+        projectiles = self.lWeapons[self.weapon_select].create_projectile(angle,pos)
+
+        return projectiles

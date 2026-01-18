@@ -59,7 +59,7 @@ class Network_handler :
                     msg_size=1+1
                 
                 elif msg_id==4:
-                    msg_size=1
+                    msg_size=1+2
 
                 else:
                     print("UNKNOWN MSG ID", msg_id)
@@ -135,7 +135,8 @@ class Network_handler :
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell.grid_type,self.server.map_cell.dur,self.server.map_cell.vide,self.server.map_cell.liquid)
 
         elif id_msg == 4 :
-            self.server.projectile_manager.create_shoot(self.server.lClient[sender].return_weapon_select(),0,self.server.lClient[sender].return_pos())
+            angle = struct.unpack("!H",data[1:3])[0]
+            self.server.handle_shot(angle,sender)
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -162,6 +163,7 @@ class Network_handler :
                 #print("Send successfuly")
                 self.send_data(message, socket)
             except Exception as e:
+                print(message)
                 print(f"Erreur envoi bis {e}")#,file=sys.stderr)
                 pass  # ou suppression du client mort
 
@@ -213,9 +215,9 @@ class Network_handler :
             packet+= struct.pack("!L",id)
     
     def pack_weapon(self,weapon_info,client_id,packet):
-        idx_weapon_pos,id_weapon,loading_time,nbr_spells_max,spells_id = weapon_info
+        idx_weapon_pos,id_weapon,nbr_spells_max,spells_id = weapon_info
         
-        packet+= struct.pack("!BBBBH",nbr_spells_max,client_id,idx_weapon_pos,id_weapon,loading_time)
+        packet+= struct.pack("!BBBB",nbr_spells_max,client_id,idx_weapon_pos,id_weapon)
 
         for id_spell in spells_id:
             packet+= struct.pack("!B",id_spell)
@@ -253,6 +255,9 @@ class Network_handler :
 
         elif id==10:
             self.pack_weapon(data[1],data[2],packet)
+
+        elif id==11:
+            packet+=struct.pack("!H",data[1][0])
 
         else :
             print("Issue id not found : ",id)

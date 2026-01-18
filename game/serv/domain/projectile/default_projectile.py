@@ -1,4 +1,4 @@
-import time
+import time,math
 from shared.constants.world import RATIO
 
 class Projectile :
@@ -20,7 +20,10 @@ class Projectile :
         self.id = id
 
     def return_vx_vy(self,angle,vitesse):
-        return (1*vitesse,0*vitesse)
+        rad = math.radians(angle)
+        vx = int(math.cos(rad)*vitesse)
+        vy = -int(math.sin(rad)*vitesse)
+        return vx,vy
 
     def move(self,dt):
 

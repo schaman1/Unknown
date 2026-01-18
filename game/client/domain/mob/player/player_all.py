@@ -10,12 +10,14 @@ class Player_all :
         self.cell_size = cell_size
         self.client_id = None
         self.spawn_point = world.SPAWN_POINT
+        self.me = None
 
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
 
         if is_you == 1:
             self.dic_players[id] = Player_you(self.cell_size,self.spawn_point,pseudo,is_you)
             self.client_id = id
+            self.me = self.dic_players[id]
 
         else :
             self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,is_you)
