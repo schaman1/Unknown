@@ -114,7 +114,7 @@ class Player_not_you(Mob) :
 
     def init_Img(self,cell_size):
         for i in range(4):
-            Img = pygame.image.load(assets.PLAYER_IDLE+f"{i+1}"+".png").convert_alpha() #convert_alpha() pour le fond vide
+            Img = pygame.image.load(assets.PLAYER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
             Img_flip = pygame.transform.flip(Img, True, False)
             self.frame_perso_right.append(Img)
@@ -158,16 +158,14 @@ class Player_not_you(Mob) :
     def add_weapon(self,id_weapon):
 
         for i in range(4):
-            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
             img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
             self.frame_weapon.append(img_weapon)
 
         for i in range(2, 0, -1):
-            img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}_{i}"+".png").convert_alpha()
+            img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
             img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
             self.frame_weapon.append(img_weapon)
-        #self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
-        #self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size, weapon.WIDTH_WEAPON1*self.cell_size))
 
     def move(self,delta):
         self.pos_x = delta[0]
