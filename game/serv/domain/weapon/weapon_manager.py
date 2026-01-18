@@ -33,13 +33,6 @@ class WeaponManager :
     
     def create_shot(self,angle,pos):
 
-        weapon = self.lWeapons[self.weapon_select]
+        projectiles = self.lWeapons[self.weapon_select].create_projectile(angle,pos)
 
-        now = time.perf_counter()
-        
-        if now >= weapon.next_allowed_shot :
-            weapon.next_allowed_shot = now + weapon.loading_time/1000
-            return weapon.create_projectile(angle,pos)
-        
-        else :
-            return
+        return projectiles

@@ -18,25 +18,25 @@ class WeaponManager:
         for _ in range(NBRWEAPONSTOCK):
             self.lWeapons.append(None)
 
-    def add_weapon(self,i,id_weapon,loading_time,nbr_spell_max,spells_id):
+    def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id):
 
-        self.lWeapons[i] = Weapon(id_weapon,loading_time,nbr_spell_max,spells_id)
+        self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id)
 
     def draw_weapon(self,screen,angle,pos_player, frame):
 
         self.lWeapons[self.weapon_select].draw(screen,angle,pos_player, frame)
 
+    def update_next_allowed_shot(self,delta_time):
+
+        self.next_allowed_shot = time.perf_counter()+delta_time/1000
+
     def shot(self,angle):
 
         now = time.perf_counter()
 
-        if now >= self.lWeapons[self.weapon_select].next_allowed_shot :
+        if now >= self.next_allowed_shot :
 
             return [4,angle]
         
         else :
-            return 
-        
-    def result_shot(self):
-
-        self.lWeapons[self.weapon_select].update_next_allowed_shot()
+            return #[4,angle] #Si tu veux plus avoir de contraite de tir niveau client

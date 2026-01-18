@@ -2,15 +2,16 @@ from serv.domain.projectile import projectile_type
 
 class Upgrade:
 
-    def __init__(self,id):
+    def __init__(self,id,time_take):
 
         self.id = id
+        self.time_take = time_take
 
 class CreateFireball(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 1)
+        super().__init__(id = 1,time_take =0.1)
 
     def trigger(self,weapon):
 
@@ -22,7 +23,7 @@ class AddSpeed(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 2)
+        super().__init__(id = 2,time_take=0)
 
     def trigger(self,weapon):
 
@@ -34,7 +35,7 @@ class DoubleSpell(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 3)
+        super().__init__(id = 3,time_take=0.1)
 
     def trigger(self,weapon):
 

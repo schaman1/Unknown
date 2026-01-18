@@ -19,7 +19,6 @@ class Server:
         self.map_monster = Read_monster(assets.BG_MONSTER,world.SIZE_CHUNK_MONSTER,world.RATIO,self.map_cell.dur,self.map_cell.vide,self.map_cell.liquid)
         self.projectile_manager = ProjectileManager()
 
-
         self.host = host
         self.port = port
         self.server = None

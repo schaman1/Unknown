@@ -1,6 +1,3 @@
-from serv.domain.projectile import projectile_type
-import time
-
 class ProjectileManager :
 
     def __init__(self):
@@ -8,7 +5,6 @@ class ProjectileManager :
         self.l_Projectile = []
         self.projectile_create = []
         self.projectile_die = []
-        self.next_allowed_shot = 0
 
     def generate_id(self):
         self.next_id = (self.next_id+1) % 65536 #Maximum pour uint16
@@ -37,8 +33,13 @@ class ProjectileManager :
                 self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
 
                 del self.l_Projectile[i]
+
+        infos_shot = []
+
+        for client in lClient.values() :
+            infos_shot.append(client.return_next_allowed_shot())
                 
-        return [projectiles_create,projectiles_die]
+        return [projectiles_create,projectiles_die,infos_shot]
     
     def add_on_client_see_create(self,lClient,projectile,projectiles):
 
