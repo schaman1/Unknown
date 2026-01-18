@@ -48,7 +48,6 @@ class Weapon :
         else :
             return False
 
-
     def create_projectile(self,angle,pos):
 
         now = time.perf_counter()
