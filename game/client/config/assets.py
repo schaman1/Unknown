@@ -1,4 +1,4 @@
-from client.utils.resource_path import resource_path
+from utils.resource_path import resource_path
 
 
 BG_GLOBAL = resource_path("assets/background/global/back.png")
