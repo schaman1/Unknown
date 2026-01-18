@@ -23,16 +23,22 @@ class ProjectileManager :
         self.projectile_create.clear()
 
         projectiles_die = [[] for _ in range(l)]
+        projectiles_update = [[] for _ in range(l)]
         
         for i in range(len(self.l_Projectile)-1,-1,-1) :
 
-            self.l_Projectile[i].move(dt)
+            self.l_Projectile[i].move(dt,grid_type,cell_dur)
 
             if self.l_Projectile[i].should_destroy(grid_type,cell_dur) :
                 
                 self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
 
                 del self.l_Projectile[i]
+
+            elif self.l_Projectile[i].to_update :
+
+                self.add_on_client_see_update(lClient,self.l_Projectile[i],projectiles_create)
+                self.l_Projectile[i].to_update = False
 
         infos_shot = []
 
@@ -42,6 +48,14 @@ class ProjectileManager :
         return [projectiles_create,projectiles_die,infos_shot]
     
     def add_on_client_see_create(self,lClient,projectile,projectiles):
+
+        for i,clients in enumerate(lClient.values()):
+
+            if self.client_see(clients,projectile) :
+
+                projectiles[i].append(projectile.return_info())
+
+    def add_on_client_see_update(self,lClient,projectile,projectiles):
 
         for i,clients in enumerate(lClient.values()):
 
