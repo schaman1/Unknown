@@ -126,4 +126,7 @@ class Game :
     def create_projectile(self,id,pos_x,pos_y,angle,vitesse,id_img):
 
         self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
-        self.player_all.me.weapons.result_shot()
+
+    def update_next_allowed_shot(self,delta_time):
+
+        self.player_all.me.weapons.update_next_allowed_shot(delta_time)

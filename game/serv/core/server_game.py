@@ -31,11 +31,13 @@ class Server_game(Server) :
                 self.send_data_update(result_cell,3)
             if len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
+
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
 
-            if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[1],8)
+
+                self.send_data_update(result_projectile[2],11)
 
             self.handle_clients()
             self.handle_player()
@@ -111,14 +113,19 @@ class Server_game(Server) :
 
     def handle_shot(self,angle,sender):
 
-        projectiles = self.lClient[sender].weapons.create_shot(angle,self.lClient[sender].return_pos())
+        infos = self.lClient[sender].weapons.create_shot(angle,self.lClient[sender].return_pos())
 
-        if projectiles == None :
+        if infos == None :
             return
+        
+        else :
+            projectiles,next_allowed_shot = infos
 
-        for projectile in projectiles :
+            for projectile in projectiles :
 
-            projectile.set_id(self.projectile_manager.generate_id())
+                projectile.set_id(self.projectile_manager.generate_id())
 
-            self.projectile_manager.l_Projectile.append(projectile)
-            self.projectile_manager.projectile_create.append(projectile)
+                self.lClient[sender].update_next_allowed_shot(next_allowed_shot)
+
+                self.projectile_manager.l_Projectile.append(projectile)
+                self.projectile_manager.projectile_create.append(projectile)

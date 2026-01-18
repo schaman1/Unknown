@@ -1,15 +1,13 @@
-import pygame,time
+import pygame
 from client.config import assets,weapon
 from shared.constants.world import CELL_SIZE
 
 class Weapon :
 
-    def __init__(self,id_weapon,loading_time,nbr_spell_max,spells_id):
+    def __init__(self,id_weapon,nbr_spell_max,spells_id):
 
-        self.loading_time = loading_time
         self.id_weapon = id_weapon
         self.nbr_spell_max = nbr_spell_max
-        self.next_allowed_shot = 0
         self.frame_weapon = []
         self.spells_id = spells_id
 
@@ -32,9 +30,3 @@ class Weapon :
         rotated_img = pygame.transform.rotate(fr_weapon, angle)
         rotated_polish = rotated_img.get_rect(center = pos_player)
         screen.blit(rotated_img, rotated_polish.topleft)
-
-    def update_next_allowed_shot(self):
-
-        now = time.perf_counter()
-
-        self.next_allowed_shot = now+self.loading_time/1000

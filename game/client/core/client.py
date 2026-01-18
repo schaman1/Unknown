@@ -150,7 +150,10 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
 
             elif msg_id==10:
-                msg_size = 1+6+struct.unpack("!B",self.buffer[1:2])[0]
+                msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
+
+            elif msg_id == 11 :
+                msg_size = 1+2
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -203,6 +206,22 @@ class Client:
                 for i in range((size-3)//14)
             )
 
+        elif id==7:
+            for i in range((size-3)//17):
+                id,pos_x,pos_y,angle,vitesse,id_img = struct.unpack("!LLLHHB", data[3+i*17 : 20+i*17])
+
+                self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
+
+        elif id==8:
+            for i in range((size-3)//4):
+                id = struct.unpack("!L",data[3+i*4:7+i*4])[0]
+                self.main.state.game.projectiles.remove_projectile(id)
+
+        elif id==11:
+
+            delta_time = struct.unpack("!H",data[1:3])[0]
+            self.main.state.game.update_next_allowed_shot(delta_time)
+
         elif id == 5 :#Init monsters
             cells = []
             for i in range((size-3)//14):
@@ -214,16 +233,6 @@ class Client:
             id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
             self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
 
-        elif id==7:
-            for i in range((size-3)//17):
-                id,pos_x,pos_y,angle,vitesse,id_img = struct.unpack("!LLLHHB", data[3+i*17 : 20+i*17])
-
-                self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
-
-        elif id==8:
-            for i in range((size-3)//4):
-                id = struct.unpack("!L",data[3+i*4:7+i*4])[0]
-                self.main.state.game.projectiles.remove_projectile(id)
 
         elif id == 1 :
 
@@ -250,7 +259,7 @@ class Client:
             self.main.state.mod = "intro end"
 
         elif id==10:
-            client_id,idx_weapon_pos,id_weapon,loading_time = struct.unpack("!BBBH",data[2:7])
+            client_id,idx_weapon_pos,id_weapon = struct.unpack("!BBB",data[2:5])
             spells_id = []
 
             for i in range(size-7):
@@ -258,7 +267,7 @@ class Client:
                 spells_id.append(struct.unpack("!B",data[7+i:8+i]))
 
             if client_id==self.id :
-                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,loading_time,size-7,spells_id)
+                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id)
 
             else:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
