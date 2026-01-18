@@ -23,7 +23,12 @@ MONSTER_IDLE_3 = resource_path("assets/sprites/monster/idle/monster_idle_3.png")
 
 MONSTER_IDLE = [MONSTER_IDLE_1,MONSTER_IDLE_2,MONSTER_IDLE_3,MONSTER_IDLE_4]
 
-PIOCHE = resource_path("assets/sprites/projectile/pioche.png")
+PROJECTILE_0_0 = resource_path("assets/sprites/projectile/projectile_0_0.png") 
+PROJECTILE_0_1 = resource_path("assets/sprites/projectile/projectile_0_1.png") 
+PROJECTILE_0_2 = resource_path("assets/sprites/projectile/projectile_0_2.png") 
+PROJECTILE_0_3 = resource_path("assets/sprites/projectile/projectile_0_3.png") 
+
+PROJECTILE_0 = [PROJECTILE_0_0,PROJECTILE_0_1,PROJECTILE_0_2,PROJECTILE_0_3]
 
 RANGED_WEAPON_0 = resource_path("assets/sprites/weapon/idle/ranged_weapon_0_0.png")
 RANGED_WEAPON_1 = resource_path("assets/sprites/weapon/idle/ranged_weapon_0_1.png")
