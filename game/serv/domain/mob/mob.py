@@ -42,7 +42,6 @@ class Mob:
 
     def collision_y(self,grid_cell,cell_dur):
 
-
         pos_before = self.pos_y
 
         s = self.return_signe(self.vitesse_y)
