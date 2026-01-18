@@ -41,11 +41,7 @@ class Game :
         self.projectiles = ProjectileManager(cell_size)
 
         self.player_command = []
-
-        #self.player_all.add_Player("Coming soon",
-        #                       Img_perso = "assets/playerImg.png",
-        #                       pos = (500,500))
-
+        
     def draw_intro_start(self,screen):
 
         screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0))

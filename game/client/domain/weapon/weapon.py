@@ -21,9 +21,6 @@ class Weapon :
             img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
             self.frame_weapon.append(img_weapon)
 
-        #self.img_weapon = pygame.image.load(assets.RANGED_WEAPON+f"{id_weapon}.png").convert_alpha()
-        #self.img_weapon = pygame.transform.scale(self.img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE, weapon.WIDTH_WEAPON1*CELL_SIZE)) #Setup sa taille après 
-
     def draw(self,screen,angle,pos_player, frame):
         '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''
         fr_weapon = self.frame_weapon[frame%6]
