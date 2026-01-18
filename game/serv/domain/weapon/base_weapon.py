@@ -16,6 +16,7 @@ class Weapon :
         self.next_allowed_shot = 0
 
         self.speed_mult = 1
+        self.add_rebond = False
 
         self.angle = 0
         self.pos = 0
@@ -35,6 +36,7 @@ class Weapon :
     def reset_values(self):
         self.projectile_shot.clear()
         self.speed_mult = 1
+        self.add_rebond = False
         self.nbr_upgrades_trigger = 0
 
         if self.idx == self.nbr_spells_max :
@@ -47,6 +49,13 @@ class Weapon :
         
         else :
             return False
+        
+    def add_projectile(self,projectile_type):
+        projectile = projectile_type(self.angle,self.pos,self.speed_mult)
+        if self.add_rebond :
+            projectile.rebond = True
+            
+        self.projectile_shot.append(projectile)
 
     def create_projectile(self,angle,pos):
 

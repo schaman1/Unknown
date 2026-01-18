@@ -19,7 +19,7 @@ class Weapon1(Weapon) :
 
     def init_slot(self):
         self.fill_slot(0,upgrades.CreateFireball())
-        self.fill_slot(1,upgrades.CreateFireball())
+        self.fill_slot(1,upgrades.AddRebond())
         self.fill_slot(2,upgrades.CreateFireball())
 
     def fill_slot(self,idx,function):
