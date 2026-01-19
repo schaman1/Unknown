@@ -9,9 +9,9 @@ class ProjectileManager :
         self.cell_size = cell_size
 
 
-    def create_projectile(self,id,pos_x,pos_y,angle,vitesse,id_img):
+    def create_projectile(self,id,pos_x,pos_y,angle,vitesse,weight,id_img):
 
-        self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,id_img,self.cell_size)
+        self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,weight,id_img,self.cell_size)
 
     def remove_projectile(self,id):
 

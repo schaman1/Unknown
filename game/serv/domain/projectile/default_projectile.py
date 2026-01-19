@@ -3,7 +3,7 @@ from shared.constants.world import RATIO
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,vitesse,id_img,width,height,rebond = False):
+    def __init__(self,pos,life_time,angle,vitesse,id_img,width,height,rebond = False,damage = 0,weight = 0):
         self.pos = pos
         self.life_time = life_time
         self.id=None
@@ -14,6 +14,8 @@ class Projectile :
         self.width = width
         self.height = height
         self.rebond = rebond
+        self.damage = damage
+        self.weight = weight
 
         self.is_dead = False
         self.to_update = False
@@ -30,8 +32,13 @@ class Projectile :
         vx = int(math.cos(rad)*vitesse)
         vy = -int(math.sin(rad)*vitesse)
         return vx,vy
+    
+    def gravity(self,dt):
+        self.vy+=self.weight*dt
 
     def move(self,dt,grid_cell,cell_dur):
+
+        self.gravity(dt)
 
         self.move_x(dt,grid_cell,cell_dur)
         self.move_y(dt,grid_cell,cell_dur)
@@ -125,7 +132,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,self.pos[0],self.pos[1],self.angle,self.vitesse,self.id_img]
+        return [self.id,self.pos[0],self.pos[1],self.angle,self.vitesse,self.weight,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """

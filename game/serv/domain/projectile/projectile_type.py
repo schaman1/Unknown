@@ -7,4 +7,11 @@ class Fireball(Projectile) :
 
         self.life_time = weapons.LIFE_FIREBALL
 
-        super().__init__(pos,self.life_time,angle,vitesse = weapons.V_FIREBALL*speed_mult,id_img = 0,width = weapons.WIDTH_FIREBALL,height = weapons.HEIGHT_FIREBALL,rebond = weapons.REBOND_FIREBALL)
+        super().__init__(pos,self.life_time,angle,
+                         vitesse = weapons.V_FIREBALL*speed_mult,
+                         id_img = 0,
+                         width = weapons.WIDTH_FIREBALL,
+                         height = weapons.HEIGHT_FIREBALL,
+                         rebond = weapons.REBOND_FIREBALL,
+                         damage = weapons.DAMAGE_FIREBALL,
+                         weight = weapons.WEIGHT_FIREBALL)
