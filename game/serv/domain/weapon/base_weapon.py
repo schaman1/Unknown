@@ -17,6 +17,7 @@ class Weapon :
 
         self.speed_mult = 1
         self.add_rebond = False
+        self.add_damage = 0
 
         self.angle = 0
         self.pos = 0
@@ -52,8 +53,11 @@ class Weapon :
         
     def add_projectile(self,projectile_type):
         projectile = projectile_type(self.angle,self.pos,self.speed_mult)
+
         if self.add_rebond :
             projectile.rebond = True
+
+        projectile.damage += self.add_damage
             
         self.projectile_shot.append(projectile)
 

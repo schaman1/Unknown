@@ -119,9 +119,9 @@ class Game :
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
     
-    def create_projectile(self,id,pos_x,pos_y,angle,vitesse,id_img):
+    def create_projectile(self,id,pos_x,pos_y,angle,vitesse,weight,id_img):
 
-        self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,id_img)
+        self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
 
     def update_next_allowed_shot(self,delta_time):
 

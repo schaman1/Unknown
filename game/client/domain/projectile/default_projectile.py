@@ -4,10 +4,11 @@ import pygame,math
 
 class DefaultProjectile :
 
-    def __init__(self,pos_x,pos_y,angle,vitesse,id_img,cell_size):
+    def __init__(self,pos_x,pos_y,angle,vitesse,weight,id_img,cell_size):
 
         self.pos_x,self.pos_y = pos_x,pos_y
         self.cell_size = cell_size
+        self.weight = weight
 
         self.height,self.width = None,None
         self.base_movement = world.RATIO
@@ -23,7 +24,12 @@ class DefaultProjectile :
         vy = -int(math.sin(rad)*vitesse)
         return vx,vy
     
+    def gravity(self,dt):
+        self.vy+=self.weight*dt
+    
     def move(self,dt):
+
+        self.gravity(dt)
 
         self.pos_x+=self.vx*dt
         self.pos_y+=self.vy*dt

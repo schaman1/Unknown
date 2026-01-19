@@ -43,6 +43,7 @@ class DoubleSpell(Upgrade):
         return -1 #Done un slot de plus de disponible
     
 class AddRebond(Upgrade):
+    #Ajoute rebond a tout les prohcains tir mais leur enleve 2 dégat
 
     def __init__(self):
 
@@ -51,5 +52,7 @@ class AddRebond(Upgrade):
     def trigger(self,weapon):
 
         weapon.add_rebond=True
+
+        weapon.add_damage = -2
 
         return 0
