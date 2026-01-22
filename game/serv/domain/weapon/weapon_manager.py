@@ -33,6 +33,6 @@ class WeaponManager :
     
     def create_shot(self,angle,pos):
 
-        projectiles = self.lWeapons[self.weapon_select].create_projectile(angle,pos)
+        projectiles = self.lWeapons[self.weapon_select].trigger_shot(angle,pos)
 
         return projectiles

@@ -8,10 +8,10 @@ class DefaultProjectile :
 
         self.pos_x,self.pos_y = pos_x,pos_y
         self.cell_size = cell_size
-        self.weight = weight
 
         self.height,self.width = None,None
         self.base_movement = world.RATIO
+        self.weight = 255*self.base_movement
 
         self.vx,self.vy = self.create_vx_vy(angle,vitesse)
 
@@ -25,7 +25,7 @@ class DefaultProjectile :
         return vx,vy
     
     def gravity(self,dt):
-        self.vy+=self.weight*dt
+        pass#self.vy+=self.weight*dt
     
     def move(self,dt):
 
@@ -40,9 +40,9 @@ class DefaultProjectile :
 
         if id_img == 0 :
             for i in range(4):
-                self.width,self.height = weapon.PROJECTILE_0_WIDTH,weapon.PROJECTILE_0_HEIGHT
-                img = pygame.image.load(assets.PROJECTILE_0[i]).convert_alpha() #convert_alpha() pour le fond vide
-                img = pygame.transform.scale(img,(weapon.PROJECTILE_0_WIDTH*cell_size,weapon.PROJECTILE_0_HEIGHT*cell_size)) 
+                self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
+                img = pygame.image.load(assets.PROJECTILE_2[i]).convert_alpha() #convert_alpha() pour le fond vide
+                img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
                 rotated_img = pygame.transform.rotate(img, angle)
                 Imgs.append(rotated_img)
 
