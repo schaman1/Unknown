@@ -9,12 +9,12 @@ class Weapon :
         self.id = id
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]
-        self.projectile_shot = []
         self.nbr_upgrades_trigger_max = nbr_upgrades_trigger
         self.nbr_upgrades_trigger = 0
         self.nbr_spells_max = len(self.spells_on_shot)
         self.next_allowed_shot = 0
 
+        self.size_mult = 1
         self.speed_mult = 1
         self.add_rebond = False
         self.add_damage = 0
@@ -35,8 +35,8 @@ class Weapon :
         return i,self.id,self.nbr_spells_max,spells_id
 
     def reset_values(self):
-        self.projectile_shot.clear()
         self.speed_mult = 1
+        self.size_mult = 1
         self.add_rebond = False
         self.nbr_upgrades_trigger = 0
 
@@ -51,17 +51,26 @@ class Weapon :
         else :
             return False
         
-    def add_projectile(self,projectile_type):
-        projectile = projectile_type(self.angle,self.pos,self.speed_mult)
+    def add_projectile(self,projectile):
+
+        self.add_upgrades_to_projectile(projectile)
+
+        projectile.load()
+            
+        return projectile
+
+    def add_upgrades_to_projectile(self,projectile):
 
         if self.add_rebond :
             projectile.rebond = True
 
         projectile.damage += self.add_damage
-            
-        self.projectile_shot.append(projectile)
+        projectile.speed = projectile.speed*self.speed_mult
 
-    def create_projectile(self,angle,pos):
+        projectile.width=int(projectile.width*self.size_mult)
+        projectile.height=int(projectile.height*self.size_mult)
+
+    def trigger_shot(self,angle,pos):
 
         now = time.perf_counter()
 
@@ -69,6 +78,12 @@ class Weapon :
             return 
 
         self.reset_values()
+
+        return self.create_projectile(angle,pos,now)
+
+    def create_projectile(self,angle,pos,now=time.perf_counter()):
+
+        projectile_shot = []
         
         self.angle = angle
         self.pos = pos
@@ -78,14 +93,18 @@ class Weapon :
         while self.nbr_upgrades_trigger < self.nbr_upgrades_trigger_max and self.idx < self.nbr_spells_max :
 
             spell = self.spells_on_shot[self.idx]
+            self.idx+=1
 
             if spell != None : 
 
-                self.nbr_upgrades_trigger+=spell.trigger(self)
+                space_take,projectile = spell.trigger(self)
+
+                self.nbr_upgrades_trigger+= space_take
+
+                if projectile!=None :
+                    projectile_shot.append(projectile)
 
                 self.time_spells_take+=spell.time_take
-
-            self.idx+=1
 
         self.time_spells_take+=self.loading_time_spell
 
@@ -94,4 +113,4 @@ class Weapon :
         else :
             self.next_allowed_shot = now+self.time_spells_take
 
-        return self.projectile_shot,int((self.next_allowed_shot-now)*1000)
+        return projectile_shot,int((self.next_allowed_shot-now)*1000)

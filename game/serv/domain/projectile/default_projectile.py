@@ -3,38 +3,50 @@ from shared.constants.world import RATIO
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,vitesse,id_img,width,height,rebond = False,damage = 0,weight = 0):
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0):
         self.pos = pos
+        self.projectile_spawn_when_die = []
         self.life_time = life_time
         self.id=None
         self.spawn_time = time.time()
         self.angle = angle
-        self.vitesse = int(vitesse)
+        self.speed = int(speed)
         self.id_img = id_img
         self.width = width
         self.height = height
         self.rebond = rebond
         self.damage = damage
-        self.weight = weight
 
         self.is_dead = False
         self.to_update = False
 
-        self.base_movement = RATIO #A changer
+        self.base_movement = RATIO 
+        self.weight = weight*self.base_movement
 
-        self.vx,self.vy = self.return_vx_vy(angle,vitesse)
+    def update_angle_pos(self,new_angle,new_pos):
+        self.pos=new_pos
+        self.angle=new_angle
+        self.load()
+
+    def load(self):
+        self.vx,self.vy = self.return_vx_vy(self.angle,self.speed)
 
     def set_id(self,id):
         self.id = id
 
-    def return_vx_vy(self,angle,vitesse):
+    def return_vx_vy(self,angle,speed):
         rad = math.radians(angle)
-        vx = int(math.cos(rad)*vitesse)
-        vy = -int(math.sin(rad)*vitesse)
+        vx = int(math.cos(rad)*speed)
+        vy = -int(math.sin(rad)*speed)
         return vx,vy
     
     def gravity(self,dt):
-        self.vy+=self.weight*dt
+        pass#self.vy+=self.weight*dt
+
+    def check_if_projectile_spawn_when_die(self):
+        for projectile in self.projectile_spawn_when_die :
+            projectile.update_angle_pos(self.angle,self.pos)
+        return self.projectile_spawn_when_die
 
     def move(self,dt,grid_cell,cell_dur):
 
@@ -56,10 +68,11 @@ class Projectile :
 
                 if self.touch_wall((self.height//2+self.base_movement)*s,j,grid_cell,cell_dur) :
                     
+                    self.vy=-self.vy
+                    s =-s
+                    self.angle = (-self.angle)%360
+
                     if self.rebond :
-                        self.vy=-self.vy
-                        s =-s
-                        self.angle = (-self.angle)%360
                         self.to_update = True
 
                     else :
@@ -87,10 +100,11 @@ class Projectile :
 
                 if self.touch_wall(j,(self.width//2+self.base_movement)*s,grid_cell,cell_dur) :
 
+                    self.vx=-self.vx
+                    s =-s
+                    self.angle = (180-self.angle)%360
+                    
                     if self.rebond :
-                        self.vx=-self.vx
-                        s =-s
-                        self.angle = (180-self.angle)%360
                         self.to_update = True
                         #self.pos[0]+=dist*s
 
@@ -132,7 +146,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,self.pos[0],self.pos[1],self.angle,self.vitesse,self.weight,self.id_img]
+        return [self.id,self.pos[0],self.pos[1],self.angle,self.speed,self.weight//self.base_movement,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """

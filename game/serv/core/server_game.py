@@ -123,9 +123,6 @@ class Server_game(Server) :
 
             for projectile in projectiles :
 
-                projectile.set_id(self.projectile_manager.generate_id())
-
                 self.lClient[sender].update_next_allowed_shot(next_allowed_shot)
 
-                self.projectile_manager.l_Projectile.append(projectile)
-                self.projectile_manager.projectile_create.append(projectile)
+                self.projectile_manager.add_projectile_create(projectile)

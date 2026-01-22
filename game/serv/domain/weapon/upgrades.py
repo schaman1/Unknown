@@ -7,6 +7,13 @@ class Upgrade:
         self.id = id
         self.time_take = time_take
 
+
+def AddProjectileWhenDie(projectile,weapon):
+    
+    next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos)
+
+    projectile.projectile_spawn_when_die=next_projectiles
+
 class CreateFireball(Upgrade):
 
     def __init__(self):
@@ -15,39 +22,45 @@ class CreateFireball(Upgrade):
 
     def trigger(self,weapon):
 
-        weapon.add_projectile(projectile_type.Fireball)
+        projectile = weapon.add_projectile(projectile_type.Fireball(weapon.angle,weapon.pos))
 
-        return 1
+        return 1,projectile
+    
+class CreateFireball_DieEffect(Upgrade):
+    """DieEffect = create projectile when die"""
+
+    def __init__(self):
+
+        super().__init__(id = 2,time_take =0.1)
+
+    def trigger(self,weapon):
+
+        projectile = projectile_type.Fireball(weapon.angle,weapon.pos)
+
+        projectile = weapon.add_projectile(projectile)
+
+        AddProjectileWhenDie(projectile,weapon)
+
+        return 1,projectile
     
 class AddSpeed(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 2,time_take=0)
+        super().__init__(id = 10,time_take=0)
 
     def trigger(self,weapon):
 
         weapon.speed_mult+=2
 
-        return 0
-    
-    
-class DoubleSpell(Upgrade):
-
-    def __init__(self):
-
-        super().__init__(id = 3,time_take=0.1)
-
-    def trigger(self,weapon):
-
-        return -1 #Done un slot de plus de disponible
+        return 0,None
     
 class AddRebond(Upgrade):
     #Ajoute rebond a tout les prohcains tir mais leur enleve 2 dégat
 
     def __init__(self):
 
-        super().__init__(id = 4,time_take=0)
+        super().__init__(id = 11,time_take=0)
 
     def trigger(self,weapon):
 
@@ -55,4 +68,27 @@ class AddRebond(Upgrade):
 
         weapon.add_damage = -2
 
-        return 0
+        return 0,None
+    
+class DoubleSpell(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 20,time_take=0.1)
+
+    def trigger(self,weapon):
+
+        return -1,None #Done un slot de plus de disponible
+    
+    
+#Remove too difficult and useless
+#class AddSize(Upgrade):
+#    def __init__(self):
+#
+#        super().__init__(id = 5,time_take=0)
+#
+#    def trigger(self,weapon):
+#
+#        weapon.size_mult +=2
+#
+#        return 0

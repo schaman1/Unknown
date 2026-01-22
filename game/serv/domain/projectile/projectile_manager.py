@@ -6,6 +6,21 @@ class ProjectileManager :
         self.projectile_create = []
         self.projectile_die = []
 
+    def add_projectile_create(self,projectile):
+
+        projectile.set_id(self.generate_id())
+
+        self.l_Projectile.append(projectile)
+        self.projectile_create.append(projectile)
+
+    def add_projectile_when_die(self,lProjectiles,lClient,lProjectiles_create):
+
+        if len(lProjectiles) != 0 :
+
+            for projectile in lProjectiles :
+
+                self.add_on_client_see_create(lClient,projectile,lProjectiles_create)        
+
     def generate_id(self):
         self.next_id = (self.next_id+1) % 65536 #Maximum pour uint16
         return self.next_id
@@ -23,13 +38,19 @@ class ProjectileManager :
         self.projectile_create.clear()
 
         projectiles_die = [[] for _ in range(l)]
-        projectiles_update = [[] for _ in range(l)]
+
+        if self.l_Projectile != []:
+
+            print(self.l_Projectile)
         
         for i in range(len(self.l_Projectile)-1,-1,-1) :
 
             self.l_Projectile[i].move(dt,grid_type,cell_dur)
 
             if self.l_Projectile[i].should_destroy(grid_type,cell_dur) :
+
+                lProjectiles = self.l_Projectile[i].check_if_projectile_spawn_when_die()
+                self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)
                 
                 self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
 
