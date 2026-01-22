@@ -14,7 +14,7 @@ def AddProjectileWhenDie(projectile,weapon):
 
     projectile.projectile_spawn_when_die=next_projectiles
 
-class CreateFireball(Upgrade):
+class CreateFire(Upgrade):
 
     def __init__(self):
 
@@ -22,26 +22,22 @@ class CreateFireball(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Fireball(weapon.angle,weapon.pos))
+        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos))
 
         return 1,projectile
     
-class CreateFireball_DieEffect(Upgrade):
-    """DieEffect = create projectile when die"""
+class CreateMagic(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 2,time_take =0.1)
+        super().__init__(id = 2,time_take = 0.1)
 
     def trigger(self,weapon):
 
-        projectile = projectile_type.Fireball(weapon.angle,weapon.pos)
-
-        projectile = weapon.add_projectile(projectile)
-
-        AddProjectileWhenDie(projectile,weapon)
+        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos))
 
         return 1,projectile
+    
     
 class AddSpeed(Upgrade):
 
@@ -80,6 +76,22 @@ class DoubleSpell(Upgrade):
 
         return -1,None #Done un slot de plus de disponible
     
+class CreateFire_DieEffect(Upgrade):
+    """DieEffect = create projectile when die"""
+
+    def __init__(self):
+
+        super().__init__(id = 30,time_take =0.1)
+
+    def trigger(self,weapon):
+
+        projectile = projectile_type.Fire(weapon.angle,weapon.pos)
+
+        projectile = weapon.add_projectile(projectile)
+
+        AddProjectileWhenDie(projectile,weapon)
+
+        return 1,projectile
     
 #Remove too difficult and useless
 #class AddSize(Upgrade):
