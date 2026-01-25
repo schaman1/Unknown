@@ -18,8 +18,8 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateFire_DieEffect())
-        self.fill_slot(1,upgrades.CreateMagic())
+        self.fill_slot(0,upgrades.CreateFire())
+        self.fill_slot(1,upgrades.CreateFire())
         self.fill_slot(2,upgrades.CreateFire())
 
     def fill_slot(self,idx,function):

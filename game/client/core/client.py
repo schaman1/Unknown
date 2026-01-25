@@ -147,7 +147,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*18
 
             elif msg_id==8:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*4
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*12
 
             elif msg_id==10:
                 msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
@@ -213,9 +213,9 @@ class Client:
                 self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
 
         elif id==8:
-            for i in range((size-3)//4):
-                id = struct.unpack("!L",data[3+i*4:7+i*4])[0]
-                self.main.state.game.projectiles.remove_projectile(id)
+            for i in range((size-3)//12):
+                id,pos_x,pos_y = struct.unpack("!LLL",data[3+i*12:15+i*12])
+                self.main.state.game.projectiles.remove_projectile(id,pos_x,pos_y)
 
         elif id==11:
 

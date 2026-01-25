@@ -52,13 +52,19 @@ class Projectile :
 
         self.gravity(dt)
 
+        #self.pos[0]+=int(1000*dt)
+        #self.pos[1]+=int(1000*dt)
+
         self.move_x(dt,grid_cell,cell_dur)
         self.move_y(dt,grid_cell,cell_dur)
 
     def move_y(self,dt,grid_cell,cell_dur):
 
         s = self.return_signe(self.vy)
-        remaining = int(self.vy*s*dt)
+        remaining = self.vy*s*dt
+
+        #self.pos[1]+=remaining*s
+        #return
 
         dist = self.base_movement
 
@@ -66,11 +72,17 @@ class Projectile :
 
             for j in range(-self.width//2,self.width//2+1,self.base_movement): #+1 car doit compter le dernier carreau
 
-                if self.touch_wall((self.height//2+self.base_movement)*s,j,grid_cell,cell_dur) :
+                if self.touch_wall((self.height//2)*s,j,grid_cell,cell_dur) :
                     
                     self.vy=-self.vy
                     s =-s
                     self.angle = (-self.angle)%360
+                    dist = self.base_movement - (self.pos[1]*s)%self.base_movement -1
+
+                    print("old : ",self.pos[1])
+                    print("New :",self.pos[1]+dist*s)
+
+                    self.pos[1] = self.pos[1]+dist*s
 
                     if self.rebond :
                         self.to_update = True
@@ -81,16 +93,22 @@ class Projectile :
 
             if dist < remaining :
                 self.pos[1]+=dist*s
-            
+
             else :
                 self.pos[1]+= remaining*s
 
             remaining -= self.base_movement
 
+            #if self.is_dead:
+            #    print(self.pos[1])
+
     def move_x(self,dt,grid_cell,cell_dur):
 
         s = self.return_signe(self.vx)
-        remaining = int(self.vx*s*dt)
+        remaining = self.vx*s*dt
+
+        #self.pos[0]+=remaining*s
+        #return
 
         dist = self.base_movement
 
@@ -98,11 +116,17 @@ class Projectile :
 
             for j in range(-self.height//2,self.height//2+1,self.base_movement): #+1 car doit compter le dernier
 
-                if self.touch_wall(j,(self.width//2+self.base_movement)*s,grid_cell,cell_dur) :
+                if self.touch_wall(j,(self.width//2)*s,grid_cell,cell_dur) :
 
                     self.vx=-self.vx
                     s =-s
                     self.angle = (180-self.angle)%360
+
+                    #print("Before",self.pos[0])
+
+                    dist = self.base_movement - (self.pos[0]*s-self.width//2)%self.base_movement -1
+                    self.pos[0]+=dist*s
+                    #print("normal : ",self.pos[0]+dist*s)
                     
                     if self.rebond :
                         self.to_update = True
@@ -120,6 +144,9 @@ class Projectile :
 
             remaining -= self.base_movement
 
+            #if self.is_dead:
+            #    print(self.pos[0])
+
     def touch_wall(self,i,j,grid_cell,cell_dur):
 
         return self.is_type(grid_cell[self.convert_to_base(self.pos[1]+i-self.height//2),self.convert_to_base(self.pos[0]+j)],cell_dur)
@@ -131,7 +158,7 @@ class Projectile :
             return 1
 
     def convert_to_base(self,nbr):
-        return nbr//self.base_movement
+        return int(nbr//self.base_movement)
     
     def should_destroy(self,grid_type,cell_dur):
 
@@ -146,7 +173,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,self.pos[0],self.pos[1],self.angle,self.speed,self.weight//self.base_movement,self.id_img]
+        return [self.id,int(self.pos[0]),int(self.pos[1]),self.angle,self.speed,self.weight//self.base_movement,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """

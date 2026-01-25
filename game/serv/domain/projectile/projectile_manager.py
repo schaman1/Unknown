@@ -47,8 +47,6 @@ class ProjectileManager :
 
             if self.l_Projectile[i].should_destroy(grid_type,cell_dur) :
 
-                print(self.l_Projectile[i].pos)
-
                 lProjectiles = self.l_Projectile[i].check_if_projectile_spawn_when_die()
                 self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)
                 
@@ -93,7 +91,7 @@ class ProjectileManager :
                 projectiles[i].append(self.add_when_destroy(projectile))
 
     def add_when_destroy(self,projectile):
-        return projectile.id
+        return projectile.id,int(projectile.pos[0]),int(projectile.pos[1])
     
     def add_when_create(self,projectile):
         return projectile

@@ -211,8 +211,8 @@ class Network_handler :
 
         packet += struct.pack("!H", len(projectiles))
 
-        for id in projectiles :
-            packet+= struct.pack("!L",id)
+        for id,pos_x,pos_y in projectiles :
+            packet+= struct.pack("!LLL",id,pos_x,pos_y)
     
     def pack_weapon(self,weapon_info,client_id,packet):
         idx_weapon_pos,id_weapon,nbr_spells_max,spells_id = weapon_info
