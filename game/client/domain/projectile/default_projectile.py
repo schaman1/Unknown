@@ -8,6 +8,8 @@ class DefaultProjectile :
 
         self.pos_x,self.pos_y = pos_x,pos_y
         self.cell_size = cell_size
+        self.angle = angle
+        self.id_img = id_img
 
         self.height,self.width = None,None
         self.base_movement = world.RATIO
@@ -31,8 +33,8 @@ class DefaultProjectile :
 
         self.gravity(dt)
 
-        self.pos_x+=self.vx*dt
-        self.pos_y+=self.vy*dt
+        self.pos_x+=self.vx*dt#int(1000*dt)#
+        self.pos_y+=self.vy*dt#1000*dt#
 
     def create_img(self,id_img,cell_size,angle):
 

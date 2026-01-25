@@ -12,7 +12,7 @@ class Main:
     def __init__(self):
         """Contient le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
         # Set up the display (width, height)
-        self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.FULLSCREEN | pygame.SCALED)
+        self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.RESIZABLE,pygame.FULLSCREEN | pygame.SCALED)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
         
         #ecriture
