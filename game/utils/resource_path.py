@@ -7,5 +7,7 @@ def resource_path(relative_path):
         # PyInstaller crée un dossier temporaire _MEIPASS
         base_path = sys._MEIPASS
     except AttributeError:
-        base_path = os.path.abspath(".")
+        # Si on est en dev, on prend le dossier parent de 'utils' donc 'game'
+        # utils/resource_path.py -> utils -> game
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
