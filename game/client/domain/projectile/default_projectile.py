@@ -75,7 +75,7 @@ class DefaultProjectile :
 
     def calculate_pos_blit(self,x,y):
         xs = self.convert_from_base(self.pos_x*self.cell_size) +x
-        ys = self.convert_from_base((self.pos_y+1) * self.cell_size) +y #Regle un petit soucis
+        ys = self.convert_from_base((self.pos_y) * self.cell_size) +y #Regle un petit soucis
         rect = self.imgs[self.frame//50].get_rect(center=(xs, ys))
         return rect
     

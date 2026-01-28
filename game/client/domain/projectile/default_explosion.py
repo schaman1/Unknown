@@ -7,7 +7,6 @@ class DefaultExplosion:
     def __init__(self,pos,id,angle,cell_size):
 
         self.pos = pos
-        print("pos :",pos)
         self.time_remaining = None
         self.base_movement = world.RATIO
         self.cell_size = cell_size
@@ -28,7 +27,7 @@ class DefaultExplosion:
 
         if id_img == 2 :
 
-            self.time_remaining = 0.1+time.perf_counter()
+            self.time_remaining = 0.3+time.perf_counter()
 
             for i in range(4):
                 self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
@@ -54,7 +53,7 @@ class DefaultExplosion:
     def calculate_pos_blit(self,x,y):
 
         xs = self.convert_from_base(self.pos[0]*self.cell_size) +x
-        ys = self.convert_from_base((self.pos[1]+1) * self.cell_size) +y #Regle un petit soucis
+        ys = self.convert_from_base((self.pos[1]) * self.cell_size) +y #Regle un petit soucis
         rect = self.imgs[self.frame//50].get_rect(center=(xs, ys))
         return rect
     

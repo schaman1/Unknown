@@ -1,7 +1,7 @@
 from shared.constants.world import RATIO
 
-LIFE_FIRE = 1
-V_FIRE = 200 * RATIO #Bouge de 20 cellules par secondes
+LIFE_FIRE = 100
+V_FIRE = 30 * RATIO #Bouge de 20 cellules par secondes
 WIDTH_FIRE = 1*RATIO
 HEIGHT_FIRE = 1*RATIO
 REBOND_FIRE = False
