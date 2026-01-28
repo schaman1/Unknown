@@ -50,46 +50,65 @@ class Projectile :
 
     def move(self,dt,grid_cell,cell_dur):
 
-        self.gravity(dt)
+        #self.gravity(dt)
 
-        #self.pos[0]+=int(1000*dt)
-        #self.pos[1]+=int(1000*dt)
+    # je t'aime
 
-        self.move_x(dt,grid_cell,cell_dur)
-        self.move_y(dt,grid_cell,cell_dur)
+        if self.is_dead is False:
+            self.move_x(dt,grid_cell,cell_dur)
+
+        if self.is_dead is False:
+            self.move_y(dt,grid_cell,cell_dur)
+
+    def complete_mov_x(self,s,deltax):
+        print("before x : ",self.pos,self.id)
+        dist = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
+        self.pos[0]+=dist
+
+        self.pos[1]+=(dist+deltax)/self.vx*self.vy#*(self.return_signe(self.pos[1]))
+        print(self.pos)
+
+    def complete_mov_y(self,s,rest_y_to_complete_mouv):
+        print("before y : ",self.pos,self.id)
+        dist = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
+        self.pos[1] += dist
+
+        self.pos[0]-=(rest_y_to_complete_mouv-dist)/self.vy*self.vx#*(self.return_signe(self.pos[0]))
+        print(self.pos)
 
     def move_y(self,dt,grid_cell,cell_dur):
 
         s = self.return_signe(self.vy)
         remaining = self.vy*s*dt
-
-        #self.pos[1]+=remaining*s
-        #return
+        old_pos = self.pos[1]
 
         dist = self.base_movement
 
         while remaining > 0 :
 
-            for j in range(-self.width//2,self.width//2+1,self.base_movement): #+1 car doit compter le dernier carreau
+            for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.touch_wall((self.height//2)*s,j,grid_cell,cell_dur) :
+                if self.is_dead is False and self.touch_wall(j,0,grid_cell,cell_dur) :
                     
-                    self.vy=-self.vy
-                    s =-s
-                    self.angle = (-self.angle)%360
-                    dist = self.base_movement - (self.pos[1]*s)%self.base_movement -1
+                    rest_y_to_complete_mouv = self.vy*dt - (self.pos[1]-old_pos)
 
-                    print("old : ",self.pos[1])
-                    print("New :",self.pos[1]+dist*s)
+                    complete_mov = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
+                    if complete_mov*s<=remaining :
 
-                    self.pos[1] = self.pos[1]+dist*s
+                        self.complete_mov_y(s,rest_y_to_complete_mouv)
 
-                    if self.rebond :
-                        self.to_update = True
+                        #Rebond en y
+                        self.vy=-self.vy
+                        s =-s
+                        self.angle = (-self.angle)%360
+                        #Complete la dist pr toucher le mur
 
-                    else :
-                        self.is_dead = True
-                        remaining=0
+                        if self.rebond :
+                            self.to_update = True
+
+                        else :
+                            self.is_dead = True
+                            remaining=0
 
             if dist < remaining :
                 self.pos[1]+=dist*s
@@ -105,6 +124,7 @@ class Projectile :
     def move_x(self,dt,grid_cell,cell_dur):
 
         s = self.return_signe(self.vx)
+        old_pos = self.pos[0]
         remaining = self.vx*s*dt
 
         #self.pos[0]+=remaining*s
@@ -114,27 +134,38 @@ class Projectile :
 
         while remaining > 0 :
 
-            for j in range(-self.height//2,self.height//2+1,self.base_movement): #+1 car doit compter le dernier
+            for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.touch_wall(j,(self.width//2)*s,grid_cell,cell_dur) :
+                if self.is_dead is False and self.touch_wall(0,j,grid_cell,cell_dur) :
 
-                    self.vx=-self.vx
-                    s =-s
-                    self.angle = (180-self.angle)%360
 
-                    #print("Before",self.pos[0])
+                        #Complete la dist
 
-                    dist = self.base_movement - (self.pos[0]*s-self.width//2)%self.base_movement -1
-                    self.pos[0]+=dist*s
-                    #print("normal : ",self.pos[0]+dist*s)
-                    
-                    if self.rebond :
-                        self.to_update = True
-                        #self.pos[0]+=dist*s
+                    complete_mov = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
 
-                    else :
-                        self.is_dead = True
-                        remaining = 0
+                    if complete_mov*s<=remaining :
+
+
+                        deltax = (self.pos[0]-old_pos)
+
+                        self.complete_mov_x(s,deltax)
+
+                        #Rebond en x
+                        self.vx=-self.vx
+                        s =-s
+                        self.angle = (180-self.angle)%360
+
+                        #print("old x : ",self.pos[0])
+                        #print("New x :",self.pos[0]+dist*s)
+                        #print("normal : ",self.pos[0]+dist*s)
+                        
+                        if self.rebond :
+                            self.to_update = True
+                            #self.pos[0]+=dist*s
+
+                        else :
+                            self.is_dead = True
+                            remaining = 0
 
             if dist < remaining :
                 self.pos[0]+=dist*s
@@ -147,9 +178,12 @@ class Projectile :
             #if self.is_dead:
             #    print(self.pos[0])
 
+
     def touch_wall(self,i,j,grid_cell,cell_dur):
 
-        return self.is_type(grid_cell[self.convert_to_base(self.pos[1]+i-self.height//2),self.convert_to_base(self.pos[0]+j)],cell_dur)
+        #print(self.convert_to_base(self.pos[0]+j),self.convert_to_base(self.pos[1]+i))
+
+        return self.is_type(grid_cell[self.convert_to_base(self.pos[1]+i),self.convert_to_base(self.pos[0]+j)],cell_dur)
 
     def return_signe(self,el):
         if el <0:
