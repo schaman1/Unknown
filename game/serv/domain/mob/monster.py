@@ -1,4 +1,3 @@
-from matplotlib.pyplot import step
 from serv.domain.mob.mob import Mob
 import math
 
@@ -350,4 +349,3 @@ class Skeleton(Monster):
        # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
         for _ in range(self.attack_speed):
             lPlayer.take_damage(self.damage)
-        
