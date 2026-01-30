@@ -48,35 +48,34 @@ class Projectile :
             projectile.update_angle_pos(self.angle,self.pos)
         return self.projectile_spawn_when_die
 
-    def move(self,dt,grid_cell,cell_dur):
+    def move(self,dt,map):
 
         #self.gravity(dt)
 
     # je t'aime
 
         if self.is_dead is False:
-            self.move_x(dt,grid_cell,cell_dur)
+            self.move_x(dt,map)
 
         if self.is_dead is False:
-            self.move_y(dt,grid_cell,cell_dur)
+            self.move_y(dt,map)
 
-    def complete_mov_x(self,s,deltax):
-        print("before x : ",self.pos,self.id)
-        dist = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
-        self.pos[0]+=dist
+    def complete_mov_x(self,s,deltax,complete_mov_to_touch_wall):
+        #print("before x : ",self.pos,self.id)
 
-        self.pos[1]+=(dist+deltax)/self.vx*self.vy#*(self.return_signe(self.pos[1]))
-        print(self.pos)
+        self.pos[0]+=complete_mov_to_touch_wall
 
-    def complete_mov_y(self,s,rest_y_to_complete_mouv):
-        print("before y : ",self.pos,self.id)
-        dist = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
-        self.pos[1] += dist
+        self.pos[1]+=(complete_mov_to_touch_wall+deltax)/self.vx*self.vy#*(self.return_signe(self.pos[1]))
+        #print(self.pos)
 
-        self.pos[0]-=(rest_y_to_complete_mouv-dist)/self.vy*self.vx#*(self.return_signe(self.pos[0]))
-        print(self.pos)
+    def complete_mov_y(self,s,rest_y_to_complete_mouv,complete_mov_to_touch_wall):
+        #print("before y : ",self.pos,self.id)
+        self.pos[1] += complete_mov_to_touch_wall
 
-    def move_y(self,dt,grid_cell,cell_dur):
+        self.pos[0]-=(rest_y_to_complete_mouv-complete_mov_to_touch_wall)/self.vy*self.vx#*(self.return_signe(self.pos[0]))
+        #print(self.pos)
+
+    def move_y(self,dt,map):
 
         s = self.return_signe(self.vy)
         remaining = self.vy*s*dt
@@ -88,14 +87,14 @@ class Projectile :
 
             for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.is_dead is False and self.touch_wall(j,0,grid_cell,cell_dur) :
+                if self.is_dead is False and self.touch_wall(j,0,map) :
                     
                     rest_y_to_complete_mouv = self.vy*dt - (self.pos[1]-old_pos)
 
-                    complete_mov = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
-                    if complete_mov*s<=remaining :
+                    complete_mov_to_touch_wall = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
+                    if complete_mov_to_touch_wall*s<=remaining :
 
-                        self.complete_mov_y(s,rest_y_to_complete_mouv)
+                        self.complete_mov_y(s,rest_y_to_complete_mouv,complete_mov_to_touch_wall)
 
                         #Rebond en y
                         self.vy=-self.vy
@@ -121,7 +120,7 @@ class Projectile :
             #if self.is_dead:
             #    print(self.pos[1])
 
-    def move_x(self,dt,grid_cell,cell_dur):
+    def move_x(self,dt,map):
 
         s = self.return_signe(self.vx)
         old_pos = self.pos[0]
@@ -136,19 +135,19 @@ class Projectile :
 
             for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.is_dead is False and self.touch_wall(0,j,grid_cell,cell_dur) :
+                if self.is_dead is False and self.touch_wall(0,j,map) :
 
 
                         #Complete la dist
 
-                    complete_mov = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
+                    complete_mov_to_touch_wall = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
 
-                    if complete_mov*s<=remaining :
+                    if complete_mov_to_touch_wall*s<=remaining :
 
 
                         deltax = (self.pos[0]-old_pos)
 
-                        self.complete_mov_x(s,deltax)
+                        self.complete_mov_x(s,deltax,complete_mov_to_touch_wall)
 
                         #Rebond en x
                         self.vx=-self.vx
@@ -179,12 +178,9 @@ class Projectile :
             #    print(self.pos[0])
 
 
-    def touch_wall(self,i,j,grid_cell,cell_dur):
-
-        #print(self.convert_to_base(self.pos[0]+j),self.convert_to_base(self.pos[1]+i))
-
-        return self.is_type(grid_cell[self.convert_to_base(self.pos[1]+i),self.convert_to_base(self.pos[0]+j)],cell_dur)
-
+    def touch_wall(self,i,j,map):
+        return self.is_type(map.return_type(self.convert_to_base(self.pos[1]+i),self.convert_to_base(self.pos[0]+j)),map.dur)
+    
     def return_signe(self,el):
         if el <0:
             return -1
@@ -194,7 +190,7 @@ class Projectile :
     def convert_to_base(self,nbr):
         return int(nbr//self.base_movement)
     
-    def should_destroy(self,grid_type,cell_dur):
+    def should_destroy(self,map):
 
         if self.is_dead :
             return True

@@ -1,0 +1,204 @@
+import pygame
+import numpy as np
+import serv.optimization.njitOpti.njitBoucle as njitBoucle
+from serv.config.assets import BG_MAP
+
+class Read_map:
+    """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
+    def __init__(self, filename):
+
+        self.type = {"EMPTY": 0, "FIRE": 1, "STONE": 2, "GRASS": 3, "WOOD": 4, "SAND":5, "EXPLO":6, "WATER" : 7}
+        self.dur = [self.type["STONE"],self.type["SAND"]] #Le min et le max
+        self.vide = [self.type["EMPTY"],self.type["FIRE"]] #Le min et le max
+        self.liquid = [self.type["EXPLO"],self.type["WATER"]] #Le min et le max
+
+        self.map = pygame.image.load(filename).convert()
+        self.width, self.height = self.map.get_size()
+
+        self.grid_type = np.zeros((self.height, self.width), dtype=np.uint8)
+        self.grid_color = np.zeros((self.height, self.width, 4), dtype=np.uint8)
+        self.r_or_l = np.zeros((self.height, self.width), dtype=np.bool) #If true = cell go left / else, cell go right
+        self.temp = np.zeros((self.height, self.width), dtype=np.int16)
+        self.ToUpdate = np.ones((self.height,self.width),dtype = np.bool)
+
+        self.visible = None
+
+        self.create_map()
+
+    def dummy_compilation(self,lClient):
+        ToUpdateDummy = np.zeros((1,1),dtype = np.bool)
+
+        VisibleDummy = np.ones((len(lClient),1,1),dtype=np.bool_)
+        ys , xs = njitBoucle.return_x_y(VisibleDummy)
+
+        moved_cells = njitBoucle.move_fast(
+            ToUpdateDummy,
+            VisibleDummy,
+            xs,ys,
+            self.grid_type,
+            self.r_or_l,
+            self.grid_color,
+            self.temp,
+        ) 
+
+    def create_map(self):
+        img_np = np.transpose(pygame.surfarray.array3d(self.map), (1, 0, 2))
+
+        grid_pixels = img_np[0:self.height, 0:self.width]
+        #print(grid_pixels[450, 530, :])
+        mask_sand = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 255) & (grid_pixels[:, :, 2] == 0)
+        mask_water = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 255)
+        mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
+        mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
+        mask_stone = (grid_pixels[:, :, 0] == 127) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 2] == 127)
+        mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
+
+        # Exemple de masque spécifique
+        #mask_sand[120, 3] = True
+
+        self.grid_type[mask_sand] = self.type["SAND"]
+        self.grid_type[mask_water] = self.type["WATER"]
+        self.grid_type[mask_wood] = self.type["WOOD"]
+        self.grid_type[mask_fire] = self.type["FIRE"]
+        self.grid_type[mask_stone] = self.type["STONE"]
+        self.grid_type[mask_explo] = self.type["EXPLO"]
+
+        self.grid_color[mask_sand] = self.random_color(mask_sand.sum(), (150, 200), (75, 140), (0, 0),255)
+        self.grid_color[mask_water] = self.random_color(mask_water.sum(), (0, 20), (0, 20), (200, 255),255)
+        self.grid_color[mask_wood] = self.random_color(mask_wood.sum(), (78, 88), (31, 41), (0, 0),255)
+        self.grid_color[mask_fire] = self.random_color(mask_fire.sum(), (180, 255), (0, 20), (0, 0),255)
+        self.grid_color[mask_stone] = self.random_color(mask_stone.sum(), (60, 75), (55, 65), (50, 60),255)
+        self.grid_color[mask_explo] = self.random_color(mask_explo.sum(), (120, 160), (120, 160), (120, 160),127)
+
+        self.temp[mask_sand] = 60
+        self.temp[mask_water] = -255
+        self.temp[mask_fire] = 255
+        self.temp[mask_wood] = 255
+        self.temp[mask_stone] = 30
+        self.temp[mask_explo] = 255
+
+    def random_color(self, num, r_range, g_range, b_range,transparence):
+        r = np.random.randint(r_range[0], r_range[1]+1, num, dtype=np.uint8)
+        g = np.random.randint(g_range[0], g_range[1]+1, num, dtype=np.uint8)
+        b = np.random.randint(b_range[0], b_range[1]+1, num, dtype=np.uint8)
+        a = np.full(num, transparence, dtype=np.uint8)
+        return np.stack([r, g, b, a], axis=1)
+    
+    def return_cells_delta(self, client, delta):
+        # 1. Préparer les paramètres (comme avant)
+        cells_of_columns = []
+        signex = 1
+        signey = 1
+
+        client_x = client.convert_to_base(client.pos_x)
+        client_y = client.convert_to_base(client.pos_y)
+
+        if delta[0] < 0:
+            signex = -1
+        #delta[0]+=signex
+
+        if delta[1] < 0:
+            signey = -1
+        #delta[1]+=signey
+
+        # 2. Collecter les listes de colonnes (pas de concaténation ici !)
+        for i in range((delta[0]+signex) * signex):
+            deltax = (-i + client.screen_size[0] // 2 -1) * signex #On fais -i car le player a deja bougé donc sa pos_x a deja change !
+            deltay = -(client.screen_size[1]//2)
+            if signey==-1:
+                deltay+=delta[1]
+            
+            # Nous stockons la liste retournée dans notre liste de listes
+            #length = min(client.screen_size[1]+delta[1]*signey,self.height-client_y)
+            cells_of_columns.append(
+                njitBoucle.return_column(client_x + deltax, 
+                                        client_y + deltay,
+                                        client.screen_size[1]+delta[1]*signey, 
+                                        self.grid_color)
+            )
+
+        # 2. Collecter les listes de colonnes (pas de concaténation ici !)
+        for i in range((delta[1]+signey) * signey):
+
+            deltax = -(client.screen_size[0] // 2)
+            deltay = (-i + client.screen_size[1]//2)*signey #On fais -i car le player a deja bougé donc sa pos_x a deja change !
+            if signex==-1:
+                deltax+=delta[0]
+            
+            # Nous stockons la liste retournée dans notre liste de listes
+            length = min(client.screen_size[0]+delta[0]*signex,self.width-client_x)
+            cells_of_columns.append(
+                njitBoucle.return_raw(client_x + deltax, 
+                                        client_y + deltay,
+                                        length, 
+                                        self.grid_color)
+            )
+
+        # 3. Aplatir toutes les listes collectées en une seule passe
+        # La compréhension de liste est TRES rapide pour cela.
+        cells = [cell for sublist in cells_of_columns for cell in sublist]
+        # 4. Retour
+        return cells
+
+    def return_all(self,lClient):
+        cells = []
+        for i,client in enumerate(lClient.values()):
+
+            client_x = client.convert_to_base(client.pos_x)
+            client_y = client.convert_to_base(client.pos_y)
+
+            cells.append([])
+            for column in range (client.screen_size[0]):
+                deltax = column-(client.screen_size[0]//2)
+                deltay = -(client.screen_size[1]//2)
+                cells[i]+=(njitBoucle.return_column(client_x+deltax,client_y+deltay,client.screen_size[1],self.grid_color))
+
+        return cells
+    
+    def return_colomn(self,client,nbr_column):
+
+        client_x = client.convert_to_base(client.pos_x)
+        client_y = client.convert_to_base(client.pos_y)
+
+        cells = []
+        deltay = -(client.screen_size[1]//2)
+
+        s = 1
+        
+        if nbr_column < 0 :
+            s = -1
+            nbr_column = -nbr_column
+
+        for column in range (abs(nbr_column)):
+
+            deltax = s*client.screen_size[0]// + s*column
+            cells +=(njitBoucle.return_column(client_x+deltax,client_y+deltay,client.screen_size[1],self.grid_color))
+
+
+    def return_chg(self,lClient):
+        """Retourne les chg de pixels"""
+
+        self.flow_water()
+
+        self.visible = njitBoucle.return_cell_update(self.ToUpdate,lClient.values(),self.height,self.width)
+        #return([[0],])
+        ys , xs = njitBoucle.return_x_y(self.visible)
+
+        moved_cells = njitBoucle.move_fast(
+            self.ToUpdate,
+            self.visible,
+            xs,ys,
+            self.grid_type,
+            self.r_or_l,
+            self.grid_color,
+            self.temp,
+        ) 
+
+        return moved_cells
+    
+    def flow_water(self):
+        #Robinet
+        self.grid_color[170,740] = (np.random.randint(0,20),np.random.randint(0,20),np.random.randint(200,255),255)
+        self.grid_type[170,740] = self.type["WATER"]
+        self.temp[170,740] = -255
+        self.ToUpdate[170,740] = True

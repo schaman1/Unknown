@@ -132,7 +132,7 @@ class Network_handler :
         if id_msg == 3 :
 
             dep = struct.unpack("!B", data[1:2])[0]
-            self.server.lClient[sender].move_from_key(dep,self.server.map_cell.grid_type,self.server.map_cell.dur,self.server.map_cell.vide,self.server.map_cell.liquid)
+            self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
 
         elif id_msg == 4 :
             angle = struct.unpack("!H",data[1:3])[0]

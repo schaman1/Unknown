@@ -35,12 +35,17 @@ class Mob:
         """Retourne le nbr en 1 pour 100"""
         return nbr*self.base_movement
 
-    def gravity_effect(self,grid_cell,cell_dur):
+    def gravity_effect(self):
+
+        #return
 
         if self.vitesse_y < 5*self.base_movement:
             self.vitesse_y += self.acceleration*self.gravity_power
 
-    def collision_y(self,grid_cell,cell_dur):
+    def collision_y(self,map):
+
+        #self.pos_y+=self.vitesse_y
+        #return
 
         pos_before = self.pos_y
 
@@ -53,7 +58,7 @@ class Mob:
 
             for j in range(-self.half_width,self.half_width+1,self.base_movement): #+1 car doit compter le dernier carreau
 
-                if self.touch_wall((self.half_height+self.base_movement)*s,j,grid_cell,cell_dur) :
+                if self.touch_wall((self.half_height+self.base_movement)*s,j,map) :
 
                     dist = self.base_movement - (self.pos_y*s)%self.base_movement -1
 
@@ -74,7 +79,10 @@ class Mob:
 
         return self.pos_y - pos_before
 
-    def collision_x(self,grid_cell,cell_dur):
+    def collision_x(self,map):
+
+        #self.pos_x+=self.vitesse_x
+        #return
 
         pos_before = self.pos_x
 
@@ -86,7 +94,7 @@ class Mob:
             dist = self.base_movement
             for j in range(-self.half_height,self.half_height+1,self.base_movement): #+1 car doit compter le dernier
 
-                if self.touch_wall(j,(self.half_width+self.base_movement)*s,grid_cell,cell_dur) :
+                if self.touch_wall(j,(self.half_width+self.base_movement)*s,map) :
 
                     dist = (self.base_movement - (self.pos_x*s)%self.base_movement -1)
 
@@ -105,12 +113,13 @@ class Mob:
 
         return self.pos_x-pos_before
         
-    def touch_wall(self,i,j,grid_cell,cell_dur):
-        return self.is_type(grid_cell[self.convert_to_base(self.pos_y+i-self.half_height),self.convert_to_base(self.pos_x+j)],cell_dur)
+    def touch_wall(self,i,j,map):
+        return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i-self.half_height),self.convert_to_base(self.pos_x+j)),map.dur)
     
-    def touch_ground(self,grid_cell,cell_dur):
+    def touch_ground(self,map):
         j = -self.half_width
-        while j<self.half_width+1 and not self.touch_wall(self.half_height+self.base_movement,j,grid_cell,cell_dur) :
+
+        while j<self.half_width+1 and not self.touch_wall(self.half_height+self.base_movement,j,map) :
             j+=self.base_movement
 
         if j>self.half_width :
