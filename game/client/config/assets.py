@@ -6,6 +6,23 @@ MAP_SEEN = resource_path("assets/background/entities/cell.png")
 MAP_UNSEEN = resource_path("assets/background/entities/monster.png")
 BG_WAITING = resource_path("assets/background/global/back.png")
 
+BG_MAP_COLORED =[]
+BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
+BLACK_LAYER_COLORED = resource_path("assets/background/map/X2Y1.png")
+
+len_x_map = 3
+len_y_map = 3
+
+for y in range(3):
+
+    col = []
+
+    for x in range(3):
+
+        col.append(resource_path(f"assets/background/map/X{x}Y{y}.png"))
+
+    BG_MAP_COLORED.append(col)
+
 BTN = resource_path("assets/ui/buttons/btn_default.png")
 BTN_HOVER = resource_path("assets/ui/buttons/btn_hover.png")
 

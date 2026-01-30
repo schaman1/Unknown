@@ -1,20 +1,16 @@
 import pygame
 from serv.domain.mob.monster import Skeleton
 
+
 class Read_monster :
 
-    def __init__(self,filename_map_monster,base_movement,size_chunk,cell_dur,cell_vide,cell_liquid) :
+    def __init__(self,filename_map_monster,base_movement,size_chunk) :
 
         self.dic_monster = {}
         self.map_monster = pygame.image.load(filename_map_monster).convert()
         self.width, self.height = self.map_monster.get_size()
         self.size_chunk = size_chunk
         self.base_movement = base_movement
-
-        self.cell_dur = cell_dur
-        self.cell_vide = cell_vide
-        self.cell_liquid = cell_liquid
-
 
         self.init_dic_monster()
 
@@ -51,7 +47,7 @@ class Read_monster :
                         self.dic_monster[x//self.size_chunk*100+y//self.size_chunk].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
 
 
-    def return_chg(self, lInfoClient, cells_arr) :
+    def return_chg(self, lInfoClient, map) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""
 
         list_modif = []
@@ -68,7 +64,7 @@ class Read_monster :
 
                     for monster in self.dic_monster[chunk] :
 
-                        monster.update(cells_arr,self.cell_dur,self.cell_vide,self.cell_liquid,lInfoClient)
+                        monster.update(map,lInfoClient)
 
                         for client_idx in liste_client_see :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y))

@@ -4,6 +4,7 @@ import pygame.surfarray as surfarray
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.projectile.projectile_manager import ProjectileManager
+from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 
 from client.config import assets
@@ -17,26 +18,21 @@ class Game :
 
         self.cell_size = cell_size
         self.center = (screenSize[0]//2,screenSize[1]//2)
-        self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
+        
+        #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
+        self.canva = Map(screenSize,cell_size)
+        
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
         self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = world.NBR_CELL_CAN_SEE)
 
-        # pré-calcul des rects pour chaque cellule
-        self.rect_grid = [
-            #[pygame.Rect(x * 1, y * 1, 1, 1) #Pour voir toute la map se dessiner
-            [pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
-             for x in range(self.canva_size[0])]
-            for y in range(self.canva_size[1])
-        ]
-
         self.monsters = Monster_all(cell_size,self.canva_size)
 
         self.player_all = Player_all(cell_size)
 
-        self.map = Map(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
+        self.mini_map = MiniMap(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
         self.projectiles = ProjectileManager(cell_size)
 
@@ -52,19 +48,19 @@ class Game :
 
         return True #If end animation else return False
 
-    def update_canva(self,data):
-        """Reçoit les données l du serveur et appelle update"""
-
-        rgb = surfarray.pixels3d(self.canva)
-        alpha = surfarray.pixels_alpha(self.canva)
-
-        for x, y, r, g, b, a in struct.iter_unpack("!hhBBBB", data[3:]):
-            px = x * self.cell_size
-            py = y * self.cell_size
-            rgb[px:px+self.cell_size, py:py+self.cell_size] = (r, g, b)
-            alpha[px:px+self.cell_size, py:py+self.cell_size] = a
-
-        del rgb, alpha
+    #def update_canva(self,data):
+    #    """Reçoit les données l du serveur et appelle update"""
+#
+    #    rgb = surfarray.pixels3d(self.canva)
+    #    alpha = surfarray.pixels_alpha(self.canva)
+#
+    #    for x, y, r, g, b, a in struct.iter_unpack("!hhBBBB", data[3:]):
+    #        px = x * self.cell_size
+    #        py = y * self.cell_size
+    #        rgb[px:px+self.cell_size, py:py+self.cell_size] = (r, g, b)
+    #        alpha[px:px+self.cell_size, py:py+self.cell_size] = a
+#
+    #    del rgb, alpha
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -105,7 +101,7 @@ class Game :
         screen.blit(self.bg,(0,0))
         #screen.fill((0,0,0))
 
-        screen.blit(self.canva, (x, y))
+        self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y, mouse_pos)
@@ -114,7 +110,7 @@ class Game :
         #screen.blit(self.light,(0,0))
         pos = self.player_all.return_pos()
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
-        self.map.draw_map(screen,pos)
+        self.mini_map.draw_map(screen,pos)
         
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement

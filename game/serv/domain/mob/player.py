@@ -47,9 +47,9 @@ class Player(Mob) :
         self.screen_size[1] = screen_size[1]//world.CELL_SIZE + world.PADDING_CANVA
 
 
-    def return_delta_vitesse(self,grid_cell,cell_dur):
+    def return_delta_vitesse(self,map):
 
-        self.gravity_effect(grid_cell,cell_dur)
+        self.gravity_effect()
         #print(self.pos_x,self.pos_y)
 
         if self.convert_to_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_to_base(self.vitesse_x+self.pos_x)<0:
@@ -58,9 +58,9 @@ class Player(Mob) :
         if self.convert_to_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y+self.pos_y)<0:
             self.vitesse_y=0
 
-        deltax = self.collision_x(grid_cell,cell_dur)
+        deltax = self.collision_x(map)
 
-        deltay = self.collision_y(grid_cell,cell_dur)
+        deltay = self.collision_y(map)
 
 
         #print(self.pos_x,self.vitesse_x,self.convert_to_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
@@ -75,19 +75,21 @@ class Player(Mob) :
         elif self.vitesse_x>0:
             self.vitesse_x-=self.acceleration*self.acceleration_x
 
-    def update_pos(self,grid_cell,dur,vide,liquid):
+    def update_pos(self,map):
 
-        delta = self.return_delta_vitesse(grid_cell,dur)
+        delta = self.return_delta_vitesse(map)
 
         self.update_vitesse()
 
+        #print(self.pos_x,self.pos_y)
+
         return delta
         
-    def move_from_key(self,delta,cells_arr = None,cell_dur= None,cell_vide= None,cell_liquid= None): 
+    def move_from_key(self,delta,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
         if delta==0:
-            self.move_up(cells_arr,cell_dur)
+            self.move_up(map)
 
         elif delta==1:
             self.move_down()
@@ -103,9 +105,9 @@ class Player(Mob) :
         #self.pos_y += delta_collision[1] 
         #return delta_collision
 
-    def move_up(self,grid_cell,cell_dur):
+    def move_up(self,map):
         #self.pos_y-=1
-        if self.touch_ground(grid_cell,cell_dur):
+        if self.touch_ground(map):
             self.vitesse_y=-self.gravity_power*self.acceleration_y
 
     def move_down(self):

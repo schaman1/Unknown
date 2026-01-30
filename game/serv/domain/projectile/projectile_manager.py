@@ -27,7 +27,7 @@ class ProjectileManager :
         self.next_id = (self.next_id+1) % 65536 #Maximum pour uint16
         return self.next_id
 
-    def return_chg(self,lClient,dt,grid_type,cell_dur):
+    def return_chg(self,lClient,dt,map):
 
         l = len(lClient)
 
@@ -43,9 +43,9 @@ class ProjectileManager :
 
         for i in range(len(self.l_Projectile)-1,-1,-1) :
 
-            self.l_Projectile[i].move(dt,grid_type,cell_dur)
+            self.l_Projectile[i].move(dt,map)
 
-            if self.l_Projectile[i].should_destroy(grid_type,cell_dur) :
+            if self.l_Projectile[i].should_destroy(map) :
 
                 lProjectiles = self.l_Projectile[i].check_if_projectile_spawn_when_die()
                 self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)

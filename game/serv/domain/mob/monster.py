@@ -38,20 +38,10 @@ class Monster(Mob):
         if target is None:
             return None, float("inf")
         return target, best / self.base_movement
-    
-    def is_type(self, type_cell, type_check):
-        """
-        Vérifie si la cellule est du type spécifié.
-        ex: type_check = cell_dur (= [2,5]) -> dur si 2 <= type_cell <= 5
-        (DÉPLACÉ depuis Skeleton pour que tous les monstres puissent l'utiliser)
-        """
-        if type_check[0] <= type_cell <= type_check[1]:
-           return True
-        return False
 
     # --- Boucle de comportement basique pour tous les monstres ---
 
-    def update(self, cells_arr, cell_dur, cell_vide, cell_liquid, lPlayer):
+    def update(self, map,lPlayer):
         
         if not self.is_alive():
             self.state = "dead"
@@ -168,23 +158,23 @@ class Monster(Mob):
         return moved
     
     # Vérifie si le monstre chevauche une cellule dure
-    def overlaps_dur(self, grid_cell, cell_dur):
+    def overlaps_dur(self,map):
         i = -self.half_height
         while i <= self.half_height:
             j = -self.half_width
             while j <= self.half_width:
-                if self.touch_wall(i, j, grid_cell, cell_dur):
+                if self.touch_wall(i, j,map):
                     return True
                 j += self.base_movement
             i += self.base_movement
         return False
 
     # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
-    def try_step_up_1(self, grid_cell, cell_dur, intended_vx):
+    def try_step_up_1(self,map, intended_vx):
         if intended_vx == 0:
             return 0
 
-        if not self.touch_ground(grid_cell, cell_dur):
+        if not self.touch_ground(map):
             return 0
 
         old_x = self.pos_x
@@ -192,13 +182,13 @@ class Monster(Mob):
         old_vx = self.vitesse_x
 
         self.pos_y = old_y - self.base_movement
-        if self.overlaps_dur(grid_cell, cell_dur):
+        if self.overlaps_dur(map):
             self.pos_x = old_x
             self.pos_y = old_y
             self.vitesse_x = old_vx
             return 0
         self.vitesse_x = intended_vx
-        moved = self.collision_x(grid_cell, cell_dur)
+        moved = self.collision_x(map)
 
         if moved == 0:
             self.pos_x = old_x
@@ -231,15 +221,15 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, cells_arr, cell_dur, cell_vide, cell_liquid, lPlayer):
+    def update(self, map, lPlayer):
         
-        super().update(cells_arr, cell_dur, cell_vide, cell_liquid, lPlayer)
+        super().update(map,lPlayer)
        # --- Deplacement selon l'état ---
         if self.state == "idle":
-            self.idle_behavior(cells_arr, cell_dur, cell_vide, cell_liquid)
+            self.idle_behavior(map)
             
         elif self.state == "moving":
-            self.moving_behavior(lPlayer, cells_arr, cell_dur, cell_vide, cell_liquid)
+            self.moving_behavior(lPlayer, map)
             
         elif self.state == "attacking":
             pass
@@ -265,7 +255,7 @@ class Skeleton(Monster):
         #--- Comportements spécifiques ---
         
     #comportement en mode idle : patrouille entre deux points fixes
-    def idle_behavior(self, cells_arr, cell_dur, cell_vide, cell_liquid):
+    def idle_behavior(self, map):
         intended_vx = self.direction * self.speed_idle
         if intended_vx == 0:
             intended_vx = self.direction * max(1, self.base_movement // 8)
@@ -274,20 +264,20 @@ class Skeleton(Monster):
             self.direction *= -1
             intended_vx = self.direction * max(1, self.base_movement // 8)
 
-        self.gravity_effect(cells_arr, cell_dur)
+        self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(cells_arr, cell_dur)
-        self.collision_y(cells_arr, cell_dur)
+        moved_x = self.collision_x(map)
+        self.collision_y(map)
 
         if moved_x == 0 and intended_vx != 0:
-            stepped = self.try_step_up_1(cells_arr, cell_dur, intended_vx)
+            stepped = self.try_step_up_1(map, intended_vx)
             if stepped != 0:
                 self.step_lock = 4
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(cells_arr, cell_dur)
-            self.collision_y(cells_arr, cell_dur)
+                self.collision_x(map)
+            self.collision_y(map)
 
         if moved_x == 0:
             self.idle_stuck += 1
@@ -309,7 +299,7 @@ class Skeleton(Monster):
                 self.direction *= -1
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
-    def moving_behavior(self, lPlayer, cells_arr, cell_dur, cell_vide, cell_liquid):
+    def moving_behavior(self, lPlayer, map):
         target, _ = self.distance_to_nearest_player(lPlayer)
         if target is None:
             return
@@ -320,20 +310,20 @@ class Skeleton(Monster):
         else:
             intended_vx = self.speed_max if dx > 0 else -self.speed_max
 
-        self.gravity_effect(cells_arr, cell_dur)
+        self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(cells_arr, cell_dur)
-        self.collision_y(cells_arr, cell_dur)
+        moved_x = self.collision_x(map)
+        self.collision_y(map)
         
         if moved_x == 0 and intended_vx != 0:
-            stepped = self.try_step_up_1(cells_arr, cell_dur, intended_vx)
+            stepped = self.try_step_up_1(map, intended_vx)
             if stepped != 0:
                 self.step_lock = 4
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(cells_arr, cell_dur)
-            self.collision_y(cells_arr, cell_dur)
+                self.collision_x(map)
+            self.collision_y(map)
         
         if self.step_lock > 0:
             self.step_lock -= 1
