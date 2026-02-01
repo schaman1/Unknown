@@ -1,8 +1,9 @@
-import pygame, threading, time
+import pygame, threading
 from client.core.state import State
 from client.core.client import Client
 from serv.core.server_game import Server_game
-from shared.constants import fps,world
+from shared.constants import fps
+from client.config import size_display as size
 
 #from C_inGame import InGame
 #from C_card import Card
@@ -14,6 +15,7 @@ class Main:
         # Set up the display (width, height)
         self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.RESIZABLE,pygame.FULLSCREEN | pygame.SCALED)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
+        self.set_CELL_SIZE(self.screenSize)
         
         #ecriture
         self.font = pygame.font.SysFont(None, 48)
@@ -28,8 +30,10 @@ class Main:
         self.objClicked = None
 
         self.client = Client(self.font,self.screen,self)
-        self.state = State(self.screen,self.screenSize,self.font,self.client,world.CELL_SIZE)
+        self.state = State(self.screen,self.screenSize,self.font,self.client,size.CELL_SIZE)
 
+    def set_CELL_SIZE(self,screen_size):
+        size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
 
     def run(self):
         """Ce qui est run à chaque itérations"""

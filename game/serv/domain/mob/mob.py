@@ -6,26 +6,30 @@ class Mob:
         self.pos_x = pos[0]
         self.pos_y = pos[1]
 
-
         self.screen_global_size = world.BG_SIZE_SERVER
 
-        self.acceleration = 1
-        self.gravity_power = 10
-        self.acceleration_x = 10
-        self.acceleration_y = 20
-
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
+        
+        self.acceleration = 1
+        self.gravity_power = 200
+        self.acceleration_x = 500
+        self.acceleration_y = 80 * self.base_movement
+        self.vitesse_x = 0
+        self.vitesse_y = 0
         
         self.width = (width-2)*self.base_movement
         self.half_width = self.width//2
         self.height = height*self.base_movement
         self.half_height = self.height//2
 
-        self.vitesse_x = 0
-        self.vitesse_y = 0
-
-        self.hp = hp
+        self.life = hp
+        self.max_life = hp
+        self.send_new_life = False
         self.id = id
+
+    def send_life(self):
+        self.send_new_life = False
+        return self.life
 
     def convert_to_base(self,nbr):
         """Retourne le nbr en 100 pour 1"""
@@ -39,10 +43,10 @@ class Mob:
 
         #return
 
-        if self.vitesse_y < 5*self.base_movement:
+        if self.vitesse_y < 500*self.base_movement:
             self.vitesse_y += self.acceleration*self.gravity_power
 
-    def collision_y(self,map):
+    def collision_y(self,map,dt):
 
         #self.pos_y+=self.vitesse_y
         #return
@@ -50,7 +54,7 @@ class Mob:
         pos_before = self.pos_y
 
         s = self.return_signe(self.vitesse_y)
-        remaining = self.vitesse_y*s
+        remaining = int(self.vitesse_y*s*dt)
 
         while remaining > 0 :
 
@@ -79,15 +83,15 @@ class Mob:
 
         return self.pos_y - pos_before
 
-    def collision_x(self,map):
+    def collision_x(self,map,dt):
 
         #self.pos_x+=self.vitesse_x
         #return
-
+        
         pos_before = self.pos_x
 
         s = self.return_signe(self.vitesse_x)
-        remaining = self.vitesse_x*s
+        remaining = int(self.vitesse_x*s*dt)
 
         while remaining > 0 :
 

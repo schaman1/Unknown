@@ -16,6 +16,7 @@ class Game :
         self.base_movement = world.RATIO
 
         self.cell_size = cell_size
+        self.scren_size = screenSize
         self.center = (screenSize[0]//2,screenSize[1]//2)
         
         #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
@@ -92,6 +93,9 @@ class Game :
 
         self.projectiles.blit_projectiles_explosions(screen,x,y,dt)
 
+    def blit_utils(self,screen,screen_size):
+        self.player_all.blit_life(screen,screen_size)
+
     def draw(self,screen,x,y,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
 
@@ -107,6 +111,9 @@ class Game :
         self.blit_projectiles_explosions(screen,x,y,dt)
 
         screen.blit(self.light,(0,0))
+
+        self.blit_utils(screen,self.scren_size)
+
         pos = self.player_all.return_pos()
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
         self.mini_map.draw_map(screen,pos)

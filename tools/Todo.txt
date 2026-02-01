@@ -1,4 +1,1 @@
 change type_cell + do new type_cell
-
-Change_size_player
-

@@ -15,12 +15,15 @@ class Player_all :
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
 
         if is_you == 1:
-            self.dic_players[id] = Player_you(self.cell_size,self.spawn_point,pseudo,is_you)
+            self.dic_players[id] = Player_you(self.cell_size,self.spawn_point,pseudo,True)
             self.client_id = id
             self.me = self.dic_players[id]
 
         else :
-            self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,is_you)
+            self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,False)
+
+    def blit_life(self,screen,screen_size):
+        self.dic_players[self.client_id].draw_life(screen,screen_size)
 
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y

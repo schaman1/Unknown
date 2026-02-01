@@ -14,6 +14,9 @@ class Player_you(Mob) :
         self.is_you = is_you
         self.frame_perso_left = []
         self.frame_perso_right = []
+
+        self.padding_life = 0.02
+
         #self.frame_weapon = []
         self.frame = 0
         self.frame_multiplier = 0
@@ -49,7 +52,7 @@ class Player_you(Mob) :
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
         pos = self.calculate_pos_blit(xscreen,yscreen)
-        self.angle_weapon = self.get_angle(pos, mouse_pos)
+        self.angle_weapon = self.get_angle(center, mouse_pos)
         #self.angle = self.get_angle(center, mouse_pos)
         
         perso_right = self.frame_perso_right[self.frame%4]
@@ -70,6 +73,22 @@ class Player_you(Mob) :
             pygame.Rect((self.pos_x*self.cell_size)//100+xscreen, self.pos_y*self.cell_size//100+yscreen, self.cell_size, self.cell_size)
         )
 
+    def draw_life(self,screen,screen_size):
+
+        self.padding_life
+
+        pygame.draw.rect( #Pour voir où le perso est en temps reel
+            screen,
+            (14,16,14),  # couleur (blanc)
+            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03),
+        )
+
+        pygame.draw.rect( #Pour voir où le perso est en temps reel
+            screen,
+            (147,165,149),  # couleur (blanc)
+            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
+        )
+
     def draw_weapon(self,screen,angle,pos_draw) :
 
         self.weapons.draw_weapon(screen,angle,pos_draw, self.frame)
@@ -87,10 +106,6 @@ class Player_you(Mob) :
     def move(self,delta):
         self.pos_x = delta[0]
         self.pos_y = delta[1]
-
-
-
-
 
 class Player_not_you(Mob) :
 
@@ -128,6 +143,8 @@ class Player_not_you(Mob) :
 
     def draw(self,screen,xscreen,yscreen):
         
+        self.update_angle()
+
         pos = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle = self.get_angle(center, mouse_pos)
         
@@ -144,7 +161,6 @@ class Player_not_you(Mob) :
 
         self.update_frame()
 
-        self.update_angle()
 
     def update_angle(self):
         self.angle+=1

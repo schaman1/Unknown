@@ -40,19 +40,18 @@ class Server_game(Server) :
                 self.send_data_update(result_projectile[2],11)
 
             self.handle_clients()
-            self.handle_player()
+            self.handle_player(dt)
 
-            fps = self.fpsClock.get_fps()
             #if fps < 30 : #Affiche le fps quand c'est critique
             #    print(fps)
 
         print("End boucle loop_server_game")
 
-    def handle_player(self): #Player = key/input/le nain a l'écran quoi pas les msg
+    def handle_player(self,dt): #Player = key/input/le nain a l'écran quoi pas les msg
 
         for socket in self.lClient.keys():
 
-            delta = self.lClient[socket].update_pos(self.map_cell)
+            delta = self.lClient[socket].update_pos(self.map_cell,dt)
             
             #cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
 
@@ -61,6 +60,11 @@ class Server_game(Server) :
             #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
             if delta != (0,0):
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
+
+            if self.lClient[socket].send_new_life == True :
+
+                life = self.lClient[socket].send_life()
+                self.send_data_all((12,self.lClient[socket].id,life))
             
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner

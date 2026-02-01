@@ -25,6 +25,9 @@ class Read_map:
 
     def return_type(self,y,x):
 
+        #y = int(y)
+        #x = int(x)
+
         chunk_y = y//self.height_chunk
         chunk_x = x//self.width_chunk
 

@@ -52,6 +52,9 @@ class Projectile :
 
         #self.gravity(dt)
 
+        if (self.pos[0]+self.vx*dt<0 or self.pos[1]+self.vy < 0):
+            self.is_dead = True
+
     # je t'aime
 
         if self.is_dead is False:
