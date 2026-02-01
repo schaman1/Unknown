@@ -1,5 +1,4 @@
-import pygame,struct
-import pygame.surfarray as surfarray
+import pygame
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
@@ -107,7 +106,7 @@ class Game :
         self.blit_players(screen,x,y, mouse_pos)
         self.blit_projectiles_explosions(screen,x,y,dt)
 
-        #screen.blit(self.light,(0,0))
+        screen.blit(self.light,(0,0))
         pos = self.player_all.return_pos()
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
         self.mini_map.draw_map(screen,pos)

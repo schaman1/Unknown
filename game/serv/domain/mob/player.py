@@ -107,7 +107,7 @@ class Player(Mob) :
 
     def move_up(self,map):
         #self.pos_y-=1
-        if self.touch_ground(map):
+        if self.touch_ground(map) and self.vitesse_y ==0:
             self.vitesse_y=-self.gravity_power*self.acceleration_y
 
     def move_down(self):

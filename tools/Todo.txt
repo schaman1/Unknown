@@ -1,3 +1,4 @@
-change explo en lava
+change type_cell + do new type_cell
 
-remove id = 3 en envoi + client dans le draw
+Change_size_player
+
