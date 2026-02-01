@@ -2,7 +2,6 @@ import pygame
 import numpy as np
 from serv.config import assets
 from shared.constants.world import SCALE_BLOC
-import serv.optimization.njitOpti.njitBoucle as njitBoucle
 
 class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""

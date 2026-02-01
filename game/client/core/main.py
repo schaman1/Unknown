@@ -50,7 +50,7 @@ class Main:
 
                     if self.state.mod == "game":
                         if event.key == pygame.K_p :
-                            self.state.game.map.draw = not self.state.game.map.draw
+                            self.state.game.mini_map.draw = not self.state.game.mini_map.draw
                         
                     elif self.objClicked != None:
 

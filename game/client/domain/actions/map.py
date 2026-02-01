@@ -12,7 +12,7 @@ class Map:
         self.cell_size = cell_size
 
         self.width_chunk,self.height_chunk = self.get_size()
-        print(self.width_chunk,self.height_chunk,"Width, Height client")
+        self.chunk_x,self.chunk_y = None,None
 
         self.base_movement = world.RATIO
 
@@ -32,26 +32,21 @@ class Map:
 
     def draw_map(self,x,y,pos_player,screen):
 
-        chunk_x,delta_x,chunk_y,delta_y = self.return_chunk_from_pos(pos_player)
+        self.update_map_load(pos_player)
+
+        chunk_x,_,chunk_y,_ = self.return_chunk_from_pos(pos_player)
 
         for i in range(-1,2,1):
 
             for j in range(-1,2,1):
 
-                if j+chunk_x<0 or i+chunk_y<0:
+                try :
+                    image = self.image_to_blit[i+1][j+1]
+
+                except :
                     image = self.black_image_colored
-                
-                else :
-
-                    try :
-                        image = self.image_to_blit[i+chunk_y][j+chunk_x]
-
-                    except :
-                        image = self.black_image_colored
 
                 x_blit,y_blit = self.calculate_pos_blit(x,y,(chunk_x+j)*self.width_chunk,(chunk_y+i)*self.height_chunk)
-
-                #print(j+chunk_x,j,chunk_x)
 
                 screen.blit(image,(x_blit,y_blit))
 
@@ -78,7 +73,9 @@ class Map:
 
     def init_images(self,pos):
 
-        chunk_x,_,chunk_y,_ = self.return_chunk_from_pos(pos)
+        self.image_to_blit.clear()
+
+        self.chunk_x,_,self.chunk_y,_ = self.return_chunk_from_pos(pos)
 
         for y in range(-1,2,1):
 
@@ -86,22 +83,33 @@ class Map:
 
             for x in range(-1,2,1):
 
-                try :
-
-                    image = self.images[y+chunk_y+1][x+chunk_x+1]
-                    image = pygame.image.load(image).convert_alpha()
-                    image = pygame.transform.scale(image,(self.width_chunk*self.cell_size,self.height_chunk*self.cell_size))
-
-                except :
-
+                if y+self.chunk_y<0 or x + self.chunk_x < 0 :
                     image = self.black_image_colored
+
+                else :
+
+                    try :
+
+                        #print(y+self.chunk_y+1,x+self.chunk_x+1)
+
+                        image = self.images[y+self.chunk_y][x+self.chunk_x]
+                        image = pygame.image.load(image).convert_alpha()
+                        image = pygame.transform.scale(image,(self.width_chunk*self.cell_size,self.height_chunk*self.cell_size))
+
+                    except :
+
+                        image = self.black_image_colored
                     
                 col.append(image)
 
             self.image_to_blit.append(col)
 
     def update_map_load(self,pos):
-        pass
+        chunk_x_now,_,chunk_y_now,_ = self.return_chunk_from_pos(pos)
+
+        if self.chunk_x != chunk_x_now or self.chunk_y != chunk_y_now :
+
+            self.init_images(pos)
 
 
 

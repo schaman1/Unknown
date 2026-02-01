@@ -131,8 +131,8 @@ class Client:
             elif msg_id == 2:
                 msg_size = 1
 
-            elif msg_id == 3:
-                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
+            #elif msg_id == 3:
+            #    msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
 
             elif msg_id == 4:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*14
@@ -177,9 +177,9 @@ class Client:
         self.id = "Coming soon"
         self.main.state.game.player_all.dic_players.clear()
 
-    def update_canva(self,l):
-        """Envoie a C_game pour update le canva qui sera blit plus tard"""
-        self.main.state.game.update_canva(l)
+    #def update_canva(self,l):
+    #    """Envoie a C_game pour update le canva qui sera blit plus tard"""
+    #    self.main.state.game.update_canva(l)
 
     def update_monster(self,l):
         """Envoie a C_game pour update les monstres qui seront blit plus tard"""
@@ -191,16 +191,16 @@ class Client:
 
         # Réception de la réponse
 
-        if id == 3 :
-            #cells = struct.iter_unpack("!hhBBBB", data[3:])
+        #if id == 3 :
+        #    #cells = struct.iter_unpack("!hhBBBB", data[3:])
+#
+        #        #struct.unpack("!hhBBBB", data[3+i*8 : 11+i*8])
+        #        #for i in range((size-3)//8)
+        #    self.update_canva(
+        #        data
+        #    )
 
-                #struct.unpack("!hhBBBB", data[3+i*8 : 11+i*8])
-                #for i in range((size-3)//8)
-            self.update_canva(
-                data
-            )
-
-        elif id == 4 : #monsters update
+        if id == 4 : #monsters update
             self.update_monster(
                 struct.unpack("!HLLL", data[3+i*14 : 17+i*14])
                 for i in range((size-3)//14)
