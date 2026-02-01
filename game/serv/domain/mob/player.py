@@ -6,7 +6,7 @@ class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire) et les sauts (vitesse verticale négative)'''
 
-    def __init__(self,pos,id,host = False, hp = 250, damage = 25, vitesse_x=1, vitesse_y=1): 
+    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1): 
 
         super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT)
 
@@ -14,9 +14,8 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 1*self.base_movement
+        self.vitesse_max = 50*self.base_movement
 
-        self.screen_size = [None,None]
         self.size_x = 2
 
         self.weapons = WeaponManager()
@@ -42,25 +41,21 @@ class Player(Mob) :
         else :
             return []
 
-    def set_screen_size(self,screen_size):
-        self.screen_size[0] = screen_size[0]//world.CELL_SIZE + world.PADDING_CANVA
-        self.screen_size[1] = screen_size[1]//world.CELL_SIZE + world.PADDING_CANVA
 
-
-    def return_delta_vitesse(self,map):
+    def return_delta_vitesse(self,map,dt):
 
         self.gravity_effect()
         #print(self.pos_x,self.pos_y)
 
-        if self.convert_to_base(self.vitesse_x+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_to_base(self.vitesse_x+self.pos_x)<0:
+        if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
             self.vitesse_x=0
 
-        if self.convert_to_base(self.vitesse_y+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y+self.pos_y)<0:
+        if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
             self.vitesse_y=0
 
-        deltax = self.collision_x(map)
+        deltax = self.collision_x(map,dt)
 
-        deltay = self.collision_y(map)
+        deltay = self.collision_y(map,dt)
 
 
         #print(self.pos_x,self.vitesse_x,self.convert_to_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
@@ -75,11 +70,13 @@ class Player(Mob) :
         elif self.vitesse_x>0:
             self.vitesse_x-=self.acceleration*self.acceleration_x
 
-    def update_pos(self,map):
+    def update_pos(self,map,dt):
 
-        delta = self.return_delta_vitesse(map)
+        delta = self.return_delta_vitesse(map,dt)
 
         self.update_vitesse()
+
+        self.take_damage(1)
 
         #print(self.pos_x,self.pos_y)
 
@@ -107,8 +104,8 @@ class Player(Mob) :
 
     def move_up(self,map):
         #self.pos_y-=1
-        if self.touch_ground(map) and self.vitesse_y ==0:
-            self.vitesse_y=-self.gravity_power*self.acceleration_y
+        if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
+            self.vitesse_y=-self.acceleration_y
 
     def move_down(self):
         #self.pos_y+=1
@@ -125,37 +122,12 @@ class Player(Mob) :
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x
     
-    def gravite(self, vitesse_y, cells_arr,cell_dur,cell_vide,cell_liquid):
-        '''Gravité simple'''
-        self.vitesse_y = vitesse_y
-
-        if self.is_type(cells_arr[self.pos_x, self.pos_y +1], cell_dur):
-            pass #si cellule dur, vitesse_base reste la même
-
-        elif self.is_type(cells_arr[self.pos_x,self.pos_y +1],cell_vide) and self.vitesse_y<4:
-            self.vitesse_y*=1,5  #si cellule vide vitess_y augmente (capée à 4)
-
-        elif self.is_type(cells_arr[self.pos_x, self.pos_y +1], cell_liquid) and self.vitesse_y<-4:
-            self.vitesse_y-=0,5 #si liquide vitesse_y diminue petit à petit jusqu'à -vitesse_y pour remontée petit à petit
-
-    def colision(self, delta, cells_arr,cell_dur,cell_vide,cell_liquid):
-        '''Gère les collisions eau/solide avec le décor'''
-
-        if self.is_type(cells_arr[self.pos_x +delta[0],self.pos_y],cell_dur):
-            delta[0]=0  # collision avec mur, pas de déplacement
-
-        elif self.is_type(cells_arr[self.pos_x,self.pos_y],cell_liquid):
-            delta[1]=1  # collision avec eau, on déplace pos_y au niveau de l'eau
-
-        elif self.is_type(cells_arr[self.pos_x,self.pos_y],cell_vide):
-            delta[0]=1
-        
-        return delta
-    
     def take_damage(self, amount):
-        self.hp -= amount
-        if self.hp < 0:
-            self.hp = 0
+        self.life -= amount
+        if self.life < 10:
+            self.life = 10
+
+        self.send_new_life = True
     
     def is_alive(self):
-        return self.hp > 0
+        return self.life > 0

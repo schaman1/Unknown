@@ -75,7 +75,7 @@ class Client:
 
         #threading.Thread(target=self.loop_reception_server, daemon=True).start() #PLus besoin car le fait dans le main
 
-        self.send_data(id = 1,data = self.screen_size) #3 = client connection
+        self.send_data(id = 1) #3 = client connection
 
     def poll_reception(self):
         """Version non bloquante de loop_reception_server(), appelée dans la boucle de jeu."""
@@ -153,6 +153,9 @@ class Client:
                 msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
 
             elif msg_id == 11 :
+                msg_size = 1+2
+
+            elif msg_id==12:
                 msg_size = 1+2
 
             else:
@@ -272,6 +275,11 @@ class Client:
             else:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
+        elif id==12:
+            client_id,life = struct.unpack("!BB",data[1:3])
+
+            self.main.state.game.player_all.dic_players[client_id].update_life(life)
+
             #self.main.state.game.create_weapon()
 
     def display_clients_name(self):
@@ -285,10 +293,10 @@ class Client:
         packet = bytearray()
         packet += struct.pack("!B", id)
 
-        if id == 1 :
-            packet += struct.pack("!HH", data[0], data[1])
+        #if id == 1 :
+            #packet += struct.pack("!HH", data[0], data[1])
             
-        elif id == 3 :
+        if id == 3 :
             packet+= struct.pack("!B",data[0])
 
         elif id == 4:

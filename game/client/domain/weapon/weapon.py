@@ -1,6 +1,5 @@
 import pygame
-from client.config import assets,weapon
-from shared.constants.world import CELL_SIZE
+from client.config import assets,weapon,size_display as size
 
 class Weapon :
 
@@ -13,12 +12,12 @@ class Weapon :
 
         for i in range(4):
             img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*size.CELL_SIZE,weapon.WIDTH_WEAPON1*size.CELL_SIZE))
             self.frame_weapon.append(img_weapon)
 
         for i in range(2, 0, -1):
             img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*CELL_SIZE,weapon.WIDTH_WEAPON1*CELL_SIZE))
+            img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*size.CELL_SIZE,weapon.WIDTH_WEAPON1*size.CELL_SIZE))
             self.frame_weapon.append(img_weapon)
 
     def draw(self,screen,angle,pos_player, frame):

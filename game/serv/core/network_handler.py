@@ -53,7 +53,7 @@ class Network_handler :
                     msg_size = 1
 
                 elif msg_id == 1: #
-                    msg_size = 1 + 4 
+                    msg_size = 1
 
                 elif msg_id==3:
                     msg_size=1+1
@@ -92,9 +92,7 @@ class Network_handler :
             print("New client connection")
 
             self.send_client_already_her(sender)
-            screen_size = struct.unpack("!HH", data[1:5])
 
-            self.set_screen_size_client(sender,screen_size)
             
             for client in list(self.server.lClient.keys()):
 
@@ -151,9 +149,6 @@ class Network_handler :
                 packet = struct.pack("!BBB", 1, player.id, 0)
 
                 self.send_data(packet,client)
-
-    def set_screen_size_client(self,client_socket,screen_size):
-        self.server.lClient[client_socket].set_screen_size(screen_size)
 
     def send_data_update(self,data,id):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
@@ -258,6 +253,9 @@ class Network_handler :
 
         elif id==11:
             packet+=struct.pack("!H",data[1][0])
+
+        elif id==12:
+            packet+=struct.pack("BB",data[1],data[2])
 
         else :
             print("Issue id not found : ",id)
