@@ -16,7 +16,7 @@ class Server:
         
         self.network_handler = Network_handler(self)
         self.map_cell = Read_map()
-        self.map_monster = Read_monster(assets.BG_MONSTER,world.SIZE_CHUNK_MONSTER,world.RATIO)
+        self.map_monster = Read_monster(self.map_cell.width_chunk,self.map_cell.height_chunk,world.RATIO)
         self.projectile_manager = ProjectileManager()
 
         self.host = host

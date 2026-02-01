@@ -1,23 +1,24 @@
-import pygame
 from serv.domain.mob.monster import Skeleton
+from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
 
 class Read_monster :
 
-    def __init__(self,filename_map_monster,base_movement,size_chunk) :
+    def __init__(self,width_chunk,height_chunk,base_movement) :
 
         self.dic_monster = {}
-        self.map_monster = pygame.image.load(filename_map_monster).convert()
-        self.width, self.height = self.map_monster.get_size()
-        self.size_chunk = size_chunk
+        #self.map_monster = pygame.image.load(filename_map_monster).convert()
+        self.size_chunk_all = (LEN_Y_CHUNK,LEN_X_CHUNK)
+        self.size_chunk = (height_chunk,width_chunk)
+
         self.base_movement = base_movement
 
         self.init_dic_monster()
 
     def init_dic_monster(self) :
 
-        for i in range(self.width//self.size_chunk+1) :
-            for j in range(self.height//self.size_chunk+1) :
+        for i in range(self.size_chunk_all[0]) :
+            for j in range(self.size_chunk_all[1]) :
                 self.dic_monster[i*100+j] = []
 
         self.create_list_monster()
@@ -37,34 +38,37 @@ class Read_monster :
         return list_modif
 
     def create_list_monster(self) :
-        for x in range(self.width):
-                for y in range(self.height):
-                    color = self.map_monster.get_at((x, y))[:3]  # (r,g,b)
 
-                    if color == (0, 0, 0):      # pixel noir = skeleton
+        self.dic_monster[200].append(Skeleton(3411,18000,1))
+
+        #for y in range(self.size_chunk_all[0]):
+        #        for x in range(self.size_chunk_all[1]):
+                    #color = self.map_monster.get_at((x, y))[:3]  # (r,g,b)
+
+                    #if color == (0, 0, 0):      # pixel noir = skeleton
                         #print(f"Création d'un Skeleton en ({x}, {y})")
+                    #if y==10 and x == 10 :
                         
-                        self.dic_monster[x//self.size_chunk*100+y//self.size_chunk].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
+        #            self.dic_monster[y//self.size_chunk_all[0]*100+x//self.size_chunk_all[1]].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
 
-
-    def return_chg(self, lInfoClient, map) :
+    def return_chg(self, lInfoClient, map,dt) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""
 
         list_modif = []
 
         list_chunk_client_see = self.return_list_chunk_client_see(lInfoClient,list_modif)
 
-        for x in range(self.width//self.size_chunk+1) :
-            for y in range(self.height//self.size_chunk+1) :
+        for y in range(self.size_chunk_all[0]) :
+            for x in range(self.size_chunk_all[1]) :
 
-                chunk = x*100+y
+                chunk = y*100+x
 
                 liste_client_see = self.return_client_see(x,y,list_chunk_client_see)
                 if liste_client_see != [] :
 
                     for monster in self.dic_monster[chunk] :
 
-                        monster.update(map,lInfoClient)
+                        monster.update(map,lInfoClient,dt)
 
                         for client_idx in liste_client_see :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y))
@@ -79,7 +83,13 @@ class Read_monster :
         #        for y in range(y_chunk - 2, y_chunk + 3) :
         #            chunk = x*100+y
         #            list_modif[i][chunk] = []
-    
+
+    def return_chunk(self,x,y):
+        ys = (y//self.base_movement)//self.size_chunk[0]
+        xs = (x//self.base_movement)//self.size_chunk[1]
+
+        return ys,xs
+
     def return_list_chunk_client_see(self,lClient,list_modif) :
 
         list_chunk_client_see = []
@@ -87,11 +97,7 @@ class Read_monster :
         for i,client in enumerate(lClient.values()) :
             list_modif.append([])
 
-            xpos = client.convert_to_base(client.pos_x)
-            ypos = client.convert_to_base(client.pos_y)
-
-            x_chunk = xpos // self.size_chunk
-            y_chunk = ypos // self.size_chunk
+            y_chunk,x_chunk = self.return_chunk(client.pos_x,client.pos_y)
 
             list_chunk_client_see.append([x_chunk,y_chunk])
 

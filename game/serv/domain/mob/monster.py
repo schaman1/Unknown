@@ -170,7 +170,7 @@ class Monster(Mob):
         return False
 
     # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
-    def try_step_up_1(self,map, intended_vx):
+    def try_step_up_1(self,map, intended_vx,dt):
         if intended_vx == 0:
             return 0
 
@@ -188,7 +188,7 @@ class Monster(Mob):
             self.vitesse_x = old_vx
             return 0
         self.vitesse_x = intended_vx
-        moved = self.collision_x(map)
+        moved = self.collision_x(map,dt)
 
         if moved == 0:
             self.pos_x = old_x
@@ -212,24 +212,24 @@ class Skeleton(Monster):
         self.idle_max_x = x + 30 *self.base_movement
         
         #diffent speed selon l'etat
-        self.speed_idle = max(1, self.base_movement // 8)
-        self.speed_chase = max(1, self.base_movement // 5)
-        self.speed_max = max(1, self.base_movement // 5)
+        self.speed_idle = max(1, self.base_movement * 8)
+        self.speed_chase = max(1, self.base_movement * 5)
+        self.speed_max = max(1, self.base_movement * 6)
         
         #pour le stepup et le no turn lors de l'idle
         self.step_lock = 0
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer):
+    def update(self, map, lPlayer,dt):
         
         super().update(map,lPlayer)
        # --- Deplacement selon l'état ---
         if self.state == "idle":
-            self.idle_behavior(map)
+            self.idle_behavior(map,dt)
             
         elif self.state == "moving":
-            self.moving_behavior(lPlayer, map)
+            self.moving_behavior(lPlayer, map,dt)
             
         elif self.state == "attacking":
             pass
@@ -255,7 +255,7 @@ class Skeleton(Monster):
         #--- Comportements spécifiques ---
         
     #comportement en mode idle : patrouille entre deux points fixes
-    def idle_behavior(self, map):
+    def idle_behavior(self, map,dt):
         intended_vx = self.direction * self.speed_idle
         if intended_vx == 0:
             intended_vx = self.direction * max(1, self.base_movement // 8)
@@ -266,18 +266,18 @@ class Skeleton(Monster):
 
         self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(map)
-        self.collision_y(map)
+        moved_x = self.collision_x(map,dt)
+        self.collision_y(map,dt)
 
         if moved_x == 0 and intended_vx != 0:
-            stepped = self.try_step_up_1(map, intended_vx)
+            stepped = self.try_step_up_1(map, intended_vx,dt)
             if stepped != 0:
                 self.step_lock = 4
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(map)
-            self.collision_y(map)
+                self.collision_x(map,dt)
+            self.collision_y(map,dt)
 
         if moved_x == 0:
             self.idle_stuck += 1
@@ -299,8 +299,11 @@ class Skeleton(Monster):
                 self.direction *= -1
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
-    def moving_behavior(self, lPlayer, map):
+    def moving_behavior(self, lPlayer, map,dt):
         target, _ = self.distance_to_nearest_player(lPlayer)
+
+        #print("Here")
+
         if target is None:
             return
 
@@ -312,18 +315,18 @@ class Skeleton(Monster):
 
         self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(map)
-        self.collision_y(map)
+        moved_x = self.collision_x(map,dt)
+        self.collision_y(map,dt)
         
         if moved_x == 0 and intended_vx != 0:
-            stepped = self.try_step_up_1(map, intended_vx)
+            stepped = self.try_step_up_1(map, intended_vx,dt)
             if stepped != 0:
                 self.step_lock = 4
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(map)
-            self.collision_y(map)
+                self.collision_x(map,dt)
+            self.collision_y(map,dt)
         
         if self.step_lock > 0:
             self.step_lock -= 1
