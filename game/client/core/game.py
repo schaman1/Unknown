@@ -28,7 +28,7 @@ class Game :
         self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
         self.create_light(vision = world.NBR_CELL_CAN_SEE)
 
-        self.monsters = Monster_all(cell_size,self.canva_size)
+        self.monsters = Monster_all(cell_size)
 
         self.player_all = Player_all(cell_size)
 

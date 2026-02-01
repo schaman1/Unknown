@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
 from serv.config import assets
+from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 from shared.constants.world import SCALE_BLOC
 
 class Read_map:
@@ -38,14 +39,13 @@ class Read_map:
 
         return self.map_chunk[chunk_y][chunk_x][deltay,deltax]
 
-
     def create_map(self):
 
-        for y in range(assets.len_y_map):
+        for y in range(LEN_Y_CHUNK):
 
             col = []
 
-            for x in range(assets.len_x_map):
+            for x in range(LEN_X_CHUNK):
 
                 try :
 

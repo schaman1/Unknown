@@ -118,7 +118,8 @@ class Player(Mob) :
             self.vitesse_x-=self.acceleration*self.acceleration_x
 
     def move_right(self):
-        #self.pos_x+=1
+
+        #print("x,y",self.pos_x,self.pos_y)
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x
     

@@ -3,15 +3,15 @@ from client.domain.mob.monster.monster import Skeleton
 
 class Monster_all :
 
-    def __init__(self,cell_size,canva_size):
+    def __init__(self,cell_size):
 
         self.dic_monster = {} #Liste des monstres dans la map
-        self.init_dico_dic_monsters(canva_size)
+        self.init_dico_dic_monsters()
         self.cell_size = cell_size
 
-    def init_dico_dic_monsters(self,canva_size):
-        for i in range(canva_size[0]//world.SIZE_CHUNK_MONSTER+1) :
-            for j in range(canva_size[1]//world.SIZE_CHUNK_MONSTER+1) :
+    def init_dico_dic_monsters(self):
+        for i in range(world.LEN_Y_CHUNK) :
+            for j in range(world.LEN_Y_CHUNK) :
                 self.dic_monster[i*100+j] = {}
 
     def init_monster(self,lchunck_monsters):
