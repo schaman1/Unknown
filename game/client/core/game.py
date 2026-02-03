@@ -94,7 +94,7 @@ class Game :
         self.projectiles.blit_projectiles_explosions(screen,x,y,dt)
 
     def blit_utils(self,screen,screen_size):
-        self.player_all.blit_life(screen,screen_size)
+        self.player_all.blit_client_utils(screen,screen_size)
 
     def draw(self,screen,x,y,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""

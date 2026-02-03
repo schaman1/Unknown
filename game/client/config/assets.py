@@ -1,4 +1,5 @@
 from utils.resource_path import resource_path
+from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
 
 BG_GLOBAL = resource_path("assets/background/global/back.png")
@@ -10,14 +11,11 @@ BG_MAP_COLORED =[]
 BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
 BLACK_LAYER_COLORED = resource_path("assets/background/map/X2Y1.png")
 
-len_x_map = 3
-len_y_map = 3
-
-for y in range(3):
+for y in range(LEN_Y_CHUNK):
 
     col = []
 
-    for x in range(3):
+    for x in range(LEN_X_CHUNK):
 
         col.append(resource_path(f"assets/background/map/X{x}Y{y}.png"))
 

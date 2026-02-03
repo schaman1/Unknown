@@ -26,6 +26,13 @@ class WeaponManager:
 
         self.lWeapons[self.weapon_select].draw(screen,angle,pos_player, frame)
 
+
+    def draw_icone_weapon(self,screen,screen_size):
+
+        for i in range(len(self.lWeapons)) :
+
+            self.lWeapons[i].draw_icone(screen,screen_size,i)
+
     def update_next_allowed_shot(self,delta_time):
 
         self.next_allowed_shot = time.perf_counter()+delta_time/1000

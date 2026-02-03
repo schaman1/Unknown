@@ -73,9 +73,15 @@ class Player_you(Mob) :
             pygame.Rect((self.pos_x*self.cell_size)//100+xscreen, self.pos_y*self.cell_size//100+yscreen, self.cell_size, self.cell_size)
         )
 
+    def draw_utils(self,screen,screen_size):
+
+        self.draw_life(screen,screen_size)
+
+        self.weapons.draw_icone_weapon(screen,screen_size)
+
     def draw_life(self,screen,screen_size):
 
-        self.padding_life
+        #self.padding_life
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
