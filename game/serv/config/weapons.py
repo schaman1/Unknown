@@ -1,7 +1,7 @@
 from shared.constants.world import RATIO
 
 LIFE_FIRE = 10
-V_FIRE = 100 * RATIO #Bouge de 20 cellules par secondes
+V_FIRE = 50 * RATIO #Bouge de 20 cellules par secondes
 WIDTH_FIRE = 1*RATIO
 HEIGHT_FIRE = 1*RATIO
 REBOND_FIRE = True
@@ -16,7 +16,7 @@ REBOND_MAGIC = False
 DAMAGE_MAGIC = 5
 WEIGHT_MAGIC = 255
 
-REFILL_TIME_WEAPON1 = 0
+REFILL_TIME_WEAPON1 = 0.2
 SPELL_TIME_WEAPON1 = 0
 NBR_SLOT_WEAPON1 = 3
 NBR_UPGRADES_TRIGGER_WEAPON1 = 1

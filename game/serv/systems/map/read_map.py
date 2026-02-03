@@ -19,6 +19,8 @@ class Read_map:
         size = pygame.image.load(assets.BG_MAP[0][0]).convert().get_size()
 
         self.width_chunk,self.height_chunk = size[0]*self.scale,size[1]*self.scale
+        self.len_x_chunk = LEN_X_CHUNK
+        self.len_y_chunk = LEN_Y_CHUNK
 
         #print(self.width_chunk,self.height_chunk,"Width, Height")
 
@@ -35,17 +37,19 @@ class Read_map:
         deltay = y%self.height_chunk
         deltax = x%self.width_chunk
 
+        if (chunk_y<0 or chunk_y >= self.len_y_chunk or chunk_x<0 or chunk_x >= self.len_x_chunk):
+            return self.type["STONE"]
         #print(chunk_y)
 
         return self.map_chunk[chunk_y][chunk_x][deltay,deltax]
 
     def create_map(self):
 
-        for y in range(LEN_Y_CHUNK):
+        for y in range(self.len_y_chunk):
 
             col = []
 
-            for x in range(LEN_X_CHUNK):
+            for x in range(self.len_x_chunk):
 
                 try :
 
