@@ -99,8 +99,8 @@ class Player_you(Mob) :
 
         self.weapons.draw_weapon(screen,angle,pos_draw, self.frame)
 
-    def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id):
-        self.weapons.add_weapon(i,id_weapon,nbr_spell_max,spells_id)
+    def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id,screen_size):
+        self.weapons.add_weapon(i,id_weapon,nbr_spell_max,spells_id,screen_size)
 
     def shot(self):
 

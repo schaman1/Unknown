@@ -26,6 +26,10 @@ class Player_all :
 
         self.dic_players[self.client_id].draw_utils(screen,screen_size)
 
+    def blit_infos(self,screen,screen_size):
+
+        self.dic_players[self.client_id].weapons.draw_spells(screen,screen_size)
+
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y
 
