@@ -209,18 +209,18 @@ class Client:
                 for i in range((size-3)//14)
             )
 
-        elif id==7:
+        elif id==7: #Projectile create ?
             for i in range((size-3)//18):
                 id,pos_x,pos_y,angle,vitesse,weight,id_img = struct.unpack("!LLLHHBB", data[3+i*18 : 21+i*18])
 
                 self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
 
-        elif id==8:
+        elif id==8: #Projectile die
             for i in range((size-3)//12):
                 id,pos_x,pos_y = struct.unpack("!LLL",data[3+i*12:15+i*12])
                 self.main.state.game.projectiles.remove_projectile(id,pos_x,pos_y)
 
-        elif id==11:
+        elif id==11: 
 
             delta_time = struct.unpack("!H",data[1:3])[0]
             self.main.state.game.update_next_allowed_shot(delta_time)
@@ -265,12 +265,14 @@ class Client:
             client_id,idx_weapon_pos,id_weapon = struct.unpack("!BBB",data[2:5])
             spells_id = []
 
-            for i in range(size-7):
+            for i in range(size-5):
 
-                spells_id.append(struct.unpack("!B",data[7+i:8+i]))
+                spells_id.append(struct.unpack("!B",data[5+i:6+i])[0])
+
+            #print(spells_id,"Spells !")
 
             if client_id==self.id :
-                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id)
+                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id,self.screen_size)
 
             else:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)

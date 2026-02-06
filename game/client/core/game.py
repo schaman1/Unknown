@@ -16,7 +16,7 @@ class Game :
         self.base_movement = world.RATIO
 
         self.cell_size = cell_size
-        self.scren_size = screenSize
+        self.screen_size = screenSize
         self.center = (screenSize[0]//2,screenSize[1]//2)
         
         #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
@@ -37,6 +37,7 @@ class Game :
         self.projectiles = ProjectileManager(cell_size)
 
         self.player_command = []
+        self.blit_info=False
         
     def draw_intro_start(self,screen):
 
@@ -78,7 +79,9 @@ class Game :
             self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/5)*self.cell_size)
 
     def shot(self):
-        self.player_command.append(self.player_all.me.shot())
+
+        if not self.blit_info:
+            self.player_command.append(self.player_all.me.shot())
 
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
@@ -96,6 +99,12 @@ class Game :
     def blit_utils(self,screen,screen_size):
         self.player_all.blit_client_utils(screen,screen_size)
 
+    def blit_infos(self,screen,screen_size):
+
+        if self.blit_info :
+
+            self.player_all.blit_infos(screen,screen_size)
+
     def draw(self,screen,x,y,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
 
@@ -112,11 +121,15 @@ class Game :
 
         screen.blit(self.light,(0,0))
 
-        self.blit_utils(screen,self.scren_size)
+        self.blit_utils(screen,self.screen_size)
 
         pos = self.player_all.return_pos()
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
+
         self.mini_map.draw_map(screen,pos)
+        self.blit_infos(screen,self.screen_size)
+
+
         
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement

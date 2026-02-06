@@ -32,6 +32,8 @@ class Weapon :
             else :
                 spells_id.append(weapon.id)
 
+        #print("spells_id",self.nbr_spells_max)
+
         return i,self.id,self.nbr_spells_max,spells_id
 
     def reset_values(self):
