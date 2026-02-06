@@ -43,7 +43,7 @@ class Weapon :
             x=self.return_posx_blit_spell(screen_size,j)
             y=self.return_posy_blit_weapon(screen_size,idx)
             y_padding = y+0.25*self.icone_size
-            self.spells[j]=Spell(id,x,y_padding)
+            self.spells[j]=Spell(id,x,y_padding,idx,j)
 
     def draw(self,screen,angle,pos_player, frame):
         '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''

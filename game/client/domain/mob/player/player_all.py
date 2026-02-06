@@ -44,3 +44,7 @@ class Player_all :
             else :
 
                 player.draw(screen_global,xscreen,yscreen)
+
+    def mouse_button_down(self,mouse_pos):
+
+        return self.dic_players[self.client_id].weapons.touch_spells(mouse_pos)

@@ -61,6 +61,9 @@ class Network_handler :
                 elif msg_id==4:
                     msg_size=1+2
 
+                elif msg_id==5:
+                    msg_size=1+4
+
                 else:
                     print("UNKNOWN MSG ID", msg_id)
                     del buffer[0]
@@ -135,6 +138,10 @@ class Network_handler :
         elif id_msg == 4 :
             angle = struct.unpack("!H",data[1:3])[0]
             self.server.handle_shot(angle,sender)
+
+        elif id_msg==5:
+            weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2 = struct.unpack("!BBBB",data[1:5])
+            self.server.lClient[sender].switch_spell(weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2)
 
         else :
             print("What to do with this id send ? ",id_msg)

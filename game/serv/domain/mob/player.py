@@ -132,3 +132,9 @@ class Player(Mob) :
     
     def is_alive(self):
         return self.life > 0
+    
+    def switch_spell(self,spell_1_weapon,spell_1_idx,spell_2_weapon,spell_2_idx):
+        
+        spell_switch = self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx]
+        self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx] = self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx]
+        self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
