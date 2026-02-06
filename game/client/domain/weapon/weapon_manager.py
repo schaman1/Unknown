@@ -12,6 +12,8 @@ class WeaponManager:
 
         self.next_allowed_shot = 0
 
+        self.spell_hold=None
+
         self.init_lWeapons()
 
         #self.icone_size = size.CELL_SIZE*4
@@ -64,11 +66,47 @@ class WeaponManager:
         else :
             return #[4,angle] #Si tu veux plus avoir de contraite de tir niveau client
         
-    #def return_posy_blit_weapon(self,screen_size,i):
-#
-    #    return screen_size[1]/10+2*i*(self.icone_size)
-#
-    #def return_posx_blit_spell(self,screen_size,i):
-    #    padding = screen_size[0]/50
-#
-    #    return screen_size[0]//4 + padding + self.icone_size * i
+    def touch_spells(self,mouse_pos):
+
+        for weapon in (self.lWeapons):
+
+            for spell in (weapon.spells) :
+
+                #if spell.spell_id!=0 :
+
+                    #print("touch",spell.rect.collidepoint(mouse_pos),mouse_pos)
+
+                if spell.rect.collidepoint(mouse_pos) :
+
+                    
+                    return self.trigger_spell_touch(spell)
+                
+        return -1,None,None #No collision
+                    
+
+    def trigger_spell_touch(self,spell):
+
+        if self.spell_hold==None :
+            if spell.img!=None:
+                self.spell_hold=spell
+                spell.blit_icone = False
+
+                return 0,spell.img,None
+
+            else :
+                return -1,None,None
+
+        else :
+            spell_1_info = spell.idx_weapon,spell.idx_spell
+            spell_2_info = self.spell_hold.idx_weapon,self.spell_hold.idx_spell
+            self.switch_spell(self.spell_hold,spell)
+            self.spell_hold.blit_icone = True
+            self.spell_hold=None
+
+            return 1,spell_1_info,spell_2_info
+
+    def switch_spell(self,spell_1,spell_2):
+            img_1 = spell_1.img
+            spell_1.img=spell_2.img
+            spell_2.img=img_1
+            

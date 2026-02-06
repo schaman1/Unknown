@@ -84,7 +84,19 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.state.mod=="game":
-                        pass
+
+                        info,spell_1,spell_2 = self.state.game.trigger_mouse_down(event.pos)
+                        
+                        if info==1: #Send data switch spell
+                            self.client.send_data(id=5,data=(spell_1,spell_2))
+                            self.state.game.spell_blit_mouse=None
+
+                        elif info==0: #Blit spell_1 a pos=souris car c l'img du spell
+                            self.state.game.spell_blit_mouse =spell_1 
+
+                        elif info==-1: #Nothing c quand touche rien
+                            pass
+
 
 
                     elif self.state.mod == "menu":

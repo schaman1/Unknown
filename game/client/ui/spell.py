@@ -3,12 +3,14 @@ import pygame
 
 class Spell:
 
-    def __init__(self,id,x,y):
+    def __init__(self,id,x,y,idx_weapon,idx_spell):
 
         self.pos_x = x
         self.pos_y = y
+        self.idx_weapon=idx_weapon
+        self.idx_spell=idx_spell
 
-        self.spell_id = id
+        #self.spell_id = id
 
         self.blit_icone = True
 
@@ -18,6 +20,7 @@ class Spell:
         self.icone_spell = pygame.transform.scale(self.icone_spell,(self.icone_size,self.icone_size))
 
         self.img = None
+        self.rect = self.icone_spell.get_rect(topleft = (self.pos_x,self.pos_y))
         self.load_image(id)
 
     def load_image(self,id_spell):
@@ -32,7 +35,7 @@ class Spell:
         screen.blit(self.icone_spell,(self.pos_x,self.pos_y))
 
 
-        if self.spell_id!=0 and self.blit_icone:
+        if self.img!=None and self.blit_icone:
 
             screen.blit(self.img,(self.pos_x+self.icone_size//4,self.pos_y+self.icone_size//4))
 

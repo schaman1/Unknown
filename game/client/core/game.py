@@ -38,6 +38,7 @@ class Game :
 
         self.player_command = []
         self.blit_info=False
+        self.spell_blit_mouse=None
         
     def draw_intro_start(self,screen):
 
@@ -79,7 +80,6 @@ class Game :
             self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/5)*self.cell_size)
 
     def shot(self):
-
         if not self.blit_info:
             self.player_command.append(self.player_all.me.shot())
 
@@ -99,11 +99,14 @@ class Game :
     def blit_utils(self,screen,screen_size):
         self.player_all.blit_client_utils(screen,screen_size)
 
-    def blit_infos(self,screen,screen_size):
+    def blit_infos(self,screen,screen_size,mouse_pos):
 
         if self.blit_info :
 
             self.player_all.blit_infos(screen,screen_size)
+
+            if self.spell_blit_mouse!=None:
+                screen.blit(self.spell_blit_mouse,mouse_pos)
 
     def draw(self,screen,x,y,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
@@ -127,10 +130,8 @@ class Game :
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
 
         self.mini_map.draw_map(screen,pos)
-        self.blit_infos(screen,self.screen_size)
+        self.blit_infos(screen,self.screen_size,mouse_pos)
 
-
-        
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
     
@@ -141,3 +142,7 @@ class Game :
     def update_next_allowed_shot(self,delta_time):
 
         self.player_all.me.weapons.update_next_allowed_shot(delta_time)
+
+    def trigger_mouse_down(self,mouse_pos):
+
+        return self.player_all.mouse_button_down(mouse_pos)
