@@ -8,7 +8,8 @@ class WeaponManager:
     def __init__(self):
 
         self.lWeapons = []
-        self.weapon_select = 0
+        self.bag = None
+        self.weapon_select = 1
 
         self.next_allowed_shot = 0
 
@@ -25,21 +26,27 @@ class WeaponManager:
 
     def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id,screen_size):
 
+        #if id_weapon == 0:
+        #    #print("Create Bag") #Done only 1 time
+        #    self.bag = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size)
+        #
+        #else :
         self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size)
 
     def draw_weapon(self,screen,angle,pos_player, frame):
 
-        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player, frame)
+        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player,frame)
 
     def draw_icone_weapon(self,screen,screen_size):
 
+        return #Enleve les weapon dessiné a dessus de la barre de vie
         for i in range(len(self.lWeapons)) :
 
             self.lWeapons[i].draw_icone(screen,screen_size,i)
 
     def draw_spells(self,screen,screen_size):
 
-        for i in range(len(self.lWeapons)) :
+        for j in range(len(self.lWeapons)) :
 
             #y = self.return_posy_blit_weapon(screen_size,i)
 #
@@ -48,8 +55,7 @@ class WeaponManager:
             #for j in range(len(self.lWeapons[i].spells_id)):
             #    x_spells.append(self.return_posx_blit_spell(screen_size,j))
 
-
-            self.lWeapons[i].draw_spells(screen,screen_size,i)
+            self.lWeapons[j].draw_spells(screen,screen_size,j) #+1 car il doit d'abord
 
     def update_next_allowed_shot(self,delta_time):
 
@@ -109,4 +115,8 @@ class WeaponManager:
             img_1 = spell_1.img
             spell_1.img=spell_2.img
             spell_2.img=img_1
+
+    def stop_holding_spell(self):
+        self.spell_hold.blit_icone = True
+        self.spell_hold=None
             

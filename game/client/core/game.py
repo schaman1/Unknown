@@ -77,7 +77,7 @@ class Game :
         self.light.fill((0,0,0))
 
         for i in range(10):
-            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/5)*self.cell_size)
+            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/2)*self.cell_size)
 
     def shot(self):
         if not self.blit_info:
@@ -97,11 +97,14 @@ class Game :
         self.projectiles.blit_projectiles_explosions(screen,x,y,dt)
 
     def blit_utils(self,screen,screen_size):
+
         self.player_all.blit_client_utils(screen,screen_size)
 
     def blit_infos(self,screen,screen_size,mouse_pos):
 
         if self.blit_info :
+
+            screen.fill((50,50,50)) #A changer pour mettre transparence
 
             self.player_all.blit_infos(screen,screen_size)
 
@@ -145,4 +148,27 @@ class Game :
 
     def trigger_mouse_down(self,mouse_pos):
 
-        return self.player_all.mouse_button_down(mouse_pos)
+        if self.blit_info :
+
+            info,spell_1,spell_2 =  self.player_all.mouse_button_down(mouse_pos)
+
+            if info==1:
+                self.spell_blit_mouse = None
+
+            elif info==0: #Blit spell_1 a pos=souris car c l'img du spell
+                self.spell_blit_mouse =spell_1 
+
+            return info,spell_1,spell_2
+        
+        else :
+
+            return -1,None,None
+        
+    def trigger_info_key(self):
+
+        if self.blit_info and self.spell_blit_mouse != None:
+            
+            self.player_all.me.weapons.stop_holding_spell()
+            self.spell_blit_mouse=None
+
+        self.blit_info = not self.blit_info

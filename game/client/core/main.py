@@ -58,7 +58,7 @@ class Main:
 
                         if event.key == pygame.K_i :
 
-                            self.state.game.blit_info = not self.state.game.blit_info
+                            self.state.game.trigger_info_key()
                         
                     elif self.objClicked != None:
 
@@ -96,8 +96,6 @@ class Main:
 
                         elif info==-1: #Nothing c quand touche rien
                             pass
-
-
 
                     elif self.state.mod == "menu":
                         if self.state.host.get_rect().collidepoint(event.pos):
