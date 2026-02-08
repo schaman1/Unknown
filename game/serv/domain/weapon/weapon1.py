@@ -2,6 +2,34 @@ from serv.config import weapons
 from serv.domain.weapon.base_weapon import Weapon
 from serv.domain.weapon import upgrades
 
+class WeaponBag(Weapon):
+
+    def __init__(self):
+
+        super().__init__(
+            refill_time = 0,
+            spell_time= 0,
+            nbr_slot = weapons.WEAPON_BAG_NBR_SLOT,
+            nbr_upgrades_trigger = 0,
+            id = weapons.ID_WEAPON_BAG
+        )
+
+        self.init_slot()
+
+    def init_slot(self):
+        pass
+        #self.fill_slot(0,upgrades.CreateFire())
+        #self.fill_slot(1,upgrades.CreateFire())
+        #self.fill_slot(2,upgrades.CreateMagic())
+
+    def fill_slot(self,idx,function):
+
+        if idx >= len(self.spells_on_shot):
+            print("Unable to fill spot in weapon bcs idx tooo high")
+
+        else :
+            self.spells_on_shot[idx]=function
+
 
 class Weapon1(Weapon) :
 

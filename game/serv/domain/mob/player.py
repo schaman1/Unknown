@@ -1,10 +1,10 @@
-from shared.constants import world,size_display
+from shared.constants import size_display
 from serv.domain.mob.mob import Mob
 from serv.domain.weapon.weapon_manager import WeaponManager
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
-    il faut aussi rajouter les dashs (vitesse horizontale temporaire) et les sauts (vitesse verticale négative)'''
+    il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
     def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1): 
 
@@ -15,8 +15,6 @@ class Player(Mob) :
         self.damage_taken = damage
         self.is_host = host
         self.vitesse_max = 50*self.base_movement
-
-        self.size_x = 2
 
         self.weapons = WeaponManager()
 
@@ -41,13 +39,12 @@ class Player(Mob) :
         else :
             return []
 
-
     def return_delta_vitesse(self,map,dt):
 
         self.gravity_effect()
         #print(self.pos_x,self.pos_y)
 
-        if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.size_x or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
+        if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
             self.vitesse_x=0
 
         if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
@@ -134,7 +131,7 @@ class Player(Mob) :
         return self.life > 0
     
     def switch_spell(self,spell_1_weapon,spell_1_idx,spell_2_weapon,spell_2_idx):
-        
+
         spell_switch = self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx]
         self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx] = self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx]
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
