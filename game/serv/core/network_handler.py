@@ -259,7 +259,8 @@ class Network_handler :
             self.pack_weapon(data[1],data[2],packet)
 
         elif id==11:
-            packet+=struct.pack("!HB",data[1][0],0)#data[1][1])
+
+            packet+=struct.pack("!HB",data[1][0],data[1][1])#data[1][1])
 
         elif id==12:
             packet+=struct.pack("!BB",data[1],data[2])
