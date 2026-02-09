@@ -5,7 +5,6 @@ RATIO = 100
 
 #Player
 SPAWN_POINT = (8*RATIO*SCALE_BLOC,8*RATIO*SCALE_BLOC)
-NBR_GOLD_SPAWN = 10
 
 
 NBR_CELL_CAN_SEE = 30 #Nbr de cellule que peut voir

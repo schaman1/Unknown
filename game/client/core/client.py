@@ -153,7 +153,7 @@ class Client:
                 msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
 
             elif msg_id == 11 :
-                msg_size = 1+2
+                msg_size = 1+3
 
             elif msg_id==12:
                 msg_size = 1+2
@@ -222,8 +222,8 @@ class Client:
 
         elif id==11: 
 
-            delta_time = struct.unpack("!H",data[1:3])[0]
-            self.main.state.game.update_next_allowed_shot(delta_time)
+            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
+            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
 
         elif id == 5 :#Init monsters
             cells = []

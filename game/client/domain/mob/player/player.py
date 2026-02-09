@@ -1,7 +1,7 @@
 import pygame, math
 from client.domain.mob.mob import Mob
 from client.config import assets,weapon
-from shared.constants import size_display
+from shared.constants import size_display,world
 from client.domain.weapon.weapon_manager import WeaponManager
 
 class Player_you(Mob) :
@@ -13,9 +13,9 @@ class Player_you(Mob) :
         self.pseudo = pseudo
         self.is_you = is_you
         self.is_looking = "right"
-        self.frame_perso_left = []
         self.frame_perso_right = []
-        self.frame_to_blit = []
+        self.frame_perso_left = []
+        self.frame_to_blit = {}
 
         self.padding_life = 0.02
 
@@ -34,10 +34,11 @@ class Player_you(Mob) :
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
 
             Img_flip = pygame.transform.flip(Img, True, False)
-            self.frame_perso_right.append(Img)
-            self.frame_perso_left.append(Img_flip)
+            self.frame_perso_left.append(Img)
+            self.frame_perso_right.append(Img_flip)
 
-        self.frame_to_blit = self.frame_perso_right
+        self.frame_to_blit["left"] = self.frame_perso_left
+        self.frame_to_blit["right"] = self.frame_perso_right
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -68,7 +69,7 @@ class Player_you(Mob) :
         #    screen.blit(perso_left,pos)
         #else :
         #    screen.blit(perso_right, pos)
-        screen.blit(self.frame_to_blit[self.frame%4],pos)
+        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4],pos)
 
         self.update_frame()
         
@@ -107,10 +108,10 @@ class Player_you(Mob) :
     def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id,screen_size):
         self.weapons.add_weapon(i,id_weapon,nbr_spell_max,spells_id,screen_size)
 
-    def shot(self):
+    def shot(self,id_key):
 
         #return self.weapons.shot(self.angle_weapon)
-        return self.weapons.shot(0)
+        return self.weapons.shot(id_key)
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
@@ -118,6 +119,20 @@ class Player_you(Mob) :
     def move(self,delta):
         self.pos_x = delta[0]
         self.pos_y = delta[1]
+
+    def update_direction_look(self,new_direction):
+        
+        if new_direction==None:
+            return
+        
+        elif new_direction=="left":
+            self.is_looking="left"
+
+        elif new_direction=="right":
+            self.is_looking="right"
+
+        #else :
+        #    print("Unknow direction looking :",new_direction)
 
 class Player_not_you(Mob) :
 

@@ -11,7 +11,7 @@ class WeaponManager:
         self.bag = None
         self.weapon_select = 1
 
-        self.next_allowed_shot = 0
+        self.next_allowed_shot =[0 for _ in range(NBRWEAPONSTOCK-1)]
 
         self.spell_hold=None
 
@@ -57,17 +57,17 @@ class WeaponManager:
 
             self.lWeapons[j].draw_spells(screen,screen_size,j) #+1 car il doit d'abord
 
-    def update_next_allowed_shot(self,delta_time):
+    def update_next_allowed_shot(self,delta_time,id_weapon):
 
-        self.next_allowed_shot = time.perf_counter()+delta_time/1000
+        self.next_allowed_shot[id_weapon] = time.perf_counter()+delta_time/1000
 
-    def shot(self,angle):
+    def shot(self,id_key):
 
         now = time.perf_counter()
 
-        if now >= self.next_allowed_shot :
+        if now >= self.next_allowed_shot[id_key] :
 
-            return [4,angle]
+            return [4,id_key]
         
         else :
             return #[4,angle] #Si tu veux plus avoir de contraite de tir niveau client
