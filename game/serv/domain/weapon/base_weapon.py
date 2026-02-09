@@ -45,6 +45,11 @@ class Weapon :
         if self.idx == self.nbr_spells_max :
             self.idx = 0
 
+    def return_info_next_time_can_shot(self):
+        #print(self.next_allowed_shot,time.perf_counter())
+        
+        return int((self.next_allowed_shot-time.perf_counter())*1000)
+
     def check_can_shot(self,now):
         
         if now >= self.next_allowed_shot :
@@ -115,4 +120,4 @@ class Weapon :
         else :
             self.next_allowed_shot = now+self.time_spells_take
 
-        return projectile_shot,int((self.next_allowed_shot-now)*1000)
+        return projectile_shot

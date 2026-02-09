@@ -113,18 +113,20 @@ class Server_game(Server) :
     def convert_list_base(self,list):
         return [self.convert_to_base(list[i]) for i in range(len(list))]
 
-    def handle_shot(self,angle,sender):
+    def handle_shot(self,id_weapon,sender):
 
-        infos = self.lClient[sender].weapons.create_shot(angle,self.lClient[sender].return_pos())
+        infos = self.lClient[sender].weapons.create_shot(id_weapon,self.lClient[sender].return_pos())
 
         if infos == None :
             return
         
         else :
-            projectiles,next_allowed_shot = infos
+            projectiles = infos
+
+            self.lClient[sender].update_next_allowed_shot(id_weapon)
+            #print("Next allowed shot = ",next_allowed_shot)
 
             for projectile in projectiles :
 
-                self.lClient[sender].update_next_allowed_shot(next_allowed_shot)
 
                 self.projectile_manager.add_projectile_create(projectile)
