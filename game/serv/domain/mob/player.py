@@ -64,11 +64,12 @@ class Player(Mob) :
 
     def update_vitesse(self):
 
-        if self.vitesse_x<0:
-            self.vitesse_x+=self.acceleration*self.acceleration_x
+        s = self.return_signe(self.vitesse_x)
 
-        elif self.vitesse_x>0:
-            self.vitesse_x-=self.acceleration*self.acceleration_x
+        if self.vitesse_x*s<self.acceleration*self.acceleration_x*s:
+            self.vitesse_x = 0
+        else :
+            self.vitesse_x-=self.acceleration*self.acceleration_x*s
 
     def update_pos(self,map,dt):
 
@@ -115,13 +116,13 @@ class Player(Mob) :
     def move_left(self):
         #self.pos_x-=1
         if self.vitesse_x>-self.vitesse_max:
-            self.vitesse_x-=self.acceleration*self.acceleration_x
+            self.vitesse_x-=self.acceleration*self.acceleration_x*10
 
     def move_right(self):
 
         #print("x,y",self.pos_x,self.pos_y)
         if self.vitesse_x<self.vitesse_max:
-            self.vitesse_x+=self.acceleration*self.acceleration_x
+            self.vitesse_x+=self.acceleration*self.acceleration_x*10
     
     def take_damage(self, amount):
         self.life -= amount

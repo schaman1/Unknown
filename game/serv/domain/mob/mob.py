@@ -64,7 +64,10 @@ class Mob:
 
                 if self.touch_wall((self.half_height+self.base_movement)*s,j,map) :
 
-                    dist = self.base_movement - (self.pos_y*s)%self.base_movement -1
+                    dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
+                    #if dist!=0:
+                    #    print(self.touch_wall(0,0,map),self.touch_wall(dist*s,0,map))
+                    #    print("Collisiony",dist*s,remaining*s,self.pos_x,self.pos_y)
 
                     if dist < remaining :
                         self.vitesse_y = 0
@@ -75,6 +78,7 @@ class Mob:
 
             if dist < remaining :
                 self.pos_y+=dist*s
+                remaining=0
             
             else :
                 self.pos_y+= remaining*s
@@ -100,15 +104,23 @@ class Mob:
 
                 if self.touch_wall(j,(self.half_width+self.base_movement)*s,map) :
 
-                    dist = (self.base_movement - (self.pos_x*s)%self.base_movement -1)
+                    dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
+
+                    #if dist!=0:
+                    #    print(self.touch_wall(0,0,map),self.touch_wall(0,dist*s,map))
+                    #    print("Collisionx",dist*s,remaining*s,self.pos_y,self.pos_x)
 
                     if dist < remaining :
+                        #print("Yes !")
+                     
                         self.vitesse_x = 0
+                    #print()
                     #print("pos_x",self.pos_x)
                     #print(- (self.pos_x*s)%self.base_movement )
 
             if dist < remaining :
                 self.pos_x+=dist*s
+                remaining=0
             
             else :
                 self.pos_x+= remaining*s
