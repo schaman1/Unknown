@@ -12,8 +12,10 @@ class Player_you(Mob) :
 
         self.pseudo = pseudo
         self.is_you = is_you
+        self.is_looking = "right"
         self.frame_perso_left = []
         self.frame_perso_right = []
+        self.frame_to_blit = []
 
         self.padding_life = 0.02
 
@@ -34,6 +36,8 @@ class Player_you(Mob) :
             Img_flip = pygame.transform.flip(Img, True, False)
             self.frame_perso_right.append(Img)
             self.frame_perso_left.append(Img_flip)
+
+        self.frame_to_blit = self.frame_perso_right
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -51,19 +55,20 @@ class Player_you(Mob) :
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
-        pos = self.calculate_pos_blit(xscreen,yscreen)
-        self.angle_weapon = self.get_angle(center, mouse_pos)
+        pos = self.calculate_pos_blit(xscreen,yscreen) 
+        #self.angle_weapon = self.get_angle(center, mouse_pos) #Draw weapon
+        #self.draw_weapon(screen,self.angle_weapon,pos)
+
         #self.angle = self.get_angle(center, mouse_pos)
         
-        perso_right = self.frame_perso_right[self.frame%4]
-        perso_left = self.frame_perso_left[self.frame%4]
+        #perso_right = self.frame_perso_right[self.frame%4]
+        #perso_left = self.frame_perso_left[self.frame%4]
 
-        if mouse_pos[0] > center[0]: #affiche le perso regardant une dirrection en fonction de la souris
-            screen.blit(perso_left,pos)
-        else :
-            screen.blit(perso_right, pos)
-
-        self.draw_weapon(screen,self.angle_weapon,pos)
+        #if mouse_pos[0] > center[0]: #affiche le perso regardant une dirrection en fonction de la souris
+        #    screen.blit(perso_left,pos)
+        #else :
+        #    screen.blit(perso_right, pos)
+        screen.blit(self.frame_to_blit[self.frame%4],pos)
 
         self.update_frame()
         
@@ -104,7 +109,8 @@ class Player_you(Mob) :
 
     def shot(self):
 
-        return self.weapons.shot(self.angle_weapon)
+        #return self.weapons.shot(self.angle_weapon)
+        return self.weapons.shot(0)
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
