@@ -281,7 +281,7 @@ class Client:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
         elif id==12:
-            life = struct.unpack("!B",data[1:2])
+            life = struct.unpack("!B",data[1:2])[0]
 
             self.main.state.game.player_all.me.update_life(life)
 
@@ -310,7 +310,7 @@ class Client:
             packet+= struct.pack("!B",data[0])
 
         elif id == 4:
-            print("data shot",data)
+            #print("data shot",data)
             packet+= struct.pack("!BB",data[0],data[1])
 
         elif id==5:

@@ -39,7 +39,9 @@ class Player_you(Mob) :
             self.frame_perso_right.append(Img_flip)
 
         self.frame_to_blit.append(self.frame_perso_right)
+        self.frame_to_blit.append(self.frame_perso_right) #Top
         self.frame_to_blit.append(self.frame_perso_left)
+        self.frame_to_blit.append(self.frame_perso_right) #Bottom
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -102,13 +104,13 @@ class Player_you(Mob) :
             (14,16,14),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03),
         )
+        #print(self.life)
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
             (147,165,149),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
-        #print(self.life)
 
     def draw_money(self, screen, screen_size):
         pygame.draw.rect(
@@ -127,7 +129,11 @@ class Player_you(Mob) :
     def shot(self,id_key):
 
         #return self.weapons.shot(self.angle_weapon)
-        return self.weapons.shot(id_key)+[self.is_looking]
+        info = self.weapons.shot(id_key)
+        if info != None :
+            return self.weapons.shot(id_key)+[self.is_looking]
+        else :
+            return
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
