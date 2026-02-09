@@ -6,11 +6,13 @@ class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1): 
+    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1, money=0): 
 
         super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT)
 
         self.hp = hp
+        self.money = money
+        self.send_new_money = False
 
         self.damage_taken = damage
         self.is_host = host
@@ -73,7 +75,7 @@ class Player(Mob) :
 
         self.update_vitesse()
 
-        self.take_damage(1)
+        self.update_money(1)
 
         #print(self.pos_x,self.pos_y)
 
@@ -130,6 +132,17 @@ class Player(Mob) :
     def is_alive(self):
         return self.life > 0
     
+    def update_money(self, amount):
+
+        self.money+= amount
+
+        self.send_new_money = True
+    
+    def send_money(self):
+        self.send_new_money = False
+        return self.money
+
+
     def switch_spell(self,spell_1_weapon,spell_1_idx,spell_2_weapon,spell_2_idx):
 
         spell_switch = self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx]

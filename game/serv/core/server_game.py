@@ -65,6 +65,10 @@ class Server_game(Server) :
                 life = self.lClient[socket].send_life()
                 self.send_data((12,self.lClient[socket].id,life),socket)
             
+            if self.lClient[socket].send_new_money == True :
+                money = self.lClient[socket].send_money()
+                self.send_data((13,money), socket)
+            
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner
     
