@@ -63,6 +63,7 @@ class ProjectileManager :
 
         for client in lClient.values() :
             infos_shot.append(client.return_next_allowed_shot())
+        #print("infos_shot",infos_shot)
                 
         return [projectiles_create,projectiles_die,infos_shot]
     

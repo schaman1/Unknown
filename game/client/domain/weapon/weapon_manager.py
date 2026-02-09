@@ -11,7 +11,7 @@ class WeaponManager:
         self.bag = None
         self.weapon_select = 1
 
-        self.next_allowed_shot =[0 for _ in range(NBRWEAPONSTOCK-1)]
+        self.next_allowed_shot =[0 for _ in range(NBRWEAPONSTOCK)]
 
         self.spell_hold=None
 

@@ -20,7 +20,6 @@ class Player(Mob) :
 
         self.weapons = WeaponManager()
 
-        self.next_allowed_shot = 0
         self.time_shot_update = False
 
     def return_weapon_info(self):
@@ -30,14 +29,16 @@ class Player(Mob) :
 
         return self.weapons.return_weapon_select()
     
-    def update_next_allowed_shot(self,next_allowed_shot):
-        self.next_allowed_shot = next_allowed_shot
+    def update_next_allowed_shot(self,id_weapon):
+        self.weapon_shot_update=id_weapon
+
         self.time_shot_update = True
 
     def return_next_allowed_shot(self):
         if self.time_shot_update :
             self.time_shot_update=False
-            return [self.next_allowed_shot]
+            time = self.weapons.lWeapons[self.weapon_shot_update].return_info_next_time_can_shot()
+            return [time,self.weapon_shot_update]
         else :
             return []
 
@@ -75,7 +76,7 @@ class Player(Mob) :
 
         self.update_vitesse()
 
-        self.update_money(1)
+        #self.update_money(1)
 
         #print(self.pos_x,self.pos_y)
 
