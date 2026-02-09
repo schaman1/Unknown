@@ -205,19 +205,19 @@ class Main:
 
         if key[pygame.K_z] :
             self.client.send_data(id=3,data=[0]) #lié au serveur les données/haut
-            is_looking="top"
+            is_looking=1
 
         if key[pygame.K_s] :
             self.client.send_data(id=3,data=[1]) #lié au serveur les données/bas
-            is_looking="bottom"
-
-        if key[pygame.K_q] :
-            self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
-            is_looking="left"
+            is_looking=3
 
         if key[pygame.K_d] :
             self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
-            is_looking="right"
+            is_looking=0
+
+        if key[pygame.K_q] :
+            self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
+            is_looking=2
 
         self.state.game.player_all.me.update_direction_look(is_looking)
 
@@ -256,6 +256,6 @@ class Main:
 
             if id==4 :
 
-                self.client.send_data(id=4,data=[input[1]])
+                self.client.send_data(id=4,data=[input[1],input[2]])
 
         events.clear()
