@@ -22,6 +22,9 @@ class Game :
         #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         self.canva = Map(screenSize,cell_size)
         
+        self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
+        self.grey_layer.fill((10,10,10,150))
+
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
@@ -79,9 +82,9 @@ class Game :
         for i in range(10):
             self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/2)*self.cell_size)
 
-    def shot(self):
+    def shot(self,id_key):
         if not self.blit_info:
-            self.player_command.append(self.player_all.me.shot())
+            self.player_command.append(self.player_all.me.shot(id_key))
 
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
@@ -104,7 +107,9 @@ class Game :
 
         if self.blit_info :
 
-            screen.fill((50,50,50)) #A changer pour mettre transparence
+            screen.blit(self.grey_layer,(0,0))
+
+            #screen.fill((50,50,50)) #A changer pour mettre transparence
 
             self.player_all.blit_infos(screen,screen_size)
 
@@ -142,9 +147,9 @@ class Game :
 
         self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
 
-    def update_next_allowed_shot(self,delta_time):
+    def update_next_allowed_shot(self,delta_time,id_weapon):
 
-        self.player_all.me.weapons.update_next_allowed_shot(delta_time)
+        self.player_all.me.weapons.update_next_allowed_shot(delta_time,id_weapon)
 
     def trigger_mouse_down(self,mouse_pos):
 
