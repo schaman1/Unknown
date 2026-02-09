@@ -158,6 +158,9 @@ class Client:
             elif msg_id==12:
                 msg_size = 1+2
 
+            elif msg_id == 13:
+                msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -283,6 +286,11 @@ class Client:
             self.main.state.game.player_all.dic_players[client_id].update_life(life)
 
             #self.main.state.game.create_weapon()
+        
+        elif id==13 :
+            money = struct.unpack("!H", data[1:3])[0]
+            self.main.state.game.player_all.me.update_money(money)
+            #pass
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
