@@ -12,10 +12,10 @@ class Player_you(Mob) :
 
         self.pseudo = pseudo
         self.is_you = is_you
-        self.is_looking = "right"
+        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
         self.frame_perso_right = []
         self.frame_perso_left = []
-        self.frame_to_blit = {}
+        self.frame_to_blit = []
 
         self.padding_life = 0.02
 
@@ -37,8 +37,8 @@ class Player_you(Mob) :
             self.frame_perso_left.append(Img)
             self.frame_perso_right.append(Img_flip)
 
-        self.frame_to_blit["left"] = self.frame_perso_left
-        self.frame_to_blit["right"] = self.frame_perso_right
+        self.frame_to_blit.append(self.frame_perso_right)
+        self.frame_to_blit.append(self.frame_perso_left)
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -124,7 +124,7 @@ class Player_you(Mob) :
     def shot(self,id_key):
 
         #return self.weapons.shot(self.angle_weapon)
-        return self.weapons.shot(id_key)
+        return self.weapons.shot(id_key)+[self.is_looking]
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
@@ -138,11 +138,11 @@ class Player_you(Mob) :
         if new_direction==None:
             return
         
-        elif new_direction=="left":
-            self.is_looking="left"
+        elif new_direction==2:
+            self.is_looking=2
 
-        elif new_direction=="right":
-            self.is_looking="right"
+        elif new_direction==0:
+            self.is_looking=0
 
         #else :
         #    print("Unknow direction looking :",new_direction)

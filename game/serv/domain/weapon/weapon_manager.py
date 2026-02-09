@@ -36,7 +36,9 @@ class WeaponManager :
 
         return self.lWeapons[self.weapon_select]
     
-    def create_shot(self,id_weapon,pos,angle=0):
+    def create_shot(self,id_weapon,pos,angle):
+
+        angle=angle*90
 
         projectiles = self.lWeapons[id_weapon].trigger_shot(angle,pos)
 

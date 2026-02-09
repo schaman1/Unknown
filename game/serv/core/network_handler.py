@@ -136,8 +136,8 @@ class Network_handler :
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
 
         elif id_msg == 4 :
-            angle = struct.unpack("!H",data[1:3])[0]
-            self.server.handle_shot(angle,sender)
+            id_weapon,angle = struct.unpack("!BB",data[1:3])
+            self.server.handle_shot(id_weapon,angle,sender)
 
         elif id_msg==5:
             weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2 = struct.unpack("!BBBB",data[1:5])
