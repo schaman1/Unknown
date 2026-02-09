@@ -53,6 +53,11 @@ class Player_you(Mob) :
         adjacent = mouse_pos[0] - pos[0]
         mouse_angle = int(math.degrees(math.atan2(-oppose,adjacent))) #comme atan() mais en 2D
         return mouse_angle%360
+    
+    def update_money(self, money):
+        '''valeur de money envoyée par le serv et récupérée par le client'''
+        self.money = money
+
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
@@ -82,6 +87,7 @@ class Player_you(Mob) :
     def draw_utils(self,screen,screen_size):
 
         self.draw_life(screen,screen_size)
+        self.draw_money(screen, screen_size)
 
         self.weapons.draw_icone_weapon(screen,screen_size)
 
@@ -99,6 +105,13 @@ class Player_you(Mob) :
             screen,
             (147,165,149),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
+        )
+
+    def draw_money(self, screen, screen_size):
+        pygame.draw.rect(
+            screen,
+            (0,255,0),
+            pygame.Rect(screen_size[0]//5, screen_size[1]//5, screen_size[0]//10, self.money*(screen_size[1]//10))
         )
 
     def draw_weapon(self,screen,angle,pos_draw) :
