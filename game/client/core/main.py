@@ -13,7 +13,7 @@ class Main:
     def __init__(self):
         """Contient le screen = le truc affiché à l'écran / font = ecriture (Arial et tt), Client = class / State = class qui affiche"""
         # Set up the display (width, height)
-        self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.RESIZABLE,pygame.FULLSCREEN | pygame.SCALED)
+        self.screen = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),pygame.RESIZABLE,pygame.FULLSCREEN | pygame.SCALED,)
         self.screenSize = (self.screen.get_width(),self.screen.get_height())
         self.set_CELL_SIZE(self.screenSize)
         
@@ -201,23 +201,39 @@ class Main:
 
         key = pygame.key.get_pressed()
         buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
+        is_looking = None
 
         if key[pygame.K_z] :
             self.client.send_data(id=3,data=[0]) #lié au serveur les données/haut
+            is_looking="top"
 
         if key[pygame.K_s] :
             self.client.send_data(id=3,data=[1]) #lié au serveur les données/bas
+            is_looking="bottom"
 
         if key[pygame.K_q] :
             self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
+            is_looking="left"
 
         if key[pygame.K_d] :
             self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
+            is_looking="right"
 
-        if buttons[0] : 
+        self.state.game.player_all.me.update_direction_look(is_looking)
+
+        if key[pygame.K_j] :
+            self.state.game.shot(0)
+
+        if key[pygame.K_k]:
+            self.state.game.shot(1)
+
+        if key[pygame.K_l]:
+            self.state.game.shot(2)
+
+        #if buttons[0] :
 
             #self.next_allowed_shot = now+self.rechargement/1000
-            self.state.game.shot()
+            #self.state.game.shot()
             #self.client.send_data(id=4,data=[self.])
 
         #if key[pygame.K_k] :
