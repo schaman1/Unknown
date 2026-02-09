@@ -6,7 +6,7 @@ from client.domain.weapon.weapon_manager import WeaponManager
 
 class Player_you(Mob) :
 
-    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = True):
+    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = True, money = 0):
 
         super().__init__(pos[0],pos[1],cell_size,size=(size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT))
 
@@ -18,6 +18,7 @@ class Player_you(Mob) :
         self.frame_to_blit = {}
 
         self.padding_life = 0.02
+        self.money = money
 
         #self.frame_weapon = []
         self.frame = 0
@@ -90,6 +91,7 @@ class Player_you(Mob) :
         self.draw_money(screen, screen_size)
 
         self.weapons.draw_icone_weapon(screen,screen_size)
+        self.update_frame()
 
     def draw_life(self,screen,screen_size):
 
@@ -106,6 +108,7 @@ class Player_you(Mob) :
             (147,165,149),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
+        #print(self.life)
 
     def draw_money(self, screen, screen_size):
         pygame.draw.rect(
