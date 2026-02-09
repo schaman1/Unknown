@@ -62,9 +62,8 @@ class Server_game(Server) :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
 
             if self.lClient[socket].send_new_life == True :
-
                 life = self.lClient[socket].send_life()
-                self.send_data_all((12,self.lClient[socket].id,life))
+                self.send_data((12,self.lClient[socket].id,life),socket)
             
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner

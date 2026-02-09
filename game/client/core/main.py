@@ -175,7 +175,6 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
-
         pygame.quit()
 
     def start_game(self):
