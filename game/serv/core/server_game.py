@@ -113,9 +113,9 @@ class Server_game(Server) :
     def convert_list_base(self,list):
         return [self.convert_to_base(list[i]) for i in range(len(list))]
 
-    def handle_shot(self,id_weapon,sender):
+    def handle_shot(self,id_weapon,angle,sender):
 
-        infos = self.lClient[sender].weapons.create_shot(id_weapon,self.lClient[sender].return_pos())
+        infos = self.lClient[sender].weapons.create_shot(id_weapon,self.lClient[sender].return_pos(),angle)
 
         if infos == None :
             return
