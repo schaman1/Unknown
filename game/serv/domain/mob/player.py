@@ -46,12 +46,13 @@ class Player(Mob) :
 
         self.gravity_effect()
         #print(self.pos_x,self.pos_y)
+        #print(self.pos_y,self.screen_global_size)
 
-        if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
-            self.vitesse_x=0
-
-        if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
-            self.vitesse_y=0
+        #if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
+        #    self.vitesse_x=0
+#
+        #if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
+        #    self.vitesse_y=0
 
         deltax = self.collision_x(map,dt)
 
@@ -66,10 +67,11 @@ class Player(Mob) :
 
         s = self.return_signe(self.vitesse_x)
 
-        if self.vitesse_x*s<self.acceleration*self.acceleration_x*s:
+        if self.vitesse_x*s<self.acceleration:
             self.vitesse_x = 0
         else :
-            self.vitesse_x-=self.acceleration*self.acceleration_x*s
+            #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
+            self.vitesse_x=self.vitesse_x*0.7
 
     def update_pos(self,map,dt):
 
@@ -83,20 +85,23 @@ class Player(Mob) :
 
         return delta
         
-    def move_from_key(self,delta,map): 
+    def move_from_key(self,delta,map,dt_receive): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
+
+        dt = dt_receive/1000
+        #print("dt :",dt)
 
         if delta==0:
             self.move_up(map)
 
         elif delta==1:
-            self.move_down()
+            self.move_down(dt)
 
         elif delta==2:
-            self.move_left()
+            self.move_left(dt)
 
         elif delta==3:
-            self.move_right()
+            self.move_right(dt)
         
         #delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
         #self.pos_x += delta_collision[0] 
@@ -108,21 +113,22 @@ class Player(Mob) :
         if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
 
-    def move_down(self):
+    def move_down(self,dt):
         #self.pos_y+=1
         if self.vitesse_y<self.vitesse_max:
-            self.vitesse_y+=self.acceleration*self.acceleration_x
+            self.vitesse_y+=self.acceleration*self.acceleration_x*dt
 
-    def move_left(self):
+    def move_left(self,dt):
         #self.pos_x-=1
+        #print("Left, dt:",dt,self.acceleration*self.acceleration_x*dt)
         if self.vitesse_x>-self.vitesse_max:
-            self.vitesse_x-=self.acceleration*self.acceleration_x*10
+            self.vitesse_x-=self.acceleration*self.acceleration_x*dt
 
-    def move_right(self):
-
+    def move_right(self,dt):
+        #print("Rigfht, dt:",dt)
         #print("x,y",self.pos_x,self.pos_y)
         if self.vitesse_x<self.vitesse_max:
-            self.vitesse_x+=self.acceleration*self.acceleration_x*10
+            self.vitesse_x+=self.acceleration*self.acceleration_x*dt
     
     def take_damage(self, amount):
         self.life -= amount

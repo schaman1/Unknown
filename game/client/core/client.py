@@ -307,7 +307,7 @@ class Client:
             #packet += struct.pack("!HH", data[0], data[1])
             
         if id == 3 :
-            packet+= struct.pack("!B",data[0])
+            packet+= struct.pack("!BH",data[0],data[1])
 
         elif id == 4:
             #print("data shot",data)
