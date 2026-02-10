@@ -56,7 +56,7 @@ class Network_handler :
                     msg_size = 1
 
                 elif msg_id==3:
-                    msg_size=1+1
+                    msg_size=1+3
                 
                 elif msg_id==4:
                     msg_size=1+2
@@ -131,9 +131,9 @@ class Network_handler :
         id_msg = struct.unpack("!B", data[0:1])[0]
 
         if id_msg == 3 :
-
-            dep = struct.unpack("!B", data[1:2])[0]
-            self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
+            
+            dep,dt_receive = struct.unpack("!BH", data[1:4])
+            self.server.lClient[sender].move_from_key(dep,self.server.map_cell,dt_receive)
 
         elif id_msg == 4 :
             id_weapon,angle = struct.unpack("!BB",data[1:3])

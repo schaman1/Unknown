@@ -202,21 +202,22 @@ class Main:
         key = pygame.key.get_pressed()
         buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
         is_looking = None
+        dt_send = int(self.dt*1000)
 
         if key[pygame.K_z] :
-            self.client.send_data(id=3,data=[0]) #lié au serveur les données/haut
+            self.client.send_data(id=3,data=[0,dt_send]) #lié au serveur les données/haut
             is_looking=1
 
         if key[pygame.K_s] :
-            self.client.send_data(id=3,data=[1]) #lié au serveur les données/bas
+            self.client.send_data(id=3,data=[1,dt_send]) #lié au serveur les données/bas
             is_looking=3
 
         if key[pygame.K_d] :
-            self.client.send_data(id=3,data=[3]) #lié au serveur les données /right
+            self.client.send_data(id=3,data=[3,dt_send]) #lié au serveur les données /right
             is_looking=0
 
         if key[pygame.K_q] :
-            self.client.send_data(id=3,data=[2]) #lié au serveur les données/gauche
+            self.client.send_data(id=3,data=[2,dt_send]) #lié au serveur les données/gauche
             is_looking=2
 
         self.state.game.player_all.me.update_direction_look(is_looking)

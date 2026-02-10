@@ -10,10 +10,10 @@ class Mob:
 
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
         
-        self.acceleration = 1
-        self.gravity_power = 200
-        self.acceleration_x = 500
-        self.acceleration_y = 80 * self.base_movement
+        self.acceleration = self.base_movement
+        self.gravity_power = 2
+        self.acceleration_x = 5 * self.base_movement
+        self.acceleration_y = 8 * self.base_movement
         self.vitesse_x = 0
         self.vitesse_y = 0
         
@@ -43,8 +43,9 @@ class Mob:
 
         #return
 
-        if self.vitesse_y < 500*self.base_movement:
-            self.vitesse_y += self.acceleration*self.gravity_power
+        #if self.vitesse_y < 500*self.base_movement:
+        self.vitesse_y += self.acceleration*self.gravity_power
+        print(self.vitesse_y)
 
     def collision_y(self,map,dt):
 
@@ -111,7 +112,6 @@ class Mob:
                     #    print("Collisionx",dist*s,remaining*s,self.pos_y,self.pos_x)
 
                     if dist < remaining :
-                        #print("Yes !")
                      
                         self.vitesse_x = 0
                     #print()
