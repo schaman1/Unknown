@@ -16,7 +16,7 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 50*self.base_movement
+        self.vitesse_max = 40*self.base_movement
 
         self.weapons = WeaponManager()
 
@@ -45,8 +45,7 @@ class Player(Mob) :
     def return_delta_vitesse(self,map,dt):
 
         self.gravity_effect()
-        #print(self.pos_x,self.pos_y)
-        #print(self.pos_y,self.screen_global_size)
+        #print(self.vitesse_y)
 
         #if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
         #    self.vitesse_x=0
@@ -71,7 +70,7 @@ class Player(Mob) :
             self.vitesse_x = 0
         else :
             #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
-            self.vitesse_x=self.vitesse_x*0.7
+            self.vitesse_x=self.vitesse_x*0.8
 
     def update_pos(self,map,dt):
 
@@ -112,23 +111,33 @@ class Player(Mob) :
         #self.pos_y-=1
         if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
+            #print("Move up",self.vitesse_y)
 
     def move_down(self,dt):
         #self.pos_y+=1
         if self.vitesse_y<self.vitesse_max:
-            self.vitesse_y+=self.acceleration*self.acceleration_x*dt
+            self.vitesse_y+=self.acceleration_y*dt
+            
+            #print("Move down",self.vitesse_y)
 
     def move_left(self,dt):
-        #self.pos_x-=1
-        #print("Left, dt:",dt,self.acceleration*self.acceleration_x*dt)
+        s=self.return_signe(self.vitesse_x)
+
         if self.vitesse_x>-self.vitesse_max:
             self.vitesse_x-=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1-0.2*s)
+
+        if self.vitesse_x<-self.vitesse_max:
+            self.vitesse_x = -self.vitesse_max
 
     def move_right(self,dt):
-        #print("Rigfht, dt:",dt)
-        #print("x,y",self.pos_x,self.pos_y)
+        s=self.return_signe(self.vitesse_x)
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1+0.2*s)
+
+        if self.vitesse_x>self.vitesse_max:
+            self.vitesse_x = self.vitesse_max
     
     def take_damage(self, amount):
         self.life -= amount
