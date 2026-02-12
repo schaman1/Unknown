@@ -1,16 +1,31 @@
 from shared.constants import world
 from client.domain.mob.player.player import Player_you,Player_not_you
+import pygame
 
 class Player_all :
     '''
     Classe de test pour le perso de base
     '''
-    def __init__(self,cell_size):
+    def __init__(self,cell_size,screenSize):
         self.dic_players = {}
         self.cell_size = cell_size
         self.client_id = None
         self.spawn_point = world.SPAWN_POINT
         self.me = None
+        self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
+        self.vision = world.NBR_CELL_CAN_SEE
+
+    def create_light(self,vision,pos):
+        """Permet de faire genre que le personnage voit à une certaine portée"""
+        self.light.fill((0,0,0))
+
+        for i in range(10):
+
+
+            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/2)*self.cell_size)
+
+    def draw_circle(self,screen,color,pos,r,width=0):
+        pygame.draw.circle(screen, color, pos, r, width)
 
     def add_Player(self,id, is_you = False, pseudo = "Coming soon"):
 

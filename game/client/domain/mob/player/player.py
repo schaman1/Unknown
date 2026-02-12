@@ -64,7 +64,7 @@ class Player_you(Mob) :
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
-        pos = self.calculate_pos_blit(xscreen,yscreen) 
+        pos = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle_weapon = self.get_angle(center, mouse_pos) #Draw weapon
         #self.draw_weapon(screen,self.angle_weapon,pos)
 
