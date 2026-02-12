@@ -17,8 +17,8 @@ class Monster_all :
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 
-        for (chunk, id, x, y) in lchunck_monsters :
-            self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size)
+        for (chunk, id, x, y, state) in lchunck_monsters :
+            self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,state)
 
     def blit_monster(self,monster,screen,x,y):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""

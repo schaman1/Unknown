@@ -70,132 +70,19 @@ class Monster(Mob):
     # --- Déplacement pour gestion des collisions ---
 
     # Vérifie si une cellule est bloquante (dure ou liquide)
-    def is_blocking_cell(self, cell_type, cell_dur, cell_liquid):
-        return self.is_type(cell_type, cell_dur) or self.is_type(cell_type, cell_liquid)
+
 
     # Essayer de déplacer le monstre selon l'axe X en gérant les collisions
-    def try_move_axis_x(self, dx, cells_arr, cell_dur, cell_liquid):
-        if dx == 0:
-            return 0
 
-        s = -1 if dx < 0 else 1
-        remaining = abs(dx)
-        moved = 0
-
-        while remaining > 0:
-            step = min(self.base_movement, remaining)
-            next_x = self.pos_x + s * step
-
-            x_check = next_x + (self.half_width + self.base_movement) * s
-            y_top = self.pos_y - self.half_height
-            y_bottom = self.pos_y + self.half_height
-
-            ok = True
-            y = y_top
-            while y <= y_bottom:
-                bx = self.convert_to_base(x_check)
-                by = self.convert_to_base(y)
-
-                if by < 0 or by >= cells_arr.shape[0] or bx < 0 or bx >= cells_arr.shape[1]:
-                    ok = False
-                    break
-
-                if self.is_blocking_cell(int(cells_arr[by, bx]), cell_dur, cell_liquid):
-                    ok = False
-                    break
-
-                y += self.base_movement
-
-            if not ok:
-                break
-
-            self.pos_x = next_x
-            moved += s * step
-            remaining -= step
-
-        return moved
 
     # Essayer de déplacer le monstre selon l'axe Y en gérant les collisions
-    def try_move_axis_y(self, dy, cells_arr, cell_dur, cell_liquid):
-        if dy == 0:
-            return 0
 
-        s = -1 if dy < 0 else 1
-        remaining = abs(dy)
-        moved = 0
-
-        while remaining > 0:
-            step = min(self.base_movement, remaining)
-            next_y = self.pos_y + s * step
-
-            y_check = next_y + (self.half_height + self.base_movement) * s
-            x_left = self.pos_x - self.half_width
-            x_right = self.pos_x + self.half_width
-
-            ok = True
-            x = x_left
-            while x <= x_right:
-                bx = self.convert_to_base(x)
-                by = self.convert_to_base(y_check)
-
-                if by < 0 or by >= cells_arr.shape[0] or bx < 0 or bx >= cells_arr.shape[1]:
-                    ok = False
-                    break
-
-                if self.is_blocking_cell(int(cells_arr[by, bx]), cell_dur, cell_liquid):
-                    ok = False
-                    break
-
-                x += self.base_movement
-
-            if not ok:
-                break
-
-            self.pos_y = next_y
-            moved += s * step
-            remaining -= step
-
-        return moved
     
     # Vérifie si le monstre chevauche une cellule dure
-    def overlaps_dur(self,map):
-        i = -self.half_height
-        while i <= self.half_height:
-            j = -self.half_width
-            while j <= self.half_width:
-                if self.touch_wall(i, j,map):
-                    return True
-                j += self.base_movement
-            i += self.base_movement
-        return False
+
 
     # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
-    def try_step_up_1(self,map, intended_vx,dt):
-        if intended_vx == 0:
-            return 0
 
-        if not self.touch_ground(map):
-            return 0
-
-        old_x = self.pos_x
-        old_y = self.pos_y
-        old_vx = self.vitesse_x
-
-        self.pos_y = old_y - self.base_movement
-        if self.overlaps_dur(map):
-            self.pos_x = old_x
-            self.pos_y = old_y
-            self.vitesse_x = old_vx
-            return 0
-        self.vitesse_x = intended_vx
-        moved = self.collision_x(map,dt)
-
-        if moved == 0:
-            self.pos_x = old_x
-            self.pos_y = old_y
-            self.vitesse_x = old_vx
-            return 0
-        return moved
 
 
 #Creation d'un monstre spécifique : le squelette

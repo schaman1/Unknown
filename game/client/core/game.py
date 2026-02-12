@@ -70,10 +70,11 @@ class Game :
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
-        for (chunk, id, x, y) in data_monster :
+        for (chunk, id, x, y, state) in data_monster :
                 
             self.monsters.dic_monster[chunk][id].pos_x = x
             self.monsters.dic_monster[chunk][id].pos_y = y
+            self.monsters.dic_monster[chunk][id].state = state
 
     def create_light(self,vision):
         """Permet de faire genre que le personnage voit à une certaine portée"""
