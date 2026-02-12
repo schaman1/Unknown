@@ -15,14 +15,17 @@ class Player_all :
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
         self.vision = world.NBR_CELL_CAN_SEE
 
-    def create_light(self,vision,pos):
+    def create_light(self,screen):
         """Permet de faire genre que le personnage voit à une certaine portée"""
         self.light.fill((0,0,0))
 
         for i in range(10):
 
+            for player in self.dic_players.values() :
 
-            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/2)*self.cell_size)
+                self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),player.pos_blit,(self.vision-i/2)*self.cell_size)
+
+        screen.blit(self.light,(0,0))
 
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
@@ -52,13 +55,17 @@ class Player_all :
 
         for player in self.dic_players.values():
 
+            player.update_pos_blit(xscreen,yscreen)
+
             if player.is_you :
 
                 player.draw(screen_global,xscreen,yscreen, mouse_pos,center)
 
             else :
 
-                player.draw(screen_global,xscreen,yscreen)
+                player.draw(screen_global)
+
+        self.create_light(screen_global)
 
     def mouse_button_down(self,mouse_pos):
 

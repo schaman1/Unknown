@@ -150,7 +150,7 @@ class Client:
                 msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*12
 
             elif msg_id==10:
-                msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
+                msg_size = 1+3+struct.unpack("!B",self.buffer[1:2])[0]
 
             elif msg_id == 11 :
                 msg_size = 1+3
@@ -265,7 +265,7 @@ class Client:
             self.main.state.mod = "intro end"
 
         elif id==10:
-            client_id,idx_weapon_pos,id_weapon = struct.unpack("!BBB",data[2:5])
+            idx_weapon_pos,id_weapon = struct.unpack("!BB",data[2:4])
             spells_id = []
 
             for i in range(size-5):
@@ -274,11 +274,10 @@ class Client:
 
             #print(spells_id,"Spells !")
 
-            if client_id==self.id :
-                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id,self.screen_size)
+            self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id,self.screen_size)
 
-            else:
-                self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
+            #else:
+            #    self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
         elif id==12:
             life = struct.unpack("!B",data[1:2])[0]
