@@ -16,6 +16,7 @@ class Movable:
     acceleration_x: float
     acceleration_y: float
     screen_global_size: tuple[int, int]
+    is_climbing: bool = False
 
     def convert_to_base(self,nbr):
         """Retourne le nbr en 100 pour 1"""
@@ -26,6 +27,9 @@ class Movable:
         return nbr*self.base_movement
 
     def gravity_effect(self):
+
+        if self.is_climbing:
+            return
 
         #return
 
@@ -233,6 +237,8 @@ class Movable:
             i += self.base_movement
         return False
 
+    is_climbing: bool = False
+
     def try_step_up_1(self,map, intended_vx,dt):
         if intended_vx == 0:
             return 0
@@ -259,3 +265,53 @@ class Movable:
             self.vitesse_x = old_vx
             return 0
         return moved
+
+    def is_on_ladder(self, map):
+        try:
+            # Check center of the character
+            center_x = self.pos_x
+            center_y = self.pos_y 
+            
+            # Using convert_to_base to get grid coordinates
+            grid_x = self.convert_to_base(center_x)
+            grid_y = self.convert_to_base(center_y)
+            
+            # Check if within map bounds
+            if grid_y < 0 or grid_y >= map.len_y_chunk*16 or grid_x < 0 or grid_x >= map.len_x_chunk*16:
+                return False
+
+            tile_type = map.return_type(center_y, center_x)
+            ladder_type = map.type.get("LADDER", 8)
+            # print(f"DEBUG: Pos: ({center_x}, {center_y}), Grid: ({grid_x}, {grid_y}), Tile: {tile_type}, Ladder: {ladder_type}")
+            return tile_type == ladder_type
+        except Exception as e:
+            print(f"Error in is_on_ladder: {e}")
+            return False
+
+    def climb(self, map, direction, dt):
+        #direction: -1 for UP, 1 for DOWN
+        if self.is_on_ladder(map):
+            self.is_climbing = True
+            
+            speed = self.base_movement * 40 # Climbing speed (similar to max speed)
+            self.vitesse_y = direction * speed
+            
+            # Predict movement
+            new_y = self.pos_y + self.vitesse_y * dt
+            
+            # Check bounds/collision if needed, but for now simple movement
+            # Validate if new position is still on ladder? 
+            # If we move OFF the ladder, we should probably stop climbing or fall
+            
+            # For simplicity, move first
+            pos_before = self.pos_y
+            self.pos_y = new_y
+            
+            if not self.is_on_ladder(map):
+                # If we moved off the ladder
+                # If going UP, we might have reached the top.
+                # If going DOWN, we might have reached the bottom.
+                pass
+            
+        else:
+            self.is_climbing = False

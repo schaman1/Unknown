@@ -44,7 +44,7 @@ class Skeleton(Mob) :
 
     def update_frame(self):
         self.frame_multiplier +=1
-        if self.frame_multiplier >= 100 :
+        if self.frame_multiplier >= 10 :
             self.frame +=1
             self.frame_multiplier = 0
 

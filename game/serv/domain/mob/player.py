@@ -90,6 +90,22 @@ class Player(Mob) :
         dt = dt_receive/1000
         #print("dt :",dt)
 
+        # Check for ladder interaction
+        if self.is_on_ladder(map):
+            if delta == 0: # UP
+                self.climb(map, -1, dt)
+                return
+            elif delta == 1: # DOWN
+                self.climb(map, 1, dt)
+                return
+            
+            # If moving side-ways on ladder, maybe fall off?
+            # For now let's keep is_climbing true unless we move off
+            
+        else:
+            self.is_climbing = False
+
+
         if delta==0:
             self.move_up(map)
 
