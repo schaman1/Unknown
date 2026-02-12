@@ -118,7 +118,7 @@ class Movable:
     def touch_ground(self,map):
         j = -self.half_width
 
-        while j<self.half_width+1 and not self.touch_wall(self.half_height+self.base_movement,j,map) :
+        while j<self.half_width+1 and not self.touch_wall(self.half_height+1,j,map) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
             j+=self.base_movement
 
         if j>self.half_width :
