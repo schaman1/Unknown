@@ -13,6 +13,8 @@ class Read_monster :
 
         self.base_movement = base_movement
 
+        self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3}
+
         self.init_dic_monster()
 
     def init_dic_monster(self) :
@@ -33,7 +35,8 @@ class Read_monster :
                 #list_modif[i] = []
                 for monster in self.dic_monster[chunk] :
 
-                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y))
+                    state_id = self.state_map.get(monster.state, 0)
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
 
         return list_modif
 
@@ -70,8 +73,10 @@ class Read_monster :
 
                         monster.update(map,lInfoClient,dt)
 
+                        state_id = self.state_map.get(monster.state, 0)
+
                         for client_idx in liste_client_see :
-                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y))
+                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
         return list_modif

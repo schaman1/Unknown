@@ -1,6 +1,7 @@
 from shared.constants import world
+from serv.domain.mob.moves import Movable
 
-class Mob:
+class Mob(Movable):
 
     def __init__(self,pos,hp = 100,id=None,width=5,height=5):
         self.pos_x = pos[0]
@@ -31,124 +32,6 @@ class Mob:
     def send_life(self):
         self.send_new_life = False
         return self.life
-
-    def convert_to_base(self,nbr):
-        """Retourne le nbr en 100 pour 1"""
-        return nbr//self.base_movement
-    
-    def convert_from_base(self,nbr):
-        """Retourne le nbr en 1 pour 100"""
-        return nbr*self.base_movement
-
-    def gravity_effect(self):
-
-        #return
-
-        #if self.vitesse_y < 500*self.base_movement:
-        #print("before gravity",self.vitesse_y)
-        self.vitesse_y += self.base_movement*2
-        s=self.return_signe(self.vitesse_y)
-        self.vitesse_y = self.vitesse_y*(1+0.1*s)
-        if self.vitesse_y>self.base_movement*100:
-            self.vitesse_y = self.base_movement*100
-        #print(self.vitesse_y)
-
-    def collision_y(self,map,dt):
-
-        #self.pos_y+=self.vitesse_y
-        #return
-
-        pos_before = self.pos_y
-
-        s = self.return_signe(self.vitesse_y)
-        remaining = int(self.vitesse_y*s*dt)
-
-        while remaining > 0 :
-
-            #print("remaining",remaining)
-
-            dist = self.base_movement
-
-            for j in range(-self.half_width,self.half_width+1,self.base_movement): #+1 car doit compter le dernier carreau
-
-                if self.touch_wall((self.half_height+self.base_movement)*s,j,map) :
-
-                    dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
-
-                    if dist < remaining :
-                        self.vitesse_y = 0
-
-            if dist < remaining :
-                self.pos_y+=dist*s
-            
-            else :
-                self.pos_y+= remaining*s
-                #remaining=0
-
-            remaining -= self.base_movement
-
-        return self.pos_y - pos_before
-
-    def collision_x(self,map,dt):
-
-        #self.pos_x+=self.vitesse_x
-        #return
-        
-        pos_before = self.pos_x
-
-        s = self.return_signe(self.vitesse_x)
-        remaining = int(self.vitesse_x*s*dt)
-
-        while remaining > 0 :
-
-            dist = self.base_movement
-            for j in range(-self.half_height,self.half_height+1,self.base_movement): #+1 car doit compter le dernier
-
-                if self.touch_wall(j,(self.half_width+self.base_movement)*s,map) :
-
-                    dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
-
-                    if dist < remaining :
-                     
-                        self.vitesse_x = 0
-
-            if dist < remaining :
-                self.pos_x+=dist*s
-                remaining=0
-            
-            else :
-                self.pos_x+= remaining*s
-
-            remaining -= self.base_movement
-
-        return self.pos_x-pos_before
-        
-    def touch_wall(self,i,j,map):
-        return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i-self.half_height),self.convert_to_base(self.pos_x+j)),map.dur)
-    
-    def touch_ground(self,map):
-        j = -self.half_width
-
-        while j<self.half_width+1 and not self.touch_wall(self.half_height+self.base_movement,j,map) :
-            j+=self.base_movement
-
-        if j>self.half_width :
-            return False
-    
-        else :
-            return True
-
-    def is_type(self, type_cell, type_check):
-        """Vérifie si la cellule à la position (x,y) est du type spécifié"""
-        if type_check[0] <= type_cell <= type_check[1]:
-            return True
-        return False
-    
-    def return_signe(self,e):
-        if e<0:
-            return -1
-        else :
-            return 1
         
     def return_pos(self):
         return [self.pos_x,self.pos_y]
