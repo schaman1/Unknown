@@ -221,8 +221,11 @@ class Network_handler :
         
         packet+= struct.pack("!BBB",nbr_spells_max,idx_weapon_pos,id_weapon)
 
+        print("nbr_spells_max,idx_weapon_pos,id_weapon then id_spell")
+
         for id_spell in spells_id:
             packet+= struct.pack("!B",id_spell)
+            print("Spells id",id_spell)
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""

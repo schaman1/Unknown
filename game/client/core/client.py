@@ -268,9 +268,9 @@ class Client:
             idx_weapon_pos,id_weapon = struct.unpack("!BB",data[2:4])
             spells_id = []
 
-            for i in range(size-5):
+            for i in range(size-4):
 
-                spells_id.append(struct.unpack("!B",data[5+i:6+i])[0])
+                spells_id.append(struct.unpack("!B",data[4+i:5+i])[0])
 
             #print(spells_id,"Spells !")
 

@@ -113,6 +113,7 @@ class Movable:
         return self.pos_x-pos_before
         
     def touch_wall(self,i,j,map):
+        #print(self.pos_y,i,self.half_height,self.pos_x,j)
         return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i-self.half_height),self.convert_to_base(self.pos_x+j)),map.dur)
     
     def touch_ground(self,map):
