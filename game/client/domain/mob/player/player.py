@@ -203,7 +203,7 @@ class Player_not_you(Mob) :
         #self.pos_blit = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle = self.get_angle(center, mouse_pos)
 #
-        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4])
+        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4],self.pos_blit)
 
         #self.draw_weapon(screen,self.pos_blit)
 
