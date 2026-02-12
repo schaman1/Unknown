@@ -80,11 +80,11 @@ class Player_you(Mob) :
 
         self.update_frame()
         
-        pygame.draw.rect( #Pour voir où le perso est en temps reel
-            screen,
-            (255, 255, 255),  # couleur (blanc)
-            pygame.Rect((self.pos_x*self.cell_size)//100+xscreen, self.pos_y*self.cell_size//100+yscreen, self.cell_size, self.cell_size)
-        )
+        #pygame.draw.rect( #Pour voir où le perso est en temps reel
+        #    screen,
+        #    (255, 255, 255),  # couleur (blanc)
+        #    pygame.Rect((self.pos_x*self.cell_size)//100+xscreen, self.pos_y*self.cell_size//100+yscreen, self.cell_size, self.cell_size)
+        #)
 
     def draw_utils(self,screen,screen_size):
 
@@ -232,10 +232,13 @@ class Player_not_you(Mob) :
     #        self.frame_weapon.append(img_weapon)
 #
     def move(self,delta):
+        old_pos = self.pos_x
         self.pos_x = delta[0]
         self.pos_y = delta[1]
 
-        if delta[0]<=0:
+        delta_x = self.pos_x-old_pos
+
+        if delta_x>=0:
             self.is_looking = 0
         else :
             self.is_looking = 2
