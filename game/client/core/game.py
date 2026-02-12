@@ -28,12 +28,9 @@ class Game :
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
-        self.light = pygame.Surface((self.canva_size[0],self.canva_size[1]), pygame.SRCALPHA)
-        self.create_light(vision = world.NBR_CELL_CAN_SEE)
-
         self.monsters = Monster_all(cell_size)
 
-        self.player_all = Player_all(cell_size)
+        self.player_all = Player_all(cell_size,screenSize)
 
         self.mini_map = MiniMap(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
@@ -53,20 +50,6 @@ class Game :
 
         return True #If end animation else return False
 
-    #def update_canva(self,data):
-    #    """Reçoit les données l du serveur et appelle update"""
-#
-    #    rgb = surfarray.pixels3d(self.canva)
-    #    alpha = surfarray.pixels_alpha(self.canva)
-#
-    #    for x, y, r, g, b, a in struct.iter_unpack("!hhBBBB", data[3:]):
-    #        px = x * self.cell_size
-    #        py = y * self.cell_size
-    #        rgb[px:px+self.cell_size, py:py+self.cell_size] = (r, g, b)
-    #        alpha[px:px+self.cell_size, py:py+self.cell_size] = a
-#
-    #    del rgb, alpha
-
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
@@ -75,19 +58,9 @@ class Game :
             self.monsters.dic_monster[chunk][id].pos_x = x
             self.monsters.dic_monster[chunk][id].pos_y = y
 
-    def create_light(self,vision):
-        """Permet de faire genre que le personnage voit à une certaine portée"""
-        self.light.fill((0,0,0))
-
-        for i in range(10):
-            self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),self.center,(vision-i/2)*self.cell_size)
-
     def shot(self,id_key):
         if not self.blit_info:
             self.player_command.append(self.player_all.me.shot(id_key))
-
-    def draw_circle(self,screen,color,pos,r,width=0):
-        pygame.draw.circle(screen, color, pos, r, width)
 
     def blit_monsters(self,screen,x,y):
         self.monsters.blit_all_monsters(screen,x,y)
@@ -130,7 +103,7 @@ class Game :
         self.blit_players(screen,x,y, mouse_pos)
         self.blit_projectiles_explosions(screen,x,y,dt)
 
-        screen.blit(self.light,(0,0))
+        #screen.blit(self.light,(0,0))
 
         self.blit_utils(screen,self.screen_size)
 
