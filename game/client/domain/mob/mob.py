@@ -6,13 +6,18 @@ class Mob:
         self.pos_x = x
         self.pos_y = y
         self.base_movement = world.RATIO
+        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
         self.between_pos_x = 0
         self.between_pos_y = 0
         self.cell_size = cell_size
         self.width,self.height = size
+        self.pos_blit=0
 
         self.life=75
         self.max_life = 100
+
+    def update_pos_blit(self,x,y):
+        self.pos_blit = self.calculate_pos_blit(x,y)
 
     def calculate_pos_blit(self,x,y):
         xs = self.convert_from_base(self.pos_x*self.cell_size) - self.width//2*self.cell_size +x
