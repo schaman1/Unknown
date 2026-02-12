@@ -6,19 +6,20 @@ class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1): 
+    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1, money=0): 
 
         super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT)
 
         self.hp = hp
+        self.money = money
+        self.send_new_money = False
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 50*self.base_movement
+        self.vitesse_max = 40*self.base_movement
 
         self.weapons = WeaponManager()
 
-        self.next_allowed_shot = 0
         self.time_shot_update = False
 
     def return_weapon_info(self):
@@ -28,27 +29,29 @@ class Player(Mob) :
 
         return self.weapons.return_weapon_select()
     
-    def update_next_allowed_shot(self,next_allowed_shot):
-        self.next_allowed_shot = next_allowed_shot
+    def update_next_allowed_shot(self,id_weapon):
+        self.weapon_shot_update=id_weapon
+
         self.time_shot_update = True
 
     def return_next_allowed_shot(self):
         if self.time_shot_update :
             self.time_shot_update=False
-            return [self.next_allowed_shot]
+            time = self.weapons.lWeapons[self.weapon_shot_update].return_info_next_time_can_shot()
+            return [time,self.weapon_shot_update]
         else :
             return []
 
     def return_delta_vitesse(self,map,dt):
 
         self.gravity_effect()
-        #print(self.pos_x,self.pos_y)
+        #print(self.vitesse_y)
 
-        if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
-            self.vitesse_x=0
-
-        if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
-            self.vitesse_y=0
+        #if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
+        #    self.vitesse_x=0
+#
+        #if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
+        #    self.vitesse_y=0
 
         deltax = self.collision_x(map,dt)
 
@@ -61,11 +64,13 @@ class Player(Mob) :
 
     def update_vitesse(self):
 
-        if self.vitesse_x<0:
-            self.vitesse_x+=self.acceleration*self.acceleration_x
+        s = self.return_signe(self.vitesse_x)
 
-        elif self.vitesse_x>0:
-            self.vitesse_x-=self.acceleration*self.acceleration_x
+        if self.vitesse_x*s<self.acceleration:
+            self.vitesse_x = 0
+        else :
+            #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
+            self.vitesse_x=self.vitesse_x*0.8
 
     def update_pos(self,map,dt):
 
@@ -73,26 +78,29 @@ class Player(Mob) :
 
         self.update_vitesse()
 
-        self.take_damage(1)
+        #self.update_money(1)
 
         #print(self.pos_x,self.pos_y)
 
         return delta
         
-    def move_from_key(self,delta,map): 
+    def move_from_key(self,delta,map,dt_receive): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
+
+        dt = dt_receive/1000
+        #print("dt :",dt)
 
         if delta==0:
             self.move_up(map)
 
         elif delta==1:
-            self.move_down()
+            self.move_down(dt)
 
         elif delta==2:
-            self.move_left()
+            self.move_left(dt)
 
         elif delta==3:
-            self.move_right()
+            self.move_right(dt)
         
         #delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
         #self.pos_x += delta_collision[0] 
@@ -103,22 +111,33 @@ class Player(Mob) :
         #self.pos_y-=1
         if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
+            #print("Move up",self.vitesse_y)
 
-    def move_down(self):
+    def move_down(self,dt):
         #self.pos_y+=1
         if self.vitesse_y<self.vitesse_max:
-            self.vitesse_y+=self.acceleration*self.acceleration_x
+            self.vitesse_y+=self.acceleration_y*dt
+            
+            #print("Move down",self.vitesse_y)
 
-    def move_left(self):
-        #self.pos_x-=1
+    def move_left(self,dt):
+        s=self.return_signe(self.vitesse_x)
+
         if self.vitesse_x>-self.vitesse_max:
-            self.vitesse_x-=self.acceleration*self.acceleration_x
+            self.vitesse_x-=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1-0.2*s)
 
-    def move_right(self):
+        if self.vitesse_x<-self.vitesse_max:
+            self.vitesse_x = -self.vitesse_max
 
-        #print("x,y",self.pos_x,self.pos_y)
+    def move_right(self,dt):
+        s=self.return_signe(self.vitesse_x)
         if self.vitesse_x<self.vitesse_max:
-            self.vitesse_x+=self.acceleration*self.acceleration_x
+            self.vitesse_x+=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1+0.2*s)
+
+        if self.vitesse_x>self.vitesse_max:
+            self.vitesse_x = self.vitesse_max
     
     def take_damage(self, amount):
         self.life -= amount
@@ -130,6 +149,17 @@ class Player(Mob) :
     def is_alive(self):
         return self.life > 0
     
+    def update_money(self, amount):
+
+        self.money+= amount
+
+        self.send_new_money = True
+    
+    def send_money(self):
+        self.send_new_money = False
+        return self.money
+
+
     def switch_spell(self,spell_1_weapon,spell_1_idx,spell_2_weapon,spell_2_idx):
 
         spell_switch = self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx]

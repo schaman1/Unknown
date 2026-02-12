@@ -1,23 +1,24 @@
 import pygame, math
 from client.domain.mob.mob import Mob
 from client.config import assets,weapon
-from shared.constants import size_display
+from shared.constants import size_display,world
 from client.domain.weapon.weapon_manager import WeaponManager
 
 class Player_you(Mob) :
 
-    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = True):
+    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = True, money = 0):
 
         super().__init__(pos[0],pos[1],cell_size,size=(size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT))
 
         self.pseudo = pseudo
         self.is_you = is_you
-        self.is_looking = "right"
-        self.frame_perso_left = []
+        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
         self.frame_perso_right = []
+        self.frame_perso_left = []
         self.frame_to_blit = []
 
         self.padding_life = 0.02
+        self.money = money
 
         #self.frame_weapon = []
         self.frame = 0
@@ -34,10 +35,13 @@ class Player_you(Mob) :
             Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
 
             Img_flip = pygame.transform.flip(Img, True, False)
-            self.frame_perso_right.append(Img)
-            self.frame_perso_left.append(Img_flip)
+            self.frame_perso_left.append(Img)
+            self.frame_perso_right.append(Img_flip)
 
-        self.frame_to_blit = self.frame_perso_right
+        self.frame_to_blit.append(self.frame_perso_right)
+        self.frame_to_blit.append(self.frame_perso_right) #Top
+        self.frame_to_blit.append(self.frame_perso_left)
+        self.frame_to_blit.append(self.frame_perso_right) #Bottom
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -52,6 +56,11 @@ class Player_you(Mob) :
         adjacent = mouse_pos[0] - pos[0]
         mouse_angle = int(math.degrees(math.atan2(-oppose,adjacent))) #comme atan() mais en 2D
         return mouse_angle%360
+    
+    def update_money(self, money):
+        '''valeur de money envoyée par le serv et récupérée par le client'''
+        self.money = money
+
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
         
@@ -68,7 +77,7 @@ class Player_you(Mob) :
         #    screen.blit(perso_left,pos)
         #else :
         #    screen.blit(perso_right, pos)
-        screen.blit(self.frame_to_blit[self.frame%4],pos)
+        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4],pos)
 
         self.update_frame()
         
@@ -81,8 +90,10 @@ class Player_you(Mob) :
     def draw_utils(self,screen,screen_size):
 
         self.draw_life(screen,screen_size)
+        self.draw_money(screen,screen_size)
 
         self.weapons.draw_icone_weapon(screen,screen_size)
+        self.update_frame()
 
     def draw_life(self,screen,screen_size):
 
@@ -93,11 +104,19 @@ class Player_you(Mob) :
             (14,16,14),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03),
         )
+        #print(self.life)
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
             (147,165,149),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
+        )
+
+    def draw_money(self, screen, screen_size):
+        pygame.draw.rect(
+            screen,
+            (0,255,0),
+            pygame.Rect(screen_size[0]//5, screen_size[1]//5, screen_size[0]//10, self.money*(screen_size[1]//10))
         )
 
     def draw_weapon(self,screen,angle,pos_draw) :
@@ -107,10 +126,14 @@ class Player_you(Mob) :
     def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id,screen_size):
         self.weapons.add_weapon(i,id_weapon,nbr_spell_max,spells_id,screen_size)
 
-    def shot(self):
+    def shot(self,id_key):
 
         #return self.weapons.shot(self.angle_weapon)
-        return self.weapons.shot(0)
+        info = self.weapons.shot(id_key)
+        if info != None :
+            return self.weapons.shot(id_key)+[self.is_looking]
+        else :
+            return
 
     #def calculate_pos(self,xscreen,yscreen):
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
@@ -118,6 +141,20 @@ class Player_you(Mob) :
     def move(self,delta):
         self.pos_x = delta[0]
         self.pos_y = delta[1]
+
+    def update_direction_look(self,new_direction):
+        
+        if new_direction==None:
+            return
+        
+        elif new_direction==2:
+            self.is_looking=2
+
+        elif new_direction==0:
+            self.is_looking=0
+
+        #else :
+        #    print("Unknow direction looking :",new_direction)
 
 class Player_not_you(Mob) :
 

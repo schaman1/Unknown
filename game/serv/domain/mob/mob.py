@@ -10,10 +10,11 @@ class Mob:
 
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
         
-        self.acceleration = 1
-        self.gravity_power = 200
-        self.acceleration_x = 500
-        self.acceleration_y = 80 * self.base_movement
+        self.acceleration = self.base_movement
+        self.gravity_power = 2
+        self.vitesse_down_base = self.acceleration*self.gravity_power
+        self.acceleration_x = 2 * self.acceleration
+        self.acceleration_y = 150 * self.acceleration
         self.vitesse_x = 0
         self.vitesse_y = 0
         
@@ -43,8 +44,14 @@ class Mob:
 
         #return
 
-        if self.vitesse_y < 500*self.base_movement:
-            self.vitesse_y += self.acceleration*self.gravity_power
+        #if self.vitesse_y < 500*self.base_movement:
+        #print("before gravity",self.vitesse_y)
+        self.vitesse_y += self.base_movement*2
+        s=self.return_signe(self.vitesse_y)
+        self.vitesse_y = self.vitesse_y*(1+0.1*s)
+        if self.vitesse_y>self.base_movement*100:
+            self.vitesse_y = self.base_movement*100
+        #print(self.vitesse_y)
 
     def collision_y(self,map,dt):
 
@@ -58,26 +65,25 @@ class Mob:
 
         while remaining > 0 :
 
+            #print("remaining",remaining)
+
             dist = self.base_movement
 
             for j in range(-self.half_width,self.half_width+1,self.base_movement): #+1 car doit compter le dernier carreau
 
                 if self.touch_wall((self.half_height+self.base_movement)*s,j,map) :
 
-                    dist = self.base_movement - (self.pos_y*s)%self.base_movement -1
+                    dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
 
                     if dist < remaining :
                         self.vitesse_y = 0
-
-            #if self.vitesse_y != 10 : #pour les testes
-            #    print("dist, rem",dist,remaining)
-            #    print("pos",self.pos_y,self.vitesse_y)
 
             if dist < remaining :
                 self.pos_y+=dist*s
             
             else :
                 self.pos_y+= remaining*s
+                #remaining=0
 
             remaining -= self.base_movement
 
@@ -100,15 +106,15 @@ class Mob:
 
                 if self.touch_wall(j,(self.half_width+self.base_movement)*s,map) :
 
-                    dist = (self.base_movement - (self.pos_x*s)%self.base_movement -1)
+                    dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
 
                     if dist < remaining :
+                     
                         self.vitesse_x = 0
-                    #print("pos_x",self.pos_x)
-                    #print(- (self.pos_x*s)%self.base_movement )
 
             if dist < remaining :
                 self.pos_x+=dist*s
+                remaining=0
             
             else :
                 self.pos_x+= remaining*s

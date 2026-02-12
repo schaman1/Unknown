@@ -153,10 +153,13 @@ class Client:
                 msg_size = 1+4+struct.unpack("!B",self.buffer[1:2])[0]
 
             elif msg_id == 11 :
-                msg_size = 1+2
+                msg_size = 1+3
 
             elif msg_id==12:
-                msg_size = 1+2
+                msg_size = 1+1
+
+            elif msg_id == 13:
+                msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -222,8 +225,8 @@ class Client:
 
         elif id==11: 
 
-            delta_time = struct.unpack("!H",data[1:3])[0]
-            self.main.state.game.update_next_allowed_shot(delta_time)
+            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
+            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
 
         elif id == 5 :#Init monsters
             cells = []
@@ -278,11 +281,16 @@ class Client:
                 self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
         elif id==12:
-            client_id,life = struct.unpack("!BB",data[1:3])
+            life = struct.unpack("!B",data[1:2])[0]
 
-            self.main.state.game.player_all.dic_players[client_id].update_life(life)
+            self.main.state.game.player_all.me.update_life(life)
 
             #self.main.state.game.create_weapon()
+        
+        elif id==13 :
+            money = struct.unpack("!H", data[1:3])[0]
+            self.main.state.game.player_all.me.update_money(money)
+            #pass
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
@@ -299,10 +307,11 @@ class Client:
             #packet += struct.pack("!HH", data[0], data[1])
             
         if id == 3 :
-            packet+= struct.pack("!B",data[0])
+            packet+= struct.pack("!BH",data[0],data[1])
 
         elif id == 4:
-            packet+= struct.pack("!H",data[0])
+            #print("data shot",data)
+            packet+= struct.pack("!BB",data[0],data[1])
 
         elif id==5:
             packet+=struct.pack("!BBBB",data[0][0],data[0][1],data[1][0],data[1][1])
