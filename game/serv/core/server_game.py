@@ -77,12 +77,12 @@ class Server_game(Server) :
     
     def init_weapon(self):
 
-        for client in self.lClient.values():
+        for socket,client in self.lClient.items():
             weapons_info = client.return_weapon_info()
 
             for weapon in weapons_info :
 
-                self.send_data_all([10,weapon,client.id])
+                self.send_data([10,weapon],socket)
     
     def change_state(self):
         self.is_running_game = not self.is_running_game
