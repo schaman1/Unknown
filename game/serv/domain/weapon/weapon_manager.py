@@ -27,8 +27,6 @@ class WeaponManager :
 
         res = []
 
-        #res.append(self.bag.return_info(0))
-
         for i,weapon in enumerate(self.lWeapons):
             res.append(weapon.return_info(i))
 
@@ -38,8 +36,10 @@ class WeaponManager :
 
         return self.lWeapons[self.weapon_select]
     
-    def create_shot(self,angle,pos):
+    def create_shot(self,id_weapon,pos,angle):
 
-        projectiles = self.lWeapons[self.weapon_select].trigger_shot(angle,pos)
+        angle=angle*90
+
+        projectiles = self.lWeapons[id_weapon].trigger_shot(angle,pos)
 
         return projectiles

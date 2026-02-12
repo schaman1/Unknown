@@ -56,7 +56,7 @@ class Network_handler :
                     msg_size = 1
 
                 elif msg_id==3:
-                    msg_size=1+1
+                    msg_size=1+3
                 
                 elif msg_id==4:
                     msg_size=1+2
@@ -131,13 +131,13 @@ class Network_handler :
         id_msg = struct.unpack("!B", data[0:1])[0]
 
         if id_msg == 3 :
-
-            dep = struct.unpack("!B", data[1:2])[0]
-            self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
+            
+            dep,dt_receive = struct.unpack("!BH", data[1:4])
+            self.server.lClient[sender].move_from_key(dep,self.server.map_cell,dt_receive)
 
         elif id_msg == 4 :
-            angle = struct.unpack("!H",data[1:3])[0]
-            self.server.handle_shot(angle,sender)
+            id_weapon,angle = struct.unpack("!BB",data[1:3])
+            self.server.handle_shot(id_weapon,angle,sender)
 
         elif id_msg==5:
             weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2 = struct.unpack("!BBBB",data[1:5])
@@ -259,10 +259,14 @@ class Network_handler :
             self.pack_weapon(data[1],data[2],packet)
 
         elif id==11:
-            packet+=struct.pack("!H",data[1][0])
+
+            packet+=struct.pack("!HB",data[1][0],data[1][1])#data[1][1])
 
         elif id==12:
-            packet+=struct.pack("BB",data[1],data[2])
+            packet+=struct.pack("!B",data[1])
+
+        elif id==13:
+            packet+=struct.pack("!H",data[1])
 
         else :
             print("Issue id not found : ",id)
