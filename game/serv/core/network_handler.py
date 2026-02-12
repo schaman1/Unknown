@@ -216,10 +216,10 @@ class Network_handler :
         for id,pos_x,pos_y in projectiles :
             packet+= struct.pack("!LLL",id,pos_x,pos_y)
     
-    def pack_weapon(self,weapon_info,client_id,packet):
+    def pack_weapon(self,weapon_info,packet):
         idx_weapon_pos,id_weapon,nbr_spells_max,spells_id = weapon_info
         
-        packet+= struct.pack("!BBBB",nbr_spells_max,client_id,idx_weapon_pos,id_weapon)
+        packet+= struct.pack("!BBB",nbr_spells_max,idx_weapon_pos,id_weapon)
 
         for id_spell in spells_id:
             packet+= struct.pack("!B",id_spell)
@@ -256,7 +256,7 @@ class Network_handler :
             self.pack_projectile_die(data[1],packet)
 
         elif id==10:
-            self.pack_weapon(data[1],data[2],packet)
+            self.pack_weapon(data[1],packet)
 
         elif id==11:
 
