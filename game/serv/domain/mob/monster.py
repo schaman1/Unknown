@@ -153,8 +153,8 @@ class Skeleton(Monster):
 
         self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(map,dt)
-        self.collision_y(map,dt)
+        moved_x = self.collision_x(map,dt,self.vitesse_x)
+        self.collision_y(map,dt,self.vitesse_y)
 
         if moved_x == 0 and intended_vx != 0:
             stepped = self.try_step_up_1(map, intended_vx,dt)
@@ -163,8 +163,8 @@ class Skeleton(Monster):
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(map,dt)
-            self.collision_y(map,dt)
+                self.collision_x(map,dt,self.vitesse_x)
+            self.collision_y(map,dt,self.vitesse_y)
 
         if moved_x == 0:
             self.idle_stuck += 1
@@ -202,8 +202,8 @@ class Skeleton(Monster):
 
         self.gravity_effect()
         self.vitesse_x = intended_vx
-        moved_x = self.collision_x(map,dt)
-        self.collision_y(map,dt)
+        moved_x = self.collision_x(map,dt,self.vitesse_x)
+        self.collision_y(map,dt,self.vitesse_y)
         
         if moved_x == 0 and intended_vx != 0:
             stepped = self.try_step_up_1(map, intended_vx,dt)
@@ -212,8 +212,8 @@ class Skeleton(Monster):
                 self.no_turn = 6
                 moved_x = stepped
                 self.vitesse_x = intended_vx
-                self.collision_x(map,dt)
-            self.collision_y(map,dt)
+                self.collision_x(map,dt,self.vitesse_x)
+            self.collision_y(map,dt,self.vitesse_y)
         
         if self.step_lock > 0:
             self.step_lock -= 1

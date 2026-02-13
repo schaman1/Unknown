@@ -146,11 +146,8 @@ class Player_you(Mob) :
         if new_direction==None:
             return
         
-        elif new_direction==2:
-            self.is_looking=2
-
-        elif new_direction==0:
-            self.is_looking=0
+        else :
+            self.is_looking=new_direction
 
         #else :
         #    print("Unknow direction looking :",new_direction)

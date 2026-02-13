@@ -42,7 +42,7 @@ class Movable:
             self.vitesse_y = self.base_movement*100
         #print(self.vitesse_y)
 
-    def collision_y(self,map,dt):
+    def collision_y(self,map,dt,vy):
 
         #self.pos_y+=self.vitesse_y
         #return
@@ -50,7 +50,7 @@ class Movable:
         pos_before = self.pos_y
 
         s = self.return_signe(self.vitesse_y)
-        remaining = int(self.vitesse_y*s*dt)
+        remaining = int(vy*s*dt)
 
         while remaining > 0 :
 
@@ -76,17 +76,17 @@ class Movable:
 
             remaining -= self.base_movement
 
-        return self.pos_y - pos_before
+        #return self.pos_y - pos_before
 
-    def collision_x(self,map,dt):
+    def collision_x(self,map,dt,vx):
 
         #self.pos_x+=self.vitesse_x
         #return
         
-        pos_before = self.pos_x
+        #pos_before = self.pos_x
 
-        s = self.return_signe(self.vitesse_x)
-        remaining = int(self.vitesse_x*s*dt)
+        s = self.return_signe(vx)
+        remaining = int(vx*s*dt)
 
         while remaining > 0 :
 
@@ -101,16 +101,16 @@ class Movable:
                      
                         self.vitesse_x = 0
 
-            if dist < remaining :
-                self.pos_x+=dist*s
+            if dist > remaining :
+                self.pos_x+=remaining*s
                 remaining=0
             
             else :
-                self.pos_x+= remaining*s
+                self.pos_x+= dist*s
 
             remaining -= self.base_movement
 
-        return self.pos_x-pos_before
+        #return self.pos_x-pos_before
         
     def touch_wall(self,i,j,map):
         #print(self.pos_y,i,self.half_height,self.pos_x,j)
@@ -258,7 +258,7 @@ class Movable:
             self.vitesse_x = old_vx
             return 0
         self.vitesse_x = intended_vx
-        moved = self.collision_x(map,dt)
+        moved = self.collision_x(map,dt,self.vitesse_x)
 
         if moved == 0:
             self.pos_x = old_x
@@ -316,3 +316,9 @@ class Movable:
             
         else:
             self.is_climbing = False
+
+    def dash(self,map,dt,v):
+
+        self.collision_x(map,dt,v[0])
+
+        #self.collision_y(map,dt,v[1])

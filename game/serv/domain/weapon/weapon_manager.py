@@ -9,6 +9,7 @@ class WeaponManager :
         #self.bag = WeaponBag()
 
         self.weapon_select = 1
+        self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
         self.init_lWeapons()
 
@@ -40,6 +41,16 @@ class WeaponManager :
 
         angle=angle*90
 
-        projectiles = self.lWeapons[id_weapon].trigger_shot(angle,pos)
+        res = self.lWeapons[id_weapon].trigger_shot(angle,pos)
+        
+        if res==None :
+            projectiles,events = None,None
+        
+        else :
+
+            projectiles,events = res[0],res[1]
+
+
+            self.id_event_player_do+=events
 
         return projectiles
