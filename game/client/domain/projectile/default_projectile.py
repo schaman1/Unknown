@@ -40,7 +40,14 @@ class DefaultProjectile :
 
         Imgs = []
 
-        if id_img == 2 :
+        if id_img==3:
+            self.width,self.height = weapon.PROJECTILE_3_WIDTH,weapon.PROJECTILE_3_HEIGHT
+            img = pygame.image.load(assets.SPELLS[id_img]).convert_alpha() #convert_alpha() pour le fond vide
+            img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
+            rotated_img = pygame.transform.rotate(img, angle)
+            Imgs.append(rotated_img)
+
+        elif id_img == 2 :
             for i in range(4):
                 self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
                 img = pygame.image.load(assets.PROJECTILE_2[i]).convert_alpha() #convert_alpha() pour le fond vide
@@ -71,7 +78,7 @@ class DefaultProjectile :
         self.update_frame()
 
     def update_frame(self):
-        self.frame = (self.frame+1)%200
+        self.frame = (self.frame+1)%1
 
     def calculate_pos_blit(self,x,y):
         xs = self.convert_from_base(self.pos_x*self.cell_size) +x

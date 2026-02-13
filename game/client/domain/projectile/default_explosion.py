@@ -4,7 +4,7 @@ from shared.constants import world
 
 class DefaultExplosion:
 
-    def __init__(self,pos,id,angle,cell_size):
+    def __init__(self,pos,projectile,cell_size):
 
         self.pos = pos
         self.time_remaining = None
@@ -12,7 +12,7 @@ class DefaultExplosion:
         self.cell_size = cell_size
         self.frame = 0
 
-        self.imgs = self.load(id,angle)
+        self.imgs = self.load(projectile)
 
     def die(self):
         if time.perf_counter() > self.time_remaining :
@@ -21,11 +21,12 @@ class DefaultExplosion:
         else :
             return False
 
-    def load(self,id_img,angle):
+    def load(self,projectile):
+        """No more use bcs keep the same img as the projectile but if we want to changer we will have to use this again"""
 
         Imgs = []
 
-        if id_img == 2 :
+        if projectile.id_img == 2 :
 
             self.time_remaining = 0.3+time.perf_counter()
 
@@ -33,10 +34,10 @@ class DefaultExplosion:
                 self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
                 img = pygame.image.load(assets.PROJECTILE_2[i]).convert_alpha() #convert_alpha() pour le fond vide
                 img = pygame.transform.scale(img,(self.width*self.cell_size,self.height*self.cell_size)) 
-                rotated_img = pygame.transform.rotate(img, angle)
+                rotated_img = pygame.transform.rotate(img, projectile.angle)
                 Imgs.append(rotated_img)
 
-        elif id_img==0:
+        elif projectile.id_img==0:
 
             self.time_remaining = 0.3+time.perf_counter()
 
@@ -44,11 +45,18 @@ class DefaultExplosion:
                 self.width,self.height = weapon.PROJECTILE_0_WIDTH,weapon.PROJECTILE_2_HEIGHT
                 img = pygame.image.load(assets.PROJECTILE_0[i]).convert_alpha() #convert_alpha() pour le fond vide
                 img = pygame.transform.scale(img,(self.width*self.cell_size,self.height*self.cell_size)) 
-                rotated_img = pygame.transform.rotate(img, angle)
+                rotated_img = pygame.transform.rotate(img, projectile.angle)
                 Imgs.append(rotated_img)
+
+        elif projectile.id_img >=3:
+
+            self.time_remaining=0.2+time.perf_counter()
+
+            self.width,self.height = projectile.width,projectile.height
+            Imgs = projectile.imgs
         
         else :
-            print("Unknown weapon id in client for explosion, id : ",id_img)
+            print("Unknown weapon id in client for explosion, id : ",projectile.id_img)
 
         return Imgs
 

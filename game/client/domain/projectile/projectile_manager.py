@@ -15,16 +15,16 @@ class ProjectileManager :
 
         self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,weight,id_img,self.cell_size)
 
-    def add_explosion(self,pos,angle,id_img,cell_size):
+    def add_explosion(self,pos,projectile,cell_size):
 
-        explosion = DefaultExplosion(pos,id_img,angle,cell_size)
+        explosion = DefaultExplosion(pos,projectile,cell_size)
         self.explosion.append(explosion)
 
     def remove_projectile(self,id,pos_x,pos_y):
 
         projectile = self.d_Projectile[id]
 
-        self.add_explosion([pos_x,pos_y],projectile.angle,projectile.id_img,self.cell_size)
+        self.add_explosion([pos_x,pos_y],projectile,self.cell_size)
 
         #print(self.d_Projectile[id].pos_x,self.d_Projectile[id].pos_y)
         #self.d_Projectile[id].pos_x = pos_x

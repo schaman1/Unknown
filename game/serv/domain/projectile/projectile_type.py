@@ -30,3 +30,16 @@ class Magic(Projectile) :
                          rebond = weapons.REBOND_MAGIC,
                          damage = weapons.DAMAGE_MAGIC,
                          weight = weapons.WEIGHT_MAGIC)
+        
+class Lune(Projectile) :
+
+    def __init__(self,angle,pos):
+
+        self.life_time = weapons.LUNE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.LUNE_V,
+                         id_img = 3,
+                         width = weapons.LUNE_WIDTH,
+                         height = weapons.LUNE_HEIGHT,
+                         damage = weapons.LUNE_DAMAGE)

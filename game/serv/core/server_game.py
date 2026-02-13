@@ -115,7 +115,7 @@ class Server_game(Server) :
 
     def handle_shot(self,id_weapon,angle,sender):
 
-        infos = self.lClient[sender].weapons.create_shot(id_weapon,self.lClient[sender].return_pos(),angle)
+        infos = self.lClient[sender].shot(id_weapon,angle)
 
         if infos == None :
             return

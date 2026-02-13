@@ -7,7 +7,6 @@ class Upgrade:
         self.id = id
         self.time_take = time_take
 
-
 def AddProjectileWhenDie(projectile,weapon):
     
     next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos)
@@ -38,6 +37,17 @@ class CreateMagic(Upgrade):
 
         return 1,projectile
     
+class CreateLune(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=3,time_take = 0.1)
+
+    def trigger(self,weapon):
+
+        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos))
+
+        return 1,projectile
     
 class AddSpeed(Upgrade):
 

@@ -1,4 +1,4 @@
-nbr_cell_see_y = 60
+nbr_cell_see_y = 90
 CELL_SIZE = 15
 
 def set_CELL_SIZE(screen_size):

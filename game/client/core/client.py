@@ -1,4 +1,5 @@
 import socket, select, struct
+from shared.constants.network import PORT
 import time
 
 class Client:
@@ -19,19 +20,19 @@ class Client:
         self.screen = screen
         self.screen_size = self.screen.get_size()
 
-    def return_ip_ngrok(self,ip_port):
-        """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
-        try :
-            ipshort, port = ip_port.split(":")
-            ip = f"{ipshort}.tcp.eu.ngrok.io"
-            port = port
-            print(ip,port)
-            return ip, int(port)
-
-        except ValueError:
-            return None, None
+    #def return_ip_ngrok(self,ip_port): #Pour le online
+    #    """Quand on se connnecte, ecrit ip;port = ici, les séparts"""
+    #    try :
+    #        ipshort, port = ip_port.split(":")
+    #        ip = f"{ipshort}.tcp.eu.ngrok.io"
+    #        port = port
+    #        print(ip,port)
+    #        return ip, int(port)
+#
+    #    except ValueError:
+    #        return None, None
         
-    def connexion_serveur(self, ip_port="localhost:5000"):
+    def connexion_serveur(self, ip="localhost"):
         "Create the client and connect to ther serveur"
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,11 +42,12 @@ class Client:
 
         #-------- Pour local = LAN --------
         try : 
-            ip, port = ip_port.split(":")
+            #ip, port = ip_port.split(":")
+            port = PORT
         except : 
-            return self.return_err("Utilisez le format ip:port")
+            return self.return_err("Utilisez le format ip")
         #ip = ip.strip()
-        port = int(port) #Has to be an integer
+        #port = int(port) #Has to be an integer
 
         #Créer le socket
 
