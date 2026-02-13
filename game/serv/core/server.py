@@ -104,7 +104,7 @@ class Server:
         #self.send_data([2,self.host,self.port],self.client)#{"id":"Server info","ip":self.host,"port":self.port},client.client)
         self.current_thread = threading.Thread(target=self.loop_server_menu, daemon=True).start()
 
-        return self.host,self.port
+        return self.host
 
 
         # -------------------------

@@ -23,7 +23,9 @@ class Player_all :
 
             for player in self.dic_players.values() :
 
-                self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),player.pos_blit,(self.vision-i/2)*self.cell_size)
+                x,y = player.pos_blit[0] + player.height//1,player.pos_blit[1]+player.width//1
+
+                self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(x,y),(self.vision-i/2)*self.cell_size)
 
         screen.blit(self.light,(0,0))
 

@@ -91,7 +91,7 @@ class Player_you(Mob) :
         self.draw_life(screen,screen_size)
         self.draw_money(screen,screen_size)
 
-        self.weapons.draw_icone_weapon(screen,screen_size)
+        #self.weapons.draw_icone_weapon(screen,screen_size)
         self.update_frame()
 
     def draw_life(self,screen,screen_size):

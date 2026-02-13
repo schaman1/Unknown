@@ -17,6 +17,7 @@ class Player(Mob) :
         self.damage_taken = damage
         self.is_host = host
         self.vitesse_max = 40*self.base_movement
+        self.distance_cast_spells = self.half_width
 
         self.weapons = WeaponManager()
 
@@ -181,3 +182,20 @@ class Player(Mob) :
         spell_switch = self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx]
         self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx] = self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx]
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
+
+    def shot(self,id_weapon,angle):
+
+        pos = self.return_pos_for_shot(angle)
+
+        return self.weapons.create_shot(id_weapon,pos,angle)
+    
+    def return_pos_for_shot(self,angle):
+        pos = self.return_pos()
+        pos[1]-=self.half_height
+
+        if angle==2:
+            pos[0]+=self.distance_cast_spells
+        elif angle==0:
+            pos[0]-=self.distance_cast_spells
+
+        return pos

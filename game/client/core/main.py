@@ -189,11 +189,11 @@ class Main:
     def create_server_thread(self):
         """Crée le serveur dans un thread séparé"""
         self.Server = Server_game()
-        ip,port = self.Server.start_server(self.client)
+        ip = self.Server.start_server(self.client)
 
-        self.client.connexion_serveur(ip_port =f"{ip}:{port}")
+        self.client.connexion_serveur(ip =f"{ip}")
 
-        self.state.show_ip.update_text("show_ip",f"ip:port = {ip}:{port}")
+        self.state.show_ip.update_text("show_ip",f"ip = {ip}")
         self.state.start.update_text("start","Jouer")
         print("Create serv et connection!")
 
