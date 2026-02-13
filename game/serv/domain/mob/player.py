@@ -1,5 +1,6 @@
 from shared.constants import size_display
 from serv.domain.mob.mob import Mob
+from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
 
 class Player(Mob) :
@@ -17,9 +18,10 @@ class Player(Mob) :
         self.damage_taken = damage
         self.is_host = host
         self.vitesse_max = 40*self.base_movement
-        self.distance_cast_spells = self.half_width
+        self.distance_cast_spells = self.half_width*2
 
         self.weapons = WeaponManager()
+        self.upgrade_handler = UpgradeHandler()
 
         self.time_shot_update = False
 
@@ -45,23 +47,24 @@ class Player(Mob) :
 
     def return_delta_vitesse(self,map,dt):
 
+        old_pos_x = self.pos_x
+        old_pos_y = self.pos_y
+
         self.gravity_effect()
-        #print(self.vitesse_y)
+        
+        self.upgrade_handler.trigger_event_on_player(self.weapons.id_event_player_do,self,dt,map)
 
-        #if self.convert_to_base(self.vitesse_x*dt+self.pos_x)>=self.screen_global_size[0]+self.half_width or self.convert_to_base(self.vitesse_x*dt+self.pos_x)<0:
-        #    self.vitesse_x=0
-#
-        #if self.convert_to_base(self.vitesse_y*dt+self.pos_y)>=self.screen_global_size[1] or self.convert_to_base(self.vitesse_y*dt+self.pos_y)<0:
-        #    self.vitesse_y=0
+        self.collision_x(map,dt,self.vitesse_x)
 
-        deltax = self.collision_x(map,dt)
+        self.collision_y(map,dt,self.vitesse_y)
 
-        deltay = self.collision_y(map,dt)
+        delta_x = self.pos_x-old_pos_x
+        delta_y = self.pos_y-old_pos_y
 
 
         #print(self.pos_x,self.vitesse_x,self.convert_to_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
 
-        return (deltax,deltay)
+        return (delta_x,delta_y)
 
     def update_vitesse(self):
 
@@ -193,9 +196,14 @@ class Player(Mob) :
         pos = self.return_pos()
         pos[1]-=self.half_height
 
-        if angle==2:
-            pos[0]+=self.distance_cast_spells
-        elif angle==0:
+        if angle==2: #x
             pos[0]-=self.distance_cast_spells
+        elif angle==0:
+            pos[0]+=self.distance_cast_spells
+
+        elif angle==1:#y
+            pos[1]-=self.distance_cast_spells
+        elif angle==3:
+            pos[1]+=self.distance_cast_spells
 
         return pos

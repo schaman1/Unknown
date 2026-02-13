@@ -91,6 +91,7 @@ class Weapon :
     def create_projectile(self,angle,pos,now=time.perf_counter()):
 
         projectile_shot = []
+        event_player = []
         
         self.angle = angle
         self.pos = pos
@@ -104,12 +105,15 @@ class Weapon :
 
             if spell != None : 
 
-                space_take,projectile = spell.trigger(self)
+                space_take,projectile,id_event_player = spell.trigger(self)
 
                 self.nbr_upgrades_trigger+= space_take
 
                 if projectile!=None :
                     projectile_shot.append(projectile)
+
+                if id_event_player!=None:
+                    event_player.append(id_event_player)
 
                 self.time_spells_take+=spell.time_take
 
@@ -120,4 +124,6 @@ class Weapon :
         else :
             self.next_allowed_shot = now+self.time_spells_take
 
-        return projectile_shot
+        #print(projectile,event_player)
+
+        return [projectile_shot,event_player]
