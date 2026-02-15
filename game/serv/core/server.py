@@ -3,9 +3,10 @@ from serv.core.network_handler import Network_handler
 from serv.systems.map.read_map import Read_map
 from serv.systems.monster.read_monster import Read_monster
 from serv.domain.projectile.projectile_manager import ProjectileManager
+from serv.core.Collision_handler import CollisionHandler
 from shared.constants import world
 
-from serv.config import network,assets
+from serv.config import network
 from serv.domain.mob.player import Player
 #from serv.server_game import Server_game
 
@@ -18,6 +19,7 @@ class Server:
         self.map_cell = Read_map()
         self.map_monster = Read_monster(self.map_cell.width_chunk,self.map_cell.height_chunk,world.RATIO)
         self.projectile_manager = ProjectileManager()
+        self.collision_handler = CollisionHandler()
 
         self.host = host
         self.port = port

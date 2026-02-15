@@ -23,12 +23,11 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            #result_cell = self.map_cell.return_chg(self.lClient) #Mettre dt plus tard pour les particules
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
-            #if len(result_cell[0]) != 1:
-            #    self.send_data_update(result_cell,3)
+            self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.l_Projectile )
+
             if len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
 
@@ -113,9 +112,9 @@ class Server_game(Server) :
     def convert_list_base(self,list):
         return [self.convert_to_base(list[i]) for i in range(len(list))]
 
-    def handle_shot(self,id_weapon,angle,sender):
+    def handle_shot(self,id_weapon,sender):
 
-        infos = self.lClient[sender].shot(id_weapon,angle)
+        infos = self.lClient[sender].shot(id_weapon)
 
         if infos == None :
             return
