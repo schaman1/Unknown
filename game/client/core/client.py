@@ -312,7 +312,7 @@ class Client:
 
         elif id == 4:
             #print("data shot",data)
-            packet+= struct.pack("!BB",data[0],data[1])
+            packet+= struct.pack("!B",data[0])
 
         elif id==5:
             packet+=struct.pack("!BBBB",data[0][0],data[0][1],data[1][0],data[1][1])

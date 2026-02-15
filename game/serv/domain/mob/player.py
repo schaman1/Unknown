@@ -19,6 +19,7 @@ class Player(Mob) :
         self.is_host = host
         self.vitesse_max = 40*self.base_movement
         self.distance_cast_spells = self.half_width*2
+        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
         self.weapons = WeaponManager()
         self.upgrade_handler = UpgradeHandler()
@@ -61,9 +62,6 @@ class Player(Mob) :
         delta_x = self.pos_x-old_pos_x
         delta_y = self.pos_y-old_pos_y
 
-
-        #print(self.pos_x,self.vitesse_x,self.convert_to_base(self.vitesse_x+self.pos_x),self.screen_global_size[0])
-
         return (delta_x,delta_y)
 
     def update_vitesse(self):
@@ -84,15 +82,12 @@ class Player(Mob) :
 
         #self.update_money(1)
 
-        #print(self.pos_x,self.pos_y)
-
         return delta
         
     def move_from_key(self,delta,map,dt_receive): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
         dt = dt_receive/1000
-        #print("dt :",dt)
 
         # Check for ladder interaction
         if self.is_on_ladder(map):
@@ -129,18 +124,18 @@ class Player(Mob) :
 
     def move_up(self,map):
         #self.pos_y-=1
+        self.is_looking=1
         if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
-            #print("Move up",self.vitesse_y)
 
     def move_down(self,dt):
         #self.pos_y+=1
+        self.is_looking=3
         if self.vitesse_y<self.vitesse_max:
             self.vitesse_y+=self.acceleration_y*dt
             
-            #print("Move down",self.vitesse_y)
-
     def move_left(self,dt):
+        self.is_looking = 2
         s=self.return_signe(self.vitesse_x)
 
         if self.vitesse_x>-self.vitesse_max:
@@ -151,7 +146,9 @@ class Player(Mob) :
             self.vitesse_x = -self.vitesse_max
 
     def move_right(self,dt):
+        self.is_looking = 0
         s=self.return_signe(self.vitesse_x)
+
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x*dt
             self.vitesse_x*=(1+0.2*s)
@@ -186,7 +183,9 @@ class Player(Mob) :
         self.weapons.lWeapons[spell_1_weapon].spells_on_shot[spell_1_idx] = self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx]
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
 
-    def shot(self,id_weapon,angle):
+    def shot(self,id_weapon):
+
+        angle = self.is_looking
 
         pos = self.return_pos_for_shot(angle)
 

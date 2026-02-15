@@ -49,7 +49,7 @@ class Movable:
 
         pos_before = self.pos_y
 
-        s = self.return_signe(self.vitesse_y)
+        s = self.return_signe(vy)
         remaining = int(vy*s*dt)
 
         while remaining > 0 :
@@ -67,11 +67,12 @@ class Movable:
                     if dist < remaining :
                         self.vitesse_y = 0
 
-            if dist < remaining :
-                self.pos_y+=dist*s
+            if dist > remaining :
+                self.pos_y+=remaining*s
+                remaining = 0
             
             else :
-                self.pos_y+= remaining*s
+                self.pos_y+= dist*s
                 #remaining=0
 
             remaining -= self.base_movement
@@ -321,4 +322,4 @@ class Movable:
 
         self.collision_x(map,dt,v[0])
 
-        #self.collision_y(map,dt,v[1])
+        self.collision_y(map,dt,v[1])

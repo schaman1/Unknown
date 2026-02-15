@@ -109,13 +109,13 @@ class SmallDash(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=3,time_take=0.4)
+        super().__init__(id=3,time_take=0.0)
         self.time_dash_take = 0.05
         self.distance_dash = 8*self.ratio
 
     def trigger(self,weapon):
 
-        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash]]
+        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
 
     
 #Remove too difficult and useless
