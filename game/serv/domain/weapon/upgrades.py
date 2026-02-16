@@ -11,7 +11,7 @@ class Upgrade:
 
 def AddProjectileWhenDie(projectile,weapon):
     
-    next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos)
+    next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos,weapon.team)
 
     projectile.projectile_spawn_when_die=next_projectiles
 
@@ -23,7 +23,7 @@ class CreateFire(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos))
+        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team))
 
         return 1,projectile,None
     
@@ -35,7 +35,7 @@ class CreateMagic(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos))
+        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team))
 
         return 1,projectile,None
     
@@ -47,7 +47,7 @@ class CreateLune(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos))
+        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team))
 
         return 1,projectile,None
     

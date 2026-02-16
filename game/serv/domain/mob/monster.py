@@ -20,9 +20,9 @@ class Monster(Mob):
         return self.hp > 0
 
     def take_damage(self, amount):
-        self.hp -= amount
-        if self.hp < 0:
-            self.hp = 0
+        self.life -= amount
+        if self.life < 0:
+            self.life = 0
         
     def distance_to_nearest_player(self, lPlayer):
         """Distance euclidienne en cases entre le monstre et le joueur."""
@@ -152,6 +152,7 @@ class Skeleton(Monster):
             intended_vx = self.direction * max(1, self.base_movement // 8)
 
         self.gravity_effect()
+
         self.vitesse_x = intended_vx
         moved_x = self.collision_x(map,dt,self.vitesse_x)
         self.collision_y(map,dt,self.vitesse_y)

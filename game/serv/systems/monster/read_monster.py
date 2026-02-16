@@ -1,7 +1,6 @@
 from serv.domain.mob.monster import Skeleton
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
-
 class Read_monster :
 
     def __init__(self,width_chunk,height_chunk,base_movement) :
@@ -42,7 +41,7 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(Skeleton(3411,18000,1))
+        self.dic_monster[200].append(Skeleton(3411,17500,1))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):

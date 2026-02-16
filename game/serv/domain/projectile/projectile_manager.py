@@ -1,17 +1,40 @@
+from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
+
 class ProjectileManager :
 
-    def __init__(self):
+    def __init__(self,width_chunk,height_chunk):
+        self.size_chunk_all = (LEN_Y_CHUNK,LEN_X_CHUNK)
+        self.size_chunk = (height_chunk,width_chunk)
+
         self.next_id = 0
-        self.l_Projectile = []
+        self.dic_projectiles = {}
         self.projectile_create = []
         self.projectile_die = []
+
+        self.init_dic_projectiles()
+
+    def init_dic_projectiles(self) :
+
+        for i in range(self.size_chunk_all[0]) :
+            for j in range(self.size_chunk_all[1]) :
+                self.dic_projectiles[i*100+j] = []
 
     def add_projectile_create(self,projectile):
 
         projectile.set_id(self.generate_id())
 
-        self.l_Projectile.append(projectile)
+        chunk = self.calculate_chunk(projectile)
+
+        self.dic_projectiles[chunk].append(projectile)
         self.projectile_create.append(projectile)
+
+    def calculate_chunk(self,projectile):
+        """Return the chunk in which the projectile curently is"""
+
+        chunk_x = projectile.pos_x//self.size_chunk[1]//100
+        chunk_y = projectile.pos_y//self.size_chunk[0]//100
+
+        return chunk_y*100+chunk_x
 
     def add_projectile_when_die(self,lProjectiles,lClient,lProjectiles_create):
 
@@ -41,23 +64,25 @@ class ProjectileManager :
 
         projectiles_die = [[] for _ in range(l)]
 
-        for i in range(len(self.l_Projectile)-1,-1,-1) :
+        for l_projectile in self.dic_projectiles.values() :
 
-            self.l_Projectile[i].move(dt,map)
+            for i in range(len(l_projectile)-1,-1,-1) :
 
-            if self.l_Projectile[i].should_destroy(map) :
+                l_projectile[i].move(dt,map)
 
-                lProjectiles = self.l_Projectile[i].check_if_projectile_spawn_when_die()
-                self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)
-                
-                self.add_on_client_see_die(lClient,self.l_Projectile[i],projectiles_die)
+                if l_projectile[i].should_destroy(map) :
 
-                del self.l_Projectile[i]
+                    lProjectiles = l_projectile[i].check_if_projectile_spawn_when_die()
+                    self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)
+                    
+                    self.add_on_client_see_die(lClient,l_projectile[i],projectiles_die)
 
-            elif self.l_Projectile[i].to_update :
+                    del l_projectile[i]
 
-                self.add_on_client_see_update(lClient,self.l_Projectile[i],projectiles_create)
-                self.l_Projectile[i].to_update = False
+                elif l_projectile[i].to_update :
+
+                    self.add_on_client_see_update(lClient,l_projectile[i],projectiles_create)
+                    l_projectile[i].to_update = False
 
         infos_shot = []
 
@@ -92,7 +117,7 @@ class ProjectileManager :
                 projectiles[i].append(self.add_when_destroy(projectile))
 
     def add_when_destroy(self,projectile):
-        return projectile.id,int(projectile.pos[0]),int(projectile.pos[1])
+        return projectile.id,int(projectile.pos_x),int(projectile.pos_y)
     
     def add_when_create(self,projectile):
         return projectile

@@ -2,6 +2,7 @@ from shared.constants import size_display
 from serv.domain.mob.mob import Mob
 from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
+from serv.domain.mob.team import Team
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -9,7 +10,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1, money=0): 
 
-        super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT)
+        super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT,Team.Player)
 
         self.hp = hp
         self.money = money
@@ -21,7 +22,7 @@ class Player(Mob) :
         self.distance_cast_spells = self.half_width*2
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
-        self.weapons = WeaponManager()
+        self.weapons = WeaponManager(self.team)
         self.upgrade_handler = UpgradeHandler()
 
         self.time_shot_update = False
@@ -193,7 +194,6 @@ class Player(Mob) :
     
     def return_pos_for_shot(self,angle):
         pos = self.return_pos()
-        pos[1]-=self.half_height
 
         if angle==2: #x
             pos[0]-=self.distance_cast_spells

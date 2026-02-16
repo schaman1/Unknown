@@ -3,7 +3,7 @@ from serv.config import weapons
 
 class Fire(Projectile) :
 
-    def __init__(self,angle,pos):
+    def __init__(self,angle,pos,team):
 
         self.life_time = weapons.LIFE_FIRE
 
@@ -14,11 +14,12 @@ class Fire(Projectile) :
                          height = weapons.HEIGHT_FIRE,
                          rebond = weapons.REBOND_FIRE,
                          damage = weapons.DAMAGE_FIRE,
-                         weight = weapons.WEIGHT_FIRE)
+                         weight = weapons.WEIGHT_FIRE,
+                         team=team)
         
 class Magic(Projectile) :
 
-    def __init__(self,angle,pos):
+    def __init__(self,angle,pos,team):
 
         self.life_time = weapons.LIFE_MAGIC
 
@@ -29,11 +30,12 @@ class Magic(Projectile) :
                          height = weapons.HEIGHT_MAGIC,
                          rebond = weapons.REBOND_MAGIC,
                          damage = weapons.DAMAGE_MAGIC,
-                         weight = weapons.WEIGHT_MAGIC)
+                         weight = weapons.WEIGHT_MAGIC,
+                         team=team)
         
 class Lune(Projectile) :
 
-    def __init__(self,angle,pos):
+    def __init__(self,angle,pos,team):
 
         self.life_time = weapons.LUNE_LIFE
 
@@ -42,4 +44,6 @@ class Lune(Projectile) :
                          id_img = 3,
                          width = weapons.LUNE_WIDTH,
                          height = weapons.LUNE_HEIGHT,
-                         damage = weapons.LUNE_DAMAGE)
+                         damage = weapons.LUNE_DAMAGE,
+                         team=team,
+                         )

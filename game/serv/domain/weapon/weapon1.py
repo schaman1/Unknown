@@ -4,14 +4,15 @@ from serv.domain.weapon import upgrades
 
 class WeaponBag(Weapon):
 
-    def __init__(self):
+    def __init__(self,team):
 
         super().__init__(
             refill_time = 0,
             spell_time= 0,
             nbr_slot = weapons.WEAPON_BAG_NBR_SLOT,
             nbr_upgrades_trigger = 0,
-            id = weapons.ID_WEAPON_BAG
+            id = weapons.ID_WEAPON_BAG,
+            team=team
         )
 
         self.init_slot()
@@ -33,22 +34,23 @@ class WeaponBag(Weapon):
 
 class Weapon1(Weapon) :
 
-    def __init__(self):
+    def __init__(self,team):
 
         super().__init__(
             refill_time = weapons.REFILL_TIME_WEAPON1,
             spell_time= weapons.SPELL_TIME_WEAPON1,
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
-            id = weapons.ID_WEAPON1
+            id = weapons.ID_WEAPON1,
+            team=team
         )
 
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.SmallDash())
+        #self.fill_slot(0,upgrades.SmallDash())
         self.fill_slot(1,upgrades.CreateLune())
-        #self.fill_slot(2,upgrades.CreateMagic())
+        self.fill_slot(2,upgrades.CreateMagic())
 
     def fill_slot(self,idx,function):
 

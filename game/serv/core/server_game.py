@@ -26,7 +26,7 @@ class Server_game(Server) :
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
-            self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.l_Projectile )
+            self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
 
             if len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
