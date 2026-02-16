@@ -13,15 +13,16 @@ class Mob:
         self.width,self.height = size
         self.pos_blit=0
 
-        self.life=75
+        self.life=100
         self.max_life = 100
 
     def update_pos_blit(self,x,y):
         self.pos_blit = self.calculate_pos_blit(x,y)
 
     def calculate_pos_blit(self,x,y):
+        #print(self.pos_y)
         xs = self.convert_from_base(self.pos_x*self.cell_size) - self.width//2*self.cell_size +x
-        ys = self.convert_from_base((self.pos_y+1) * self.cell_size) - self.height*self.cell_size +y #Regle un petit soucis
+        ys = self.convert_from_base((self.pos_y+1) * self.cell_size) - self.height//2*self.cell_size +y #Regle un petit soucis
         return (xs,ys)
     
     def convert_from_base(self,nbr):

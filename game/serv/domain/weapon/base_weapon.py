@@ -2,10 +2,11 @@ import time
 
 class Weapon :
 
-    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id):
+    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team):
         
         self.loading_time_refill = refill_time
         self.loading_time_spell = spell_time
+        self.team=team
         self.id = id
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]

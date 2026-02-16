@@ -3,7 +3,7 @@ from serv.domain.weapon.weapon1 import Weapon1,WeaponBag
 
 class WeaponManager :
 
-    def __init__(self):
+    def __init__(self,team):
 
         self.lWeapons = []
         #self.bag = WeaponBag()
@@ -11,18 +11,18 @@ class WeaponManager :
         self.weapon_select = 1
         self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
-        self.init_lWeapons()
+        self.init_lWeapons(team)
 
-    def init_lWeapons(self):
+    def init_lWeapons(self,team):
 
 
         for i in range(NBRWEAPONSTOCK):
 
             if 0==i:
 
-                self.lWeapons.append(WeaponBag())
+                self.lWeapons.append(WeaponBag(team))
             else :
-                self.lWeapons.append(Weapon1())
+                self.lWeapons.append(Weapon1(team))
 
     def return_all_weapon(self):
 

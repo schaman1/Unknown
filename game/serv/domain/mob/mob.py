@@ -1,9 +1,10 @@
 from shared.constants import world
 from serv.domain.mob.moves import Movable
+from serv.domain.mob.team import Team
 
 class Mob(Movable):
 
-    def __init__(self,pos,hp = 100,id=None,width=5,height=5):
+    def __init__(self,pos,hp = 100,id=None,width=10,height=20,team = Team.Mob):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
 
@@ -19,7 +20,7 @@ class Mob(Movable):
         self.vitesse_x = 0
         self.vitesse_y = 0
         
-        self.width = (width-2)*self.base_movement
+        self.width = (width)*self.base_movement
         self.half_width = self.width//2
         self.height = height*self.base_movement
         self.half_height = self.height//2
@@ -28,6 +29,7 @@ class Mob(Movable):
         self.max_life = hp
         self.send_new_life = False
         self.id = id
+        self.team = team
 
     def send_life(self):
         self.send_new_life = False

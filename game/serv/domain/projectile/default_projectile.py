@@ -1,10 +1,11 @@
 import time,math
 from shared.constants.world import RATIO
+from serv.domain.mob.team import Team
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0):
-        self.pos = pos
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob):
+        self.pos_x,self.pos_y = pos
         self.projectile_spawn_when_die = []
         self.life_time = life_time
         self.id=None
@@ -19,12 +20,13 @@ class Projectile :
 
         self.is_dead = False
         self.to_update = False
+        self.team = team
 
         self.base_movement = RATIO 
         self.weight = weight*self.base_movement
 
     def update_angle_pos(self,new_angle,new_pos):
-        self.pos=new_pos
+        self.pos_x,self.pos_y=new_pos
         self.angle=new_angle
         self.load()
 
@@ -52,7 +54,7 @@ class Projectile :
 
         #self.gravity(dt)
 
-        if (self.pos[0]+self.vx*dt<0 or self.pos[1]+self.vy < 0):
+        if (self.pos_x+self.vx*dt<0 or self.pos_y+self.vy < 0):
             self.is_dead = True
 
     # je t'aime
@@ -66,23 +68,23 @@ class Projectile :
     def complete_mov_x(self,s,deltax,complete_mov_to_touch_wall):
         #print("before x : ",self.pos,self.id)
 
-        self.pos[0]+=complete_mov_to_touch_wall
+        self.pos_x+=complete_mov_to_touch_wall
 
-        self.pos[1]+=(complete_mov_to_touch_wall+deltax)/self.vx*self.vy#*(self.return_signe(self.pos[1]))
+        self.pos_y+=(complete_mov_to_touch_wall+deltax)/self.vx*self.vy#*(self.return_signe(self.pos_y))
         #print(self.pos)
 
     def complete_mov_y(self,s,rest_y_to_complete_mouv,complete_mov_to_touch_wall):
         #print("before y : ",self.pos,self.id)
-        self.pos[1] += complete_mov_to_touch_wall
+        self.pos_y += complete_mov_to_touch_wall
 
-        self.pos[0]-=(rest_y_to_complete_mouv-complete_mov_to_touch_wall)/self.vy*self.vx#*(self.return_signe(self.pos[0]))
+        self.pos_x-=(rest_y_to_complete_mouv-complete_mov_to_touch_wall)/self.vy*self.vx#*(self.return_signe(self.pos_x))
         #print(self.pos)
 
     def move_y(self,dt,map):
 
         s = self.return_signe(self.vy)
         remaining = self.vy*s*dt
-        old_pos = self.pos[1]
+        old_pos = self.pos_y
 
         dist = self.base_movement
 
@@ -92,9 +94,9 @@ class Projectile :
 
                 if self.is_dead is False and self.touch_wall(j,0,map) :
                     
-                    rest_y_to_complete_mouv = self.vy*dt - (self.pos[1]-old_pos)
+                    rest_y_to_complete_mouv = self.vy*dt - (self.pos_y-old_pos)
 
-                    complete_mov_to_touch_wall = (self.base_movement - (self.pos[1]*s)%self.base_movement)*s
+                    complete_mov_to_touch_wall = (self.base_movement - (self.pos_y*s)%self.base_movement)*s
                     if complete_mov_to_touch_wall*s<=remaining :
 
                         self.complete_mov_y(s,rest_y_to_complete_mouv,complete_mov_to_touch_wall)
@@ -113,23 +115,23 @@ class Projectile :
                             remaining=0
 
             if dist < remaining :
-                self.pos[1]+=dist*s
+                self.pos_y+=dist*s
 
             else :
-                self.pos[1]+= remaining*s
+                self.pos_y+= remaining*s
 
             remaining -= self.base_movement
 
             #if self.is_dead:
-            #    print(self.pos[1])
+            #    print(self.pos_y)
 
     def move_x(self,dt,map):
 
         s = self.return_signe(self.vx)
-        old_pos = self.pos[0]
+        old_pos = self.pos_x
         remaining = self.vx*s*dt
 
-        #self.pos[0]+=remaining*s
+        #self.pos_x+=remaining*s
         #return
 
         dist = self.base_movement
@@ -143,12 +145,12 @@ class Projectile :
 
                         #Complete la dist
 
-                    complete_mov_to_touch_wall = (self.base_movement - (self.pos[0]*s)%self.base_movement)*s
+                    complete_mov_to_touch_wall = (self.base_movement - (self.pos_x*s)%self.base_movement)*s
 
                     if complete_mov_to_touch_wall*s<=remaining :
 
 
-                        deltax = (self.pos[0]-old_pos)
+                        deltax = (self.pos_x-old_pos)
 
                         self.complete_mov_x(s,deltax,complete_mov_to_touch_wall)
 
@@ -157,32 +159,32 @@ class Projectile :
                         s =-s
                         self.angle = (180-self.angle)%360
 
-                        #print("old x : ",self.pos[0])
-                        #print("New x :",self.pos[0]+dist*s)
-                        #print("normal : ",self.pos[0]+dist*s)
+                        #print("old x : ",self.pos_x)
+                        #print("New x :",self.pos_x+dist*s)
+                        #print("normal : ",self.pos_x+dist*s)
                         
                         if self.rebond :
                             self.to_update = True
-                            #self.pos[0]+=dist*s
+                            #self.pos_x+=dist*s
 
                         else :
                             self.is_dead = True
                             remaining = 0
 
             if dist < remaining :
-                self.pos[0]+=dist*s
+                self.pos_x+=dist*s
             
             else :
-                self.pos[0]+= remaining*s
+                self.pos_x+= remaining*s
 
             remaining -= self.base_movement
 
             #if self.is_dead:
-            #    print(self.pos[0])
+            #    print(self.pos_x)
 
 
     def touch_wall(self,i,j,map):
-        return self.is_type(map.return_type(self.convert_to_base(self.pos[1]+i),self.convert_to_base(self.pos[0]+j)),map.dur)
+        return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),map.dur)
     
     def return_signe(self,el):
         if el <0:
@@ -206,7 +208,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,int(self.pos[0]),int(self.pos[1]),self.angle,self.speed,self.weight//self.base_movement,self.id_img]
+        return [self.id,int(self.pos_x),int(self.pos_y),self.angle,self.speed,self.weight//self.base_movement,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """
