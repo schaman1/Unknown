@@ -47,7 +47,7 @@ class Movable:
         #self.pos_y+=self.vitesse_y
         #return
 
-        pos_before = self.pos_y
+        #pos_before = self.pos_y
 
         s = self.return_signe(vy)
         remaining = int(vy*s*dt)

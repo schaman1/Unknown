@@ -284,7 +284,7 @@ class Client:
         elif id==12:
             life = struct.unpack("!B",data[1:2])[0]
 
-            self.main.state.game.player_all.me.update_life(life)
+            self.main.state.game.update_life(life,("Player",None))
 
             #self.main.state.game.create_weapon()
         

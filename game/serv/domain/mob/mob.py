@@ -4,7 +4,7 @@ from serv.domain.mob.team import Team
 
 class Mob(Movable):
 
-    def __init__(self,pos,hp = 100,id=None,width=10,height=20,team = Team.Mob):
+    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
 

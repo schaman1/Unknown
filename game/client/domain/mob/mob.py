@@ -3,9 +3,10 @@ from shared.constants import world
 class Mob:
 
     def __init__(self, x,y,cell_size,size):
-        self.pos_x = x
-        self.pos_y = y
+
         self.base_movement = world.RATIO
+        self.pos_x = self.convert_from_base(x*cell_size)
+        self.pos_y = self.convert_from_base(y*cell_size)
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
         self.between_pos_x = 0
         self.between_pos_y = 0
@@ -21,8 +22,8 @@ class Mob:
 
     def calculate_pos_blit(self,x,y):
         #print(self.pos_y)
-        xs = self.convert_from_base(self.pos_x*self.cell_size) - self.width//2*self.cell_size +x
-        ys = self.convert_from_base((self.pos_y+1) * self.cell_size) - self.height//2*self.cell_size +y #Regle un petit soucis
+        xs = self.pos_x - self.width//2*self.cell_size +x
+        ys = self.pos_y - self.height//2*self.cell_size +y #Regle un petit soucis
         return (xs,ys)
     
     def convert_from_base(self,nbr):

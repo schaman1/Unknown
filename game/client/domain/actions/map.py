@@ -61,11 +61,11 @@ class Map:
 
         x,y=pos_player
         
-        chunk_x = x//(self.width_chunk*self.base_movement)
-        chunk_y = y//(self.height_chunk*self.base_movement)  
+        chunk_x = x//(self.width_chunk*self.cell_size)
+        chunk_y = y//(self.height_chunk*self.cell_size)  
 
-        delta_x = (x%self.width_chunk)/self.base_movement
-        delta_y = (y%self.height_chunk)/self.base_movement
+        delta_x = (x%self.width_chunk)/self.cell_size
+        delta_y = (y%self.height_chunk)/self.cell_size
 
         #print(chunk_y)
 

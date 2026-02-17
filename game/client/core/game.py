@@ -3,6 +3,7 @@ import pygame
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.projectile.projectile_manager import ProjectileManager
+from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 
@@ -36,6 +37,8 @@ class Game :
 
         self.projectiles = ProjectileManager(cell_size)
 
+        self.floating_values = FloatingValueDisplay(cell_size)
+
         self.player_command = []
         self.blit_info=False
         self.spell_blit_mouse=None
@@ -55,8 +58,8 @@ class Game :
 
         for (chunk, id, x, y, state) in data_monster :
                 
-            self.monsters.dic_monster[chunk][id].pos_x = x
-            self.monsters.dic_monster[chunk][id].pos_y = y
+            self.monsters.dic_monster[chunk][id].pos_x = self.convert_from_base(x*self.cell_size)
+            self.monsters.dic_monster[chunk][id].pos_y = self.convert_from_base(y*self.cell_size)
             self.monsters.dic_monster[chunk][id].state = state
 
     def shot(self,id_key):
@@ -100,11 +103,12 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.blit_monsters(screen,x,y)
-        self.blit_players(screen,x,y, mouse_pos)
         self.blit_projectiles_explosions(screen,x,y,dt)
 
-        #screen.blit(self.light,(0,0))
+        self.floating_values.draw_floating_values(screen,x,y,dt)
+
+        self.blit_monsters(screen,x,y)
+        self.blit_players(screen,x,y, mouse_pos)
 
         self.blit_utils(screen,self.screen_size)
 
@@ -151,3 +155,20 @@ class Game :
             self.spell_blit_mouse=None
 
         self.blit_info = not self.blit_info
+
+    def update_life(self,new_life,data):
+        
+        id = data[0]
+
+        if id=="Player" :
+
+            delta_life = new_life - self.player_all.me.life
+
+            self.add_popup(self.player_all.me,str(delta_life))
+
+            self.player_all.me.update_life(new_life)
+
+    
+    def add_popup(self,ent,text):
+
+        self.floating_values.add_floating_value(text,[ent.pos_x,ent.pos_y],type="damage")
