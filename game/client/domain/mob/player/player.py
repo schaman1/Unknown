@@ -119,8 +119,8 @@ class Player_you(Mob) :
     #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
 
     def move(self,delta):
-        self.pos_x = delta[0]
-        self.pos_y = delta[1]
+        self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
+        self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
 
     def update_direction_look(self,new_direction):
         
@@ -210,10 +210,10 @@ class Player_not_you(Mob) :
     #        self.frame_weapon.append(img_weapon)
 #
     def move(self,delta):
-        old_pos = self.pos_x
-        self.pos_x = delta[0]
-        self.pos_y = delta[1]
+        self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
+        self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
 
+        old_pos = self.pos_x
         delta_x = self.pos_x-old_pos
 
         if delta_x>=0:
