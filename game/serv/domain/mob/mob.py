@@ -11,7 +11,7 @@ class Mob(Movable):
         self.screen_global_size = world.BG_SIZE_SERVER
 
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
-        
+
         self.acceleration = self.base_movement
         self.gravity_power = 2
         self.vitesse_down_base = self.acceleration*self.gravity_power
@@ -38,5 +38,9 @@ class Mob(Movable):
     def return_pos(self):
         return [self.pos_x,self.pos_y]
     
-    def take_damage(self,damage):
-        self.hp-=damage
+    def take_damage(self, amount):
+        self.life -= amount
+        if self.life < 10:
+            self.life = 10
+
+        self.send_new_life = True

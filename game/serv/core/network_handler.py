@@ -227,6 +227,14 @@ class Network_handler :
             packet+= struct.pack("!B",id_spell)
             #print("Spells id",id_spell)
 
+    def pack_life_update(self,data,packet):
+
+        packet+=struct.pack("!H",len(data))
+
+        for life in data:
+            id,new_life,chunk = life
+            packet+=struct.pack("!HHB",id,chunk,new_life)
+
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
 
@@ -270,6 +278,9 @@ class Network_handler :
 
         elif id==13:
             packet+=struct.pack("!H",data[1])
+
+        elif id==14:
+            self.pack_life_update(data[1],packet)
 
         else :
             print("Issue id not found : ",id)

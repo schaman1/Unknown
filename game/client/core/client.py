@@ -120,7 +120,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -162,6 +162,9 @@ class Client:
 
             elif msg_id == 13:
                 msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
+
+            elif msg_id == 14:
+                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*5
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -292,6 +295,20 @@ class Client:
             money = struct.unpack("!H", data[1:3])[0]
             self.main.state.game.player_all.me.update_money(money)
             #pass
+
+        elif id==14:
+
+            len = struct.unpack("!H", data[1:3])[0]
+            popup_to_create = []
+
+            for i in range(len):
+
+                id,chunk,delta_life = struct.unpack("!HHB",data[5*i+3:5*i+8])
+                
+                popup_to_create.append((id,chunk,delta_life))
+
+            self.main.state.game.add_many_popup_life(popup_to_create)
+
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
