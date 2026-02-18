@@ -27,7 +27,7 @@ ICONE_SPELL = resource_path("assets/ui/buttons/icone_spell.png")
 SPELLS = []
 SPELLS.append(None) #POS 0
 SPELLS.append(resource_path("assets/sprites/projectile/projectile_1_0.png")) #Pos 1
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_0_0.png"))
+SPELLS.append(resource_path("assets/sprites/projectile/projectile_2_0.png"))
 SPELLS.append(resource_path("assets/sprites/projectile/projectile_3_0.png"))#Pos 3 then have to do a boucle
 
 PLAYER_IDLE_4 = resource_path("assets/sprites/player/idle/player_idle_4.png") 
@@ -58,9 +58,9 @@ RANGED_WEAPON_3 = resource_path("assets/sprites/weapon/idle/ranged_weapon_0_3.pn
 
 RANGED_WEAPON = [RANGED_WEAPON_0,RANGED_WEAPON_1,RANGED_WEAPON_2,RANGED_WEAPON_3]
 
-PROJECTILE_2_0 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
-PROJECTILE_2_1 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
-PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
-PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
+PROJECTILE_2_0 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
+PROJECTILE_2_1 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
+PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
+PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
 
 PROJECTILE_2 = [PROJECTILE_2_0,PROJECTILE_2_1,PROJECTILE_2_2,PROJECTILE_2_3]

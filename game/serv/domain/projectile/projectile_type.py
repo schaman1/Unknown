@@ -9,7 +9,7 @@ class Fire(Projectile) :
 
         super().__init__(pos,self.life_time,angle,
                          speed = weapons.V_FIRE,
-                         id_img = 2,
+                         id_img = 1,
                          width = weapons.WIDTH_FIRE,
                          height = weapons.HEIGHT_FIRE,
                          rebond = weapons.REBOND_FIRE,
