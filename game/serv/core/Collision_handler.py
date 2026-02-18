@@ -53,12 +53,12 @@ class CollisionHandler:
         xleft2,xright2 = center2[0]-width2//2,center2[0]+width2//2
         yleft2,yright2 = center2[1]-height2//2,center2[1]+height2//2
 
-        print("X : ",xleft1,xright1,xleft2,xright2)
-        print("Y : ",yleft1,yright1,yleft2,yright2)
+        #print("X : ",xleft1,xright1,xleft2,xright2)
+        #print("Y : ",yleft1,yright1,yleft2,yright2)
 
-        if xleft1<=xright2 or xright1<=xleft2 :
+        if (xleft1<=xright2 and xright1>=xleft2) or (xleft1>=xright2 and xright1<=xleft2):
 
-            if yleft1<=yright2 or yright1<=yleft2 :
+            if (yleft1<=yright2 and yright1>=yleft2) or (yleft1>=yright2 and yright1<=yleft2) :
 
 
                 return True
