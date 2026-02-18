@@ -50,7 +50,7 @@ class Weapon1(Weapon) :
     def init_slot(self):
         #self.fill_slot(0,upgrades.SmallDash())
         self.fill_slot(1,upgrades.CreateLune())
-        self.fill_slot(2,upgrades.CreateMagic())
+        self.fill_slot(2,upgrades.CreateFire())
 
     def fill_slot(self,idx,function):
 

@@ -67,6 +67,8 @@ class Player_all :
 
                 player.draw(screen_global)
 
+    def draw_light(self,screen_global):
+
         self.create_light(screen_global)
 
     def mouse_button_down(self,mouse_pos):

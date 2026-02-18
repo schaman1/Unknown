@@ -110,6 +110,9 @@ class Game :
         self.blit_players(screen,x,y, mouse_pos)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
+
+        self.player_all.draw_light(screen)
+
         self.blit_utils(screen,self.screen_size)
 
         pos = self.player_all.return_pos()
