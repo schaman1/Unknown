@@ -3,7 +3,7 @@ from serv.domain.mob.team import Team
 class CollisionHandler:
 
     def __init__(self):
-        pass
+        self.effect_send = []
 
     def trigger_collision(self,mobs,players,projectiles):
 
@@ -19,7 +19,7 @@ class CollisionHandler:
 
                         if touch :
                             #print("Player touch")
-                            self.handle_touch(projectile,player)
+                            self.handle_touch(projectile,player,chunk)
                         
                 if projectile.team!=Team.Mob:
 
@@ -30,7 +30,7 @@ class CollisionHandler:
 
                         if touch :
                             #print("Mob touch")
-                            self.handle_touch(projectile,mob)
+                            self.handle_touch(projectile,mob,chunk)
 
 
     def collision(self,ent1,ent2):
@@ -65,7 +65,11 @@ class CollisionHandler:
         
         return False
 
-    def handle_touch(self,projectile,ent):
+    def handle_touch(self,projectile,ent,chunk):
+        old_pv = ent.life
         ent.take_damage(projectile.damage)
+        delta_life = old_pv-ent.life
+
+        self.effect_send.append([ent.id,delta_life,chunk])
 
         projectile.is_dead = True

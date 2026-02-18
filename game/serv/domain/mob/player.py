@@ -19,7 +19,7 @@ class Player(Mob) :
         self.damage_taken = damage
         self.is_host = host
         self.vitesse_max = 40*self.base_movement
-        self.distance_cast_spells = self.half_width*2
+        self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
         self.weapons = WeaponManager(self.team)
@@ -156,13 +156,6 @@ class Player(Mob) :
 
         if self.vitesse_x>self.vitesse_max:
             self.vitesse_x = self.vitesse_max
-    
-    def take_damage(self, amount):
-        self.life -= amount
-        if self.life < 10:
-            self.life = 10
-
-        self.send_new_life = True
     
     def is_alive(self):
         return self.life > 0

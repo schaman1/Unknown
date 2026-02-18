@@ -105,10 +105,10 @@ class Game :
 
         self.blit_projectiles_explosions(screen,x,y,dt)
 
-        self.floating_values.draw_floating_values(screen,x,y,dt)
 
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y, mouse_pos)
+        self.floating_values.draw_floating_values(screen,x,y,dt)
 
         self.blit_utils(screen,self.screen_size)
 
@@ -164,11 +164,21 @@ class Game :
 
             delta_life = new_life - self.player_all.me.life
 
-            self.add_popup(self.player_all.me,str(delta_life))
+            self.add_popup(self.player_all.me,delta_life)
 
             self.player_all.me.update_life(new_life)
 
     
     def add_popup(self,ent,text):
 
-        self.floating_values.add_floating_value(text,[ent.pos_x,ent.pos_y],type="damage")
+        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type="damage")
+
+    def add_many_popup_life(self,data):
+
+        for e in data:
+
+            id,chunk,delta_life = e
+
+            ent = self.monsters.dic_monster[chunk][id]
+
+            self.add_popup(ent,delta_life)
