@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.mob.moves import Movable
+from serv.domain.mob.deplacement.moves import Movable
 from serv.domain.mob.team import Team
 
 class Mob(Movable):

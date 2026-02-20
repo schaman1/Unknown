@@ -6,6 +6,7 @@ from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
+from client.domain.actions.camera import Camera
 
 from client.config import assets
 from shared.constants import world
@@ -38,6 +39,8 @@ class Game :
         self.projectiles = ProjectileManager(cell_size)
 
         self.floating_values = FloatingValueDisplay(cell_size)
+
+        self.camera = Camera(screenSize)
 
         self.player_command = []
         self.blit_info=False
@@ -93,10 +96,10 @@ class Game :
             if self.spell_blit_mouse!=None:
                 screen.blit(self.spell_blit_mouse,mouse_pos)
 
-    def draw(self,screen,x,y,dt,mouse_pos=None):
+    def draw(self,screen,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
 
-        #x,y = 0,0  #Pour voir toute la map
+        x,y = self.camera.return_camera_pos(self.player_all.me)
 
         screen.blit(self.bg,(0,0))
         #screen.fill((0,0,0))
