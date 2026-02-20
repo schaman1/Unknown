@@ -66,8 +66,7 @@ class State:
 
         if self.mod == "game":
 
-            x,y = self.return_pos_blit()
-            self.game.draw(self.screen,x,y,dt,mouse_pos)
+            self.game.draw(self.screen,dt,mouse_pos)
 
             #self.draw_btn(self.dicGame,mouse_pos)
 
@@ -106,8 +105,7 @@ class State:
             elif self.mod == "intro end":
 
                 #En fonction de ce que tu fais mais la comme ça, si tu fais du fondu, les persos sont déjà désinné
-                x,y = self.return_pos_blit()
-                self.game.draw(self.screen,x,y,dt, mouse_pos)
+                self.game.draw(self.screen,dt, mouse_pos)
 
                 finish = self.game.draw_intro_end(self.screen)
 
@@ -119,18 +117,6 @@ class State:
                 print("Unknown self.mod")
 
         self.draw_alert()
-
-    def return_pos_blit(self):   
-        """
-        renvoie la position (x, y) à blit du background
-        On bouge le background à la place du perso, pour les salles
-        """
-        #x = -self.posClient[0]*self.cell_size + self.Size[0]//2
-        #y = -self.posClient[1]*self.cell_size + self.Size[1]//2
-        client_id = self.game.player_all.client_id
-        x = -self.game.player_all.dic_players[client_id].pos_x + self.Size[0]//2
-        y = -self.game.player_all.dic_players[client_id].pos_y + self.Size[1]//2
-        return (x,y)
 
     def connexion_serv(self,client):
         """renvoie le mode de jeu apres connexion"""

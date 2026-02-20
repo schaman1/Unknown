@@ -2,6 +2,7 @@ from shared.constants import size_display
 from serv.domain.mob.mob import Mob
 from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
+from serv.domain.mob.deplacement import smooth_jump,input_handler
 from serv.domain.mob.team import Team
 
 class Player(Mob) :
@@ -18,12 +19,14 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 40*self.base_movement
+        self.vitesse_max = 30*self.base_movement
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
         self.weapons = WeaponManager(self.team)
         self.upgrade_handler = UpgradeHandler()
+        self.smooth_jump = smooth_jump.SmoothJump()
+        self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
 
@@ -81,9 +84,34 @@ class Player(Mob) :
 
         self.update_vitesse()
 
-        #self.update_money(1)
+        self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
+
+        self.handle_input(map)
 
         return delta
+    
+    def handle_input(self,map):
+
+        val = self.input_handler.trigger()
+
+        for input in (val):
+
+            self.move_from_input(input[0],input[1],map)
+                
+
+    def move_from_input(self,idx,dt,map):
+
+        if idx==0:
+            self.move_up(map)
+
+        elif idx==1:
+            self.move_down(dt)
+
+        elif idx==2:
+            self.move_left(dt)
+
+        elif idx==3:
+            self.move_right(dt)
         
     def move_from_key(self,delta,map,dt_receive): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
@@ -105,29 +133,36 @@ class Player(Mob) :
         else:
             self.is_climbing = False
 
+        #0 : up/1 : down/ 2 : left/ 3 : right
 
-        if delta==0:
-            self.move_up(map)
+        self.input_handler.update_value(delta,dt)
 
-        elif delta==1:
-            self.move_down(dt)
-
-        elif delta==2:
-            self.move_left(dt)
-
-        elif delta==3:
-            self.move_right(dt)
-        
-        #delta_collision = self.colision(delta, cells_arr, cell_dur, cell_vide, cell_liquid)        
-        #self.pos_x += delta_collision[0] 
-        #self.pos_y += delta_collision[1] 
-        #return delta_collision
+        #if delta==0:
+        #    self.move_up(map)
+#
+        #elif delta==1:
+        #    self.move_down(dt)
+#
+        #elif delta==2:
+        #    self.move_left(dt)
+#
+        #elif delta==3:
+        #    self.move_right(dt)
 
     def move_up(self,map):
         #self.pos_y-=1
         self.is_looking=1
-        if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
+        if self.can_jump():
+
+        #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
+
+    def can_jump(self):
+        
+        if self.smooth_jump.can_jump():
+            return True
+
+
 
     def move_down(self,dt):
         #self.pos_y+=1

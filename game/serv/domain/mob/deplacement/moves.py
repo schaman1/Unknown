@@ -37,7 +37,15 @@ class Movable:
         #print("before gravity",self.vitesse_y)
         self.vitesse_y += self.base_movement*2
         s=self.return_signe(self.vitesse_y)
-        self.vitesse_y = self.vitesse_y*(1+0.1*s)
+
+        gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        if self.vitesse_y<0:
+            gravity_power_mult-=0.1
+        else :
+            gravity_power_mult+=0.25
+
+        self.vitesse_y = self.vitesse_y*gravity_power_mult
+
         if self.vitesse_y>self.base_movement*100:
             self.vitesse_y = self.base_movement*100
         #print(self.vitesse_y)
@@ -116,7 +124,7 @@ class Movable:
     def touch_wall(self,i,j,map):
         #print(self.pos_y,i,self.half_height,self.pos_x,j)
         return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),map.dur)
-    
+
     def touch_ground(self,map):
         j = -self.half_width
 
