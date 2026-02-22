@@ -76,7 +76,10 @@ class Player(Mob) :
             self.vitesse_x = 0
         else :
             #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
-            self.vitesse_x=self.vitesse_x*0.8
+            #if self.smooth_jump.is_falling :
+                #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
+            if not self.smooth_jump.is_falling :
+                self.vitesse_x=self.vitesse_x*0.8
 
     def update_pos(self,map,dt):
 

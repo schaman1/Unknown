@@ -13,7 +13,7 @@ class Mob(Movable):
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
 
         self.acceleration = self.base_movement
-        self.gravity_power = 2
+        self.gravity_power = 1
         self.vitesse_down_base = self.acceleration*self.gravity_power
         self.acceleration_x = 2 * self.acceleration
         self.acceleration_y = 150 * self.acceleration

@@ -170,7 +170,8 @@ class Main:
             if self.client.connected :
                 self.client.poll_reception()
 
-            self.handle_events()
+            self.handle_events_send()
+            self.handle_events_receive()
 
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
@@ -243,7 +244,7 @@ class Main:
         #if key[pygame.K_SPACE] : #futur saut (vitesse y)
         #    self.client.send_data("id":"move", "deplacement":"jump") 
 
-    def handle_events(self):
+    def handle_events_send(self):
 
         events = self.state.game.player_command
 
@@ -260,3 +261,7 @@ class Main:
                 self.client.send_data(id=4,data=[input[1]])
 
         events.clear()
+
+    def handle_events_receive(self):
+
+        self.client.events.trigger()
