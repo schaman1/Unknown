@@ -1,5 +1,6 @@
 import socket, select, struct
 from shared.constants.network import PORT
+from client.core.queu_event import QueueEvent
 import time
 
 class Client:
@@ -15,6 +16,7 @@ class Client:
         self.err_message = ""
 
         self.buffer = bytearray()
+        self.events = QueueEvent(self.main)
 
         self.font = font
         self.screen = screen
@@ -242,8 +244,7 @@ class Client:
 
         elif id==6:
             id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
-            self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
-
+            self.events.empile((id,id_player,pos_x,pos_y))
 
         elif id == 1 :
 
