@@ -4,6 +4,7 @@ from client.core.client import Client
 from serv.core.server_game import Server_game
 from shared.constants import fps
 from client.config import size_display as size
+from client.ui.escape_menu import EscapeMenu
 
 #from C_inGame import InGame
 #from C_card import Card
@@ -32,6 +33,8 @@ class Main:
 
         self.client = Client(self.font,self.screen,self)
         self.state = State(self.screen,self.screenSize,self.font,self.client,size.CELL_SIZE)
+        
+        self.escape_menu = EscapeMenu(self.screenSize, self.font)
 
     def set_CELL_SIZE(self,screen_size):
         size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
@@ -94,6 +97,9 @@ class Main:
                             self.key_command.append([3,2])
                             self.state.game.player_all.me.update_direction_look(2)
                         
+                        if event.key == pygame.K_ESCAPE and self.objClicked is None:
+                            self.escape_menu.toggle()
+                        
                     elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"]
@@ -118,6 +124,13 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.state.mod=="game":
+
+                        if self.escape_menu.visible:
+                            action= self.escape_menu.handle_click(event.pos)
+                            if action == "quit":
+                                running = False
+                            elif action =="settings":
+                                pass
 
                         info,spell_1,spell_2 = self.state.game.trigger_mouse_down(event.pos)
                         
@@ -203,6 +216,9 @@ class Main:
 
             if self.client.connected :
                 self.client.poll_reception()
+
+            if self.escape_menu.visible:
+                self.escape_menu.draw(self.screen, pygame.mouse.get_pos())
 
             self.handle_events_send()
             self.handle_events_receive()
