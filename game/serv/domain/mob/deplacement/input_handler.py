@@ -4,22 +4,20 @@ class InputHandler:
 
     def __init__(self):
 
-        self.movement = []
+        self.movement = {0:False,
+                         1:False,
+                         2:False,
+                         3:False}
 
     def trigger(self):
 
         input = []
         send_jump = False
 
-        for e in (self.movement):
+        for idx,value in (self.movement.items()):
 
-            if e[0]==0 and send_jump==False:#Means want to jump
-                send_jump=True
-
-                input.append(e)
-
-            elif e[0]!=0:
-                input.append(e)
+            if value :
+                input.append(idx)
 
         self.reset_value()
 
@@ -27,8 +25,12 @@ class InputHandler:
 
     def reset_value(self):
 
-        self.movement.clear()
+        self.movement[0]=False #Reset jump
 
-    def update_value(self,idx,time):
+    def update_value(self,idx):
 
-        self.movement.append([idx,time])
+        self.movement[idx]=True
+
+    def set_false(self,key):
+
+        self.movement[key]=False

@@ -326,14 +326,16 @@ class Client:
             #packet += struct.pack("!HH", data[0], data[1])
             
         if id == 3 :
-            packet+= struct.pack("!BH",data[0],data[1])
+            packet+= struct.pack("!B",data[0])
 
         elif id == 4:
-            #print("data shot",data)
             packet+= struct.pack("!B",data[0])
 
         elif id==5:
             packet+=struct.pack("!BBBB",data[0][0],data[0][1],data[1][0],data[1][1])
+
+        elif id==6:
+            packet+= struct.pack("!B",data[0])
 
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())

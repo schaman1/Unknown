@@ -89,17 +89,17 @@ class Player(Mob) :
 
         self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
-        self.handle_input(map)
+        self.handle_input(map,dt)
 
         return delta
     
-    def handle_input(self,map):
+    def handle_input(self,map,dt):
 
         val = self.input_handler.trigger()
 
         for input in (val):
 
-            self.move_from_input(input[0],input[1],map)
+            self.move_from_input(input,dt,map)
                 
 
     def move_from_input(self,idx,dt,map):
@@ -116,18 +116,16 @@ class Player(Mob) :
         elif idx==3:
             self.move_right(dt)
         
-    def move_from_key(self,delta,map,dt_receive): 
+    def move_from_key(self,delta,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
-
-        dt = dt_receive/1000
 
         # Check for ladder interaction
         if self.is_on_ladder(map):
             if delta == 0: # UP
-                self.climb(map, -1, dt)
+                self.climb(map, -1, 1)
                 return
             elif delta == 1: # DOWN
-                self.climb(map, 1, dt)
+                self.climb(map, 1, 1)
                 return
             
             # If moving side-ways on ladder, maybe fall off?
@@ -138,7 +136,7 @@ class Player(Mob) :
 
         #0 : up/1 : down/ 2 : left/ 3 : right
 
-        self.input_handler.update_value(delta,dt)
+        self.input_handler.update_value(delta)
 
         #if delta==0:
         #    self.move_up(map)
@@ -151,6 +149,11 @@ class Player(Mob) :
 #
         #elif delta==3:
         #    self.move_right(dt)
+
+    def stop_from_key(self,key,map):
+
+        self.input_handler.set_false(key)
+
 
     def move_up(self,map):
         #self.pos_y-=1

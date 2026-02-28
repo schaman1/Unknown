@@ -28,6 +28,7 @@ class Main:
         #self.Game = InGame(self.screen,self.screenSize,self.font,self.cards)
         self.Server = None
         self.objClicked = None
+        self.key_command = []
 
         self.client = Client(self.font,self.screen,self)
         self.state = State(self.screen,self.screenSize,self.font,self.client,size.CELL_SIZE)
@@ -50,15 +51,48 @@ class Main:
                 if event.type == pygame.QUIT:
                     running = False
 
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYUP:
+
+                    if self.state.mod == "game":
+
+                        if event.key == pygame.K_z :
+                            self.key_command.append([4,0])
+
+                        elif event.key == pygame.K_s :
+                            self.key_command.append([4,1])
+
+                        elif event.key == pygame.K_d:
+
+                            self.key_command.append([4,3])
+
+                        elif event.key==pygame.K_q:
+                            self.key_command.append([4,2])
+
+                elif event.type == pygame.KEYDOWN:
 
                     if self.state.mod == "game":
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
 
-                        if event.key == pygame.K_i :
-
+                        elif event.key == pygame.K_i :
                             self.state.game.trigger_info_key()
+
+                        elif event.key == pygame.K_z :
+                            self.key_command.append([3,0])
+                            self.state.game.player_all.me.update_direction_look(1)
+
+                        elif event.key == pygame.K_s :
+                            self.key_command.append([3,1])
+                            self.state.game.player_all.me.update_direction_look(3)
+
+                        elif event.key == pygame.K_d:
+
+                            self.key_command.append([3,3])
+                            self.state.game.player_all.me.update_direction_look(0)
+
+                        elif event.key==pygame.K_q:
+                            self.key_command.append([3,2])
+                            self.state.game.player_all.me.update_direction_look(2)
                         
                     elif self.objClicked != None:
 
@@ -205,23 +239,23 @@ class Main:
         is_looking = None
         dt_send = int(self.dt*1000)
 
-        if key[pygame.K_z] :
-            self.client.send_data(id=3,data=[0,dt_send]) #lié au serveur les données/haut
-            is_looking=1
-
-        if key[pygame.K_s] :
-            self.client.send_data(id=3,data=[1,dt_send]) #lié au serveur les données/bas
-            is_looking=3
-
-        if key[pygame.K_d] :
-            self.client.send_data(id=3,data=[3,dt_send]) #lié au serveur les données /right
-            is_looking=0
-
-        if key[pygame.K_q] :
-            self.client.send_data(id=3,data=[2,dt_send]) #lié au serveur les données/gauche
-            is_looking=2
-
-        self.state.game.player_all.me.update_direction_look(is_looking)
+        #if key[pygame.K_z] :
+        #    self.client.send_data(id=3,data=[0,dt_send]) #lié au serveur les données/haut
+        #    is_looking=1
+#
+        #if key[pygame.K_s] :
+        #    self.client.send_data(id=3,data=[1,dt_send]) #lié au serveur les données/bas
+        #    is_looking=3
+#
+        #if key[pygame.K_d] :
+        #    self.client.send_data(id=3,data=[3,dt_send]) #lié au serveur les données /right
+        #    is_looking=0
+#
+        #if key[pygame.K_q] :
+        #    self.client.send_data(id=3,data=[2,dt_send]) #lié au serveur les données/gauche
+        #    is_looking=2
+#
+        #self.state.game.player_all.me.update_direction_look(is_looking)
 
         if key[pygame.K_j] :
             self.state.game.shot(1)
@@ -246,7 +280,7 @@ class Main:
 
     def handle_events_send(self):
 
-        events = self.state.game.player_command
+        events = self.state.game.player_command + self.key_command
 
         for input in events :
 
@@ -256,11 +290,15 @@ class Main:
 
             id = input[0]
 
-            if id==4 :
+            self.client.send_data(id=id,data=input[1:])
+            #if id==4 :
+            #
+            #elif id == 3 :
+            #    #print(f"Send, {input[1:]}")
+            #    self.client.send_data(id=id,data=input[1:])
 
-                self.client.send_data(id=4,data=[input[1]])
-
-        events.clear()
+        self.state.game.player_command.clear()
+        self.key_command.clear()
 
     def handle_events_receive(self):
 

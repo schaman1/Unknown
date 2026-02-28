@@ -67,10 +67,10 @@ class WeaponManager:
 
         if now >= self.next_allowed_shot[id_key] :
 
-            return [4,id_key]
+            return [6,id_key]
         
         else :
-            return #[4,angle] #Si tu veux plus avoir de contraite de tir niveau client
+            return #[6,angle] #Si tu veux plus avoir de contraite de tir niveau client
         
     def touch_spells(self,mouse_pos):
 
