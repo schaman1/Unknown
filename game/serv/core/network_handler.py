@@ -56,13 +56,16 @@ class Network_handler :
                     msg_size = 1
 
                 elif msg_id==3:
-                    msg_size=1+3
+                    msg_size=1+1
                 
                 elif msg_id==4:
                     msg_size=1+1
 
                 elif msg_id==5:
                     msg_size=1+4
+
+                elif msg_id==6:
+                    msg_size = 1+1
 
                 else:
                     print("UNKNOWN MSG ID", msg_id)
@@ -131,11 +134,14 @@ class Network_handler :
         id_msg = struct.unpack("!B", data[0:1])[0]
 
         if id_msg == 3 :
-            
-            dep,dt_receive = struct.unpack("!BH", data[1:4])
-            self.server.lClient[sender].move_from_key(dep,self.server.map_cell,dt_receive)
+            dep = struct.unpack("!B", data[1:2])[0]
+            self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
 
         elif id_msg == 4 :
+            dep = struct.unpack("!B", data[1:2])[0]
+            self.server.lClient[sender].stop_from_key(dep,self.server.map_cell)
+
+        elif id_msg == 6 :
             id_weapon = struct.unpack("!B",data[1:2])[0]
             self.server.handle_shot(id_weapon,sender)
 

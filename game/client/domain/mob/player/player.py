@@ -37,10 +37,7 @@ class Player_you(Mob) :
             self.frame_perso_left.append(Img)
             self.frame_perso_right.append(Img_flip)
 
-        self.frame_to_blit.append(self.frame_perso_right)
-        self.frame_to_blit.append(self.frame_perso_right) #Top
-        self.frame_to_blit.append(self.frame_perso_left)
-        self.frame_to_blit.append(self.frame_perso_right) #Bottom
+        self.frame_to_blit=self.frame_perso_right
         #self.frame_weapon.append(Img_weapon)
 
     def update_frame(self):
@@ -63,7 +60,7 @@ class Player_you(Mob) :
 
     def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
 
-        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4],self.pos_blit)
+        screen.blit(self.frame_to_blit[self.frame%4],self.pos_blit)
 
         self.update_frame()
 
@@ -129,6 +126,10 @@ class Player_you(Mob) :
         
         else :
             self.is_looking=new_direction
+            if new_direction==0:
+                self.frame_to_blit = self.frame_perso_right
+            elif new_direction==2:
+                self.frame_to_blit = self.frame_perso_left
 
         #else :
         #    print("Unknow direction looking :",new_direction)
