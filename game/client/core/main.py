@@ -58,18 +58,20 @@ class Main:
 
                     if self.state.mod == "game":
 
-                        if event.key == pygame.K_z :
-                            self.key_command.append([4,0])
+                        #if event.key == pygame.K_z :
+                        #    self.key_command.append([4,0])
+                        #    self.state.game.player_all.me.update_direction_stop_look(1)
 
-                        elif event.key == pygame.K_s :
+                        if event.key == pygame.K_s :
                             self.key_command.append([4,1])
 
                         elif event.key == pygame.K_d:
-
                             self.key_command.append([4,3])
+                            self.state.game.player_all.me.update_direction_stop_look(0)
 
                         elif event.key==pygame.K_q:
                             self.key_command.append([4,2])
+                            self.state.game.player_all.me.update_direction_stop_look(2)
 
                 elif event.type == pygame.KEYDOWN:
 
@@ -307,6 +309,7 @@ class Main:
             id = input[0]
 
             self.client.send_data(id=id,data=input[1:])
+
             #if id==4 :
             #
             #elif id == 3 :

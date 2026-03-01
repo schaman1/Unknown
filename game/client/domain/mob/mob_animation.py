@@ -7,34 +7,48 @@ class Animation:
 
         self.animation = {"running":{"right":[],
                                      "left":[],
-                                     "time":1},
+                                     "time":0.1},
                           "idle":{"right":[],
                                   "left":[],
-                                  "time":1}}
-        self.current_state = "idle"
+                                  "time":0.2}}
+        self.state = "idle"
         self.direction = "right"
-        self.width = width
-        self.height = height
+        self.width = width*cell_size*2
+        self.height = height*cell_size*2
 
         self.time_start_frame=0
         self.frame = 0
 
-        self.init_animation(entity_name,cell_size)
+        self.init_animation(entity_name)
 
-    def init_animation(self,entity_name,cell_size):
+    def init_animation(self,entity_name):
 
         if entity_name == "player":
-            for i in range(4):
-                Img = pygame.image.load(assets.PLAYER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
-                Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
 
-                Img_flip = pygame.transform.flip(Img, True, False)
-                self.animation["idle"]["left"].append(Img)
-                self.animation["idle"]["right"].append(Img_flip)
+            #size_img = 50*cell_size
+            size = self.width//2
+            img_idle = pygame.image.load(assets.PLAYER_IDLE)
+            img_idle = pygame.transform.scale(img_idle,(self.width,self.height))
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            img_running = pygame.image.load(assets.PLAYER_RUNNING)
+            img_running = pygame.transform.scale(img_running,(self.width,self.height))
+            self.decoupe_img(img_running,self.animation["running"],size)
+
+    def decoupe_img(self,img,dest,size):
+        for i in range(0,img.get_height(),size):
+            for j in range(0,img.get_width(),size):
+
+                rect = pygame.Rect(j,i,size,size)
+                sub_img = img.subsurface(rect).copy()
+                #sub_img = p
+                sub_img_flip = pygame.transform.flip(sub_img,True,False)
+                dest["left"].append(sub_img)
+                dest["right"].append(sub_img_flip)
 
     def update_state(self,new_state):
 
-        self.current_state = new_state
+        self.state = new_state
 
     def update_direction(self,new_direction):
         
@@ -43,11 +57,11 @@ class Animation:
     def draw(self,dt,pos_blit,screen):
         self.time_start_frame+=dt
 
-        if self.animation[self.current_state]["time"]<self.time_start_frame:
+        if self.animation[self.state]["time"]<self.time_start_frame:
 
-            self.time_start_frame-=self.animation[self.current_state]["time"]
+            self.time_start_frame-=self.animation[self.state]["time"]
             self.frame = (self.frame+1)%4
 
-        screen.blit(self.animation[self.current_state][self.direction][self.frame],pos_blit)
+        screen.blit(self.animation[self.state][self.direction][self.frame],pos_blit)
 
         

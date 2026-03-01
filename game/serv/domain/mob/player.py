@@ -1,4 +1,4 @@
-from shared.constants import size_display
+from serv.config import collisions
 from serv.domain.mob.mob import Mob
 from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
@@ -11,7 +11,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1, money=0): 
 
-        super().__init__(pos,hp,id,size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT,Team.Player)
+        super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player)
 
         self.hp = hp
         self.money = money
