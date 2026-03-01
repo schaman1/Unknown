@@ -30,12 +30,7 @@ SPELLS.append(resource_path("assets/sprites/projectile/projectile_1_0.png")) #Po
 SPELLS.append(resource_path("assets/sprites/projectile/projectile_2_0.png"))
 SPELLS.append(resource_path("assets/sprites/projectile/projectile_3_0.png"))#Pos 3 then have to do a boucle
 
-PLAYER_IDLE_4 = resource_path("assets/sprites/player/idle/player_idle_4.png") 
-PLAYER_IDLE_1 = resource_path("assets/sprites/player/idle/player_idle_1.png") 
-PLAYER_IDLE_2 = resource_path("assets/sprites/player/idle/player_idle_2.png") 
-PLAYER_IDLE_3 = resource_path("assets/sprites/player/idle/player_idle_3.png") 
-
-PLAYER_IDLE = [PLAYER_IDLE_1,PLAYER_IDLE_2,PLAYER_IDLE_3,PLAYER_IDLE_4]
+PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 
 PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
 

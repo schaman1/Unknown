@@ -1,7 +1,6 @@
 import pygame, math
 from client.domain.mob.mob import Mob
-from client.config import assets#,weapon
-from shared.constants import size_display#,world
+from client.config import size_display
 from client.domain.weapon.weapon_manager import WeaponManager
 
 class Player_you(Mob) :
@@ -15,6 +14,8 @@ class Player_you(Mob) :
 
         self.padding_life = 0.02
         self.money = money
+        self.key_active = {"right":False,
+                           "left":False}
 
         #self.frame_weapon = []
         self.frame = 0
@@ -82,12 +83,21 @@ class Player_you(Mob) :
         else :
             return
 
-    #def calculate_pos(self,xscreen,yscreen):
-    #    return (self.pos_x*self.cell_size+xscreen,self.pos_y*self.cell_size+yscreen)
-
     def move(self,delta):
         self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
         self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
+
+    def calcule_new_direction(self):
+        if self.key_active["left"] and not self.key_active["right"] :
+            self.animation.direction="left"
+            self.animation.update_state("running")
+
+        elif self.key_active["right"] and not self.key_active["left"]:
+            self.animation.direction="right"
+            self.animation.update_state("running")
+
+        elif not self.key_active["right"] and not self.key_active["left"]:
+            self.animation.update_state("idle")
 
     def update_direction_look(self,new_direction):
         
@@ -97,9 +107,23 @@ class Player_you(Mob) :
         else :
             self.is_looking=new_direction
             if new_direction==0:
-                self.animation.direction = "right"
+                self.key_active["right"]=True
+
             elif new_direction==2:
-                self.animation.direction = "left"
+                self.key_active["left"]=True
+
+
+            self.calcule_new_direction()
+
+    def update_direction_stop_look(self,stop_direction):
+
+            if stop_direction==0:
+                self.key_active["right"]=False
+
+            elif stop_direction==2:
+                self.key_active["left"]=False
+
+            self.calcule_new_direction()
 
 class Player_not_you(Mob) :
 
@@ -111,8 +135,6 @@ class Player_not_you(Mob) :
         self.is_you = is_you
 
         self.cell_size=cell_size
-
-        self.init_Img(cell_size)
 
     def draw(self,screen,dt):
         
@@ -153,8 +175,9 @@ class Player_not_you(Mob) :
         delta_x = self.pos_x-old_pos
 
         if delta_x>=0:
-            self.animation.direction = 0
+            self.animation.direction = "right"
+
         else :
-            self.animation.direction = 2
+            self.animation.direction = "left"
 
 
