@@ -12,9 +12,6 @@ class Player_you(Mob) :
 
         self.pseudo = pseudo
         self.is_you = is_you
-        self.frame_perso_right = []
-        self.frame_perso_left = []
-        self.frame_to_blit = []
 
         self.padding_life = 0.02
         self.money = money
@@ -23,28 +20,7 @@ class Player_you(Mob) :
         self.frame = 0
         self.frame_multiplier = 0
 
-        self.init_Img(cell_size)
-
         self.weapons = WeaponManager()
-
-    def init_Img(self,cell_size):
-        
-        for i in range(4):
-            Img = pygame.image.load(assets.PLAYER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
-            Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
-
-            Img_flip = pygame.transform.flip(Img, True, False)
-            self.frame_perso_left.append(Img)
-            self.frame_perso_right.append(Img_flip)
-
-        self.frame_to_blit=self.frame_perso_right
-        #self.frame_weapon.append(Img_weapon)
-
-    def update_frame(self):
-        self.frame_multiplier +=1
-        if self.frame_multiplier >= 100 :
-            self.frame +=1
-            self.frame_multiplier = 0
     
     def get_angle(self, pos, mouse_pos) -> int:
         '''renvoie l'angle entre le perso et la souris en int'''
@@ -57,20 +33,14 @@ class Player_you(Mob) :
         '''valeur de money envoyée par le serv et récupérée par le client'''
         self.money = money
 
+    def draw(self,screen,dt):
 
-    def draw(self,screen,xscreen,yscreen, mouse_pos=None,center=None):
-
-        screen.blit(self.frame_to_blit[self.frame%4],self.pos_blit)
-
-        self.update_frame()
+        self.animation.draw(dt,self.pos_blit,screen)
 
     def draw_utils(self,screen,screen_size):
 
         self.draw_life(screen,screen_size)
         self.draw_money(screen,screen_size)
-
-        #self.weapons.draw_icone_weapon(screen,screen_size)
-        self.update_frame()
 
     def draw_life(self,screen,screen_size):
 
@@ -127,12 +97,9 @@ class Player_you(Mob) :
         else :
             self.is_looking=new_direction
             if new_direction==0:
-                self.frame_to_blit = self.frame_perso_right
+                self.animation.direction = "right"
             elif new_direction==2:
-                self.frame_to_blit = self.frame_perso_left
-
-        #else :
-        #    print("Unknow direction looking :",new_direction)
+                self.animation.direction = "left"
 
 class Player_not_you(Mob) :
 
@@ -142,51 +109,19 @@ class Player_not_you(Mob) :
 
         self.pseudo = pseudo
         self.is_you = is_you
-        self.frame_perso_left = []
-        self.frame_perso_right = []
-        self.img_weapon = "incoming"
-        self.frame_weapon = []
-        self.frame = 0
-        self.frame_multiplier = 0
-        self.frame_to_blit = []
 
         self.cell_size=cell_size
 
         self.init_Img(cell_size)
 
-    def init_Img(self,cell_size):
-        
-        for i in range(4):
-            Img = pygame.image.load(assets.PLAYER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
-            Img = pygame.transform.scale(Img,(self.width*cell_size,self.height*cell_size))
-
-            Img_flip = pygame.transform.flip(Img, True, False)
-            self.frame_perso_left.append(Img)
-            self.frame_perso_right.append(Img_flip)
-
-        self.frame_to_blit.append(self.frame_perso_right)
-        self.frame_to_blit.append(self.frame_perso_right) #Top
-        self.frame_to_blit.append(self.frame_perso_left)
-        self.frame_to_blit.append(self.frame_perso_right) #Bottom
-
-    def update_frame(self):
-        self.frame_multiplier +=1
-        if self.frame_multiplier >= 100 :
-            self.frame +=1
-            self.frame_multiplier = 0
-
-    def draw(self,screen):
+    def draw(self,screen,dt):
         
         #self.update_angle()
 
         #self.pos_blit = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle = self.get_angle(center, mouse_pos)
 #
-        screen.blit(self.frame_to_blit[self.is_looking][self.frame%4],self.pos_blit)
-
-        #self.draw_weapon(screen,self.pos_blit)
-
-        self.update_frame()
+        self.animation.draw(dt,self.pos_blit,screen)
 
 
     #def update_angle(self):
@@ -218,8 +153,8 @@ class Player_not_you(Mob) :
         delta_x = self.pos_x-old_pos
 
         if delta_x>=0:
-            self.is_looking = 0
+            self.animation.direction = 0
         else :
-            self.is_looking = 2
+            self.animation.direction = 2
 
 

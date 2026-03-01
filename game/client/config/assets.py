@@ -37,6 +37,8 @@ PLAYER_IDLE_3 = resource_path("assets/sprites/player/idle/player_idle_3.png")
 
 PLAYER_IDLE = [PLAYER_IDLE_1,PLAYER_IDLE_2,PLAYER_IDLE_3,PLAYER_IDLE_4]
 
+PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
+
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 
 MONSTER_IDLE_2 = resource_path("assets/sprites/monster/idle/monster_idle_2.png") 

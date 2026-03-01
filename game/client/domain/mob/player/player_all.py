@@ -53,7 +53,7 @@ class Player_all :
     def return_pos(self):
         return self.dic_players[self.client_id].pos_x,self.dic_players[self.client_id].pos_y
 
-    def blit_players(self,screen_global,center,xscreen,yscreen, mouse_pos):
+    def blit_players(self,screen_global,xscreen,yscreen,dt):
 
         for player in self.dic_players.values():
 
@@ -61,11 +61,11 @@ class Player_all :
 
             if player.is_you :
 
-                player.draw(screen_global,xscreen,yscreen, mouse_pos,center)
+                player.draw(screen_global,dt)
 
             else :
 
-                player.draw(screen_global)
+                player.draw(screen_global,dt)
 
     def draw_light(self,screen_global):
 
