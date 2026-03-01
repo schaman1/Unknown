@@ -72,8 +72,8 @@ class Game :
     def blit_monsters(self,screen,x,y):
         self.monsters.blit_all_monsters(screen,x,y)
 
-    def blit_players(self,screen,x,y,mouse_pos):
-        self.player_all.blit_players(screen,self.center,x,y,mouse_pos)
+    def blit_players(self,screen,x,y,dt):
+        self.player_all.blit_players(screen,x,y,dt)
 
     def blit_projectiles_explosions(self,screen,x,y,dt):
 
@@ -110,7 +110,7 @@ class Game :
 
 
         self.blit_monsters(screen,x,y)
-        self.blit_players(screen,x,y, mouse_pos)
+        self.blit_players(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
 
