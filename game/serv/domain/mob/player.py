@@ -105,7 +105,7 @@ class Player(Mob) :
     def move_from_input(self,idx,dt,map):
 
         if idx==0:
-            self.move_up(map)
+            self.move_up(dt,map)
 
         elif idx==1:
             self.move_down(dt)
@@ -115,6 +115,9 @@ class Player(Mob) :
 
         elif idx==3:
             self.move_right(dt)
+
+        elif idx == 7:
+            self.jump(map)
         
     def move_from_key(self,delta,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
@@ -138,28 +141,13 @@ class Player(Mob) :
 
         self.input_handler.update_value(delta)
 
-        #if delta==0:
-        #    self.move_up(map)
-#
-        #elif delta==1:
-        #    self.move_down(dt)
-#
-        #elif delta==2:
-        #    self.move_left(dt)
-#
-        #elif delta==3:
-        #    self.move_right(dt)
-
     def stop_from_key(self,key,map):
 
         self.input_handler.set_false(key)
 
+    def jump(self,map):
 
-    def move_up(self,map):
-        #self.pos_y-=1
-        self.is_looking=1
         if self.can_jump():
-
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.acceleration_y
 
@@ -167,6 +155,13 @@ class Player(Mob) :
         
         if self.smooth_jump.can_jump():
             return True
+
+    def move_up(self,dt,map):
+        #self.pos_y-=1
+        self.is_looking=1
+
+        if self.is_on_ladder(map):
+            self.vitesse_y = self.acceleration_y*dt
 
     def move_down(self,dt):
         #self.pos_y+=1

@@ -67,6 +67,9 @@ class Network_handler :
                 elif msg_id==6:
                     msg_size = 1+1
 
+                elif msg_id==7:
+                    msg_size = 1
+
                 else:
                     print("UNKNOWN MSG ID", msg_id)
                     del buffer[0]
@@ -141,13 +144,16 @@ class Network_handler :
             dep = struct.unpack("!B", data[1:2])[0]
             self.server.lClient[sender].stop_from_key(dep,self.server.map_cell)
 
+        elif id_msg==5:
+            weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2 = struct.unpack("!BBBB",data[1:5])
+            self.server.lClient[sender].switch_spell(weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2)
+
         elif id_msg == 6 :
             id_weapon = struct.unpack("!B",data[1:2])[0]
             self.server.handle_shot(id_weapon,sender)
 
-        elif id_msg==5:
-            weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2 = struct.unpack("!BBBB",data[1:5])
-            self.server.lClient[sender].switch_spell(weapon_idx_1,spell_idx_1,weapon_idx_2,spell_idx_2)
+        elif id_msg == 7:
+            self.server.lClient[sender].move_from_key(id_msg,self.server.map_cell)
 
         else :
             print("What to do with this id send ? ",id_msg)

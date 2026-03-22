@@ -125,6 +125,10 @@ class Movable:
         #print(self.pos_y,i,self.half_height,self.pos_x,j)
         return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),map.dur)
 
+    def touch_type(self,i,j,map,type):
+        #print(self.pos_y,i,self.half_height,self.pos_x,j)
+        return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),type)
+
     def touch_ground(self,map):
         j = -self.half_width
 
@@ -277,26 +281,22 @@ class Movable:
         return moved
 
     def is_on_ladder(self, map):
-        try:
-            # Check center of the character
-            center_x = self.pos_x
-            center_y = self.pos_y 
-            
-            # Using convert_to_base to get grid coordinates
-            grid_x = self.convert_to_base(center_x)
-            grid_y = self.convert_to_base(center_y)
-            
-            # Check if within map bounds
-            if grid_y < 0 or grid_y >= map.len_y_chunk*16 or grid_x < 0 or grid_x >= map.len_x_chunk*16:
-                return False
 
-            tile_type = map.return_type(center_y, center_x)
-            ladder_type = map.type.get("LADDER", 8)
-            # print(f"DEBUG: Pos: ({center_x}, {center_y}), Grid: ({grid_x}, {grid_y}), Tile: {tile_type}, Ladder: {ladder_type}")
-            return tile_type == ladder_type
-        except Exception as e:
-            print(f"Error in is_on_ladder: {e}")
+        return False
+    
+        j = -self.half_width
+
+        #while j<self.half_width+1 and not self.touch_type(self.half_height,j,map,map.ladder) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
+        #    j+=self.base_movement
+
+        if j>self.half_width :
             return False
+    
+        else :
+            return True
+
+    #def is_type(self, type_cell, type_check):
+
 
     def climb(self, map, direction, dt):
         #direction: -1 for UP, 1 for DOWN
