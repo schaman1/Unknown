@@ -168,8 +168,6 @@ class Player(Mob) :
         if self.smooth_jump.can_jump():
             return True
 
-
-
     def move_down(self,dt):
         #self.pos_y+=1
         self.is_looking=3

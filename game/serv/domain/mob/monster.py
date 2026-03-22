@@ -18,11 +18,6 @@ class Monster(Mob):
 
     def is_alive(self):
         return self.hp > 0
-
-    def take_damage(self, amount):
-        self.life -= amount
-        if self.life < 0:
-            self.life = 0
         
     def distance_to_nearest_player(self, lPlayer):
         """Distance euclidienne en cases entre le monstre et le joueur."""
