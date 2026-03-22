@@ -58,11 +58,11 @@ class Main:
 
                     if self.state.mod == "game":
 
-                        #if event.key == pygame.K_z :
-                        #    self.key_command.append([4,0])
-                        #    self.state.game.player_all.me.update_direction_stop_look(1)
+                        if event.key == pygame.K_z :
+                            self.key_command.append([4,0])
+                            self.state.game.player_all.me.update_direction_stop_look(1)
 
-                        if event.key == pygame.K_s :
+                        elif event.key == pygame.K_s :
                             self.key_command.append([4,1])
 
                         elif event.key == pygame.K_d:
@@ -81,6 +81,9 @@ class Main:
 
                         elif event.key == pygame.K_i :
                             self.state.game.trigger_info_key()
+
+                        elif event.key == pygame.K_SPACE :
+                            self.key_command.append([7])
 
                         elif event.key == pygame.K_z :
                             self.key_command.append([3,0])
