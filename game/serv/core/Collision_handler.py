@@ -19,7 +19,7 @@ class CollisionHandler:
 
                         if touch :
                             #print("Player touch")
-                            self.handle_touch(projectile,player,chunk)
+                            self.handle_touch(projectile,player,99)
                         
                 if projectile.team!=Team.Mob:
 

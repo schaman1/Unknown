@@ -168,9 +168,8 @@ class Game :
 
         if id=="Player" :
 
-            delta_life = new_life - self.player_all.me.life
-
-            self.add_popup(self.player_all.me,delta_life)
+            #delta_life = new_life - self.player_all.me.life
+            #self.add_popup(self.player_all.me,delta_life)
 
             self.player_all.me.update_life(new_life)
 
@@ -185,6 +184,9 @@ class Game :
 
             id,chunk,delta_life = e
 
-            ent = self.monsters.dic_monster[chunk][id]
+            if id==99: #Magic number je sais mais nsm
+                ent = self.player_all.dic_players[id]
+            else :
+                ent = self.monsters.dic_monster[chunk][id]
 
             self.add_popup(ent,delta_life)
