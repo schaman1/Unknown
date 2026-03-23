@@ -16,7 +16,8 @@ class Mob(Movable):
         self.gravity_power = 1
         self.vitesse_down_base = self.acceleration*self.gravity_power
         self.acceleration_x = 2 * self.acceleration
-        self.acceleration_y = 150 * self.acceleration
+        self.acceleration_y = 10 * self.acceleration
+        self.jump_strenght = 150 * self.acceleration
         self.vitesse_x = 0
         self.vitesse_y = 0
         
