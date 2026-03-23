@@ -16,7 +16,7 @@ class Movable:
     acceleration_x: float
     acceleration_y: float
     screen_global_size: tuple[int, int]
-    is_climbing: bool = False
+    is_climbing: bool = True
 
     def convert_to_base(self,nbr):
         """Retourne le nbr en 100 pour 1"""
@@ -28,8 +28,6 @@ class Movable:
 
     def gravity_effect(self):
 
-        if self.is_climbing:
-            return
 
         #return
 
@@ -52,10 +50,12 @@ class Movable:
 
     def collision_y(self,map,dt,vy):
 
-        #self.pos_y+=self.vitesse_y
-        #return
+        if self.is_climbing and self.vitesse_y > 0:
 
-        #pos_before = self.pos_y
+            type = map.dur_and_can_climb
+
+        else :
+            type = map.dur
 
         s = self.return_signe(vy)
         remaining = int(vy*s*dt)
@@ -68,7 +68,7 @@ class Movable:
 
             for j in range(-self.half_width,self.half_width+1,self.base_movement): #+1 car doit compter le dernier carreau
 
-                if self.touch_wall((self.half_height+self.base_movement)*s,j,map) :
+                if self.touch_type((self.half_height+self.base_movement)*s,j,map,type) :
 
                     dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
 
@@ -89,10 +89,7 @@ class Movable:
 
     def collision_x(self,map,dt,vx):
 
-        #self.pos_x+=self.vitesse_x
-        #return
-        
-        #pos_before = self.pos_x
+        type = map.dur
 
         s = self.return_signe(vx)
         remaining = int(vx*s*dt)
@@ -102,7 +99,7 @@ class Movable:
             dist = self.base_movement
             for j in range(-self.half_height,self.half_height+1,self.base_movement): #+1 car doit compter le dernier
 
-                if self.touch_wall(j,(self.half_width+self.base_movement)*s,map) :
+                if self.touch_type(j,(self.half_width+self.base_movement)*s,map,type) :
 
                     dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
 
@@ -120,10 +117,6 @@ class Movable:
             remaining -= self.base_movement
 
         #return self.pos_x-pos_before
-        
-    def touch_wall(self,i,j,map):
-        #print(self.pos_y,i,self.half_height,self.pos_x,j)
-        return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),map.dur)
 
     def touch_type(self,i,j,map,type):
         #print(self.pos_y,i,self.half_height,self.pos_x,j)
@@ -132,7 +125,7 @@ class Movable:
     def touch_ground(self,map):
         j = -self.half_width
 
-        while j<self.half_width+1 and not self.touch_wall(self.half_height+1,j,map) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
+        while j<self.half_width+1 and not self.touch_type(self.half_height+1,j,map,map.dur_and_can_climb) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
             j+=self.base_movement
 
         if j>self.half_width :
@@ -245,13 +238,11 @@ class Movable:
         while i <= self.half_height:
             j = -self.half_width
             while j <= self.half_width:
-                if self.touch_wall(i, j,map):
+                if self.touch_type(i, j,map,map.dur):
                     return True
                 j += self.base_movement
             i += self.base_movement
         return False
-
-    is_climbing: bool = False
 
     def try_step_up_1(self,map, intended_vx,dt):
         if intended_vx == 0:
@@ -279,28 +270,33 @@ class Movable:
             self.vitesse_x = old_vx
             return 0
         return moved
-
-    def is_on_ladder(self, map):
-
-        return False
     
-        j = -self.half_width
+    def can_climb(self,map):
+        return self.touch_element(map,element = map.can_climb)
 
-        #while j<self.half_width+1 and not self.touch_type(self.half_height,j,map,map.ladder) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
-        #    j+=self.base_movement
+    def touch_element(self, map,element):
 
-        if j>self.half_width :
+        j = self.half_width+1
+        i = -self.half_height
+
+        while i < self.half_height+1 and j > self.half_width :
+    
+            j = -self.half_width
+
+            while j<self.half_width+1 and not self.touch_type(i,j,map,element) : #Plus 1 car on est tj à x * 100 + 99 = doit ajouter 1 pout voir le sol
+                j+=self.base_movement
+
+            i+=self.base_movement
+
+        if i > self.half_height :
             return False
     
         else :
             return True
 
-    #def is_type(self, type_cell, type_check):
-
-
     def climb(self, map, direction, dt):
         #direction: -1 for UP, 1 for DOWN
-        if self.is_on_ladder(map):
+        if self.can_climb(map):
             self.is_climbing = True
             
             speed = self.base_movement * 40 # Climbing speed (similar to max speed)
@@ -317,7 +313,7 @@ class Movable:
             pos_before = self.pos_y
             self.pos_y = new_y
             
-            if not self.is_on_ladder(map):
+            if not self.can_climb(map):
                 # If we moved off the ladder
                 # If going UP, we might have reached the top.
                 # If going DOWN, we might have reached the bottom.

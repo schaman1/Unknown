@@ -83,13 +83,13 @@ class Player(Mob) :
 
     def update_pos(self,map,dt):
 
-        delta = self.return_delta_vitesse(map,dt)
-
-        self.update_vitesse()
+        self.handle_input(map,dt)
 
         self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
-        self.handle_input(map,dt)
+        delta = self.return_delta_vitesse(map,dt)
+
+        self.update_vitesse()
 
         return delta
     
@@ -119,37 +119,43 @@ class Player(Mob) :
         elif idx == 7:
             self.jump(map)
         
-    def move_from_key(self,delta,map): 
+    def move_from_key(self,key,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
         # Check for ladder interaction
-        if self.is_on_ladder(map):
-            if delta == 0: # UP
-                self.climb(map, -1, 1)
-                return
-            elif delta == 1: # DOWN
-                self.climb(map, 1, 1)
-                return
-            
-            # If moving side-ways on ladder, maybe fall off?
-            # For now let's keep is_climbing true unless we move off
-            
-        else:
-            self.is_climbing = False
+        #if self.can_climb(map):
+        #    if delta == 0: # UP
+        #        self.climb(map, -1, 1)
+        #        return
+        #    elif delta == 1: # DOWN
+        #        self.climb(map, 1, 1)
+        #        return
+        #    
+        #    # If moving side-ways on ladder, maybe fall off?
+        #    # For now let's keep is_climbing true unless we move off
+        #    
+        #else:
+        #    self.is_climbing = False
 
         #0 : up/1 : down/ 2 : left/ 3 : right
 
-        self.input_handler.update_value(delta)
+        self.input_handler.update_value(key)
+        
+        if key == 1 :
+            self.is_climbing = False
 
     def stop_from_key(self,key,map):
 
         self.input_handler.set_false(key)
 
+        if key == 1 :
+            self.is_climbing = True
+
     def jump(self,map):
 
         if self.can_jump():
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
-            self.vitesse_y=-self.acceleration_y
+            self.vitesse_y=-self.jump_strenght
 
     def can_jump(self):
         
@@ -160,8 +166,12 @@ class Player(Mob) :
         #self.pos_y-=1
         self.is_looking=1
 
-        if self.is_on_ladder(map):
-            self.vitesse_y = self.acceleration_y*dt
+        if self.can_climb(map):
+            #self.is_climbing = True
+            self.vitesse_y = -self.acceleration_y*dt*self.acceleration
+
+        #else :
+        #    self.is_climbing = False
 
     def move_down(self,dt):
         #self.pos_y+=1
