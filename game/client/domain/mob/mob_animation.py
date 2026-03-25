@@ -35,6 +35,18 @@ class Animation:
             img_running = pygame.transform.scale(img_running,(self.width,self.height))
             self.decoupe_img(img_running,self.animation["running"],size)
 
+        elif entity_name == "pnj" :
+
+            #size_img = 50*cell_size
+            size = self.width//2
+            img_idle = pygame.image.load(assets.PLAYER_IDLE)
+            img_idle = pygame.transform.scale(img_idle,(self.width,self.height))
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            img_running = pygame.image.load(assets.PLAYER_RUNNING)
+            img_running = pygame.transform.scale(img_running,(self.width,self.height))
+            self.decoupe_img(img_running,self.animation["running"],size)
+
     def decoupe_img(self,img,dest,size):
         for i in range(0,img.get_height(),size):
             for j in range(0,img.get_width(),size):
