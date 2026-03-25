@@ -2,6 +2,7 @@ import pygame
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
+from client.domain.mob.pnj.pnj_all import Pnj_all
 from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
 from client.domain.actions.mini_map import MiniMap
@@ -33,6 +34,8 @@ class Game :
         self.monsters = Monster_all(cell_size)
 
         self.player_all = Player_all(cell_size,screenSize)
+
+        self.pnj_all = Pnj_all(cell_size,screenSize)
 
         self.mini_map = MiniMap(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
 
@@ -75,6 +78,9 @@ class Game :
     def blit_players(self,screen,x,y,dt):
         self.player_all.blit_players(screen,x,y,dt)
 
+    def blit_pnj(self,screen,x,y,dt):
+        self.pnj_all.blit_pnj(screen,x,y,dt,self.player_all.return_pos())
+
     def blit_projectiles_explosions(self,screen,x,y,dt):
 
         self.projectiles.blit_projectiles_explosions(screen,x,y,dt)
@@ -108,9 +114,10 @@ class Game :
 
         self.blit_projectiles_explosions(screen,x,y,dt)
 
-
+        self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y,dt)
+
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
 

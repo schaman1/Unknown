@@ -3,7 +3,7 @@ from client.domain.mob.mob_animation import Animation
 
 class Mob:
 
-    def __init__(self, x,y,cell_size,size):
+    def __init__(self, x,y,cell_size,size,name = "player"):
 
         self.base_movement = world.RATIO
         self.pos_x = self.convert_from_base(x*cell_size)
@@ -18,7 +18,7 @@ class Mob:
         self.life=100
         self.max_life = 100
 
-        self.animation = Animation("player",cell_size,size[0],size[1])
+        self.animation = Animation(name,cell_size,size[0],size[1])
 
     def update_pos_blit(self,x,y):
         self.pos_blit = self.calculate_pos_blit(x,y)
