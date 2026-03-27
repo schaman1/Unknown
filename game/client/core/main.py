@@ -30,6 +30,7 @@ class Main:
         self.Server = None
         self.objClicked = None
         self.key_command = []
+        self.in_interaction = False
 
         self.client = Client(self.font,self.screen,self)
         self.state = State(self.screen,self.screenSize,self.font,self.client,size.CELL_SIZE)
@@ -76,6 +77,13 @@ class Main:
                 elif event.type == pygame.KEYDOWN:
 
                     if self.state.mod == "game":
+
+                        if event.key == pygame.K_e:
+                            self.in_interaction = self.state.game.interact()
+
+                        if event.key == pygame.K_RETURN :
+                            self.in_interaction = self.state.game.pnj_all.press_enter()
+
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
 
@@ -279,7 +287,7 @@ class Main:
         #self.state.game.player_all.me.update_direction_look(is_looking)
 
         if key[pygame.K_j] :
-            self.state.game.shot(1)
+            self.shot(1)
 
         if key[pygame.K_k]:
             self.state.game.shot(2)
@@ -303,6 +311,9 @@ class Main:
 
         events = self.state.game.player_command + self.key_command
 
+        if self.in_interaction :
+            events = []
+
         for input in events :
 
             if input == None:
@@ -325,3 +336,6 @@ class Main:
     def handle_events_receive(self):
 
         self.client.events.trigger()
+
+    def stop_interaction(self):
+        self.in_interaction = False

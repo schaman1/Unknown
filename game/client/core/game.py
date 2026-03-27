@@ -120,7 +120,6 @@ class Game :
 
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
-
         self.player_all.draw_light(screen)
 
         self.blit_utils(screen,self.screen_size)
@@ -128,6 +127,7 @@ class Game :
         pos = self.player_all.return_pos()
         pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
 
+        self.pnj_all.blit_dialogue(screen,dt)
         self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
 
@@ -197,3 +197,9 @@ class Game :
                 ent = self.monsters.dic_monster[chunk][id]
 
             self.add_popup(ent,delta_life)
+
+    def interact(self):
+        
+        touch_pnj = self.pnj_all.test_trigger(self.player_all.return_pos())
+
+        return touch_pnj
