@@ -32,13 +32,13 @@ class Camera:
                 self.update_x = False
 
             else :
-                self.camera_pos[0]+= delta_x//40
+                self.move_x(delta_x)
         
         elif delta_x*s_x > self.allowed :
             
             self.update_x = True
 
-            self.camera_pos[0]+= delta_x//40
+            self.move_x(delta_x)
 
         delta_y = y-self.camera_pos[1]
         s_y = self.return_signe(delta_y)
@@ -49,12 +49,20 @@ class Camera:
                 self.update_y = False
 
             else :
-                self.camera_pos[1]+=delta_y//40
+                self.move_y(delta_y)
             
         elif delta_y*s_y > self.allowed :
 
             self.update_y=True
 
-            self.camera_pos[1]+=delta_y//40
+            self.move_y(delta_y)
 
         return self.camera_pos
+    
+    def move_x(self,delta_x):
+        
+        self.camera_pos[0]+= delta_x//20
+
+    def move_y(self,delta_y):
+        
+        self.camera_pos[1]+= delta_y//20
