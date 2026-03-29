@@ -287,7 +287,7 @@ class Main:
         #self.state.game.player_all.me.update_direction_look(is_looking)
 
         if key[pygame.K_j] :
-            self.shot(1)
+            self.state.game.shot(1)
 
         if key[pygame.K_k]:
             self.state.game.shot(2)
