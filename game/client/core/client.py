@@ -132,8 +132,8 @@ class Client:
             elif msg_id == 1:        # new player
                 msg_size = 1 + 2
 
-            elif msg_id == 2:
-                msg_size = 1
+            elif msg_id == 2: #Remove player
+                msg_size = 1+1
 
             #elif msg_id == 3:
             #    msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
@@ -260,12 +260,15 @@ class Client:
                                is_you = data[2],
                                pseudo = text)
 
-        elif id == 2:
-            print(f"Remove connection : {data['remove connection']}")
-            self.main.state.game.player_all.dic_players.remove(data["remove connection"])
-
         elif id == 0:
             self.main.state.mod = "intro start"
+
+        elif id == 2:
+
+            #print(f"Remove connection : {data[1]}") #4
+            #print(self.main.state.game.player_all.dic_players) #Has player 1 & 2
+            self.main.state.game.player_all.dic_players.pop(data[1])
+
 
         elif id == 9 :
             self.main.state.mod = "intro end"
@@ -343,3 +346,16 @@ class Client:
     def draw_text(self,screen,font,text,idx):
             text = font.render(text, True, (255, 255, 255))
             screen.blit(text, (50, 50 + idx * 30))
+
+    def stop_connection(self):
+
+        self.send_data(id = 2)
+
+        self.connected = None
+
+        self.err_message = ""
+
+        self.buffer = bytearray()
+        self.events = QueueEvent(self.main)
+
+        self.reset_values()

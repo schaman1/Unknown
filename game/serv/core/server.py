@@ -63,7 +63,12 @@ class Server:
 
     def stop_server(self):
         """Arrête le serveur et déconnecte tous les clients."""
+        
         print("Arrêt du serveur...")
+
+        self.is_running_menu = False
+        self.is_running_game = False
+
         for client in list(self.lClient.keys()):
             try:
                 client.close()
@@ -72,7 +77,6 @@ class Server:
         self.lClient.clear()
         self.nbr_player = 0
 
-        self.is_running_menu = False
         if self.server:
             self.server.close()
             self.server = None
