@@ -31,7 +31,7 @@ class Server_game(Server) :
                 self.send_data_all([14,self.collision_handler.effect_send])
                 self.collision_handler.effect_send.clear()
 
-            if len(return_monster[0]) != 0 :
+            if len(return_monster)!=0 and len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
 
             if len(result_projectile)!= 0 :

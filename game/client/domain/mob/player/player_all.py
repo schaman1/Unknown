@@ -42,6 +42,8 @@ class Player_all :
         else :
             self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,False)
 
+        print(self.dic_players)
+
     def blit_client_utils(self,screen,screen_size):
 
         self.dic_players[self.client_id].draw_utils(screen,screen_size)

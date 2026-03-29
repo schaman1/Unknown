@@ -141,7 +141,8 @@ class Main:
                         if self.escape_menu.visible:
                             action= self.escape_menu.handle_click(event.pos)
                             if action == "quit":
-                                running = False
+                                self.quit_game()
+                                self.escape_menu.visible = False
                             elif action =="settings":
                                 pass
 
@@ -339,3 +340,16 @@ class Main:
 
     def stop_interaction(self):
         self.in_interaction = False
+
+    def quit_game(self):
+        
+        self.state.mod = "menu"
+        self.state.add_alert("Quit game",time=5)
+
+        if self.Server != None :
+            self.stop_game_serv()
+            
+        self.client.stop_connection()
+
+    def stop_game_serv(self):
+        self.Server.stop_server()

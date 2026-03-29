@@ -55,6 +55,9 @@ class Network_handler :
                 elif msg_id == 1: #
                     msg_size = 1
 
+                elif msg_id == 2:
+                    msg_size = 1
+
                 elif msg_id==3:
                     msg_size=1+1
                 
@@ -101,12 +104,11 @@ class Network_handler :
             print("New client connection")
 
             self.send_client_already_her(sender)
-
             
             for client in list(self.server.lClient.keys()):
 
                 meornot = (client == sender)
-                packet = struct.pack("!BBB", 1, self.server.nbr_player, meornot)
+                packet = struct.pack("!BBB", 1, self.server.lClient[sender].id, meornot)
                 self.send_data(packet,client)
 
                 #self.send_data({
@@ -136,7 +138,23 @@ class Network_handler :
 
         id_msg = struct.unpack("!B", data[0:1])[0]
 
-        if id_msg == 3 :
+        if id_msg == 2:
+            print("Remove client")
+            removed_id = self.server.lClient[sender].id
+            self.server.remove_client(sender)
+
+            for client in list(self.server.lClient.keys()):
+
+                packet = bytearray()
+                packet+=struct.pack("!BB", 2,removed_id)
+                self.send_data(packet,client)
+
+                #self.send_data({
+                #    "id": "remove player",
+                #    "remove connection": removed_id
+                #}, client)
+
+        elif id_msg == 3 :
             dep = struct.unpack("!B", data[1:2])[0]
             self.server.lClient[sender].move_from_key(dep,self.server.map_cell)
 
