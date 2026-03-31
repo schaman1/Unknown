@@ -101,7 +101,7 @@ class Network_handler :
 
         if id_msg == 1: #New client connection
 
-            print("New client connection")
+            print("New client connection. Current players id :")
 
             self.send_client_already_her(sender)
             
@@ -110,6 +110,7 @@ class Network_handler :
                 meornot = (client == sender)
                 packet = struct.pack("!BBB", 1, self.server.lClient[sender].id, meornot)
                 self.send_data(packet,client)
+                print(self.server.lClient[client].id)
 
                 #self.send_data({
                 #    "id": "new player",
@@ -118,36 +119,34 @@ class Network_handler :
                 #}, client)
 
         elif id_msg == 2:
-            print("Remove client")
             removed_id = self.server.lClient[sender].id
             self.server.remove_client(sender)
 
             for client in list(self.server.lClient.keys()):
 
-                packet = bytearray()
-                packet+=struct.pack("!BB", 2,removed_id)
-                self.send_data(packet,client)
+                print("Remove client. id to remove :",removed_id)
+                values = [2,removed_id]
+                self.send_data(values,client)
 
                 #self.send_data({
                 #    "id": "remove player",
                 #    "remove connection": removed_id
                 #}, client)
-
+                
     def in_game(self,data,sender):
         """Traite les données sachant qu'on est en jeu = saute par ex"""
 
         id_msg = struct.unpack("!B", data[0:1])[0]
 
         if id_msg == 2:
-            print("Remove client")
             removed_id = self.server.lClient[sender].id
             self.server.remove_client(sender)
 
             for client in list(self.server.lClient.keys()):
 
-                packet = bytearray()
-                packet+=struct.pack("!BB", 2,removed_id)
-                self.send_data(packet,client)
+                print("Remove client. id to remove :",removed_id)
+                values = [2,removed_id]
+                self.send_data(values,client)
 
                 #self.send_data({
                 #    "id": "remove player",
@@ -272,11 +271,14 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 or id==2 or id==9:
+        if id == 0 or id==9:
             pass
 
         elif id == 1 : 
             packet+= struct.pack("!BB",data[1],data[2])
+
+        elif id == 2:
+            packet+=struct.pack("!B",data[1])
 
         elif id == 3:
             self.pack_cells(data[1],packet)

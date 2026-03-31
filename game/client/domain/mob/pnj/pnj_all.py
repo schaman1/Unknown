@@ -95,13 +95,19 @@ class Pnj_all :
     
     def press_enter(self):
         
-        end_text = self.talks_to.text.press_enter()
-        if end_text :
-            self.stop_talk()
-            
-            return False
+        if self.talks_to!=None:
 
-        return True
+            end_text = self.talks_to.text.press_enter()
+            if end_text :
+                self.stop_talk()
+                
+                return False
+
+            return True
+        
+        else :
+            return False
 
     def stop_talk(self):
         self.is_talking = False
+        self.talks_to = None

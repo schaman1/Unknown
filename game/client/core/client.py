@@ -213,11 +213,21 @@ class Client:
         #        data
         #    )
 
-        if id == 4 : #monsters update
+        if id == 0:
+            self.main.state.mod = "intro start"
+
+        elif id == 4 : #monsters update
             self.update_monster(
                 struct.unpack("!HLLLB", data[3+i*15 : 18+i*15])
                 for i in range((size-3)//15)
             )
+
+        elif id == 5 :#Init monsters
+            cells = []
+            for i in range((size-3)//15):
+                cells.append(struct.unpack("!HLLLB", data[3+i*15 : 18+i*15]))
+
+            self.main.state.game.monsters.init_monster(cells)
 
         elif id==7: #Projectile create ?
             for i in range((size-3)//18):
@@ -234,13 +244,6 @@ class Client:
 
             delta_time,id_weapon = struct.unpack("!HB",data[1:4])
             self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
-
-        elif id == 5 :#Init monsters
-            cells = []
-            for i in range((size-3)//15):
-                cells.append(struct.unpack("!HLLLB", data[3+i*15 : 18+i*15]))
-
-            self.main.state.game.monsters.init_monster(cells)
 
         elif id==6:
             id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
@@ -260,14 +263,12 @@ class Client:
                                is_you = data[2],
                                pseudo = text)
 
-        elif id == 0:
-            self.main.state.mod = "intro start"
-
         elif id == 2:
-
+            id_remove = struct.unpack("!B",data[1:2])[0]
+            #print("id = 2 and values = ",id_remove)
             #print(f"Remove connection : {data[1]}") #4
             #print(self.main.state.game.player_all.dic_players) #Has player 1 & 2
-            self.main.state.game.player_all.dic_players.pop(data[1])
+            self.main.state.game.player_all.dic_players.pop(id_remove)
 
 
         elif id == 9 :
