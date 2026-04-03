@@ -264,6 +264,11 @@ class Network_handler :
             id,new_life,chunk = life
             packet+=struct.pack("!HHB",id,chunk,new_life)
 
+    def pack_object(self,data,packet):
+
+        packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
+
+
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
 
@@ -313,6 +318,9 @@ class Network_handler :
 
         elif id==14:
             self.pack_life_update(data[1],packet)
+
+        elif id==15:
+            self.pack_object(data[1],packet)
 
         else :
             print("Issue id not found : ",id)

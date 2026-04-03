@@ -1,0 +1,40 @@
+from shared.constants import world
+from serv.domain.objects.spell_on_ground import spell_on_ground
+
+class objetcs_manager:
+
+    def __init__(self):
+
+        self.chunk_objects = {}
+        self.id_curr = 0
+
+        self.init_dico_dic_objects()
+
+    def generate_id(self):
+
+        id = self.id_curr
+
+        self.id_curr = (self.id_curr+1)%256
+
+        return id
+
+    def init_dico_dic_objects(self):
+        for i in range(world.LEN_Y_CHUNK) :
+            for j in range(world.LEN_Y_CHUNK) :
+                self.chunk_objects[i*100+j] = {}
+
+    def add_object(self,ele_idx,id_categorie,pos_x,pos_y,chunk,price):
+
+        id = self.generate_id()
+
+        if ele_idx=="SPELL":
+
+            ele = spell_on_ground(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
+        else :
+            print("Unknown type in add_object")
+            return None
