@@ -15,10 +15,14 @@ class Server_game(Server) :
         self.fps = fps.FPS_SERVER
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
+
+
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
+
+        self.add_elements_to_game()
 
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
@@ -132,3 +136,23 @@ class Server_game(Server) :
 
 
                 self.projectile_manager.add_projectile_create(projectile)
+
+    def add_object(self,type,id_categorie,pos_x,pos_y,price=0):
+
+        chunk = self.convert_to_chunk(pos_x,pos_y)
+
+        id,ele = self.objects_manager.add_object(type,id_categorie,pos_x,pos_y,chunk,price)
+
+        data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,pos_x,pos_y,chunk,ele.price]]
+
+        self.send_data_all(data)
+
+    def convert_to_chunk(self,pos_x,pos_y):
+
+        chunk_x,chunk_y =  self.map_cell.return_chunk(pos_x//self.base_movement,pos_y//self.base_movement)
+
+        return chunk_y*self.base_movement+chunk_x
+        
+    def add_elements_to_game(self):
+
+        self.add_object("SPELL",1,3411,17500,0)

@@ -19,6 +19,8 @@ class Skeleton(Mob) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
+        print("Mob",self.pos_x,self.pos_y)
+
         self.init_Img(cell_size)
 
     def init_Img(self,cell_size):

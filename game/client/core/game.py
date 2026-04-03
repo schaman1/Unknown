@@ -5,6 +5,7 @@ from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.mob.pnj.pnj_all import Pnj_all
 from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
+from client.ui.objects.objects_manager import objects_manager
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
@@ -42,6 +43,8 @@ class Game :
         self.projectiles = ProjectileManager(cell_size)
 
         self.floating_values = FloatingValueDisplay(cell_size)
+
+        self.objects_manager = objects_manager(cell_size)
 
         self.camera = Camera(screenSize)
 
@@ -112,12 +115,12 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.blit_projectiles_explosions(screen,x,y,dt)
-
+        self.objects_manager.blit_all_objects(screen,x,y)
         self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y,dt)
 
+        self.blit_projectiles_explosions(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
         self.player_all.draw_light(screen)
