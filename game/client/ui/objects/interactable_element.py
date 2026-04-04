@@ -10,7 +10,6 @@ class interactable:
 
         self.pos_x = pos_x
         self.pos_y = pos_y
-        print("Spell",self.pos_x,self.pos_y)
 
     def blit(self,screen,x,y):
 
@@ -23,4 +22,4 @@ class interactable:
 
     def ret_pos_blit(self,x,y):
 
-        return self.pos_x+x,self.pos_y+y
+        return self.pos_x+x-self.size_img[0]//2,self.pos_y+y-self.size_img[1]//2

@@ -171,6 +171,8 @@ class Client:
             elif msg_id == 15:
                 msg_size = 1+3+8+2+2
 
+            elif msg_id==16:
+                msg_size = 1+2+1
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -320,9 +322,15 @@ class Client:
 
         elif id==15:
 
-            id,ele_idx,id_img,pos_x,pos_y,chunk,price = struct.unpack("!BBBLLHH",data[1:16])
+            id_obj,ele_idx,id_img,pos_x,pos_y,chunk,price = struct.unpack("!BBBLLHH",data[1:16])
 
-            self.main.state.game.objects_manager.add_object(ele_idx,id,id_img,pos_x,pos_y,chunk,price)
+            self.main.state.game.objects_manager.add_object(ele_idx,id_obj,id_img,pos_x,pos_y,chunk,price)
+
+        elif id==16:
+
+            chunk,id_obj = struct.unpack("!HB",data[1:4])
+
+            self.main.state.game.objects_manager.destroy_object(chunk,id_obj)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
@@ -349,6 +357,9 @@ class Client:
 
         elif id==6:
             packet+= struct.pack("!B",data[0])
+
+        elif id==8:
+            packet+= struct.pack("!HB",data[0],data[1])
 
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())
