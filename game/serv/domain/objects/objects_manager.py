@@ -1,7 +1,7 @@
 from shared.constants import world
 from serv.domain.objects.spell_on_ground import spell_on_ground
 
-class objetcs_manager:
+class objects_manager:
 
     def __init__(self):
 
@@ -38,3 +38,21 @@ class objetcs_manager:
         else :
             print("Unknown type in add_object")
             return None
+        
+    def destroy_object(self,chunk,id):
+
+        del self.chunk_objects[chunk][id]
+        
+    def trigger(self,chunk,id,player):
+
+        element = self.chunk_objects[chunk][id]
+
+        if player.money>=element.price:
+
+            player.update_money(-element.price)
+
+            self.destroy_object(chunk,id)
+
+            return "Destroy",chunk,id
+
+

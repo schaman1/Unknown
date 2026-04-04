@@ -115,7 +115,7 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.objects_manager.blit_all_objects(screen,x,y)
+        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
         self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y,dt)
@@ -202,7 +202,20 @@ class Game :
             self.add_popup(ent,delta_life)
 
     def interact(self):
-        
-        touch_pnj = self.pnj_all.test_trigger(self.player_all.return_pos())
 
+        pos_player = self.player_all.return_pos()
+
+        touch_pnj = False
+
+        res = self.objects_manager.test_trigger(pos_player)
+
+        if res!=None:
+            chunk,id = res
+
+            self.player_command.append([8,chunk,id])
+        
+        else :
+        
+            touch_pnj = self.pnj_all.test_trigger(pos_player)
+                
         return touch_pnj

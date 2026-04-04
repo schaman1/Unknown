@@ -79,7 +79,8 @@ class Main:
                     if self.state.mod == "game":
 
                         if event.key == pygame.K_e:
-                            self.in_interaction = self.state.game.interact()
+                            if not self.in_interaction :
+                                self.in_interaction = self.state.game.interact()
 
                         if event.key == pygame.K_RETURN :
                             self.in_interaction = self.state.game.pnj_all.press_enter()

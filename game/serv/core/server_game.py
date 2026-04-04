@@ -155,4 +155,16 @@ class Server_game(Server) :
         
     def add_elements_to_game(self):
 
-        self.add_object("SPELL",1,3411,17500,0)
+        self.add_object("SPELL",1,5511,17500,0)
+
+    def trigger(self,chunk,id,sender):
+        
+        res = self.objects_manager.trigger(chunk,id,self.lClient[sender])
+
+        if res!=None:
+
+            action,chunk,id = res
+
+            if action=="Destroy" :
+
+                self.send_data_all([16,chunk,id])
