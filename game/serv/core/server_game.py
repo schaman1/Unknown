@@ -176,8 +176,8 @@ class Server_game(Server) :
 
     def throw_spell(self,id_weapon,id_spell,sender):
 
-        spell_id = self.lClient[sender].remove_spell(id_weapon,id_spell)
+        spell_id_type = self.lClient[sender].remove_spell(id_weapon,id_spell)
 
         pos = self.lClient[sender].return_pos()
 
-        self.add_object("SPELL",spell_id,pos[0],pos[1],1)
+        self.add_object("SPELL",spell_id_type,pos[0],pos[1],0)
