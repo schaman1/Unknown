@@ -125,6 +125,8 @@ class Game :
 
         self.player_all.draw_light(screen)
 
+        self.floating_values.draw_floating_values_fix(screen,x,y,dt)
+
         self.blit_utils(screen,self.screen_size)
 
         pos = self.player_all.return_pos()
@@ -187,10 +189,22 @@ class Game :
 
             self.player_all.me.update_life(new_life)
 
-    
-    def add_popup(self,ent,text):
+    def update_money(self,money):
 
-        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type="damage")
+        delta_money = self.player_all.me.update_money(money)
+
+        pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
+
+        print("Blit popup",delta_money,pos)
+
+        self.add_popup_on_screen(pos,str(delta_money),type = "money")
+    
+    def add_popup(self,ent,text,type = "damage"):
+
+        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type)
+
+    def add_popup_on_screen(self,pos,text,type):
+        self.floating_values.add_floating_value(str(text),pos,type)
 
     def add_many_popup_life(self,data):
 

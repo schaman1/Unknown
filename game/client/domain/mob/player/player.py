@@ -1,19 +1,26 @@
 import pygame, math
 from client.domain.mob.mob import Mob
+from client.config.display_text import FONT
 from client.config import size_display
 from client.domain.weapon.weapon_manager import WeaponManager
 
 class Player_you(Mob) :
 
-    def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = True, money = 0):
+    def __init__(self,cell_size,pos,screen_size, pseudo = "Coming soon",is_you = True, money = 0):
 
         super().__init__(pos[0],pos[1],cell_size,size=(size_display.PLAYER_SIZE_WIDTH,size_display.PLAYER_SIZE_HEIGHT))
 
+        self.money = money
         self.pseudo = pseudo
         self.is_you = is_you
 
+        self.font = FONT
+        self.text_money_color = (250,250,250)
+        self.pos_money = (screen_size[0]//2,screen_size[1]*0.85)
+        self.pos_blit_text = [None,None]
+        self.text_money = self.font.render(str(self.money),True, self.text_money_color)  # True = anti-aliasing
+
         self.padding_life = 0.02
-        self.money = money
         self.key_active = {"right":False,
                            "left":False}
 
@@ -21,7 +28,11 @@ class Player_you(Mob) :
         self.frame = 0
         self.frame_multiplier = 0
 
+        self.rect_black_life = pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03)
+
         self.weapons = WeaponManager()
+
+        self.update_pos_blit_money()
     
     def get_angle(self, pos, mouse_pos) -> int:
         '''renvoie l'angle entre le perso et la souris en int'''
@@ -32,7 +43,15 @@ class Player_you(Mob) :
     
     def update_money(self, money):
         '''valeur de money envoyée par le serv et récupérée par le client'''
+
+        old_money = self.money
         self.money = money
+        delta_money = self.money-old_money
+
+        self.text_money = self.font.render(str(self.money),True, self.text_money_color)
+        self.update_pos_blit_money()
+
+        return delta_money
 
     def draw(self,screen,dt):
 
@@ -41,7 +60,7 @@ class Player_you(Mob) :
     def draw_utils(self,screen,screen_size):
 
         self.draw_life(screen,screen_size)
-        self.draw_money(screen,screen_size)
+        self.draw_money(screen)
 
     def draw_life(self,screen,screen_size):
 
@@ -49,8 +68,8 @@ class Player_you(Mob) :
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
-            (14,16,14),  # couleur (blanc)
-            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03),
+            (50,60,50),  # couleur (blanc)
+            self.rect_black_life,
         )
         #print(self.life)
 
@@ -60,12 +79,13 @@ class Player_you(Mob) :
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
 
-    def draw_money(self, screen, screen_size):
-        pygame.draw.rect(
-            screen,
-            (0,255,0),
-            pygame.Rect(screen_size[0]//5, screen_size[1]//5, screen_size[0]//10, self.money*(screen_size[1]//10))
-        )
+    def draw_money(self, screen):
+
+        screen.blit(self.text_money, self.pos_blit_text)
+
+    def update_pos_blit_money(self):
+        size = FONT.size(str(self.money))
+        self.pos_blit_text = [self.pos_money[0]+size[0]//2,self.pos_money[1]+size[1]//2]
 
     def draw_weapon(self,screen,angle,pos_draw) :
 
