@@ -155,7 +155,7 @@ class Server_game(Server) :
         
     def add_elements_to_game(self):
 
-        self.add_object("SPELL",1,5511,17500,0)
+        self.add_object("SPELL",1,5511,17500,10)
 
     def trigger(self,chunk,id,sender):
         

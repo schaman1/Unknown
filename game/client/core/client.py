@@ -307,7 +307,7 @@ class Client:
         
         elif id==13 :
             money = struct.unpack("!H", data[1:3])[0]
-            self.main.state.game.player_all.me.update_money(money)
+            self.main.state.game.update_money(money)
             #pass
 
         elif id==14:

@@ -5,6 +5,7 @@ from serv.core.server_game import Server_game
 from shared.constants import fps
 from client.config import size_display as size
 from client.ui.escape_menu import EscapeMenu
+from client.config import display_text
 
 #from C_inGame import InGame
 #from C_card import Card
@@ -19,7 +20,7 @@ class Main:
         self.set_CELL_SIZE(self.screenSize)
         
         #ecriture
-        self.font = pygame.font.SysFont(None, 48)
+        self.font = display_text.FONT
 
         #Set up the clock for managing the frame rate
         self.fps = fps.FPS_CLIENT
