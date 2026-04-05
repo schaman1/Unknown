@@ -213,7 +213,9 @@ class Player(Mob) :
 
         self.money+= amount
 
-        self.send_new_money = True
+        if amount!=0 :
+
+            self.send_new_money = True
     
     def send_money(self):
         self.send_new_money = False

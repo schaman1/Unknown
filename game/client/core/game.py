@@ -195,8 +195,6 @@ class Game :
 
         pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
 
-        print("Blit popup",delta_money,pos)
-
         self.add_popup_on_screen(pos,str(delta_money),type = "money")
     
     def add_popup(self,ent,text,type = "damage"):
