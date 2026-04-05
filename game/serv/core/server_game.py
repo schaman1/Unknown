@@ -163,8 +163,13 @@ class Server_game(Server) :
 
         if res!=None:
 
-            action,chunk,id = res
+            action,chunk,id,element = res
 
-            if action=="Destroy" :
+            if action=="AddToInventaire" :
 
-                self.send_data_all([16,chunk,id])
+                id_weapon = 0
+                pos_spell = self.lClient[sender].weapons.add_spell(element.id_cat,id_weapon)
+
+                self.send_data_all([16,chunk,id]) #Destroy
+
+                self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)

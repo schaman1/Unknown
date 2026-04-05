@@ -174,6 +174,9 @@ class Client:
             elif msg_id==16:
                 msg_size = 1+2+1
 
+            elif msg_id == 17:
+                msg_size = 1+3
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -331,6 +334,11 @@ class Client:
             chunk,id_obj = struct.unpack("!HB",data[1:4])
 
             self.main.state.game.objects_manager.destroy_object(chunk,id_obj)
+
+        elif id==17:
+            id_weapon,id_spell,idx_pos = struct.unpack("!BBB",data[1:4])
+
+            self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

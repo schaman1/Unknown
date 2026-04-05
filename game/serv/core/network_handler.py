@@ -334,6 +334,9 @@ class Network_handler :
 
             packet+= struct.pack("!HB",data[1],data[2])
 
+        elif id==17:
+            packet+=struct.pack("!BBB",data[1],data[2],data[3])
+
         else :
             print("Issue id not found : ",id)
 

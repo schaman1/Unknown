@@ -74,6 +74,10 @@ class Player_you(Mob) :
     def add_weapon(self,i,id_weapon,nbr_spell_max,spells_id,screen_size):
         self.weapons.add_weapon(i,id_weapon,nbr_spell_max,spells_id,screen_size)
 
+    def add_spell(self,id_weapon,id_spell,pos_spell):
+
+        self.weapons.lWeapons[id_weapon].add_spell(id_spell,pos_spell)
+
     def shot(self,id_key):
 
         #return self.weapons.shot(self.angle_weapon)

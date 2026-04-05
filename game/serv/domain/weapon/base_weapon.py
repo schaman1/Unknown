@@ -10,6 +10,7 @@ class Weapon :
         self.id = id
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]
+        self.nbr_slot = nbr_slot
         self.nbr_upgrades_trigger_max = nbr_upgrades_trigger
         self.nbr_upgrades_trigger = 0
         self.nbr_spells_max = len(self.spells_on_shot)

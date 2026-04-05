@@ -17,6 +17,32 @@ class WeaponBag(Weapon):
 
         self.init_slot()
 
+    def not_full(self):
+        idx = 0
+
+        while idx<self.nbr_slot and self.spells_on_shot[idx]!=None:
+            idx+=1
+
+        if idx==self.nbr_slot :
+            return False
+        
+        return True
+
+    def add_spell(self,id):
+
+        idx = 0
+
+        while idx<self.nbr_slot and self.spells_on_shot[idx]!=None:
+            idx+=1
+
+        if idx<self.nbr_slot :
+            self.fill_slot(idx,upgrades.UPGRADES[id])
+
+            return idx
+    
+        return None
+
+
     def init_slot(self):
         pass
         #self.fill_slot(0,upgrades.CreateFire())
