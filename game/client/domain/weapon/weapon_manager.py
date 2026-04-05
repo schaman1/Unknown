@@ -98,9 +98,8 @@ class WeaponManager:
     
     def throw_spell(self,spell):
 
-        self.lWeapons[spell.idx_weapon].spells[spell.idx_spell] = None
+        self.lWeapons[spell.idx_weapon].spells[spell.idx_spell].img = None
                     
-
     def trigger_spell_touch(self,spell):
 
         if self.spell_hold==None :
