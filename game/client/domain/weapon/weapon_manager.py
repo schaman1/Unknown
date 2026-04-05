@@ -87,7 +87,18 @@ class WeaponManager:
                     
                     return self.trigger_spell_touch(spell)
                 
-        return -1,None,None #No collision
+        #No collision = throw the spell
+
+        spell_previous_old = self.spell_hold
+                
+        self.spell_hold.blit_icone = True
+        self.spell_hold = None
+                
+        return -1,spell_previous_old,None #No collision
+    
+    def throw_spell(self,spell):
+
+        self.lWeapons[spell.idx_weapon].spells[spell.idx_spell] = None
                     
 
     def trigger_spell_touch(self,spell):

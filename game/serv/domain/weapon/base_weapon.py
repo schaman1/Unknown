@@ -37,6 +37,11 @@ class Weapon :
         #print("spells_id",self.nbr_spells_max)
 
         return i,self.id,self.nbr_spells_max,spells_id
+    
+    def del_spell(self,id_spell):
+        spell = self.spells_on_shot.pop(id_spell)
+
+        return spell.id
 
     def reset_values(self):
         self.speed_mult = 1

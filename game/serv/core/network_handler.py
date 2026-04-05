@@ -76,6 +76,9 @@ class Network_handler :
                 elif msg_id==8:
                     msg_size = 1+2+1
 
+                elif msg_id == 9:
+                    msg_size = 1+2
+
                 else:
                     print("UNKNOWN MSG ID", msg_id)
                     del buffer[0]
@@ -178,6 +181,12 @@ class Network_handler :
 
             chunk,id = struct.unpack("!HB",data[1:4])
             self.server.trigger(chunk,id,sender)
+
+        elif id_msg==9:
+
+            id_weapon,id_spell = struct.unpack("!BB",data[1:3])
+
+            self.server.throw_spell(id_weapon,id_spell,sender)
 
 
         else :
@@ -352,3 +361,4 @@ class Network_handler :
 
         except Exception as e:
             print(f"Erreur envoi: {e}")
+

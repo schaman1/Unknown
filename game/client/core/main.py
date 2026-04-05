@@ -157,7 +157,11 @@ class Main:
                             self.state.game.spell_blit_mouse =spell_1 
 
                         elif info==-1: #Nothing c quand touche rien
-                            pass
+                            if spell_1!=None:
+                                
+                                self.state.game.player_all.me.weapons.throw_spell(spell_1)
+                                spell_info = spell_1.idx_weapon,spell_1.idx_spell
+                                self.client.send_data(9,[spell_info])
 
                     elif self.state.mod == "menu":
                         if self.state.host.get_rect().collidepoint(event.pos):

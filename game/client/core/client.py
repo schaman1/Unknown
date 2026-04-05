@@ -369,6 +369,9 @@ class Client:
         elif id==8:
             packet+= struct.pack("!HB",data[0],data[1])
 
+        elif id==9:
+            packet+= struct.pack("!BB",data[0][0],data[0][1])
+
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())
 

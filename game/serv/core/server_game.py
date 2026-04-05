@@ -173,3 +173,11 @@ class Server_game(Server) :
                 self.send_data_all([16,chunk,id]) #Destroy
 
                 self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)
+
+    def throw_spell(self,id_weapon,id_spell,sender):
+
+        spell_id = self.lClient[sender].remove_spell(id_weapon,id_spell)
+
+        pos = self.lClient[sender].return_pos()
+
+        self.add_object("SPELL",spell_id,pos[0],pos[1],1)
