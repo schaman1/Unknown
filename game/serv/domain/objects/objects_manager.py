@@ -47,12 +47,12 @@ class objects_manager:
 
         element = self.chunk_objects[chunk][id]
 
-        if player.money>=element.price:
+        if player.money>=element.price and player.can_pick_spell():
 
             player.update_money(-element.price)
 
             self.destroy_object(chunk,id)
 
-            return "Destroy",chunk,id
+            return "AddToInventaire",chunk,id,element
 
 

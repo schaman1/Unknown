@@ -7,6 +7,7 @@ class Weapon :
     def __init__(self,id_weapon,nbr_spell_max,spells_id,idx,screen_size):
 
         self.id_weapon = id_weapon
+        self.idx = idx
         self.nbr_spell_max = nbr_spell_max
         self.frame_weapon = []
         self.spells_id = spells_id
@@ -33,6 +34,7 @@ class Weapon :
         self.spells=[None for _ in range(self.nbr_spell_stock)]
         #print(self.spells_id,"nbr max")
         self.load_spells(idx,screen_size)
+        self.screen_size = screen_size
 
     def load_spells(self,idx,screen_size):
 
@@ -65,6 +67,13 @@ class Weapon :
         #)
 
        # screen.blit(self.icone_weapon,(screen_size[0]//4+(4*i+1)*size.CELL_SIZE,screen_size[1]*0.80))
+    
+    def add_spell(self,id_spell,pos_spell):
+
+        x=self.return_posx_blit_spell(self.screen_size,pos_spell)
+        y=self.return_posy_blit_weapon(self.screen_size,self.idx)
+        y_padding = y+0.25*self.icone_size
+        self.spells[pos_spell]=Spell(id_spell,x,y_padding,self.idx,pos_spell)
 
     def draw_spells(self,screen,screen_size,i):
 
@@ -84,7 +93,9 @@ class Weapon :
 
             #screen.blit(self.icone_spell,(x,y))
 
-            self.spells[j].draw(screen)
+            if self.spells[j]!=None:
+
+                self.spells[j].draw(screen)
             #if self.imgs_spells[j]!=None:
 #
             #    screen.blit(self.imgs_spells[j],(x+self.icone_size//4,y+self.icone_size//4))

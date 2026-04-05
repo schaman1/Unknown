@@ -30,6 +30,10 @@ class Player(Mob) :
 
         self.time_shot_update = False
 
+    def can_pick_spell(self):
+
+        return self.weapons.bag_not_full()
+
     def return_weapon_info(self):
         return self.weapons.return_all_weapon()
     
