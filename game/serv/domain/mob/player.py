@@ -247,3 +247,9 @@ class Player(Mob) :
             pos[1]+=self.distance_cast_spells
 
         return pos
+    
+    def remove_spell(self,id_weapon,id_spell):
+
+        spell_id = self.weapons.lWeapons[id_weapon].del_spell(id_spell)
+
+        return spell_id

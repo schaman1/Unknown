@@ -75,4 +75,4 @@ class Player_all :
 
     def mouse_button_down(self,mouse_pos):
 
-        return self.dic_players[self.client_id].weapons.touch_spells(mouse_pos)
+        return self.me.weapons.touch_spells(mouse_pos)

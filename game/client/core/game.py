@@ -157,6 +157,10 @@ class Game :
             elif info==0: #Blit spell_1 a pos=souris car c l'img du spell
                 self.spell_blit_mouse =spell_1 
 
+            elif info==-1 and spell_1!=None: #In air
+                self.spell_blit_mouse = None
+
+
             return info,spell_1,spell_2
         
         else :
