@@ -195,7 +195,13 @@ class Game :
 
         pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
 
-        self.add_popup_on_screen(pos,str(delta_money),type = "money")
+        if delta_money>0:
+            delta_money_txt = "+"+str(delta_money)
+
+        else :
+            delta_money_txt = str(delta_money)
+
+        self.add_popup_on_screen(pos,str(delta_money_txt),type = "money")
     
     def add_popup(self,ent,text,type = "damage"):
 
@@ -235,3 +241,4 @@ class Game :
             touch_pnj = self.pnj_all.test_trigger(pos_player)
                 
         return touch_pnj
+    
