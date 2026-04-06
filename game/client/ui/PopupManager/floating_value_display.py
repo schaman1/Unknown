@@ -59,7 +59,8 @@ class FloatingValue:
 
     def __init__(self,text,pos,color,time_lenght=2,font = None,size = 10,lenght_go_up = 0,fix_on_screen=False):
 
-        self.pos=pos
+        size = font.size(text)
+        self.pos=[pos[0]+size[0]//2,pos[1]]
         self.fix_on_screen = fix_on_screen
         self.alpha = 255
         self.color=color
@@ -69,6 +70,8 @@ class FloatingValue:
         self.vy = lenght_go_up
 
         self.text = font.render(text, True, color)
+
+
         self.rect = self.text.get_rect(center=self.pos)
 
     def draw(self,screen,x,y,dt):

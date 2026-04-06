@@ -85,7 +85,7 @@ class Player_you(Mob) :
 
     def update_pos_blit_money(self):
         size = FONT.size(str(self.money))
-        self.pos_blit_text = [self.pos_money[0]+size[0]//2,self.pos_money[1]+size[1]//2]
+        self.pos_blit_text = [self.pos_money[0],self.pos_money[1]+size[1]//2]
 
     def draw_weapon(self,screen,angle,pos_draw) :
 
