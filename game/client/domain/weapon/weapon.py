@@ -1,10 +1,11 @@
 import pygame
-from client.config import assets,weapon,size_display as size
+from client.config import size_display as size
+from client.config.display_text import FONT_SMALL
 from client.ui.spell import Spell
 
 class Weapon :
 
-    def __init__(self,id_weapon,nbr_spell_max,spells_id,idx,screen_size):
+    def __init__(self,id_weapon,nbr_spell_max,spells_id,idx,screen_size,text):
 
         self.id_weapon = id_weapon
         self.idx = idx
@@ -13,6 +14,10 @@ class Weapon :
         self.spells_id = spells_id
         self.nbr_spell_stock=len(self.spells_id)
         self.icone_size=size.CELL_SIZE*4
+
+        self.text_color = (250,250,250)
+        self.text = text
+        self.text_blit = FONT_SMALL.render(str(text),True, self.text_color)
 
         #for i in range(4):
         #    img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
@@ -84,6 +89,11 @@ class Weapon :
             (14,16,14),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,y, screen_size[0]//2, 1.5*self.icone_size),
         )
+
+        size_text = FONT_SMALL.size(str(self.text))
+        #pos = pos_object[0]+self.size_img[0]//2 - size_text[0]//2,pos_object[1]+self.size_img[1]
+        pos_text = (screen_size[0]//4 - size_text[0],y+0.5*self.icone_size)
+        screen.blit(self.text_blit,pos_text)
         
         #print(self.spells_id)
 
