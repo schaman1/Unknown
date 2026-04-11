@@ -281,7 +281,7 @@ class Client:
             self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
 
         elif id == 9 :
-            self.main.state.mod = "intro end"
+            self.main.state.stop_intro()
 
         elif id==10:
             idx_weapon_pos,id_weapon = struct.unpack("!BB",data[2:4])
