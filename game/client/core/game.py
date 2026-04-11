@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
@@ -29,6 +29,17 @@ class Game :
         self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
         self.grey_layer.fill((10,10,10,150))
 
+        self.waiting_img = pygame.image.load(assets.BG_WAITING).convert()
+        self.fading_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
+        self.alpha_fading = 255
+        size = self.waiting_img.get_size()
+        scale = (screenSize[0]//2)*size[1]//size[0]
+        self.waiting_img = pygame.transform.scale(self.waiting_img,(screenSize[0]//2,scale))
+        self.rect_img_waiting = self.waiting_img.get_rect(center = ((screenSize[0]//2,screenSize[1]//2)))
+
+        self.len_fading = 2
+        self.end_fading = None
+
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
@@ -54,13 +65,27 @@ class Game :
         
     def draw_intro_start(self,screen):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0))
+        screen.blit(self.waiting_img,self.rect_img_waiting)
 
-    def draw_intro_end(self,screen):
+    def draw_intro_end(self,screen,dt,mouse_pos):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0)) #Faire un decrescendo ou un truc stylé d'animation
 
-        return True #If end animation else return False
+        self.draw(screen,dt,mouse_pos)
+        self.fading_layer.fill((0,0,0,self.alpha_fading))
+        screen.blit(self.fading_layer,(0,0))
+
+        self.waiting_img.set_alpha(self.alpha_fading)
+
+        screen.blit(self.waiting_img,self.rect_img_waiting) #Faire un decrescendo ou un truc stylé d'animation
+
+        delta_time = max(self.end_fading - time.perf_counter(),0)
+        #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
+        self.alpha_fading = int(255*delta_time//self.len_fading)
+
+        if delta_time<=0 :
+            return True
+    
+        return False #True If end animation else return False
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""

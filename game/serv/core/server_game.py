@@ -95,7 +95,7 @@ class Server_game(Server) :
         self.is_running_menu = not self.is_running_menu
 
     def start_game(self):
-        print("start game")
+        print("start intro")
         self.change_state()
 
         self.send_data_all([0]) #0 pour start game
@@ -109,8 +109,11 @@ class Server_game(Server) :
         #self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
 
+
+        pygame.time.wait(int(1.5*1000))
         self.send_data_all([9]) #9 : a fini de load
 
+        print("Start game")
         self.loop_server_game()
 
     def convert_to_base(self,nbr):
