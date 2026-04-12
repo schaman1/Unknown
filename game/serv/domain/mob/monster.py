@@ -146,7 +146,7 @@ class Skeleton(Monster):
             self.direction *= -1
             intended_vx = self.direction * max(1, self.base_movement // 8)
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
 
         self.vitesse_x = intended_vx
         moved_x = self.collision_x(map,dt,self.vitesse_x)
@@ -196,7 +196,7 @@ class Skeleton(Monster):
         else:
             intended_vx = self.speed_max if dx > 0 else -self.speed_max
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
         self.vitesse_x = intended_vx
         moved_x = self.collision_x(map,dt,self.vitesse_x)
         self.collision_y(map,dt,self.vitesse_y)

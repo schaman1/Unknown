@@ -26,14 +26,14 @@ class Movable:
         """Retourne le nbr en 1 pour 100"""
         return nbr*self.base_movement
 
-    def gravity_effect(self):
+    def gravity_effect(self,dt):
 
 
         #return
 
         #if self.vitesse_y < 500*self.base_movement:
         #print("before gravity",self.vitesse_y)
-        self.vitesse_y += self.base_movement*2
+        self.vitesse_y += self.base_movement*2*self.acceleration*dt
         s=self.return_signe(self.vitesse_y)
 
         gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
@@ -42,7 +42,13 @@ class Movable:
         else :
             gravity_power_mult+=0.25
 
-        self.vitesse_y = self.vitesse_y*gravity_power_mult
+        #delta = self.vitesse_y*gravity_power_mult - self.vitesse_y
+        #print(dt)
+        #delta = delta**(dt)
+
+        self.vitesse_y = self.vitesse_y*(gravity_power_mult**(dt*60))
+
+        #self.vitesse_y += delta
 
         if self.vitesse_y>self.base_movement*100:
             self.vitesse_y = self.base_movement*100
@@ -141,6 +147,8 @@ class Movable:
         return False
     
     def return_signe(self,e):
+
+        #print(e)
         if e<0:
             return -1
         else :
