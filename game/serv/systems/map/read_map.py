@@ -28,13 +28,19 @@ class Read_map:
 
         self.create_map()
 
+    def return_chunk(self,x,y):
+
+        chunk_y = y//self.height_chunk
+        chunk_x = x//self.width_chunk
+
+        return chunk_x,chunk_y
+
     def return_type(self,y,x):
 
         #y = int(y)
         #x = int(x)
 
-        chunk_y = y//self.height_chunk
-        chunk_x = x//self.width_chunk
+        chunk_x,chunk_y = self.return_chunk(x,y)
 
         deltay = y%self.height_chunk
         deltax = x%self.width_chunk

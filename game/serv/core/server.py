@@ -3,6 +3,7 @@ from serv.core.network_handler import Network_handler
 from serv.systems.map.read_map import Read_map
 from serv.systems.monster.read_monster import Read_monster
 from serv.domain.projectile.projectile_manager import ProjectileManager
+from serv.domain.objects.objects_manager import objects_manager
 from serv.core.Collision_handler import CollisionHandler
 from shared.constants import world
 
@@ -20,6 +21,7 @@ class Server:
         self.map_monster = Read_monster(self.map_cell.width_chunk,self.map_cell.height_chunk,world.RATIO)
         self.projectile_manager = ProjectileManager(self.map_cell.width_chunk,self.map_cell.height_chunk)
         self.collision_handler = CollisionHandler()
+        self.objects_manager = objects_manager()
 
         self.host = host
         self.port = port
@@ -184,7 +186,7 @@ class Server:
                 #print("Send successfuly")
                 self.send_data(data, socket)
             except Exception as e:
-                #print(data)
+                print(data)
                 print(f"Erreur envoi, {e}",file=sys.stderr)
                 pass  # ou suppression du client mort
 

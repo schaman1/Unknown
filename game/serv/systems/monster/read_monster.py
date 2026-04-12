@@ -20,7 +20,7 @@ class Read_monster :
 
         for i in range(self.size_chunk_all[0]) :
             for j in range(self.size_chunk_all[1]) :
-                self.dic_monster[i*100+j] = []
+                self.dic_monster[i*self.base_movement+j] = []
 
         self.create_list_monster()
 

@@ -17,3 +17,7 @@ LEN_Y_CHUNK = 4
 
 #Weapon :
 NBRWEAPONSTOCK = 4
+
+TYPE_OBJECT = {
+    "SPELL":0
+}

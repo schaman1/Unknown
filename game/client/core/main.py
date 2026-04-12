@@ -6,6 +6,7 @@ from shared.constants import fps
 from client.config import size_display as size
 from client.ui.escape_menu import EscapeMenu
 from client.domain.Sounds.default_music import Musique
+from client.config import display_text
 
 #from C_inGame import InGame
 #from C_card import Card
@@ -20,7 +21,7 @@ class Main:
         self.set_CELL_SIZE(self.screenSize)
         
         #ecriture
-        self.font = pygame.font.SysFont(None, 48)
+        self.font = display_text.FONT
 
         #Set up the clock for managing the frame rate
         self.fps = fps.FPS_CLIENT
@@ -85,7 +86,8 @@ class Main:
                     if self.state.mod == "game":
 
                         if event.key == pygame.K_e:
-                            self.in_interaction = self.state.game.interact()
+                            if not self.in_interaction :
+                                self.in_interaction = self.state.game.interact()
 
                         if event.key == pygame.K_RETURN :
                             self.in_interaction = self.state.game.pnj_all.press_enter()
@@ -162,7 +164,11 @@ class Main:
                             self.state.game.spell_blit_mouse =spell_1 
 
                         elif info==-1: #Nothing c quand touche rien
-                            pass
+                            if spell_1!=None:
+                                
+                                self.state.game.player_all.me.weapons.throw_spell(spell_1)
+                                spell_info = spell_1.idx_weapon,spell_1.idx_spell
+                                self.client.send_data(9,[spell_info])
 
                     elif self.state.mod == "menu":
                         if self.state.host.get_rect().collidepoint(event.pos):

@@ -4,7 +4,7 @@ from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 BG_GLOBAL = resource_path("assets/background/global/back.png")
 MAP_SEEN = resource_path("assets/background/entities/cell.png")
 MAP_UNSEEN = resource_path("assets/background/entities/monster.png")
-BG_WAITING = resource_path("assets/background/global/back.png")
+BG_WAITING = resource_path("assets/ui/infos/niflheim.png")
 
 BG_MAP_COLORED =[]
 BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")

@@ -73,6 +73,12 @@ class Network_handler :
                 elif msg_id==7:
                     msg_size = 1
 
+                elif msg_id==8:
+                    msg_size = 1+2+1
+
+                elif msg_id == 9:
+                    msg_size = 1+2
+
                 else:
                     print("UNKNOWN MSG ID", msg_id)
                     del buffer[0]
@@ -101,7 +107,7 @@ class Network_handler :
 
         if id_msg == 1: #New client connection
 
-            print("New client connection. Current players id :")
+            #print("New client connection. Current players id :")
 
             self.send_client_already_her(sender)
             
@@ -110,7 +116,6 @@ class Network_handler :
                 meornot = (client == sender)
                 packet = struct.pack("!BBB", 1, self.server.lClient[sender].id, meornot)
                 self.send_data(packet,client)
-                print(self.server.lClient[client].id)
 
                 #self.send_data({
                 #    "id": "new player",
@@ -171,6 +176,18 @@ class Network_handler :
 
         elif id_msg == 7:
             self.server.lClient[sender].move_from_key(id_msg,self.server.map_cell)
+
+        elif id_msg==8:
+
+            chunk,id = struct.unpack("!HB",data[1:4])
+            self.server.trigger(chunk,id,sender)
+
+        elif id_msg==9:
+
+            id_weapon,id_spell = struct.unpack("!BB",data[1:3])
+
+            self.server.throw_spell(id_weapon,id_spell,sender)
+
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -264,6 +281,11 @@ class Network_handler :
             id,new_life,chunk = life
             packet+=struct.pack("!HHB",id,chunk,new_life)
 
+    def pack_object(self,data,packet):
+
+        packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
+
+
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
 
@@ -314,6 +336,16 @@ class Network_handler :
         elif id==14:
             self.pack_life_update(data[1],packet)
 
+        elif id==15:
+            self.pack_object(data[1],packet)
+
+        elif id == 16:
+
+            packet+= struct.pack("!HB",data[1],data[2])
+
+        elif id==17:
+            packet+=struct.pack("!BBB",data[1],data[2],data[3])
+
         else :
             print("Issue id not found : ",id)
 
@@ -329,3 +361,4 @@ class Network_handler :
 
         except Exception as e:
             print(f"Erreur envoi: {e}")
+
