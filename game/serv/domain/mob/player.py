@@ -60,7 +60,7 @@ class Player(Mob) :
         old_pos_x = self.pos_x
         old_pos_y = self.pos_y
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
         
         self.upgrade_handler.trigger_event_on_player(self.weapons.id_event_player_do,self,dt,map)
 
@@ -73,7 +73,7 @@ class Player(Mob) :
 
         return (delta_x,delta_y)
 
-    def update_vitesse(self):
+    def update_vitesse(self,dt):
 
         s = self.return_signe(self.vitesse_x)
 
@@ -84,7 +84,12 @@ class Player(Mob) :
             #if self.smooth_jump.is_falling :
                 #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
             if not self.smooth_jump.is_falling :
-                self.vitesse_x=self.vitesse_x*0.8
+                #delta = self.vitesse_x*0.92 - self.vitesse_x
+
+                self.vitesse_x = self.vitesse_x*(0.90**(dt*60))
+
+                #print(dt)
+                #self.vitesse_x += (delta**(dt))*self.return_signe(delta)
 
     def update_pos(self,map,dt):
 
@@ -94,7 +99,7 @@ class Player(Mob) :
 
         delta = self.return_delta_vitesse(map,dt)
 
-        self.update_vitesse()
+        self.update_vitesse(dt)
 
         return delta
     
