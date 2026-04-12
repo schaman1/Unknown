@@ -1,4 +1,4 @@
-import pygame, threading
+import pygame, threading, time
 from assets.rendering.texture import color
 from client.ui.button import Button
 from client.ui.PopupManager.alert import Alert
@@ -107,7 +107,7 @@ class State:
                 #En fonction de ce que tu fais mais la comme ça, si tu fais du fondu, les persos sont déjà désinné
                 self.game.draw(self.screen,dt, mouse_pos)
 
-                finish = self.game.draw_intro_end(self.screen)
+                finish = self.game.draw_intro_end(self.screen,dt,mouse_pos)
 
                 if finish :
                     self.mod = "game"
@@ -175,6 +175,10 @@ class State:
 
         for btn in dic.values():
             btn.draw(self.screen,mouse_pos)
+
+    def stop_intro(self):
+        self.game.end_fading = time.perf_counter() + self.game.len_fading
+        self.mod = "intro end"
 
 
 

@@ -1,0 +1,1 @@
+Player_money_start = 20

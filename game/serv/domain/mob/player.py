@@ -4,18 +4,19 @@ from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import smooth_jump,input_handler
 from serv.domain.mob.team import Team
+from serv.config.Default_values import Player_money_start
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = 100, damage = 25, vitesse_x=1, vitesse_y=1, money=0): 
+    def __init__(self,pos,id,host = False, hp = 100, damage = 25, money=Player_money_start): 
 
         super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player)
 
         self.hp = hp
         self.money = money
-        self.send_new_money = False
+        self.send_new_money = True #Pour initialiser
 
         self.damage_taken = damage
         self.is_host = host
@@ -29,6 +30,10 @@ class Player(Mob) :
         self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
+
+    def can_pick_spell(self):
+
+        return self.weapons.bag_not_full()
 
     def return_weapon_info(self):
         return self.weapons.return_all_weapon()
@@ -55,7 +60,7 @@ class Player(Mob) :
         old_pos_x = self.pos_x
         old_pos_y = self.pos_y
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
         
         self.upgrade_handler.trigger_event_on_player(self.weapons.id_event_player_do,self,dt,map)
 
@@ -68,7 +73,7 @@ class Player(Mob) :
 
         return (delta_x,delta_y)
 
-    def update_vitesse(self):
+    def update_vitesse(self,dt):
 
         s = self.return_signe(self.vitesse_x)
 
@@ -79,7 +84,12 @@ class Player(Mob) :
             #if self.smooth_jump.is_falling :
                 #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
             if not self.smooth_jump.is_falling :
-                self.vitesse_x=self.vitesse_x*0.8
+                #delta = self.vitesse_x*0.92 - self.vitesse_x
+
+                self.vitesse_x = self.vitesse_x*(0.90**(dt*60))
+
+                #print(dt)
+                #self.vitesse_x += (delta**(dt))*self.return_signe(delta)
 
     def update_pos(self,map,dt):
 
@@ -89,7 +99,7 @@ class Player(Mob) :
 
         delta = self.return_delta_vitesse(map,dt)
 
-        self.update_vitesse()
+        self.update_vitesse(dt)
 
         return delta
     
@@ -208,7 +218,9 @@ class Player(Mob) :
 
         self.money+= amount
 
-        self.send_new_money = True
+        if amount!=0 :
+
+            self.send_new_money = True
     
     def send_money(self):
         self.send_new_money = False
@@ -243,3 +255,9 @@ class Player(Mob) :
             pos[1]+=self.distance_cast_spells
 
         return pos
+    
+    def remove_spell(self,id_weapon,id_spell):
+
+        spell_id = self.weapons.lWeapons[id_weapon].del_spell(id_spell)
+
+        return spell_id

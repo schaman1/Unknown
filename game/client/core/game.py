@@ -1,10 +1,11 @@
-import pygame
+import pygame, time
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.mob.pnj.pnj_all import Pnj_all
 from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
+from client.ui.objects.objects_manager import objects_manager
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
@@ -28,6 +29,17 @@ class Game :
         self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
         self.grey_layer.fill((10,10,10,150))
 
+        self.waiting_img = pygame.image.load(assets.BG_WAITING).convert()
+        self.fading_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
+        self.alpha_fading = 255
+        size = self.waiting_img.get_size()
+        scale = (screenSize[0]//2)*size[1]//size[0]
+        self.waiting_img = pygame.transform.scale(self.waiting_img,(screenSize[0]//2,scale))
+        self.rect_img_waiting = self.waiting_img.get_rect(center = ((screenSize[0]//2,screenSize[1]//2)))
+
+        self.len_fading = 2
+        self.end_fading = None
+
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
@@ -43,6 +55,8 @@ class Game :
 
         self.floating_values = FloatingValueDisplay(cell_size)
 
+        self.objects_manager = objects_manager(cell_size)
+
         self.camera = Camera(screenSize)
 
         self.player_command = []
@@ -51,13 +65,27 @@ class Game :
         
     def draw_intro_start(self,screen):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0))
+        screen.blit(self.waiting_img,self.rect_img_waiting)
 
-    def draw_intro_end(self,screen):
+    def draw_intro_end(self,screen,dt,mouse_pos):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0)) #Faire un decrescendo ou un truc stylé d'animation
 
-        return True #If end animation else return False
+        self.draw(screen,dt,mouse_pos)
+        self.fading_layer.fill((0,0,0,self.alpha_fading))
+        screen.blit(self.fading_layer,(0,0))
+
+        self.waiting_img.set_alpha(self.alpha_fading)
+
+        screen.blit(self.waiting_img,self.rect_img_waiting) #Faire un decrescendo ou un truc stylé d'animation
+
+        delta_time = max(self.end_fading - time.perf_counter(),0)
+        #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
+        self.alpha_fading = int(255*delta_time//self.len_fading)
+
+        if delta_time<=0 :
+            return True
+    
+        return False #True If end animation else return False
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -112,15 +140,17 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.blit_projectiles_explosions(screen,x,y,dt)
-
+        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
         self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y,dt)
 
+        self.blit_projectiles_explosions(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
         self.player_all.draw_light(screen)
+
+        self.floating_values.draw_floating_values_fix(screen,x,y,dt)
 
         self.blit_utils(screen,self.screen_size)
 
@@ -154,6 +184,10 @@ class Game :
             elif info==0: #Blit spell_1 a pos=souris car c l'img du spell
                 self.spell_blit_mouse =spell_1 
 
+            elif info==-1 and spell_1!=None: #In air
+                self.spell_blit_mouse = None
+
+
             return info,spell_1,spell_2
         
         else :
@@ -180,10 +214,26 @@ class Game :
 
             self.player_all.me.update_life(new_life)
 
-    
-    def add_popup(self,ent,text):
+    def update_money(self,money):
 
-        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type="damage")
+        delta_money = self.player_all.me.update_money(money)
+
+        pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
+
+        if delta_money>0:
+            delta_money_txt = "+"+str(delta_money)
+
+        else :
+            delta_money_txt = str(delta_money)
+
+        self.add_popup_on_screen(pos,str(delta_money_txt),type = "money")
+    
+    def add_popup(self,ent,text,type = "damage"):
+
+        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type)
+
+    def add_popup_on_screen(self,pos,text,type):
+        self.floating_values.add_floating_value(str(text),pos,type)
 
     def add_many_popup_life(self,data):
 
@@ -199,7 +249,21 @@ class Game :
             self.add_popup(ent,delta_life)
 
     def interact(self):
-        
-        touch_pnj = self.pnj_all.test_trigger(self.player_all.return_pos())
 
+        pos_player = self.player_all.return_pos()
+
+        touch_pnj = False
+
+        res = self.objects_manager.test_trigger(pos_player)
+
+        if res!=None:
+            chunk,id = res
+
+            self.player_command.append([8,chunk,id])
+        
+        else :
+        
+            touch_pnj = self.pnj_all.test_trigger(pos_player)
+                
         return touch_pnj
+    

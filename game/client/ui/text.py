@@ -43,7 +43,6 @@ class AnimatedText:
     def return_current_text(self):
 
         text = self.text_to_blit[self.text_id][0:self.lenght_text_blit]
-
         return text
     
     def press_enter(self):

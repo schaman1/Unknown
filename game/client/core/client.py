@@ -168,6 +168,15 @@ class Client:
             elif msg_id == 14:
                 msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*5
 
+            elif msg_id == 15:
+                msg_size = 1+3+8+2+2
+
+            elif msg_id==16:
+                msg_size = 1+2+1
+
+            elif msg_id == 17:
+                msg_size = 1+3
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -216,39 +225,6 @@ class Client:
         if id == 0:
             self.main.state.mod = "intro start"
 
-        elif id == 4 : #monsters update
-            self.update_monster(
-                struct.unpack("!HLLLB", data[3+i*15 : 18+i*15])
-                for i in range((size-3)//15)
-            )
-
-        elif id == 5 :#Init monsters
-            cells = []
-            for i in range((size-3)//15):
-                cells.append(struct.unpack("!HLLLB", data[3+i*15 : 18+i*15]))
-
-            self.main.state.game.monsters.init_monster(cells)
-
-        elif id==7: #Projectile create ?
-            for i in range((size-3)//18):
-                id,pos_x,pos_y,angle,vitesse,weight,id_img = struct.unpack("!LLLHHBB", data[3+i*18 : 21+i*18])
-
-                self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
-
-        elif id==8: #Projectile die
-            for i in range((size-3)//12):
-                id,pos_x,pos_y = struct.unpack("!LLL",data[3+i*12:15+i*12])
-                self.main.state.game.projectiles.remove_projectile(id,pos_x,pos_y)
-
-        elif id==11: 
-
-            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
-            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
-
-        elif id==6:
-            id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
-            self.events.empile((id,id_player,pos_x,pos_y))
-
         elif id == 1 :
 
             print(f"New connection : {data[1]}")
@@ -271,8 +247,41 @@ class Client:
             self.main.state.game.player_all.dic_players.pop(id_remove)
 
 
+        elif id == 4 : #monsters update
+            self.update_monster(
+                struct.unpack("!HLLLB", data[3+i*15 : 18+i*15])
+                for i in range((size-3)//15)
+            )
+
+        elif id == 5 :#Init monsters
+            cells = []
+            for i in range((size-3)//15):
+                cells.append(struct.unpack("!HLLLB", data[3+i*15 : 18+i*15]))
+
+            self.main.state.game.monsters.init_monster(cells)
+
+        elif id==6:
+            id_player,pos_x,pos_y=struct.unpack("!BLL",data[1:10])
+            self.events.empile((id,id_player,pos_x,pos_y))
+
+        elif id==7: #Projectile create ?
+            for i in range((size-3)//18):
+                id,pos_x,pos_y,angle,vitesse,weight,id_img = struct.unpack("!LLLHHBB", data[3+i*18 : 21+i*18])
+
+                self.main.state.game.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
+
+        elif id==8: #Projectile die
+            for i in range((size-3)//12):
+                id,pos_x,pos_y = struct.unpack("!LLL",data[3+i*12:15+i*12])
+                self.main.state.game.projectiles.remove_projectile(id,pos_x,pos_y)
+
+        elif id==11: 
+
+            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
+            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
+
         elif id == 9 :
-            self.main.state.mod = "intro end"
+            self.main.state.stop_intro()
 
         elif id==10:
             idx_weapon_pos,id_weapon = struct.unpack("!BB",data[2:4])
@@ -298,7 +307,7 @@ class Client:
         
         elif id==13 :
             money = struct.unpack("!H", data[1:3])[0]
-            self.main.state.game.player_all.me.update_money(money)
+            self.main.state.game.update_money(money)
             #pass
 
         elif id==14:
@@ -314,6 +323,22 @@ class Client:
 
             self.main.state.game.add_many_popup_life(popup_to_create)
 
+        elif id==15:
+
+            id_obj,ele_idx,id_img,pos_x,pos_y,chunk,price = struct.unpack("!BBBLLHH",data[1:16])
+
+            self.main.state.game.objects_manager.add_object(ele_idx,id_obj,id_img,pos_x,pos_y,chunk,price)
+
+        elif id==16:
+
+            chunk,id_obj = struct.unpack("!HB",data[1:4])
+
+            self.main.state.game.objects_manager.destroy_object(chunk,id_obj)
+
+        elif id==17:
+            id_weapon,id_spell,idx_pos = struct.unpack("!BBB",data[1:4])
+
+            self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
@@ -340,6 +365,12 @@ class Client:
 
         elif id==6:
             packet+= struct.pack("!B",data[0])
+
+        elif id==8:
+            packet+= struct.pack("!HB",data[0],data[1])
+
+        elif id==9:
+            packet+= struct.pack("!BB",data[0][0],data[0][1])
 
         self.client.send(packet)
         #self.client.send(json.dumps(data).encode())

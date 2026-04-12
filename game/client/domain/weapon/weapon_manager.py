@@ -17,6 +17,8 @@ class WeaponManager:
 
         self.init_lWeapons()
 
+        self.text_name = ["Bag","J","K","L"]
+
         #self.icone_size = size.CELL_SIZE*4
 
     def init_lWeapons(self):
@@ -31,7 +33,7 @@ class WeaponManager:
         #    self.bag = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size)
         #
         #else :
-        self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size)
+        self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size,self.text_name[i])
 
     def draw_weapon(self,screen,angle,pos_player, frame):
 
@@ -87,9 +89,21 @@ class WeaponManager:
                     
                     return self.trigger_spell_touch(spell)
                 
-        return -1,None,None #No collision
-                    
+        #No collision = throw the spell
 
+        spell_previous_old = self.spell_hold
+                
+        if self.spell_hold :
+            self.spell_hold.blit_icone = True
+            
+        self.spell_hold = None
+                
+        return -1,spell_previous_old,None #No collision
+    
+    def throw_spell(self,spell):
+
+        self.lWeapons[spell.idx_weapon].spells[spell.idx_spell].img = None
+                    
     def trigger_spell_touch(self,spell):
 
         if self.spell_hold==None :
