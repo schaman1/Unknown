@@ -5,6 +5,7 @@ from serv.core.server_game import Server_game
 from shared.constants import fps
 from client.config import size_display as size
 from client.ui.escape_menu import EscapeMenu
+from client.domain.Sounds.default_music import Musique
 from client.config import display_text
 
 #from C_inGame import InGame
@@ -38,6 +39,8 @@ class Main:
         
         self.escape_menu = EscapeMenu(self.screenSize, self.font)
 
+        self.musique = Musique()
+
     def set_CELL_SIZE(self,screen_size):
         size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
 
@@ -47,6 +50,9 @@ class Main:
         while running:
 
             self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
+
+            if not pygame.mixer.music.get_busy() :
+                self.musique.update_music_walktrough()
             
             if self.state.mod == "game":
                 self.key_event()
@@ -246,6 +252,7 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
+        Musique.unload_music()
         pygame.quit()
 
     def start_game(self):
