@@ -14,6 +14,7 @@ class Pnj_all :
         self.distance_max_blit = screenSize[1]
         self.distance_max_trigger = world.NBR_CELL_CAN_SEE*cell_size
 
+
         self.pos_blit_text = screenSize[1]-10*self.cell_size
 
         self.interact_img = pygame.image.load("assets/ui/infos/interact.png")
@@ -33,10 +34,14 @@ class Pnj_all :
 
     def init_pnj(self):
         
-        pos = (387,1689)
+        pos = (38,169)
+
         self.add_pnj(pos,'pnj_intro')
 
     def add_pnj(self,pos,name):
+
+        pos = [pos[0]*self.cell_size,pos[1]*self.cell_size]
+
         ele = Pnj(pos,self.color_compteur,self.id_compteur,self.cell_size,self.dialogues[name])
         self.container_pnj.append(ele)
         self.update_values()
