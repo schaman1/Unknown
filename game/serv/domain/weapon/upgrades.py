@@ -113,7 +113,7 @@ class SmallDash(Upgrade):
 
         super().__init__(id=40,time_take=0.0)
         self.time_dash_take = 0.1
-        self.distance_dash = 20*self.ratio
+        self.distance_dash = 15*self.ratio
 
     def trigger(self,weapon):
 

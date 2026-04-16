@@ -20,7 +20,7 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_host = host
-        self.vitesse_max = 30*self.base_movement
+        self.vitesse_max = 100*self.base_movement
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
@@ -83,10 +83,10 @@ class Player(Mob) :
             #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
             #if self.smooth_jump.is_falling :
                 #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
-            if not self.smooth_jump.is_falling :
+            #if not self.smooth_jump.is_falling :
                 #delta = self.vitesse_x*0.92 - self.vitesse_x
 
-                self.vitesse_x = self.vitesse_x*(0.90**(dt*60))
+            self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
 
                 #print(dt)
                 #self.vitesse_x += (delta**(dt))*self.return_signe(delta)
@@ -195,7 +195,7 @@ class Player(Mob) :
 
         if self.vitesse_x>-self.vitesse_max:
             self.vitesse_x-=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1-0.2*s)
+            self.vitesse_x*=(1-0.1*s)
 
         if self.vitesse_x<-self.vitesse_max:
             self.vitesse_x = -self.vitesse_max
@@ -206,7 +206,7 @@ class Player(Mob) :
 
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1+0.2*s)
+            self.vitesse_x*=(1+0.1*s)
 
         if self.vitesse_x>self.vitesse_max:
             self.vitesse_x = self.vitesse_max
