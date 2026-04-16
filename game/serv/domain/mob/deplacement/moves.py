@@ -331,7 +331,14 @@ class Movable:
             self.is_climbing = False
 
     def dash(self,map,dt,v):
+        """Now dash update the speed"""
 
-        self.collision_x(map,dt,v[0])
+        #if self.vitesse_y<0 : #Test pour améliorer le feeling
+        #    self.vitesse_y = 0
 
-        self.collision_y(map,dt,v[1])
+        self.vitesse_x = v[0]
+        self.vitesse_y = v[1]
+
+        #self.collision_x(map,dt,v[0])
+#
+        #self.collision_y(map,dt,v[1])

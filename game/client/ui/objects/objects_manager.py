@@ -80,14 +80,16 @@ class objects_manager:
     
     def test_trigger(self,pos_player): #To opti
 
+        nearest_el = [self.distance_max_trigger,None]
+
         for chunk in self.chunk_objects.keys() :
 
             for id,element in self.chunk_objects[chunk].items():
 
                 dist = self.distance(pos_player,element)
 
-                if dist<self.distance_max_trigger :
+                if dist<nearest_el[0] :
 
-                    return (chunk,id)
+                    nearest_el = [dist,[chunk,id]]
                 
-        return None
+        return nearest_el[1]

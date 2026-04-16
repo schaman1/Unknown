@@ -27,12 +27,12 @@ class Weapon :
 
     def return_info(self,i):
         spells_id = []
-        for weapon in self.spells_on_shot :
-            if weapon == None :
+        for upgrade in self.spells_on_shot :
+            if upgrade == None :
                 spells_id.append(0)
                 
             else :
-                spells_id.append(weapon.id)
+                spells_id.append(upgrade.id)
 
         #print("spells_id",self.nbr_spells_max)
 

@@ -111,9 +111,9 @@ class SmallDash(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=3,time_take=0.0)
-        self.time_dash_take = 0.05
-        self.distance_dash = 8*self.ratio
+        super().__init__(id=40,time_take=0.0)
+        self.time_dash_take = 0.1
+        self.distance_dash = 20*self.ratio
 
     def trigger(self,weapon):
 
@@ -140,3 +140,4 @@ UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[30] = CreateFire_DieEffect()
+UPGRADES[40] = SmallDash()
