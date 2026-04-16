@@ -249,6 +249,7 @@ class Game :
             self.add_popup(ent,delta_life)
 
     def interact(self):
+        """Look around player if can interact with an object + interact with the closest one """
 
         pos_player = self.player_all.return_pos()
 

@@ -12,7 +12,7 @@ class UpgradeHandler:
 
             id = list_events[i][0]
 
-            if id==3:
+            if id==40:
                 
                 res = self.trigger_dash(list_events[i],player,dt,map)
 

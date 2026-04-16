@@ -24,11 +24,12 @@ BTN = resource_path("assets/ui/buttons/btn_default.png")
 BTN_HOVER = resource_path("assets/ui/buttons/btn_hover.png")
 ICONE_SPELL = resource_path("assets/ui/buttons/icone_spell.png")
 
-SPELLS = []
-SPELLS.append(None) #POS 0
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_1_0.png")) #Pos 1
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_2_0.png"))
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_3_0.png"))#Pos 3 then have to do a boucle
+SPELLS = {}
+SPELLS[0]=None #POS 0
+SPELLS[1]=resource_path("assets/sprites/projectile/projectile_1_0.png") #Pos 1
+SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
+SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
+SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 
