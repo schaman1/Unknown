@@ -111,6 +111,7 @@ class State:
 
                 if finish :
                     self.mod = "game"
+                    #Moment ou le jouer peut commencer à bouger.
 
 
             else : 
@@ -179,8 +180,6 @@ class State:
     def stop_intro(self):
         self.game.end_fading = time.perf_counter() + self.game.len_fading
         self.mod = "intro end"
-
-
 
 #def test_vision(screen,size):
 #    light = pygame.Surface((size[0],size[1]), pygame.SRCALPHA)
