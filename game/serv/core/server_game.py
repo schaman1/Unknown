@@ -16,6 +16,9 @@ class Server_game(Server) :
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
 
+        self.send_pos_every_x_frame = 3
+        self.count_send_pos = 0
+
 
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
 
@@ -64,8 +67,13 @@ class Server_game(Server) :
             #if cell != []:
             #    self.send_data([3,cell],socket)
             #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
-            if delta != (0,0):
+            #if delta != (0,0):
+            
+            if self.count_send_pos == self.send_pos_every_x_frame :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
+                self.count_send_pos = 0
+            self.count_send_pos+=1
+
 
             if self.lClient[socket].send_new_life == True :
                 life = self.lClient[socket].send_life()
