@@ -1,5 +1,6 @@
 from shared.constants import world
 from client.domain.mob.mob_animation import Animation
+import time
 
 class Mob:
 
@@ -15,6 +16,9 @@ class Mob:
         self.width,self.height = size
         self.pos_blit=0
 
+        self.interpolate_mov = [(0,0,0),(0,0,0)]  #x,y,time
+        self.delay = 0.05
+        
         self.life=100
         self.max_life = 100
 
@@ -34,3 +38,43 @@ class Mob:
     
     def update_life(self,amount):
         self.life = amount
+
+    def update_interpolate_pos(self):
+        
+        time_now = time.perf_counter()-self.delay
+
+        l = len(self.interpolate_mov)
+
+        if l<=1:
+            return
+        
+        while l>2 and time_now > self.interpolate_mov[1][2] :
+            l-=1
+            self.interpolate_mov.pop(0)
+
+        #print(self.interpolate_mov)
+
+
+        div = self.interpolate_mov[1][2]-self.interpolate_mov[0][2]
+
+        if div == 0:
+            return
+        if div < time_now-self.interpolate_mov[0][2]:
+            div = time_now-self.interpolate_mov[0][2]
+        
+        alpha = (time_now-self.interpolate_mov[0][2])/(div)
+
+        #print(alpha,time_now-self.interpolate_mov["old time"],self.interpolate_mov["new time"]-self.interpolate_mov["old time"])
+        #print(self.interpolate_mov,time_now)
+
+        self.pos_x = int((1-alpha)*self.interpolate_mov[0][0] + alpha*self.interpolate_mov[1][0])
+        self.pos_y = int((1-alpha)*self.interpolate_mov[0][1] + alpha*self.interpolate_mov[1][1])
+
+    def move(self,delta):
+
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+
+        self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
+
+        #self.pos_x = new_pos[0]
+        #self.pos_y = new_pos[1]

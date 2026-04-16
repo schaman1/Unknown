@@ -55,6 +55,7 @@ class Player_you(Mob) :
 
     def draw(self,screen,dt):
 
+        self.update_interpolate_pos()
         self.animation.draw(dt,self.pos_blit,screen)
 
     def draw_utils(self,screen,screen_size):
@@ -107,9 +108,9 @@ class Player_you(Mob) :
         else :
             return
 
-    def move(self,delta):
-        self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
-        self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
+    #def move(self,delta):
+    #    self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
+    #    self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
 
     def calcule_new_direction(self):
         if self.key_active["left"] and not self.key_active["right"] :

@@ -8,7 +8,6 @@ class Map:
         
         self.images = assets.BG_MAP_COLORED
 
-
         self.cell_size = cell_size
 
         self.width_chunk,self.height_chunk = self.get_size()
@@ -32,6 +31,7 @@ class Map:
 
     def draw_map(self,x,y,pos_player,screen):
 
+        #self.init_images(pos_player)
         self.update_map_load(pos_player)
 
         chunk_x,_,chunk_y,_ = self.return_chunk_from_pos(pos_player)
@@ -69,9 +69,11 @@ class Map:
 
         #print(chunk_y)
 
-        return chunk_x,delta_x,chunk_y,delta_y 
+        return int(chunk_x),delta_x,int(chunk_y),delta_y 
 
     def init_images(self,pos):
+
+        #pos = [320,1689]
 
         self.image_to_blit.clear()
 
