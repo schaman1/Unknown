@@ -70,9 +70,9 @@ class Mob:
         self.pos_x = int((1-alpha)*self.interpolate_mov[0][0] + alpha*self.interpolate_mov[1][0])
         self.pos_y = int((1-alpha)*self.interpolate_mov[0][1] + alpha*self.interpolate_mov[1][1])
 
-    def move_mob(self,delta):
+    def move_mob(self,new_pos):
 
-        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        #new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
 
         self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
 
