@@ -53,9 +53,12 @@ class Player_you(Mob) :
 
         return delta_money
 
-    def draw(self,screen,dt):
+    def draw(self,screen,dt,xscreen,yscreen):
 
         self.update_interpolate_pos()
+
+        self.update_pos_blit(xscreen,yscreen)
+
         self.animation.draw(dt,self.pos_blit,screen)
 
     def draw_utils(self,screen,screen_size):
@@ -151,7 +154,8 @@ class Player_you(Mob) :
             self.calcule_new_direction()
 
     def move(self,delta):
-        self.move_mob(delta)
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        self.move_mob(new_pos)
 
 class Player_not_you(Mob) :
 
@@ -164,44 +168,28 @@ class Player_not_you(Mob) :
 
         self.cell_size=cell_size
 
-    def draw(self,screen,dt):
+    def draw(self,screen,dt,xscreen,yscreen):
         
         #self.update_angle()
 
         #self.pos_blit = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle = self.get_angle(center, mouse_pos)
+
+        self.update_interpolate_pos()
+
+        self.update_pos_blit(xscreen,yscreen)
 #
         self.animation.draw(dt,self.pos_blit,screen)
 
-
-    #def update_angle(self):
-    #    self.angle+=1
-
-    #def draw_weapon(self,screen,pos):
-#
-    #    rotated_img = pygame.transform.rotate(self.dr_weapon, self.angle)
-    #    rotated_polish = rotated_img.get_rect(center = pos)
-    #    screen.blit(rotated_img, rotated_polish.topleft)
-#
-    #def add_weapon(self,id_weapon):
-#
-    #    for i in range(4):
-    #        img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-    #        img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
-    #        self.frame_weapon.append(img_weapon)
-#
-    #    for i in range(2, 0, -1):
-    #        img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-    #        img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
-    #        self.frame_weapon.append(img_weapon)
-#
     def move(self,delta):
-        self.move_mob(delta)
 
-        if delta[0]>0:
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        
+        if new_pos[0]-self.pos_x>0:
             self.animation.direction = "right"
 
-        else :
+        elif new_pos[0]-self.pos_x<0 :
             self.animation.direction = "left"
 
+        self.move_mob(new_pos)
 

@@ -60,15 +60,13 @@ class Player_all :
 
         for player in self.dic_players.values():
 
-            player.update_pos_blit(xscreen,yscreen)
+            #if player.is_you :
 
-            if player.is_you :
+            player.draw(screen_global,dt,xscreen,yscreen)
 
-                player.draw(screen_global,dt)
-
-            else :
-
-                player.draw(screen_global,dt)
+            #else :
+#
+            #    player.draw(screen_global,dt)
 
     def draw_light(self,screen_global):
 
