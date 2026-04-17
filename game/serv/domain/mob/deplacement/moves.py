@@ -17,6 +17,7 @@ class Movable:
     acceleration_y: float
     screen_global_size: tuple[int, int]
     is_climbing: bool = True
+    in_dash:bool=False
 
     def convert_to_base(self,nbr):
         """Retourne le nbr en 100 pour 1"""
@@ -27,16 +28,16 @@ class Movable:
         return nbr*self.base_movement
 
     def gravity_effect(self,dt):
+        """Update vitesse_y according to gravity physics"""
 
+        #if self.in_dash==True : #Pas de gravité quand est dans un dash
+        #    return
 
-        #return
-
-        #if self.vitesse_y < 500*self.base_movement:
-        #print("before gravity",self.vitesse_y)
         self.vitesse_y += self.base_movement*2*self.acceleration*dt
         s=self.return_signe(self.vitesse_y)
 
         gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+
         if self.vitesse_y<0:
             gravity_power_mult-=0.1
         else :
@@ -339,6 +340,9 @@ class Movable:
         self.vitesse_x = v[0]
         self.vitesse_y = v[1]
 
-        #self.collision_x(map,dt,v[0])
-#
-        #self.collision_y(map,dt,v[1])
+    def stop_dash(self):
+
+        self.in_dash = False
+
+    def start_dash(self):
+        self.in_dash = True

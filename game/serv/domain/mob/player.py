@@ -62,7 +62,7 @@ class Player(Mob) :
 
         self.gravity_effect(dt)
         
-        self.upgrade_handler.trigger_event_on_player(self.weapons.id_event_player_do,self,dt,map)
+        self.upgrade_handler.trigger_event_on_player(self,dt,map)
 
         self.collision_x(map,dt,self.vitesse_x)
 
@@ -87,9 +87,6 @@ class Player(Mob) :
                 #delta = self.vitesse_x*0.92 - self.vitesse_x
 
             self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
-
-                #print(dt)
-                #self.vitesse_x += (delta**(dt))*self.return_signe(delta)
 
     def update_pos(self,map,dt):
 
@@ -131,23 +128,6 @@ class Player(Mob) :
         
     def move_from_key(self,key,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
-
-        # Check for ladder interaction
-        #if self.can_climb(map):
-        #    if delta == 0: # UP
-        #        self.climb(map, -1, 1)
-        #        return
-        #    elif delta == 1: # DOWN
-        #        self.climb(map, 1, 1)
-        #        return
-        #    
-        #    # If moving side-ways on ladder, maybe fall off?
-        #    # For now let's keep is_climbing true unless we move off
-        #    
-        #else:
-        #    self.is_climbing = False
-
-        #0 : up/1 : down/ 2 : left/ 3 : right
 
         self.input_handler.update_value(key)
         
@@ -239,7 +219,13 @@ class Player(Mob) :
 
         pos = self.return_pos_for_shot(angle)
 
-        return self.weapons.create_shot(id_weapon,pos,angle)
+        projectiles,player_event = self.weapons.create_shot(id_weapon,pos,angle)
+
+        if player_event!=None :
+
+            self.upgrade_handler.add_event(player_event,self)
+
+        return projectiles
     
     def return_pos_for_shot(self,angle):
         pos = self.return_pos()

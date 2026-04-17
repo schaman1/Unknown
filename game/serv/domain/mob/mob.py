@@ -21,6 +21,8 @@ class Mob(Movable):
         self.frottement_power = 0.75
         self.vitesse_x = 0
         self.vitesse_y = 0
+
+        self.in_dash = False
         
         self.width = (width)*self.base_movement
         self.half_width = self.width//2
