@@ -9,7 +9,6 @@ class WeaponManager :
         #self.bag = WeaponBag()
 
         self.weapon_select = 1
-        self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
         self.init_lWeapons(team)
 
@@ -55,7 +54,4 @@ class WeaponManager :
 
             projectiles,events = res[0],res[1]
 
-
-            self.id_event_player_do+=events
-
-        return projectiles
+        return projectiles,events
