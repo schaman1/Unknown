@@ -37,7 +37,7 @@ class Mob(Movable):
 
     def send_life(self):
         self.send_new_life = False
-        return self.life
+        return self.life,self.id
         
     def return_pos(self):
         return [self.pos_x,self.pos_y]

@@ -160,7 +160,7 @@ class Client:
                 msg_size = 1+3
 
             elif msg_id==12:
-                msg_size = 1+1
+                msg_size = 1+2
 
             elif msg_id == 13:
                 msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
@@ -299,9 +299,9 @@ class Client:
             #    self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
         elif id==12:
-            life = struct.unpack("!B",data[1:2])[0]
+            life,id = struct.unpack("!BB",data[1:3])
 
-            self.main.state.game.update_life(life,("Player",None))
+            self.main.state.game.update_life(life,("Player",id))
 
             #self.main.state.game.create_weapon()
         

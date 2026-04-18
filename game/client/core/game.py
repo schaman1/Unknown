@@ -212,7 +212,9 @@ class Game :
             #delta_life = new_life - self.player_all.me.life
             #self.add_popup(self.player_all.me,delta_life)
 
-            self.player_all.me.update_life(new_life)
+            id_player = data[1]
+
+            self.player_all.dic_players[id_player].update_life(new_life)
 
     def update_money(self,money):
 
