@@ -75,8 +75,8 @@ class Server_game(Server) :
 
 
             if self.lClient[socket].send_new_life == True :
-                life = self.lClient[socket].send_life()
-                self.send_data((12,life),socket)
+                life,id_player = self.lClient[socket].send_life()
+                self.send_data_all((12,(life,id_player)))
             
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()

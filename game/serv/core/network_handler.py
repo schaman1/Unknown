@@ -328,7 +328,7 @@ class Network_handler :
             packet+=struct.pack("!HB",data[1][0],data[1][1])#data[1][1])
 
         elif id==12:
-            packet+=struct.pack("!B",data[1])
+            packet+=struct.pack("!BB",data[1][0],data[1][1])
 
         elif id==13:
             packet+=struct.pack("!H",data[1])

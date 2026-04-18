@@ -102,11 +102,3 @@ class Animation:
             tmp = pygame.Surface.copy(img)
             tmp.fill((255,102,85),special_flags=pygame.BLEND_RGB_MULT)
             return tmp
-        
-
-
-
-
-    
-
-        
