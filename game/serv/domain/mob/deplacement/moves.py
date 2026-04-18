@@ -92,6 +92,12 @@ class Movable:
 
             remaining -= self.base_movement
 
+        #self.go_up_while_touch_strong(map)
+
+    #def go_up_while_touch_strong(self,map):
+    #    while self.touch_type(-(self.half_height+self.base_movement),0,map,map.cannot_be_inside) :
+    #        self.pos_y-=self.base_movement
+
         #return self.pos_y - pos_before
 
     def collision_x(self,map,dt,vx):

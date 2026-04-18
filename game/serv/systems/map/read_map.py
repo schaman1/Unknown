@@ -8,12 +8,14 @@ class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
     def __init__(self):
 
-        self.type = {"EMPTY": 0, "FIRE": 1, "STONE": 2, "GRASS": 3, "WOOD": 4, "SAND":5, "LADDER":6, "WATER" : 7, "EXPLO": 8}
+        self.type = {"EMPTY": 0, "STONE": 2, "WOOD": 3, "SAND": 4, "POUTRE":5, "LADDER":6, "WATER" : 7, "EXPLO": 8}
         self.dur = [self.type["STONE"],self.type["SAND"]] #Peut pas le passer du tout
-        self.vide = [self.type["EMPTY"],self.type["FIRE"]] #Le min et le max
+        self.vide = [self.type["EMPTY"],self.type["EMPTY"]] #Le min et le max
         self.liquid = [self.type["EXPLO"],self.type["WATER"]] #Le min et le max
         self.can_climb = [self.type["LADDER"],self.type["LADDER"]]
         self.dur_and_can_climb = [self.type["STONE"],self.type["LADDER"]]
+
+        self.cannot_be_inside = [self.type["POUTRE"],self.type["POUTRE"]]
 
         self.map_chunk = []
         self.scale = SCALE_BLOC
@@ -83,12 +85,16 @@ class Read_map:
         grid_pixels = np.repeat(grid_pixels, self.scale, axis=0)
         grid_pixels = np.repeat(grid_pixels, self.scale, axis=1)
 
+        h, w, _ = grid_pixels.shape
+        y, x = np.indices((h, w))
+
         #mask_sand = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 255) & (grid_pixels[:, :, 2] == 0)
         #mask_water = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 255)
         #mask_wood = (grid_pixels[:, :, 0] == 0) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         #mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_stone = (grid_pixels[:, :, 0] == 108) & (grid_pixels[:, :, 1] == 143) & (grid_pixels[:, :, 2] == 29)
         mask_ladder = (grid_pixels[:, :, 0] == 207) & (grid_pixels[:, :, 1] == 128) & (grid_pixels[:, :, 2] == 94)
+        mask_poutre = (grid_pixels[:, :, 0] == 190) & (grid_pixels[:, :, 1] == 74) & (grid_pixels[:, :, 2] == 47) & (y%self.scale==0)
         #mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
 
         #grid_type[mask_sand] = self.type["SAND"]
@@ -97,6 +103,7 @@ class Read_map:
         #grid_type[mask_fire] = self.type["FIRE"]
         grid_type[mask_stone] = self.type["STONE"]
         grid_type[mask_ladder] = self.type["LADDER"]
+        grid_type[mask_poutre] = self.type["POUTRE"]
 
         #grid_type[mask_explo] = self.type["EXPLO"]
 

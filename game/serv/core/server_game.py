@@ -16,9 +16,8 @@ class Server_game(Server) :
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
 
-        self.send_pos_every_x_frame = 3
+        self.send_pos_every_x_frame = fps.FPS_SERVER//fps.FPS_SEND_POS_CLIENT
         self.count_send_pos = 0
-
 
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
 
