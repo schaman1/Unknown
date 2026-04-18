@@ -1,4 +1,4 @@
-from shared.constants import world
+from shared.constants import world,fps
 from client.domain.mob.mob_animation import Animation
 import time
 
@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = [(0,0,0),(0,0,0)]  #x,y,time
-        self.delay = 0.05
+        self.delay = 1/fps.FPS_SEND_POS_CLIENT
         
         self.life=100
         self.max_life = 100
@@ -64,11 +64,13 @@ class Mob:
         
         alpha = (time_now-self.interpolate_mov[0][2])/(div)
 
+        #alpha = 1
+
         #print(alpha,time_now-self.interpolate_mov["old time"],self.interpolate_mov["new time"]-self.interpolate_mov["old time"])
         #print(self.interpolate_mov,time_now)
 
-        self.pos_x = int((1-alpha)*self.interpolate_mov[0][0] + alpha*self.interpolate_mov[1][0])
-        self.pos_y = int((1-alpha)*self.interpolate_mov[0][1] + alpha*self.interpolate_mov[1][1])
+        self.pos_x = round((1-alpha)*self.interpolate_mov[0][0] + (alpha*self.interpolate_mov[1][0]))
+        self.pos_y = round((1-alpha)*self.interpolate_mov[0][1] + (alpha*self.interpolate_mov[1][1]))
 
     def move_mob(self,new_pos):
 
