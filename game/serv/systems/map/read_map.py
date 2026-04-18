@@ -8,14 +8,14 @@ class Read_map:
     """Contient toute la physique des particules du jeu !!!! Pas plus d'explication mais il faudrait faire des sous fonctions"""
     def __init__(self):
 
-        self.type = {"EMPTY": 0, "STONE": 2, "WOOD": 3, "SAND": 4, "POUTRE":5, "LADDER":6, "WATER" : 7, "EXPLO": 8}
+        self.type = {"EMPTY": 0, "LAVE":1,"STONE": 2, "WOOD": 3, "SAND": 4, "POUTRE":5, "LADDER":6, "WATER" : 7, "EXPLO": 8}
         self.dur = [self.type["STONE"],self.type["SAND"]] #Peut pas le passer du tout
         self.vide = [self.type["EMPTY"],self.type["EMPTY"]] #Le min et le max
         self.liquid = [self.type["EXPLO"],self.type["WATER"]] #Le min et le max
         self.can_climb = [self.type["LADDER"],self.type["LADDER"]]
         self.dur_and_can_climb = [self.type["STONE"],self.type["LADDER"]]
 
-        self.cannot_be_inside = [self.type["POUTRE"],self.type["POUTRE"]]
+        self.kill = [self.type["LAVE"],self.type["LAVE"]]
 
         self.map_chunk = []
         self.scale = SCALE_BLOC
@@ -94,6 +94,7 @@ class Read_map:
         #mask_fire = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_stone = (grid_pixels[:, :, 0] == 108) & (grid_pixels[:, :, 1] == 143) & (grid_pixels[:, :, 2] == 29)
         mask_ladder = (grid_pixels[:, :, 0] == 207) & (grid_pixels[:, :, 1] == 128) & (grid_pixels[:, :, 2] == 94)
+        mask_lave = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 0) & (grid_pixels[:, :, 2] == 0)
         mask_poutre = (grid_pixels[:, :, 0] == 190) & (grid_pixels[:, :, 1] == 74) & (grid_pixels[:, :, 2] == 47) & (y%self.scale==0)
         #mask_explo = (grid_pixels[:, :, 0] == 255) & (grid_pixels[:, :, 1] == 127) & (grid_pixels[:, :, 1] == 127)
 
@@ -104,6 +105,7 @@ class Read_map:
         grid_type[mask_stone] = self.type["STONE"]
         grid_type[mask_ladder] = self.type["LADDER"]
         grid_type[mask_poutre] = self.type["POUTRE"]
+        grid_type[mask_lave]=self.type["LAVE"]
 
         #grid_type[mask_explo] = self.type["EXPLO"]
 

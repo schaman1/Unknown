@@ -48,3 +48,12 @@ class Mob(Movable):
             self.life = 10
 
         self.send_new_life = True
+
+    def check_if_touch_damage_obj(self,map,dt):
+        """Take damage. If stay 0.5 sec, die"""
+
+        if self.touch_element(map,map.kill):
+
+            damage = int(self.max_life*dt)*2
+
+            self.take_damage(damage)

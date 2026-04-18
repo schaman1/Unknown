@@ -98,6 +98,8 @@ class Player(Mob) :
 
         self.update_vitesse(dt)
 
+        self.check_if_touch_damage_obj(map,dt)
+
         return delta
     
     def handle_input(self,map,dt):
