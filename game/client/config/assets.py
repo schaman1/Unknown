@@ -33,6 +33,8 @@ SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 
+PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
+
 PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
 
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
