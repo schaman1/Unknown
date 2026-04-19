@@ -1,6 +1,6 @@
 from shared.constants.world import RATIO
 
-LIFE_FIRE = 10
+LIFE_FIRE = 2
 V_FIRE = 50 * RATIO #Bouge de 20 cellules par secondes
 WIDTH_FIRE = 1*RATIO
 HEIGHT_FIRE = 1*RATIO
@@ -16,7 +16,7 @@ REBOND_MAGIC = False
 DAMAGE_MAGIC = 5
 WEIGHT_MAGIC = 255
 
-LUNE_LIFE = 0.2
+LUNE_LIFE = 0.1
 LUNE_V = 0
 LUNE_WIDTH = 4*RATIO
 LUNE_HEIGHT = 4*RATIO

@@ -28,7 +28,7 @@ class DefaultExplosion:
 
         if projectile.id_img == 1 :
 
-            self.time_remaining = 0.3+time.perf_counter()
+            self.time_remaining = 0.2+time.perf_counter()
 
             for i in range(4):
                 self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
@@ -50,7 +50,7 @@ class DefaultExplosion:
 
         elif projectile.id_img >=3:
 
-            self.time_remaining=0.2+time.perf_counter()
+            self.time_remaining=0.1+time.perf_counter()
 
             self.width,self.height = projectile.width,projectile.height
             Imgs = projectile.imgs

@@ -29,6 +29,7 @@ SPELLS[0]=None #POS 0
 SPELLS[1]=resource_path("assets/sprites/projectile/projectile_1_0.png") #Pos 1
 SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
+SPELLS[20] = resource_path("assets/sprites/projectile/projectile_20_0.png")
 SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
 SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
 

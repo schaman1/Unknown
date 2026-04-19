@@ -8,10 +8,11 @@ class UpgradeHandler:
 
         for event in events_player :
 
-            if event[0]==40 :
+            if event[0]>=40 and event[0]<50:
 
                 player.start_dash()
 
+    
             self.id_event_player_do.append(event)
 
     def trigger_event_on_player(self,player,dt,map):
@@ -23,7 +24,7 @@ class UpgradeHandler:
 
             id = self.id_event_player_do[i][0]
 
-            if id==40:
+            if id>=40 and id<50:
                 
                 res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
 
