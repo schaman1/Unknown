@@ -37,9 +37,11 @@ class Mob:
         return nbr//self.base_movement
     
     def update_life(self,amount):
-        self.animation.damage = True
-        self.animation.animation["damage"]["duree"] = self.animation.animation["damage"]["time"]
-        self.life = amount
+
+        if amount!=self.life :
+
+            self.animation.update_color(self.life-amount)
+            self.life = amount
 
     def update_interpolate_pos(self):
         

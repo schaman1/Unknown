@@ -148,6 +148,7 @@ class Server_game(Server) :
                 self.projectile_manager.add_projectile_create(projectile)
 
     def add_object(self,type,id_categorie,pos_x,pos_y,price=0):
+        """Create object + id_categorie = id du sous type genre spell, id=1 -> = bdf / 40 = dash"""
 
         chunk = self.convert_to_chunk(pos_x,pos_y)
 
@@ -165,7 +166,7 @@ class Server_game(Server) :
         
     def add_elements_to_game(self):
 
-        self.add_object("SPELL",1,5511,17500,10)
+        self.add_object("HEALER",1,5511,17500,0)
 
     def trigger(self,chunk,id,sender):
         
@@ -183,6 +184,10 @@ class Server_game(Server) :
                 self.send_data_all([16,chunk,id]) #Destroy
 
                 self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)
+
+            elif action=="Heal":
+
+                self.lClient[sender].heal_respawn(element)
 
     def throw_spell(self,id_weapon,id_spell,sender):
 

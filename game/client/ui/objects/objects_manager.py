@@ -1,6 +1,6 @@
 from shared.constants import world
 #from client.config.size_display import CELL_SIZE
-from client.ui.objects.spell_on_ground import spell_on_ground
+from client.ui.objects.object_type import spell_on_ground,healer_spawn
 import pygame
 import math
 
@@ -31,6 +31,14 @@ class objects_manager:
             pos_x,pos_y = self.convert_pos(pos_x,pos_y)
 
             self.chunk_objects[chunk][id] = spell_on_ground(img,pos_x,pos_y,price)
+
+
+        elif type==world.TYPE_OBJECT["HEALER"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = healer_spawn(img,pos_x,pos_y,price)
+
 
     def destroy_object(self,chunk,id):
 

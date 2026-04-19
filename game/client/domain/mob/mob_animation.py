@@ -13,10 +13,15 @@ class Animation:
                                   "time":0.2},
                             "damage":{"duree":0.2,
                                       "time":0.2}}
+
+
         self.state = "idle"
         self.direction = "right"
 
         self.damage = False
+        self.red = (255,102,85)
+        self.green = (85,255,102)
+        self.color_take_damage = self.red
 
         self.width = width*cell_size*2
         self.height = height*cell_size*2
@@ -100,5 +105,16 @@ class Animation:
                 self.animation["damage"]["duree"] = self.animation["damage"]["time"]
 
             tmp = pygame.Surface.copy(img)
-            tmp.fill((255,102,85),special_flags=pygame.BLEND_RGB_MULT)
+            tmp.fill(self.color_take_damage,special_flags=pygame.BLEND_RGB_MULT)
             return tmp
+        
+    def update_color(self,delta):
+
+        self.damage = True
+
+        if delta>=0 :
+            self.color_take_damage = self.red
+        else :
+            self.color_take_damage = self.green
+
+        self.animation["damage"]["duree"] = self.animation["damage"]["time"]

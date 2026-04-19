@@ -19,5 +19,6 @@ LEN_Y_CHUNK = 4
 NBRWEAPONSTOCK = 4
 
 TYPE_OBJECT = {
-    "SPELL":0
+    "SPELL":0,
+    "HEALER":1
 }

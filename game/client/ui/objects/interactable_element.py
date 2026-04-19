@@ -31,8 +31,7 @@ class interactable:
             pos = pos_object[0]+self.size_img[0]//2 - size_text[0]//2,pos_object[1]+self.size_img[1]
 
             screen.blit(self.text_price,pos)
-
-
+            
     def init_img(self,path):
         self.img = pygame.image.load(path)
         self.img = pygame.transform.scale(self.img,self.size_img)
