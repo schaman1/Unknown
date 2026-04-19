@@ -42,7 +42,11 @@ class Main:
         self.musique = Musique()
 
     def set_CELL_SIZE(self,screen_size):
-        size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
+        #size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
+        puissance = 1
+        while 2**puissance*size.nbr_cell_see_y<self.screenSize[1] :
+            puissance+=1
+        size.CELL_SIZE = 2**(puissance-1)
 
     def run(self):
         """Ce qui est run à chaque itérations"""
@@ -256,7 +260,6 @@ class Main:
         pygame.quit()
 
     def start_game(self):
-
         threading.Thread(target=self.Server.start_game, daemon=True).start()
 
     def connect_serv(self):
@@ -278,27 +281,9 @@ class Main:
     def key_event(self):
 
         key = pygame.key.get_pressed()
-        buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
-        is_looking = None
-        dt_send = int(self.dt*1000)
-
-        #if key[pygame.K_z] :
-        #    self.client.send_data(id=3,data=[0,dt_send]) #lié au serveur les données/haut
-        #    is_looking=1
-#
-        #if key[pygame.K_s] :
-        #    self.client.send_data(id=3,data=[1,dt_send]) #lié au serveur les données/bas
-        #    is_looking=3
-#
-        #if key[pygame.K_d] :
-        #    self.client.send_data(id=3,data=[3,dt_send]) #lié au serveur les données /right
-        #    is_looking=0
-#
-        #if key[pygame.K_q] :
-        #    self.client.send_data(id=3,data=[2,dt_send]) #lié au serveur les données/gauche
-        #    is_looking=2
-#
-        #self.state.game.player_all.me.update_direction_look(is_looking)
+        #buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
+        #is_looking = None
+        #dt_send = int(self.dt*1000)
 
         if key[pygame.K_j] :
             self.state.game.shot(1)
@@ -337,12 +322,6 @@ class Main:
             id = input[0]
 
             self.client.send_data(id=id,data=input[1:])
-
-            #if id==4 :
-            #
-            #elif id == 3 :
-            #    #print(f"Send, {input[1:]}")
-            #    self.client.send_data(id=id,data=input[1:])
 
         self.state.game.player_command.clear()
         self.key_command.clear()

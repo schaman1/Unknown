@@ -5,6 +5,8 @@ class CollisionHandler:
     def __init__(self):
         self.effect_send = []
 
+        self.ent_touch = {}
+
     def trigger_collision(self,mobs,players,projectiles):
 
         for chunk,l_projectile in projectiles.items() : 
@@ -19,7 +21,7 @@ class CollisionHandler:
 
                         if touch :
                             #print("Player touch")
-                            self.handle_touch(projectile,player,99)
+                            self.player_take_damage(projectile,player)
                         
                 if projectile.team!=Team.Mob:
 
@@ -30,8 +32,10 @@ class CollisionHandler:
 
                         if touch :
                             #print("Mob touch")
+                            #self.add_ent_touch(mob,projectile.damage)
                             self.handle_touch(projectile,mob,chunk)
 
+        self.trigger_ent_touch()
 
     def collision(self,ent1,ent2):
 
@@ -64,12 +68,39 @@ class CollisionHandler:
                 return True
         
         return False
+    
+    def player_take_damage(self,projectile,player,chunk=99):
 
-    def handle_touch(self,projectile,ent,chunk):
-        old_pv = ent.life
-        ent.take_damage(projectile.damage)
-        delta_life = old_pv-ent.life
-
-        self.effect_send.append([ent.id,delta_life,chunk])
+        old_pv = player.life
+        player.take_damage(projectile.damage)
+        delta_life = old_pv-player.life
+        
+        self.effect_send.append([player.id,delta_life,chunk])
 
         projectile.is_dead = True
+    
+    def add_ent_touch(self,ent,damage,chunk):
+
+        if ent.id in self.ent_touch :
+            self.ent_touch[ent.id][0]+=damage
+
+        else :
+            self.ent_touch[ent.id] = [damage,chunk,ent]
+
+    def handle_touch(self,projectile,ent,chunk):
+
+        self.add_ent_touch(ent,projectile.damage,chunk)
+
+        projectile.is_dead = True
+
+    def trigger_ent_touch(self):
+
+        for ent_id,(damage,chunk,ent) in self.ent_touch.items():
+
+            old_pv = ent.life
+            ent.take_damage(damage)
+            delta_life = old_pv-ent.life
+            
+            self.effect_send.append([ent.id,delta_life,chunk])
+
+        self.ent_touch.clear()

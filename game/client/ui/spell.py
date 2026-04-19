@@ -3,7 +3,7 @@ import pygame
 
 class Spell:
 
-    def __init__(self,id,x,y,idx_weapon,idx_spell):
+    def __init__(self,id,x,y,idx_weapon,idx_spell,icone_size):
 
         self.pos_x = x
         self.pos_y = y
@@ -14,7 +14,7 @@ class Spell:
 
         self.blit_icone = True
 
-        self.icone_size=size.CELL_SIZE*4
+        self.icone_size=icone_size
 
         self.icone_spell = pygame.image.load(assets.ICONE_SPELL).convert_alpha()
         self.icone_spell = pygame.transform.scale(self.icone_spell,(self.icone_size,self.icone_size))

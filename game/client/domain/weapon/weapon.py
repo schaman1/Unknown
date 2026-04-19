@@ -14,7 +14,7 @@ class Weapon :
         self.frame_weapon = []
         self.spells_id = spells_id
         self.nbr_spell_stock=len(self.spells_id)
-        self.icone_size=size.CELL_SIZE*4
+        self.icone_size=size.CELL_SIZE*6
 
         self.text_color = (250,250,250)
         self.text = text
@@ -38,20 +38,20 @@ class Weapon :
             x=self.return_posx_blit_spell(screen_size,j)
             y=self.return_posy_blit_weapon(screen_size,idx)
             y_padding = y+0.25*self.icone_size
-            self.spells[j]=Spell(id,x,y_padding,idx,j)
+            self.spells[j]=Spell(id,x,y_padding,idx,j,self.icone_size)
 
     def add_spell(self,id_spell,pos_spell):
 
         x=self.return_posx_blit_spell(self.screen_size,pos_spell)
         y=self.return_posy_blit_weapon(self.screen_size,self.idx)
         y_padding = y+0.25*self.icone_size
-        self.spells[pos_spell]=Spell(id_spell,x,y_padding,self.idx,pos_spell)
+        self.spells[pos_spell]=Spell(id_spell,x,y_padding,self.idx,pos_spell,self.icone_size)
 
     def draw_spells(self,screen,screen_size,i):
 
         y = self.return_posy_blit_weapon(screen_size,i)
         
-        pygame.draw.rect( #bANDE noir
+        pygame.draw.rect( #bBande noir
             screen,
             (14,16,14),  # couleur (blanc)
             pygame.Rect(screen_size[0]//4,y, screen_size[0]//2, 1.5*self.icone_size),
