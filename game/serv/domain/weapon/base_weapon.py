@@ -130,10 +130,9 @@ class Weapon :
         if self.test_if_last_spell_of_weapon() :
             self.idx = 0
             self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill)
+            
         else :
             self.next_allowed_shot = now+self.time_spells_take
-
-        #print(projectile,event_player)
 
         return [projectile_shot,event_player]
     
