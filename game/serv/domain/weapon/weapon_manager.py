@@ -1,5 +1,5 @@
 from shared.constants.world import NBRWEAPONSTOCK
-from serv.domain.weapon.weapon1 import Weapon1,WeaponBag
+from serv.domain.weapon.weapon1 import WeaponBag,Weapon1,Weapon2,Weapon3
 
 class WeaponManager :
 
@@ -22,9 +22,19 @@ class WeaponManager :
 
         for i in range(NBRWEAPONSTOCK):
 
-            if 0==i:
+            if i==0:
 
                 self.lWeapons.append(WeaponBag(team))
+        
+            elif i==1 :
+                self.lWeapons.append(Weapon1(team))
+
+            elif i==2 :
+                self.lWeapons.append(Weapon2(team))
+            
+            elif i==3 :
+                self.lWeapons.append(Weapon3(team))
+
             else :
                 self.lWeapons.append(Weapon1(team))
 

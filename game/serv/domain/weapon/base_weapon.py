@@ -127,7 +127,8 @@ class Weapon :
 
         self.time_spells_take+=self.loading_time_spell
 
-        if self.idx==self.nbr_spells_max :
+        if self.test_if_last_spell_of_weapon() :
+            self.idx = 0
             self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill)
         else :
             self.next_allowed_shot = now+self.time_spells_take
@@ -135,3 +136,20 @@ class Weapon :
         #print(projectile,event_player)
 
         return [projectile_shot,event_player]
+    
+    def test_if_last_spell_of_weapon(self):
+        
+        i = self.idx
+
+        while i<self.nbr_spells_max and self.spells_on_shot[i] == None:
+            i+=1
+
+        return i==self.nbr_spells_max
+
+    def fill_slot(self,idx,function):
+
+        if idx >= len(self.spells_on_shot):
+            print("Unable to fill spot in weapon bcs idx tooo high")
+
+        else :
+            self.spells_on_shot[idx]=function
