@@ -66,6 +66,8 @@ class Player_you(Mob) :
         self.draw_life(screen,screen_size)
         self.draw_money(screen)
 
+        self.weapons.draw_timer_all(screen)
+
     def draw_life(self,screen,screen_size):
 
         #self.padding_life

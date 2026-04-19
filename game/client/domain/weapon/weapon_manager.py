@@ -35,17 +35,6 @@ class WeaponManager:
         #else :
         self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size,self.text_name[i])
 
-    def draw_weapon(self,screen,angle,pos_player, frame):
-
-        self.lWeapons[self.weapon_select].draw(screen,angle,pos_player,frame)
-
-    def draw_icone_weapon(self,screen,screen_size):
-
-        return #Enleve les weapon dessiné a dessus de la barre de vie
-        for i in range(len(self.lWeapons)) :
-
-            self.lWeapons[i].draw_icone(screen,screen_size,i)
-
     def draw_spells(self,screen,screen_size):
 
         for j in range(len(self.lWeapons)) :
@@ -61,7 +50,11 @@ class WeaponManager:
 
     def update_next_allowed_shot(self,delta_time,id_weapon):
 
-        self.next_allowed_shot[id_weapon] = time.perf_counter()+delta_time/1000
+        now = time.perf_counter()
+
+        self.next_allowed_shot[id_weapon] = now+delta_time/1000
+
+        self.lWeapons[id_weapon].timer.update_delta_time(now,delta_time/1000)
 
     def shot(self,id_key):
 
@@ -134,3 +127,8 @@ class WeaponManager:
         self.spell_hold.blit_icone = True
         self.spell_hold=None
             
+    def draw_timer_all(self,screen):
+        
+        for weapon in self.lWeapons :
+
+            weapon.draw_timer(screen,time.perf_counter())
