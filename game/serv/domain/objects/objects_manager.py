@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.objects.spell_on_ground import spell_on_ground
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn
 
 class objects_manager:
 
@@ -35,6 +35,14 @@ class objects_manager:
 
             return id,ele
         
+        elif ele_idx=="HEALER":
+
+            ele = healer_respawn(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
         else :
             print("Unknown type in add_object")
             return None
@@ -51,8 +59,9 @@ class objects_manager:
 
             player.update_money(-element.price)
 
-            self.destroy_object(chunk,id)
+            if element.unique_use :
+                self.destroy_object(chunk,id)
 
-            return "AddToInventaire",chunk,id,element
+            return element.trigger_value,chunk,id,element
 
 

@@ -1,5 +1,5 @@
 from serv.domain.mob.mob import Mob
-import math
+import math,time
 
 class Monster(Mob):
     def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None):
@@ -8,6 +8,9 @@ class Monster(Mob):
 
         self.hp = hp
         self.damage = damage
+
+        self.len_dead = 5
+        self.start_dead = 0
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
@@ -62,6 +65,36 @@ class Monster(Mob):
                 # Attaquer le joueur
                  self.attack(target)
 
+    def take_damage(self, amount):
+
+        if amount!=0 :
+
+            self.life -= amount
+            if self.life < 0:
+                self.life = 0
+                self.die()
+
+            self.send_new_life = True
+
+    def die(self):
+
+        self.dead = True
+        self.start_dead = time.perf_counter()
+
+    def still_dead(self):
+
+        if not self.dead :
+            return False
+
+        if self.start_dead+self.len_dead < time.perf_counter():
+            self.respawn()
+
+        return self.dead
+
+    def respawn(self):
+        self.dead = False
+        self.full_heal()
+
     # --- Déplacement pour gestion des collisions ---
 
     # Vérifie si une cellule est bloquante (dure ou liquide)
@@ -83,6 +116,7 @@ class Monster(Mob):
 #Creation d'un monstre spécifique : le squelette
 
 class Skeleton(Monster):
+
     def __init__(self, x, y, id):
         super().__init__(hp=50, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id)
 
@@ -104,6 +138,9 @@ class Skeleton(Monster):
         self.idle_stuck = 0
 
     def update(self, map, lPlayer,dt):
+
+        if self.still_dead():
+            return
         
         super().update(map,lPlayer)
        # --- Deplacement selon l'état ---

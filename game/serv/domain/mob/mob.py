@@ -34,20 +34,14 @@ class Mob(Movable):
         self.send_new_life = False
         self.id = id
         self.team = team
+        self.dead = False
 
     def send_life(self):
         self.send_new_life = False
         return self.life,self.id
-        
+
     def return_pos(self):
         return [self.pos_x,self.pos_y]
-    
-    def take_damage(self, amount):
-        self.life -= amount
-        if self.life < 10:
-            self.life = 10
-
-        self.send_new_life = True
 
     def check_if_touch_damage_obj(self,map,dt):
         """Take damage. If stay 0.5 sec, die"""
@@ -57,3 +51,9 @@ class Mob(Movable):
             damage = int(self.max_life*dt)*2
 
             self.take_damage(damage)
+
+    def full_heal(self):
+
+        if self.life != self.max_life :
+            self.life = self.max_life
+            self.send_new_life = True

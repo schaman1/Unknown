@@ -14,7 +14,6 @@ class Player(Mob) :
 
         super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player)
 
-        self.hp = hp
         self.money = money
         self.send_new_money = True #Pour initialiser
 
@@ -30,6 +29,21 @@ class Player(Mob) :
         self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
+        self.respawn_at = [0,0]
+
+    def take_damage(self, amount):
+
+        if amount!=0 :
+
+            self.life -= amount
+            if self.life < 0:
+                self.life = 0
+                self.die()
+
+            self.send_new_life = True
+
+    def die(self):
+        pass
 
     def can_pick_spell(self):
 
@@ -80,11 +94,6 @@ class Player(Mob) :
         if self.vitesse_x*s<self.acceleration:
             self.vitesse_x = 0
         else :
-            #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
-            #if self.smooth_jump.is_falling :
-                #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
-            #if not self.smooth_jump.is_falling :
-                #delta = self.vitesse_x*0.92 - self.vitesse_x
 
             self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
 
@@ -249,3 +258,13 @@ class Player(Mob) :
         spell_id = self.weapons.lWeapons[id_weapon].del_spell(id_spell)
 
         return spell_id
+
+    def heal_respawn(self,element):
+
+        self.full_heal()
+
+        self.set_respawn_point(element)
+
+    def set_respawn_point(self,element):
+
+        self.respawn_at = [element.pos_x,element.pos_y]
