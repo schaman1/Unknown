@@ -1,6 +1,7 @@
 import pygame
 from client.config import size_display as size
 from client.config.display_text import FONT_SMALL
+from client.domain.weapon.timer_spell import Timer
 from client.ui.spell import Spell
 
 class Weapon :
@@ -19,26 +20,13 @@ class Weapon :
         self.text = text
         self.text_blit = FONT_SMALL.render(str(text),True, self.text_color)
 
-        #for i in range(4):
-        #    img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-        #    img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*size.CELL_SIZE,weapon.WIDTH_WEAPON1*size.CELL_SIZE))
-        #    self.frame_weapon.append(img_weapon)
-#
-        #for i in range(2, 0, -1):
-        #    img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-        #    img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*size.CELL_SIZE,weapon.WIDTH_WEAPON1*size.CELL_SIZE))
-        #    self.frame_weapon.append(img_weapon)
-
-        #self.icone_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-        #self.icone_weapon = pygame.transform.scale(self.icone_weapon,(self.icone_size,self.icone_size))
-
-        #self.icone_spell = pygame.image.load(assets.ICONE_SPELL).convert_alpha()
-        #self.icone_spell = pygame.transform.scale(self.icone_spell,(self.icone_size,self.icone_size))
-
         #self.imgs_spells = [None for _ in range(self.nbr_spell_stock)]
         self.spells=[None for _ in range(self.nbr_spell_stock)]
         #print(self.spells_id,"nbr max")
         self.load_spells(idx,screen_size)
+
+        self.timer = Timer(idx,screen_size,text)
+
         self.screen_size = screen_size
 
     def load_spells(self,idx,screen_size):
@@ -52,27 +40,6 @@ class Weapon :
             y_padding = y+0.25*self.icone_size
             self.spells[j]=Spell(id,x,y_padding,idx,j)
 
-    #def draw(self,screen,angle,pos_player, frame):
-    #    '''modifie l'orientation de l'arme en fonction de l'angle de la souris'''
-    #    fr_weapon = self.frame_weapon[frame%6]
-    #    rotated_img = pygame.transform.rotate(fr_weapon, angle)
-    #    rotated_polish = rotated_img.get_rect(center = pos_player)
-    #    screen.blit(rotated_img, rotated_polish.topleft)
-
-    #def draw_icone(self,screen,screen_size,i):
-#
-    #    pos=(screen_size[0]//4+(4*i+1)*size.CELL_SIZE,screen_size[1]*0.80)
-
-        #screen.blit(self.icone_spell,pos)
-
-        #pygame.draw.rect( #Pour voir où le perso est en temps reel
-        #    screen,
-        #    (14,16,14),  # couleur (blanc)
-        #    pygame.Rect(screen_size[0]//4+(4*i+1)*size.CELL_SIZE,screen_size[1]*0.80, self.icone_size, self.icone_size),
-        #)
-
-       # screen.blit(self.icone_weapon,(screen_size[0]//4+(4*i+1)*size.CELL_SIZE,screen_size[1]*0.80))
-    
     def add_spell(self,id_spell,pos_spell):
 
         x=self.return_posx_blit_spell(self.screen_size,pos_spell)
@@ -118,3 +85,8 @@ class Weapon :
         padding = screen_size[0]/50
 
         return screen_size[0]//4 + padding + self.icone_size * i
+    
+
+    def draw_timer(self,screen,time):
+
+        self.timer.draw(screen,time)
