@@ -111,7 +111,19 @@ class SmallDash(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=40,time_take=0.1)
+        super().__init__(id=40,time_take=1)
+        self.time_dash_take = 0.1
+        self.distance_dash = 5*self.ratio
+
+    def trigger(self,weapon):
+
+        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
+    
+class LongDash(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=41,time_take=1)
         self.time_dash_take = 0.1
         self.distance_dash = 10*self.ratio
 
