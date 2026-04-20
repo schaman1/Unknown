@@ -100,7 +100,8 @@ class CollisionHandler:
             old_pv = ent.life
             ent.take_damage(damage)
             delta_life = old_pv-ent.life
-            
-            self.effect_send.append([ent.id,delta_life,chunk])
+
+            if delta_life!=0:
+                self.effect_send.append([ent.id,delta_life,chunk])
 
         self.ent_touch.clear()

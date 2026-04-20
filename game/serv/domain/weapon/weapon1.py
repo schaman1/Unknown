@@ -67,6 +67,7 @@ class Weapon1(Weapon) :
     def init_slot(self):
         self.fill_slot(0,upgrades.SmallDash())
         self.fill_slot(1,upgrades.LongDash())
+        #self.fill_slot(2,upgrades.LongDash())
         #self.fill_slot(2,upgrades.CreateFire())
 
 class Weapon2(Weapon) :

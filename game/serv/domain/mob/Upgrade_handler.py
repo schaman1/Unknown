@@ -4,6 +4,8 @@ class UpgradeHandler:
         
         self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
+        self.distance_dash = [0,0]
+
     def add_event(self,events_player,player):
 
         for event in events_player :
@@ -16,9 +18,6 @@ class UpgradeHandler:
             self.id_event_player_do.append(event)
 
     def trigger_event_on_player(self,player,dt,map):
-        
-        #if len(list_events)!=0:
-        #    print(list_events)
 
         for i in range(len(self.id_event_player_do)-1,-1,-1) :
 
@@ -35,6 +34,8 @@ class UpgradeHandler:
             if res==False :
                 self.id_event_player_do.pop(i)
 
+        self.dash_player(player)
+
     def trigger_dash(self,event,player,dt,map):
                 
         delta_time,time_base,distance,angle=event[1]
@@ -46,14 +47,24 @@ class UpgradeHandler:
 
         if delta_time>time_base:
 
-            trunca_dt = time_base-(delta_time-dt)
+            #trunca_dt = time_base-delta_time
+            #alpha = trunca_dt/dt
 
-            player.dash(map,trunca_dt,distance)
+            #print(alpha,dt,trunca_dt,distance,delta_time,time_base)
+
+            #distance[0] = distance[0]*trunca_dt/dt
+            #distance[1] = distance[1]*trunca_dt/dt
+
+            #self.distance_dash[0]+=distance[0]
+            #self.distance_dash[1]+=distance[1]
+
             player.stop_dash()
             return False
         
         else :
-            player.dash(map,dt,distance)
+
+            self.distance_dash[0]+=distance[0]
+            self.distance_dash[1]+=distance[1]
 
             #if angle==90: #Y did i do that ???
             #    player.vitesse_y = 0
@@ -65,15 +76,20 @@ class UpgradeHandler:
         """return un couple de dist a faire en fonction de l'angle choisis, x/y"""
 
         if angle==0:
-            return (dist,0)
+            return [dist,0]
         
         elif angle==2*90:
-            return (-dist,0)
+            return [-dist,0]
         
         elif angle==1*90:
-            return (0,-dist)
-        
+            return [0,-dist]        
         else :
-            return(0,dist)
+            return[0,dist]
                     
+    def reset_distance_dash(self):
+        self.distance_dash = [0,0]
 
+    def dash_player(self,player):
+
+        player.dash(self.distance_dash)
+        self.reset_distance_dash()

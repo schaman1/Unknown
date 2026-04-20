@@ -337,14 +337,16 @@ class Movable:
         else:
             self.is_climbing = False
 
-    def dash(self,map,dt,v):
+    def dash(self,v):
         """Now dash update the speed"""
 
         #if self.vitesse_y<0 : #Test pour améliorer le feeling
         #    self.vitesse_y = 0
 
-        self.vitesse_x = v[0]
-        self.vitesse_y = v[1]
+        if v[0]!=0 :
+            self.vitesse_x = v[0]
+        if v[1]!=0 :
+            self.vitesse_y = v[1]
 
     def stop_dash(self):
 
