@@ -45,7 +45,7 @@ class WeaponBag(Weapon):
 
     def init_slot(self):
 
-        self.fill_slot(0,upgrades.DoubleSpell())
+        self.fill_slot(0,upgrades.TripleSpell())
         #self.fill_slot(1,upgrades.CreateFire())
         #self.fill_slot(2,upgrades.CreateMagic())
 

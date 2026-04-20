@@ -84,7 +84,17 @@ class DoubleSpell(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 20,time_take=0.1)
+        super().__init__(id = 20,time_take=0)
+
+    def trigger(self,weapon):
+
+        return -1,None,None #Done un slot de plus de disponible
+    
+class TripleSpell(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 21,time_take=0)
 
     def trigger(self,weapon):
 
@@ -151,5 +161,6 @@ UPGRADES[3] = CreateLune()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[20] = DoubleSpell()
+UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[40] = SmallDash()
