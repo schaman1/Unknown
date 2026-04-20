@@ -43,7 +43,12 @@ class Player(Mob) :
             self.send_new_life = True
 
     def die(self):
-        pass
+        self.respawn()
+        self.update_money(-50)
+
+    def respawn(self):
+        self.pos_x = self.respawn_at[0]
+        self.pos_y = self.respawn_at[1]
 
     def can_pick_spell(self):
 
@@ -207,9 +212,13 @@ class Player(Mob) :
     
     def update_money(self, amount):
 
+        old_money = self.money
         self.money+= amount
 
-        if amount!=0 :
+        if self.money<0:
+            self.money = 0
+
+        if self.money-old_money!=0 :
 
             self.send_new_money = True
     
