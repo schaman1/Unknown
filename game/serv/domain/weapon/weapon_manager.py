@@ -3,14 +3,14 @@ from serv.domain.weapon.weapon1 import WeaponBag,Weapon1,Weapon2,Weapon3
 
 class WeaponManager :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         self.lWeapons = []
         #self.bag = WeaponBag()
 
         self.weapon_select = 1
 
-        self.init_lWeapons(team)
+        self.init_lWeapons(team,player)
 
     def bag_not_full(self):
         return self.lWeapons[0].not_full()
@@ -18,25 +18,25 @@ class WeaponManager :
     def add_spell(self,id,id_weapon):
         return self.lWeapons[id_weapon].add_spell(id)
 
-    def init_lWeapons(self,team):
+    def init_lWeapons(self,team,player):
 
         for i in range(NBRWEAPONSTOCK):
 
             if i==0:
 
-                self.lWeapons.append(WeaponBag(team))
+                self.lWeapons.append(WeaponBag(team,player))
         
             elif i==1 :
-                self.lWeapons.append(Weapon1(team))
+                self.lWeapons.append(Weapon1(team,player))
 
             elif i==2 :
-                self.lWeapons.append(Weapon2(team))
+                self.lWeapons.append(Weapon2(team,player))
             
             elif i==3 :
-                self.lWeapons.append(Weapon3(team))
+                self.lWeapons.append(Weapon3(team,player))
 
             else :
-                self.lWeapons.append(Weapon1(team))
+                self.lWeapons.append(Weapon1(team,player))
 
     def return_all_weapon(self):
 

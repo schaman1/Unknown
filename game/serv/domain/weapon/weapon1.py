@@ -4,7 +4,7 @@ from serv.domain.weapon import upgrades
 
 class WeaponBag(Weapon):
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = 0,
@@ -12,7 +12,8 @@ class WeaponBag(Weapon):
             nbr_slot = weapons.WEAPON_BAG_NBR_SLOT,
             nbr_upgrades_trigger = 0,
             id = weapons.ID_WEAPON_BAG,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()
@@ -51,7 +52,7 @@ class WeaponBag(Weapon):
 
 class Weapon1(Weapon) :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = weapons.REFILL_TIME_WEAPON1,
@@ -59,7 +60,8 @@ class Weapon1(Weapon) :
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
             id = weapons.ID_WEAPON1,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()
@@ -72,7 +74,7 @@ class Weapon1(Weapon) :
 
 class Weapon2(Weapon) :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = weapons.REFILL_TIME_WEAPON1,
@@ -80,7 +82,8 @@ class Weapon2(Weapon) :
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
             id = weapons.ID_WEAPON1,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()
@@ -91,7 +94,7 @@ class Weapon2(Weapon) :
 
 class Weapon3(Weapon) :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = weapons.REFILL_TIME_WEAPON1,
@@ -99,7 +102,8 @@ class Weapon3(Weapon) :
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
             id = weapons.ID_WEAPON1,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()

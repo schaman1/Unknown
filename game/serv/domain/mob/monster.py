@@ -2,12 +2,13 @@ from serv.domain.mob.mob import Mob
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None):
+    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None,prime = 10):
 
         super().__init__((x,y),hp,id)
 
         self.hp = hp
         self.damage = damage
+        self.prime = prime
 
         self.len_dead = 5
         self.start_dead = 0
@@ -65,18 +66,23 @@ class Monster(Mob):
                 # Attaquer le joueur
                  self.attack(target)
 
-    def take_damage(self, amount):
+    def take_damage(self, amount,player_did_damage):
+
+        if self.dead:
+            return
 
         if amount!=0 :
 
             self.life -= amount
             if self.life < 0:
                 self.life = 0
-                self.die()
+                self.die(player_did_damage)
 
             self.send_new_life = True
 
-    def die(self):
+    def die(self,player_did_damage):
+
+        player_did_damage.update_money(self.prime)
 
         self.dead = True
         self.start_dead = time.perf_counter()
@@ -118,7 +124,7 @@ class Monster(Mob):
 class Skeleton(Monster):
 
     def __init__(self, x, y, id):
-        super().__init__(hp=50, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id)
+        super().__init__(hp=10, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
 
         self.name = 0
         

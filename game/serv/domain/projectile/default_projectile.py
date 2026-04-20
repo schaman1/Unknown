@@ -25,6 +25,8 @@ class Projectile :
         self.base_movement = RATIO 
         self.weight = weight*self.base_movement
 
+        self.owner = None
+
     def update_angle_pos(self,new_angle,new_pos):
         self.pos_x,self.pos_y=new_pos
         self.angle=new_angle
