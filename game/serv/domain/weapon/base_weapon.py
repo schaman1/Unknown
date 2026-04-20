@@ -2,12 +2,13 @@ import time
 
 class Weapon :
 
-    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team):
+    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team,player):
         
         self.loading_time_refill = refill_time
         self.loading_time_spell = spell_time
         self.team=team
         self.id = id
+        self.owner = player
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]
         self.nbr_slot = nbr_slot
@@ -84,6 +85,8 @@ class Weapon :
 
         projectile.width=int(projectile.width*self.size_mult)
         projectile.height=int(projectile.height*self.size_mult)
+
+        projectile.owner = self.owner
 
     def trigger_shot(self,angle,pos):
 

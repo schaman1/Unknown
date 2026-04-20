@@ -23,7 +23,7 @@ class Player(Mob) :
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
-        self.weapons = WeaponManager(self.team)
+        self.weapons = WeaponManager(self.team,self)
         self.upgrade_handler = UpgradeHandler()
         self.smooth_jump = smooth_jump.SmoothJump()
         self.input_handler = input_handler.InputHandler()

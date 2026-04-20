@@ -79,26 +79,26 @@ class CollisionHandler:
 
         projectile.is_dead = True
     
-    def add_ent_touch(self,ent,damage,chunk):
+    def add_ent_touch(self,ent,projectile,chunk):
 
         if ent.id in self.ent_touch :
-            self.ent_touch[ent.id][0]+=damage
+            self.ent_touch[ent.id][0]+=projectile.damage
 
         else :
-            self.ent_touch[ent.id] = [damage,chunk,ent]
+            self.ent_touch[ent.id] = [projectile.damage,projectile.owner,chunk,ent]
 
     def handle_touch(self,projectile,ent,chunk):
 
-        self.add_ent_touch(ent,projectile.damage,chunk)
+        self.add_ent_touch(ent,projectile,chunk)
 
         projectile.is_dead = True
 
     def trigger_ent_touch(self):
 
-        for ent_id,(damage,chunk,ent) in self.ent_touch.items():
+        for ent_id,(damage,owner,chunk,ent) in self.ent_touch.items():
 
             old_pv = ent.life
-            ent.take_damage(damage)
+            ent.take_damage(damage,owner)
             delta_life = old_pv-ent.life
 
             if delta_life!=0:
