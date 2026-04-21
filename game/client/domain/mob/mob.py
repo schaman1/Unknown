@@ -84,3 +84,7 @@ class Mob:
 
         #self.pos_x = new_pos[0]
         #self.pos_y = new_pos[1]
+
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree)

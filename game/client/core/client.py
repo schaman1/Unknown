@@ -122,7 +122,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -176,6 +176,9 @@ class Client:
 
             elif msg_id == 17:
                 msg_size = 1+3
+
+            elif msg_id==18:
+                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -339,6 +342,16 @@ class Client:
             id_weapon,id_spell,idx_pos = struct.unpack("!BBB",data[1:4])
 
             self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
+
+        elif id==18:
+
+            len = struct.unpack("!H", data[1:3])[0]
+
+            for i in range(len):
+
+                id,chunk,duree = struct.unpack("!HHH",data[6*i+3:6*i+9])
+                
+                self.main.state.game.kill_ent(id,chunk,duree)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

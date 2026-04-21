@@ -36,6 +36,9 @@ class Server_game(Server) :
             if len(self.collision_handler.effect_send)!=0:
                 self.send_data_all([14,self.collision_handler.effect_send])
                 self.collision_handler.effect_send.clear()
+            if len(self.collision_handler.die_send)!=0:
+                self.send_data_all([18,self.collision_handler.die_send])
+                self.collision_handler.die_send.clear()
 
             if len(return_monster)!=0 and len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)

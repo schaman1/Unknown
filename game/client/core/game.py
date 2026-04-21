@@ -273,4 +273,14 @@ class Game :
         else :
         
             return False
+        
+    def kill_ent(self,id,chunk,duree):
+        """Put the death animation on target ent"""
+
+        duree = duree/1000
     
+        if chunk==99 :
+            self.player_all.dic_players[id].kill(duree)
+
+        else :
+            self.monsters.dic_monster[chunk][id].kill(duree)
