@@ -20,13 +20,13 @@ class Monster_all :
         for (chunk, id, x, y, state) in lchunck_monsters :
             self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,state)
 
-    def blit_monster(self,monster,screen,x,y):
+    def blit_monster(self,monster,screen,x,y,dt):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
-        monster.blit(screen,x,y)
+        monster.blit(screen,x,y,dt)
     
-    def blit_all_monsters(self,screen,x,y):
+    def blit_all_monsters(self,screen,x,y,dt):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.dic_monster :
             for id_monster in self.dic_monster[pos] :
-                self.blit_monster(self.dic_monster[pos][id_monster],screen,x,y)
+                self.blit_monster(self.dic_monster[pos][id_monster],screen,x,y,dt)

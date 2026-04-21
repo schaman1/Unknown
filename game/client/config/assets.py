@@ -49,6 +49,10 @@ MONSTER_IDLE_3 = resource_path("assets/sprites/monster/idle/monster_idle_3.png")
 
 MONSTER_IDLE = [MONSTER_IDLE_1,MONSTER_IDLE_2,MONSTER_IDLE_3,MONSTER_IDLE_4]
 
+MONSTER_DIE = resource_path("assets/sprites/monster/death/tombe.png") 
+
+MONSTER_SKELETON = resource_path("assets/sprites/monster/skeleton.aseprite")
+
 PROJECTILE_0_0 = resource_path("assets/sprites/projectile/projectile_0_0.png") 
 PROJECTILE_0_1 = resource_path("assets/sprites/projectile/projectile_0_1.png") 
 PROJECTILE_0_2 = resource_path("assets/sprites/projectile/projectile_0_2.png") 

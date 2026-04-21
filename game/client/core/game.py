@@ -100,8 +100,8 @@ class Game :
         if not self.blit_info:
             self.player_command.append(self.player_all.me.shot(id_key))
 
-    def blit_monsters(self,screen,x,y):
-        self.monsters.blit_all_monsters(screen,x,y)
+    def blit_monsters(self,screen,x,y,dt):
+        self.monsters.blit_all_monsters(screen,x,y,dt)
 
     def blit_players(self,screen,x,y,dt):
         self.player_all.blit_players(screen,x,y,dt)
@@ -142,7 +142,7 @@ class Game :
 
         self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
         self.blit_pnj(screen,x,y,dt)
-        self.blit_monsters(screen,x,y)
+        self.blit_monsters(screen,x,y,dt)
         self.blit_players(screen,x,y,dt)
 
         self.blit_projectiles_explosions(screen,x,y,dt)
