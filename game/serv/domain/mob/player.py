@@ -29,7 +29,7 @@ class Player(Mob) :
         self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
-        self.respawn_at = [0,0]
+        self.respawn_at = [self.pos_x,self.pos_y]
 
     def take_damage(self, amount):
 
@@ -47,8 +47,10 @@ class Player(Mob) :
         self.update_money(-50)
 
     def respawn(self):
+        #print("Respown location",self.respawn_at)
         self.pos_x = self.respawn_at[0]
         self.pos_y = self.respawn_at[1]
+        self.full_heal()
 
     def can_pick_spell(self):
 

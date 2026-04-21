@@ -100,4 +100,4 @@ class objects_manager:
 
                     nearest_el = [dist,[chunk,id]]
                 
-        return nearest_el[1]
+        return nearest_el
