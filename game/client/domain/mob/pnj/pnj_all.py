@@ -78,20 +78,27 @@ class Pnj_all :
         screen.blit(self.interact_img,(pos_x,pos_y))
 
 
-    def test_trigger(self,pos_player):
+    def test_trigger(self,pos_player,min_dist_other_ele):
+
+        dist_min_pnj = [self.distance_max_blit,None]
         
         for pnj in self.container_pnj :
 
             dist = self.distance(pos_player,pnj)
 
-            if dist<self.distance_max_trigger :
+            if dist<dist_min_pnj[0] :
 
-                self.is_talking = True
-                self.talks_to = pnj
+                dist_min_pnj = [dist,pnj]
 
-                return True
+        if min_dist_other_ele>dist_min_pnj[0] :
+            self.is_talking = True
+            self.talks_to = dist_min_pnj[1]
+
+            return True
+
+        else :
             
-        return False
+            return False
 
     def distance(self,pos_player,pnj):
 

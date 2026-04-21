@@ -260,13 +260,17 @@ class Game :
         res = self.objects_manager.test_trigger(pos_player)
 
         if res!=None:
-            chunk,id = res
 
-            self.player_command.append([8,chunk,id])
+            chunk,id = res[1]
+            touch_pnj = self.pnj_all.test_trigger(pos_player,res[0])
+
+            if not touch_pnj :
         
+                self.player_command.append([8,chunk,id])
+
+            return touch_pnj
+
         else :
         
-            touch_pnj = self.pnj_all.test_trigger(pos_player)
-                
-        return touch_pnj
+            return False
     
