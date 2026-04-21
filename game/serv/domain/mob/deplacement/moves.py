@@ -345,8 +345,9 @@ class Movable:
 
         if v[0]!=0 :
             self.vitesse_x = v[0]
-        if v[1]!=0 :
-            self.vitesse_y = v[1]
+            self.vitesse_y = 0
+        if v[1]!=0 : 
+            self.vitesse_y = v[1] #Permet d'annuler la gravité en dash
 
     def stop_dash(self):
 
