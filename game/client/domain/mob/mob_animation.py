@@ -34,6 +34,8 @@ class Animation:
         self.time_start_frame=0
         self.frame = 0
 
+        self.fct_to_do = self.do_nothing
+
         self.init_animation(entity_name)
 
     def init_animation(self,entity_name):
@@ -49,6 +51,13 @@ class Animation:
             img_running = pygame.image.load(assets.PLAYER_RUNNING)
             img_running = pygame.transform.scale(img_running,(self.width*2,self.height*2))
             self.decoupe_img(img_running,self.animation["running"],size)
+
+            #Set die img
+            Img = pygame.image.load(assets.MONSTER_DIE)
+            Img = pygame.transform.scale(Img, (self.width,self.height))
+            Img_flip = pygame.transform.flip(Img,True,False)
+            self.animation["death"]["right"].append(Img)
+            self.animation["death"]["left"].append(Img_flip)
 
         elif entity_name == "pnj" :
 
@@ -118,6 +127,8 @@ class Animation:
             self.time_start_frame-=self.animation[self.state]["time"]
             self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
 
+            self.fct_to_do()
+
         #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
         img = self.animation[self.state][self.direction][self.frame]
 
@@ -153,3 +164,18 @@ class Animation:
             self.color_take_damage = self.green
 
         self.animation["damage"]["duree"] = self.animation["damage"]["time"]
+
+    def do_nothing(self):
+        pass
+
+    def end_death(self):
+        self.state = "idle"
+        self.fct_to_do = self.do_nothing
+
+    def set_to_death(self,duree):
+        self.animation["death"]["time"]=duree
+        print("Is dead")
+        self.state = "death"
+        self.frame = 0
+        self.time_start_frame = 0
+        self.fct_to_do = self.end_death

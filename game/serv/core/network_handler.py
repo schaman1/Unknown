@@ -281,6 +281,15 @@ class Network_handler :
             id,new_life,chunk = life
             packet+=struct.pack("!HHB",id,chunk,new_life)
 
+    def pack_die_update(self,data,packet):
+
+        packet+=struct.pack("!H",len(data))
+
+        for life in data:
+            id,chunk,duree = life
+            duree = int(duree*1000)
+            packet+=struct.pack("!HHH",id,chunk,duree)
+
     def pack_object(self,data,packet):
 
         packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
@@ -324,7 +333,6 @@ class Network_handler :
             self.pack_weapon(data[1],packet)
 
         elif id==11:
-
             packet+=struct.pack("!HB",data[1][0],data[1][1])#data[1][1])
 
         elif id==12:
@@ -340,11 +348,13 @@ class Network_handler :
             self.pack_object(data[1],packet)
 
         elif id == 16:
-
             packet+= struct.pack("!HB",data[1],data[2])
 
         elif id==17:
             packet+=struct.pack("!BBB",data[1],data[2],data[3])
+
+        elif id==18:
+            self.pack_die_update(data[1],packet)
 
         else :
             print("Issue id not found : ",id)

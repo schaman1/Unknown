@@ -9,9 +9,6 @@ class Monster(Mob):
         self.hp = hp
         self.damage = damage
         self.prime = prime
-
-        self.len_dead = 5
-        self.start_dead = 0
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
@@ -67,18 +64,24 @@ class Monster(Mob):
                  self.attack(target)
 
     def take_damage(self, amount,player_did_damage):
+        """Return True/False if is dead or not"""
 
         if self.dead:
-            return
+            return False
 
         if amount!=0 :
 
             self.life -= amount
+            self.send_new_life = True
+
             if self.life < 0:
                 self.life = 0
                 self.die(player_did_damage)
 
-            self.send_new_life = True
+                return True
+
+        return False
+
 
     def die(self,player_did_damage):
 
@@ -122,6 +125,7 @@ class Monster(Mob):
 #Creation d'un monstre spécifique : le squelette
 
 class Skeleton(Monster):
+
 
     def __init__(self, x, y, id):
         super().__init__(hp=10, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)

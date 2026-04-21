@@ -4,6 +4,7 @@ class CollisionHandler:
 
     def __init__(self):
         self.effect_send = []
+        self.die_send = []
 
         self.ent_touch = {}
 
@@ -72,10 +73,14 @@ class CollisionHandler:
     def player_take_damage(self,projectile,player,chunk=99):
 
         old_pv = player.life
-        player.take_damage(projectile.damage)
+        die = player.take_damage(projectile.damage)
         delta_life = old_pv-player.life
         
         self.effect_send.append([player.id,delta_life,chunk])
+
+        if die:
+            print("PLayer is dead")
+            self.die_send.append([player.id,chunk,player.die_len])
 
         projectile.is_dead = True
     
@@ -98,10 +103,15 @@ class CollisionHandler:
         for ent_id,(damage,owner,chunk,ent) in self.ent_touch.items():
 
             old_pv = ent.life
-            ent.take_damage(damage,owner)
+
+            die = ent.take_damage(damage,owner)
+
             delta_life = old_pv-ent.life
 
             if delta_life!=0:
                 self.effect_send.append([ent.id,delta_life,chunk])
+            
+            if die:
+                self.die_send.append([ent.id,chunk,ent.len_dead])
 
         self.ent_touch.clear()
