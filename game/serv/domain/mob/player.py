@@ -40,7 +40,7 @@ class Player(Mob) :
             self.life -= amount
             self.send_new_life = True
 
-            if self.life < 0:
+            if self.life <= 0:
                 self.life = 0
                 self.die()
 

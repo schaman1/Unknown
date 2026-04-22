@@ -74,15 +74,14 @@ class Monster(Mob):
             self.life -= amount
             self.send_new_life = True
 
-            if self.life < 0:
+            if self.life <= 0:
                 self.life = 0
                 self.die(player_did_damage)
 
                 return True
 
         return False
-
-
+    
     def die(self,player_did_damage):
 
         player_did_damage.update_money(self.prime)
