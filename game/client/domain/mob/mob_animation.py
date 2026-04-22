@@ -1,5 +1,5 @@
 import pygame,os
-from client.config import assets#,weapon
+from client.config import assets,size_display
 from utils.aseprite_reader import AsepriteReader
 
 
@@ -17,7 +17,10 @@ class Animation:
                                       "time":0.2},
                             "death":{"right":[],
                                      "left":[],
-                                     "time":3}}
+                                     "time":3},
+                            "respawn":{"right":[],
+                                       "left":[],
+                                       "time":0.5}}
 
 
         self.state = "idle"
@@ -36,14 +39,33 @@ class Animation:
 
         self.fct_to_do = self.do_nothing
 
-        self.init_animation(entity_name)
+        self.init_animation(entity_name,cell_size)
 
-    def init_animation(self,entity_name):
+    def add_tombe(self,cell_size):
+            
+        #Set die img
+
+        height = int(self.height)
+        delta = size_display.TOMBE_SIZE_WIDTH/size_display.TOMBE_SIZE_HEIGHT
+        width = int(self.height*delta)
+
+        Img = pygame.image.load(assets.MONSTER_DIE)
+        Img = pygame.transform.scale(Img, (width,height))
+        Img_flip = pygame.transform.flip(Img,True,False)
+        self.animation["death"]["right"].append(Img)
+        self.animation["death"]["left"].append(Img_flip)
+
+        size = (width,height)
+        img_idle = pygame.image.load(assets.TOMBE_DESTROY)
+        img_idle = pygame.transform.scale(img_idle,(width*2,height*2)) #*2 car en a 2 par ligne
+        self.decoupe_img(img_idle,self.animation["respawn"],size)
+
+    def init_animation(self,entity_name,cell_size):
 
         if entity_name == "player":
 
             #size_img = 50*cell_size
-            size = self.width
+            size = (self.width,self.height)
             img_idle = pygame.image.load(assets.PLAYER_IDLE)
             img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["idle"],size)
@@ -52,17 +74,12 @@ class Animation:
             img_running = pygame.transform.scale(img_running,(self.width*2,self.height*2))
             self.decoupe_img(img_running,self.animation["running"],size)
 
-            #Set die img
-            Img = pygame.image.load(assets.MONSTER_DIE)
-            Img = pygame.transform.scale(Img, (self.width,self.height))
-            Img_flip = pygame.transform.flip(Img,True,False)
-            self.animation["death"]["right"].append(Img)
-            self.animation["death"]["left"].append(Img_flip)
+            self.add_tombe(cell_size)
 
         elif entity_name == "pnj" :
 
             #size_img = 50*cell_size
-            size = self.width
+            size = (self.width,self.height)
             img_idle = pygame.image.load(assets.PNJ_IDLE)
             img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["idle"],size)
@@ -92,19 +109,15 @@ class Animation:
                 except Exception as e:
                     print(f"Failed to load aseprite: {e}")
 
-            Img = pygame.image.load(assets.MONSTER_DIE)
-            Img = pygame.transform.scale(Img, (self.width,self.height))
-            Img_flip = pygame.transform.flip(Img,True,False)
-            self.animation["death"]["right"].append(Img)
-            self.animation["death"]["left"].append(Img_flip)
+            self.add_tombe(cell_size)
 
-            #print("Animation skeleton :",self.animation["death"])       
+            print("Animation skeleton :",self.animation["death"])       
 
     def decoupe_img(self,img,dest,size):
-        for i in range(0,img.get_height(),size):
-            for j in range(0,img.get_width(),size):
+        for i in range(0,img.get_height(),size[1]):
+            for j in range(0,img.get_width(),size[0]):
 
-                rect = pygame.Rect(j,i,size,size)
+                rect = pygame.Rect(j,i,size[0],size[1])
                 sub_img = img.subsurface(rect).copy()
                 #sub_img = p
                 sub_img_flip = pygame.transform.flip(sub_img,True,False)
@@ -125,9 +138,12 @@ class Animation:
         if self.animation[self.state]["time"]<self.time_start_frame:
 
             self.time_start_frame-=self.animation[self.state]["time"]
-            self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
 
-            self.fct_to_do()
+            self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
+            
+            if self.frame == 0:
+                self.fct_to_do()
+
 
         #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
         img = self.animation[self.state][self.direction][self.frame]
@@ -168,13 +184,17 @@ class Animation:
     def do_nothing(self):
         pass
 
-    def end_death(self):
+    def end_respawn(self):
         self.state = "idle"
         self.fct_to_do = self.do_nothing
 
+    def end_death(self):
+        self.state = "respawn"
+        self.fct_to_do = self.end_respawn
+
     def set_to_death(self,duree):
-        self.animation["death"]["time"]=duree
-        print("Is dead")
+        self.animation["death"]["time"]=duree-2 #1 car les 4 frames de respawn durent 1 sec
+
         self.state = "death"
         self.frame = 0
         self.time_start_frame = 0
