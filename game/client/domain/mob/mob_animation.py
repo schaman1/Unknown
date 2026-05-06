@@ -111,8 +111,6 @@ class Animation:
 
             self.add_tombe(cell_size)
 
-            print("Animation skeleton :",self.animation["death"])       
-
     def decoupe_img(self,img,dest,size):
         for i in range(0,img.get_height(),size[1]):
             for j in range(0,img.get_width(),size[0]):

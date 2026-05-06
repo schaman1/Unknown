@@ -34,7 +34,7 @@ class Pnj_all :
 
     def init_pnj(self):
         
-        pos = (38,169)
+        pos = (38,173)
 
         self.add_pnj(pos,'pnj_intro')
 

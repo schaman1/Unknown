@@ -92,6 +92,8 @@ class Main:
                         if event.key == pygame.K_e:
                             if not self.in_interaction :
                                 self.in_interaction = self.state.game.interact()
+                                if self.in_interaction:
+                                    self.send_stop_move()
 
                         if event.key == pygame.K_RETURN :
                             self.in_interaction = self.state.game.pnj_all.press_enter()
@@ -304,7 +306,13 @@ class Main:
         #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0
 
         #if key[pygame.K_SPACE] : #futur saut (vitesse y)
-        #    self.client.send_data("id":"move", "deplacement":"jump") 
+        #    self.client.send_data("id":"move", "deplacement":"jump")
+    def send_stop_move(self):
+
+        self.client.send_data(id=4,data=[0])
+        self.client.send_data(id=4,data=[1])
+        self.client.send_data(id=4,data=[2])
+        self.client.send_data(id=4,data=[3])
 
     def handle_events_send(self):
 
