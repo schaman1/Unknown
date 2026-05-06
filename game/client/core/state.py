@@ -66,7 +66,9 @@ class State:
 
         if self.mod == "game":
 
-            self.game.draw(self.screen,dt,mouse_pos)
+            interaction =  self.game.draw(self.screen,dt,mouse_pos)
+            self.draw_alert()
+            return interaction
 
             #self.draw_btn(self.dicGame,mouse_pos)
 
@@ -118,6 +120,7 @@ class State:
                 print("Unknown self.mod")
 
         self.draw_alert()
+        return None
 
     def connexion_serv(self,client):
         """renvoie le mode de jeu apres connexion"""

@@ -96,7 +96,12 @@ class Main:
                                     self.send_stop_move()
 
                         if event.key == pygame.K_RETURN :
-                            self.in_interaction = self.state.game.pnj_all.press_enter()
+                            new_interaction,pnj_name = self.state.game.pnj_all.press_enter()
+
+                            self.set_interaction(new_interaction)
+
+                            if pnj_name!=None:
+                                self.trigger_pnj(pnj_name)
 
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
@@ -244,7 +249,7 @@ class Main:
                                 self.state.add_alert("Serveur stoppé",)
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
-            self.state.a_state(self.dt)
+            self.set_interaction(self.state.a_state(self.dt))
 
             if self.client.connected :
                 self.client.poll_reception()
@@ -260,6 +265,10 @@ class Main:
 
         Musique.unload_music()
         pygame.quit()
+
+    def set_interaction(self,new_interaction):
+        if new_interaction!=None:
+            self.in_interaction = new_interaction
 
     def start_game(self):
         threading.Thread(target=self.Server.start_game, daemon=True).start()
@@ -353,3 +362,9 @@ class Main:
 
     def stop_game_serv(self):
         self.Server.stop_server()
+
+    def trigger_pnj(self,pnj_name):
+
+        if pnj_name=="pnj_tell_story":
+            self.in_interaction = True
+            self.state.game.draw_story()

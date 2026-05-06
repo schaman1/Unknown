@@ -74,3 +74,8 @@ PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_1_0.png")
 PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
 
 PROJECTILE_2 = [PROJECTILE_2_0,PROJECTILE_2_1,PROJECTILE_2_2,PROJECTILE_2_3]
+
+intro_images = []
+for i in range(5):
+    image = resource_path(f"assets/intro/Intro-{i+1}.png")
+    intro_images.append(image)
