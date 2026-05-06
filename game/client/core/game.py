@@ -9,6 +9,7 @@ from client.ui.objects.objects_manager import objects_manager
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
+from client.domain.intro.intro_story import Intro_story
 
 from client.config import assets
 from shared.constants import world
@@ -59,9 +60,14 @@ class Game :
 
         self.camera = Camera(screenSize)
 
+        self.intro_story = Intro_story(self.screen_size)
+
         self.player_command = []
         self.blit_info=False
         self.spell_blit_mouse=None
+
+    def draw_story(self):
+        self.intro_story.start_intro()
         
     def draw_intro_start(self,screen):
 
@@ -160,6 +166,8 @@ class Game :
         self.pnj_all.blit_dialogue(screen,dt)
         self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
+
+        return self.intro_story.draw_intro(screen)
 
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
@@ -264,7 +272,7 @@ class Game :
             touch_pnj = self.pnj_all.test_trigger(pos_player,res[0])
 
             if not touch_pnj and res[1]!=None:
-                
+
                 chunk,id = res[1]
                 self.player_command.append([8,chunk,id])
 

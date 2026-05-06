@@ -36,13 +36,13 @@ class Pnj_all :
         
         pos = (38,173)
 
-        self.add_pnj(pos,'pnj_intro')
+        self.add_pnj(pos,'pnj_tell_story')
 
     def add_pnj(self,pos,name):
 
         pos = [pos[0]*self.cell_size,pos[1]*self.cell_size]
 
-        ele = Pnj(pos,self.color_compteur,self.id_compteur,self.cell_size,self.dialogues[name])
+        ele = Pnj(pos,self.color_compteur,self.id_compteur,self.cell_size,self.dialogues[name],name)
         self.container_pnj.append(ele)
         self.update_values()
 
@@ -111,14 +111,15 @@ class Pnj_all :
 
             end_text = self.talks_to.text.press_enter()
             if end_text :
+                pnj_name = self.talks_to.name
                 self.stop_talk()
                 
-                return False
+                return False,pnj_name
 
-            return True
+            return True,None
         
         else :
-            return False
+            return None,None
 
     def stop_talk(self):
         self.is_talking = False

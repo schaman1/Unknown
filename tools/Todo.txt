@@ -1,1 +1,1 @@
-change type_cell + do new type_cell
+Intro fix issue. Have to stay in_interaction during intro but then leave it when end
