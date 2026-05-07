@@ -1,11 +1,13 @@
 from shared.constants.world import NBRWEAPONSTOCK
 from client.domain.weapon.weapon import Weapon
+from client.ui.complete_info import CompleteInfo
+
 #from client.config import size_display as size
 import time
 
 class WeaponManager:
 
-    def __init__(self):
+    def __init__(self,screen_size,cell_size):
 
         self.lWeapons = []
         self.bag = None
@@ -18,6 +20,8 @@ class WeaponManager:
         self.init_lWeapons()
 
         self.text_name = ["Bag","J","K","L"]
+
+        self.complete_info = CompleteInfo(screen_size,cell_size)
 
         #self.icone_size = size.CELL_SIZE*4
 
@@ -47,6 +51,8 @@ class WeaponManager:
             #    x_spells.append(self.return_posx_blit_spell(screen_size,j))
 
             self.lWeapons[j].draw_spells(screen,screen_size,j) #+1 car il doit d'abord
+
+        self.complete_info.blit_info(screen)
 
     def update_next_allowed_shot(self,delta_time,id_weapon):
 

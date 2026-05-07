@@ -79,3 +79,5 @@ intro_images = []
 for i in range(5):
     image = resource_path(f"assets/intro/Intro-{i+1}.png")
     intro_images.append(image)
+
+COMPLETE_INFO_BG = resource_path("assets/ui/infos/fond_complete_info.png")
