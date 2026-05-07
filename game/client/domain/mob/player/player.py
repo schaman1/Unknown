@@ -30,7 +30,7 @@ class Player_you(Mob) :
 
         self.rect_black_life = pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03)
 
-        self.weapons = WeaponManager()
+        self.weapons = WeaponManager(screen_size,cell_size)
 
         self.update_pos_blit_money()
     
