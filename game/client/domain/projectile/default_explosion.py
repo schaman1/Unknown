@@ -26,7 +26,7 @@ class DefaultExplosion:
 
         Imgs = []
 
-        if projectile.id_img == 1 :
+        if projectile.id_img == 2:
 
             self.time_remaining = 0.2+time.perf_counter()
 
@@ -37,7 +37,7 @@ class DefaultExplosion:
                 rotated_img = pygame.transform.rotate(img, projectile.angle)
                 Imgs.append(rotated_img)
 
-        elif projectile.id_img==0:
+        elif projectile.id_img==1:
 
             self.time_remaining = 0.3+time.perf_counter()
 

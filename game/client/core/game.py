@@ -131,7 +131,7 @@ class Game :
 
             #screen.fill((50,50,50)) #A changer pour mettre transparence
 
-            self.player_all.blit_infos(screen,screen_size)
+            self.player_all.blit_infos(screen,screen_size,mouse_pos)
 
             if self.spell_blit_mouse!=None:
                 screen.blit(self.spell_blit_mouse,mouse_pos)

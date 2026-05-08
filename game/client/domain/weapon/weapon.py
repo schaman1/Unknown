@@ -47,7 +47,7 @@ class Weapon :
         y_padding = y+0.25*self.icone_size
         self.spells[pos_spell]=Spell(id_spell,x,y_padding,self.idx,pos_spell,self.icone_size)
 
-    def draw_spells(self,screen,screen_size,i):
+    def draw_spells(self,screen,screen_size,i,mouse_pos):
 
         y = self.return_posy_blit_weapon(screen_size,i)
         
@@ -63,6 +63,7 @@ class Weapon :
         screen.blit(self.text_blit,pos_text)
         
         #print(self.spells_id)
+        result = None
 
         for j in range(self.nbr_spell_stock) :
 
@@ -73,6 +74,12 @@ class Weapon :
             if self.spells[j]!=None:
 
                 self.spells[j].draw(screen)
+
+            if self.touch_spell((self.spells[j].pos_x,self.spells[j].pos_y),self.spells[j].icone_size,mouse_pos):
+                result = self.spells[j]
+
+        return result
+            
             #if self.imgs_spells[j]!=None:
 #
             #    screen.blit(self.imgs_spells[j],(x+self.icone_size//4,y+self.icone_size//4))
@@ -85,8 +92,16 @@ class Weapon :
         padding = screen_size[0]/50
 
         return screen_size[0]//4 + padding + self.icone_size * i
-    
 
     def draw_timer(self,screen,time):
 
         self.timer.draw(screen,time)
+
+    def touch_spell(self,pos_spell,size_spell,pos_mouse):
+
+        if pos_spell[0]<pos_mouse[0] and pos_spell[0]+size_spell>pos_mouse[0] :
+
+            if pos_spell[1]<pos_mouse[1] and pos_spell[1]+size_spell>pos_mouse[1] :
+
+                return True
+        return False

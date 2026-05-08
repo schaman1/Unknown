@@ -15,29 +15,29 @@ def AddProjectileWhenDie(projectile,weapon):
     next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos,weapon.team)
 
     projectile.projectile_spawn_when_die=next_projectiles
+    
+class CreateMagic(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 1,time_take = 0.1)
+
+    def trigger(self,weapon):
+
+        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team))
+
+        return 1,projectile,None
 
 
 class CreateFire(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 1,time_take =0.1)
+        super().__init__(id = 2,time_take =0.1)
 
     def trigger(self,weapon):
 
         projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team))
-
-        return 1,projectile,None
-    
-class CreateMagic(Upgrade):
-
-    def __init__(self):
-
-        super().__init__(id = 2,time_take = 0.1)
-
-    def trigger(self,weapon):
-
-        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team))
 
         return 1,projectile,None
     
@@ -155,8 +155,8 @@ class LongDash(Upgrade):
 #        return 0
 
 UPGRADES = {}
-UPGRADES[1] = CreateFire()
-UPGRADES[2] = CreateMagic()
+UPGRADES[1] = CreateMagic()
+UPGRADES[2] = CreateFire()
 UPGRADES[3] = CreateLune()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()

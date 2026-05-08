@@ -39,7 +39,9 @@ class WeaponManager:
         #else :
         self.lWeapons[i] = Weapon(id_weapon,nbr_spell_max,spells_id,i,screen_size,self.text_name[i])
 
-    def draw_spells(self,screen,screen_size):
+    def draw_spells(self,screen,screen_size,mouse_pos):
+
+        spell_touch = None
 
         for j in range(len(self.lWeapons)) :
 
@@ -49,10 +51,14 @@ class WeaponManager:
 
             #for j in range(len(self.lWeapons[i].spells_id)):
             #    x_spells.append(self.return_posx_blit_spell(screen_size,j))
+            new_spell = self.lWeapons[j].draw_spells(screen,screen_size,j,mouse_pos) #+1 car il doit d'abord
+            
+            if new_spell !=None and new_spell.img!=None :#Check si il y a bien un spell
+                spell_touch = new_spell
 
-            self.lWeapons[j].draw_spells(screen,screen_size,j) #+1 car il doit d'abord
+        if self.spell_hold==None:
 
-        self.complete_info.blit_info(screen)
+            self.complete_info.blit_info(screen,spell_touch)
 
     def update_next_allowed_shot(self,delta_time,id_weapon):
 
@@ -125,9 +131,18 @@ class WeaponManager:
             return 1,spell_1_info,spell_2_info
 
     def switch_spell(self,spell_1,spell_2):
-            img_1 = spell_1.img
-            spell_1.img=spell_2.img
-            spell_2.img=img_1
+            
+            
+            self.lWeapons[spell_1.idx_weapon].spells[spell_1.idx_spell] = spell_2
+            self.lWeapons[spell_2.idx_weapon].spells[spell_2.idx_spell] = spell_1
+            
+            spell_1.idx_weapon,spell_2.idx_weapon = spell_2.idx_weapon,spell_1.idx_weapon
+            spell_1.idx_spell,spell_2.idx_spell = spell_2.idx_spell,spell_1.idx_spell
+            spell_1.pos_x,spell_2.pos_x = spell_2.pos_x,spell_1.pos_x
+            spell_1.pos_y,spell_2.pos_y = spell_2.pos_y,spell_1.pos_y
+
+            spell_1.load_rect()
+            spell_2.load_rect()
 
     def stop_holding_spell(self):
         self.spell_hold.blit_icone = True

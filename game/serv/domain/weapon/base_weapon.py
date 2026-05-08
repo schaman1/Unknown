@@ -121,6 +121,7 @@ class Weapon :
                 self.nbr_upgrades_trigger+= space_take
 
                 if projectile!=None :
+                    
                     projectile_shot.append(projectile)
 
                 if id_event_player!=None:
