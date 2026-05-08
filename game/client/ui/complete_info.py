@@ -5,7 +5,6 @@ class CompleteInfo:
 
     def __init__(self,screen_size,cell_size):
 
-        self.draw = False
         #self.screen_size = screen_size
 
         self.cell_size = cell_size
@@ -17,16 +16,17 @@ class CompleteInfo:
         self.surface_text = pygame.Surface(self.size, pygame.SRCALPHA)
         self.surface_text.fill((0,0,0,0))
 
-        self.pos_blit = [0,0]
-        self.dist_interactable_max = cell_size*2
+        self.pos_blit = [None,None]
+        self.spell_id = None
+        self.delta_x = 5*cell_size
 
-        self.start_draw(3,"SPELL",[100,100])
+        #self.dist_interactable_max = cell_size*
 
-    def start_draw(self,id_element,type_element,pos):
-        self.draw = True
+    def start_draw_spell(self,spell):
 
-        self.pos_blit = pos
-        self.init_surface(id_element,type_element)
+        self.spell_id = spell.id_spell_draw
+        self.pos_blit = [spell.pos_x+self.delta_x,spell.pos_y]
+        self.init_surface(spell.id_spell_draw,"SPELL")
 
     def init_surface(self,id_element,type_element):
 
@@ -40,7 +40,18 @@ class CompleteInfo:
             print("Unknown type element in client/ui/complete_info")
 
         self.surface_text.blit(image,(self.size[1]/4,self.size[1]/4))
+    
+    def stop_draw(self):
+        self.spell_id = None
 
-    def blit_info(self,screen):
+    def blit_info(self,screen,spell_touch):
+
+        if spell_touch==None :
+            self.stop_draw()
+            return
+            
+
+        if spell_touch.id_spell_draw != self.spell_id:
+            self.start_draw_spell(spell_touch)
 
         screen.blit(self.surface_text,self.pos_blit)

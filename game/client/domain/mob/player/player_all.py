@@ -49,9 +49,9 @@ class Player_all :
 
         self.me.draw_utils(screen,screen_size)
 
-    def blit_infos(self,screen,screen_size):
+    def blit_infos(self,screen,screen_size,mouse_pos):
 
-        self.me.weapons.draw_spells(screen,screen_size)
+        self.me.weapons.draw_spells(screen,screen_size,mouse_pos)
 
     def return_pos(self):
         return self.me.pos_x,self.me.pos_y
