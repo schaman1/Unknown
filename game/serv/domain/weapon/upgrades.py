@@ -1,5 +1,6 @@
 from serv.domain.projectile import projectile_type
 from shared.constants.world import RATIO
+from serv.config import weapons
 
 
 class Upgrade:
@@ -20,7 +21,7 @@ class CreateMagic(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 1,time_take = 0.1)
+        super().__init__(id = 1,time_take = weapons.MAGIC_RELOAD_TIME)
 
     def trigger(self,weapon):
 
@@ -33,7 +34,7 @@ class CreateFire(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 2,time_take =0.1)
+        super().__init__(id = 2,time_take =weapons.FIRE_RELOAD_TIME)
 
     def trigger(self,weapon):
 
@@ -45,7 +46,7 @@ class CreateLune(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=3,time_take = 0.1)
+        super().__init__(id=3,time_take = weapons.LUNE_RELOAD_TIME)
 
     def trigger(self,weapon):
 
@@ -105,11 +106,11 @@ class CreateFire_DieEffect(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id = 30,time_take =0.1)
+        super().__init__(id = 30,time_take = weapons.FIRE_RELOAD_TIME_DIE_EFFECT)
 
     def trigger(self,weapon):
 
-        projectile = projectile_type.Fire(weapon.angle,weapon.pos)
+        projectile = projectile_type.Fire(weapon.angle,weapon.pos,weapon.team)
 
         projectile = weapon.add_projectile(projectile)
 
@@ -121,7 +122,7 @@ class SmallDash(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=40,time_take=1)
+        super().__init__(id=40,time_take=weapons.SMALL_DASH_RELOAD_TIME)
         self.time_dash_take = 0.1
         self.distance_dash = 5*self.ratio
 
@@ -133,7 +134,7 @@ class LongDash(Upgrade):
 
     def __init__(self):
 
-        super().__init__(id=41,time_take=1)
+        super().__init__(id=41,time_take=weapons.LONG_DASH_RELOAD_TIME)
         self.time_dash_take = 0.1
         self.distance_dash = 10*self.ratio
 
@@ -164,4 +165,4 @@ UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[40] = SmallDash()
-UPGRADES[40] = LongDash()
+UPGRADES[41] = LongDash()

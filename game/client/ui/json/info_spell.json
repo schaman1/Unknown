@@ -1,0 +1,80 @@
+{
+    "SPELL2":{
+        "type":"projectile",
+        "name":"Boule de feu",
+        "description":["Nothing"],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.1
+    },
+    "SPELL3":{
+        "type":"projectile",
+        "name":"Taillade",
+        "description":["Nothing"],
+        "life":0.1,
+        "speed":0,
+        "rebond":0,
+        "time_reload": 0.2
+    },
+    "SPELL10":{
+        "type":"augment",
+        "name":"Vitesse",
+        "description":["Augmente la vitesse du",
+                    "prochain projectile."],
+        "time_reload": 0
+    },
+    "SPELL11":{
+        "type":"augment",
+        "name":"Rebond",
+        "description":["Ajoute rebond au ",
+                    "prochain projectile."],
+        "time_reload": 0
+    },
+    "SPELL20":{
+        "type":"augment",
+        "name":"Double",
+        "description":["Permet de lancer",
+                    "1 sort de plus."],
+        "time_reload": 0
+    },
+    "SPELL21":{
+        "type":"augment",
+        "name":"Triple",
+        "description":["Permet de lancer",
+                    "2 sorts de plus."],
+        "time_reload": 0
+    },
+    "SPELL30":{
+        "type":"projectile",
+        "name":"BDF + effet",
+        "description":["Invoque un autre PROJECTILE",
+                    " a sa mort"],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.3
+    },
+    "SPELL40":{
+        "type":"augment",
+        "name":"Dash court",
+        "description":["D'ou vient ce pouvoir ?"],
+        "time_reload": 1
+    },
+    "SPELL41":{
+        "type":"augment",
+        "name":"Dash long",
+        "description":["il vous permettra d'aller",
+                        "dans de nouvelles zones."],
+        "time_reload": 1
+    },
+    "UNKNOWN":{
+        "type":"projectile",
+        "name":"Unknown",
+        "description":["doit implementer ses infos."],
+        "life":"Not decided yet",
+        "speed":99999,
+        "rebond":0,
+        "time_reload":1
+    }
+}
