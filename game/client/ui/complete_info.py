@@ -19,6 +19,7 @@ class CompleteInfo:
 
         self.pos_blit = [None,None]
         self.spell_id = None
+        self.weapon_id = None
         self.delta_x = 5*self.cell_size
         self.pos_img = [self.size[0]//10,self.size[0]//8]
 
@@ -44,7 +45,17 @@ class CompleteInfo:
         if f"SPELL{spell.id_spell_draw}" in self.infos :
             self.init_text(self.infos[f"SPELL{spell.id_spell_draw}"])
         else :
-            self.init_text(self.infos["UNKNOWN"]) #Pour tj afficher qqch
+            self.init_text(self.infos["UNKNOWN_SPELL"]) #Pour tj afficher qqch
+
+    def start_draw_weapon(self,weapon):
+        self.weapon_id = weapon.idx
+        self.pos_blit = [weapon.pos_text[0]+self.delta_x,weapon.pos_text[1]]
+        self.init_surface(weapon.idx,"WEAPON")
+
+        if f"WEAPON{weapon.idx}" in self.infos :
+            self.init_text(self.infos[f"WEAPON{weapon.idx}"])
+        else :
+            self.init_text(self.infos["UNKNOWN_WEAPON"]) #Pour tj afficher qqch
 
     def init_text(self,dico_info):
 
@@ -88,7 +99,17 @@ class CompleteInfo:
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-        text_life = self.font_small.render(f"rechargement : {dico_info["time_reload"]} sec",True,(0,0,0))
+        if dico_info["type"]=="weapon":
+
+            text_life = self.font_small.render(f"Taille : {dico_info["nbr_slot"]}",True,(0,0,0))
+            self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
+            pos_y+=self.delta_y_other_info
+
+            text_life = self.font_small.render(f"Rechargement des sorts : {dico_info["spell_time"]}",True,(0,0,0))
+            self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
+            pos_y+=self.delta_y_other_info
+
+        text_life = self.font_small.render(f"Rechargement de l'arme: {dico_info["time_reload"]} sec",True,(0,0,0))
         self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
         #pos_y+=self.delta_y_other_info
 
@@ -105,22 +126,32 @@ class CompleteInfo:
         if type_element=="SPELL":
             image = pygame.image.load(SPELLS[id_element])
             image = pygame.transform.scale(image,(self.size[0]/8,self.size[0]/8))
+            self.surface_text.blit(image,self.pos_img)
+
+        elif type_element=="WEAPON":
+            pass
 
         else:
             print("Unknown type element in client/ui/complete_info")
 
-        self.surface_text.blit(image,self.pos_img)
     
     def stop_draw(self):
         self.spell_id = None
+        self.weapon_id = None
 
-    def blit_info(self,screen,spell_touch):
+    def blit_info(self,screen,spell_touch,weapon_hold):
 
-        if spell_touch==None :
+        if (spell_touch==None and self.spell_id!=None) or (weapon_hold==None and self.weapon_id!=None):
             self.stop_draw()
             return
 
-        if spell_touch.id_spell_draw != self.spell_id:
+        if spell_touch==None and weapon_hold==None:
+            return
+
+        if spell_touch != None and spell_touch.id_spell_draw != self.spell_id:
             self.start_draw_spell(spell_touch)
+        
+        elif weapon_hold!=None and weapon_hold.idx != self.weapon_id :
+            self.start_draw_weapon(weapon_hold)
 
         screen.blit(self.surface_text,self.pos_blit)
