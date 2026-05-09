@@ -240,10 +240,10 @@ class Game :
     
     def add_popup(self,ent,text,type = "damage"):
 
-        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type)
+        self.floating_values.add_floating_value(text,[ent.pos_x,ent.pos_y],type)
 
     def add_popup_on_screen(self,pos,text,type):
-        self.floating_values.add_floating_value(str(text),pos,type)
+        self.floating_values.add_floating_value(text,pos,type)
 
     def add_many_popup_life(self,data):
 
