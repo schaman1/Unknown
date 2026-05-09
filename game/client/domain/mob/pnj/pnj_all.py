@@ -25,7 +25,7 @@ class Pnj_all :
         self.talks_to = None
 
 
-        with open("client/ui/text.json") as f:
+        with open("client/ui/json/text.json") as f:
 
             self.dialogues = json.load(f)
             f.close()

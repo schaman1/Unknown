@@ -49,7 +49,7 @@ class Projectile :
 
     def check_if_projectile_spawn_when_die(self):
         for projectile in self.projectile_spawn_when_die :
-            projectile.update_angle_pos(self.angle,self.pos)
+            projectile.update_angle_pos(self.angle,[self.pos_x,self.pos_y])
         return self.projectile_spawn_when_die
 
     def move(self,dt,map):
