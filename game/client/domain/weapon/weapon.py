@@ -29,6 +29,10 @@ class Weapon :
 
         self.screen_size = screen_size
 
+        y = self.return_posy_blit_weapon(screen_size,self.idx)
+        self.size_text = FONT_SMALL.size(str(self.text))
+        self.pos_text = (screen_size[0]//4 - self.size_text[0]//2,y+0.5*self.icone_size)
+
     def load_spells(self,idx,screen_size):
 
         for j,id in enumerate(self.spells_id) :
@@ -57,10 +61,7 @@ class Weapon :
             pygame.Rect(screen_size[0]//4,y, screen_size[0]//2, 1.5*self.icone_size),
         )
 
-        size_text = FONT_SMALL.size(str(self.text))
-        #pos = pos_object[0]+self.size_img[0]//2 - size_text[0]//2,pos_object[1]+self.size_img[1]
-        pos_text = (screen_size[0]//4 - size_text[0],y+0.5*self.icone_size)
-        screen.blit(self.text_blit,pos_text)
+        screen.blit(self.text_blit,(self.pos_text[0]-self.size_text[0]//2,self.pos_text[1]))
         
         #print(self.spells_id)
         result = None

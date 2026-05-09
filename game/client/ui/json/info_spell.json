@@ -48,8 +48,8 @@
     "SPELL30":{
         "type":"projectile",
         "name":"BDF + effet",
-        "description":["Invoque un autre PROJECTILE",
-                    " a sa mort"],
+        "description":["Invoque le PROJECTILE",
+                    "suivant a sa disparition."],
         "life":2,
         "speed":50,
         "rebond":0,
@@ -64,17 +64,54 @@
     "SPELL41":{
         "type":"augment",
         "name":"Dash long",
-        "description":["il vous permettra d'aller",
+        "description":["Il vous permettra d'aller",
                         "dans de nouvelles zones."],
         "time_reload": 1
     },
-    "UNKNOWN":{
+    "UNKNOWN_SPELL":{
         "type":"projectile",
         "name":"Unknown",
-        "description":["doit implementer ses infos."],
+        "description":["Doit implementer ses infos."],
         "life":"Not decided yet",
         "speed":99999,
         "rebond":0,
         "time_reload":1
+    },
+    "WEAPON0":{
+        "type":"weapon",
+        "name":"Sac à dos",
+        "description":["Il vous sert à transporter",
+                        "vos objets."],
+        "nbr_slot":10,
+        "time_reload":0,
+        "spell_time":0
+    },
+    "WEAPON1":{
+        "type":"weapon",
+        "name":"Arme J",
+        "description":["En appyant sur j,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":1,
+        "spell_time":0.1
+    },
+    "WEAPON2":{
+        "type":"weapon",
+        "name":"Arme K",
+        "description":["En appyant sur k,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":1,
+        "spell_time":0.1
+    },
+    "WEAPON3":{
+        "type":"weapon",
+        "name":"Arme I",
+        "description":["En appyant sur i,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":1,
+        "spell_time":0.1
     }
+
 }

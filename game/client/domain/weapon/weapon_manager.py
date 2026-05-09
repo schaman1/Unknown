@@ -42,6 +42,7 @@ class WeaponManager:
     def draw_spells(self,screen,screen_size,mouse_pos):
 
         spell_touch = None
+        weapon_hold = None
 
         for j in range(len(self.lWeapons)) :
 
@@ -56,9 +57,23 @@ class WeaponManager:
             if new_spell !=None and new_spell.img!=None :#Check si il y a bien un spell
                 spell_touch = new_spell
 
+            if spell_touch==None and weapon_hold == None and self.check_mouse_touch_weapon(mouse_pos,self.lWeapons[j]):
+                weapon_hold = self.lWeapons[j]
+
         if self.spell_hold==None:
 
-            self.complete_info.blit_info(screen,spell_touch)
+            self.complete_info.blit_info(screen,spell_touch,weapon_hold)
+
+    def check_mouse_touch_weapon(self,mouse_pos,weapon):
+
+        if weapon.pos_text[0] - weapon.icone_size < mouse_pos[0] and mouse_pos[0] < weapon.pos_text[0] + weapon.icone_size:
+   
+            if weapon.pos_text[1] - weapon.icone_size < mouse_pos[1] and mouse_pos[1] < weapon.pos_text[1] + weapon.icone_size:
+
+                return True
+        return False
+
+
 
     def update_next_allowed_shot(self,delta_time,id_weapon):
 
