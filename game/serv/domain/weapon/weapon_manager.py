@@ -61,7 +61,7 @@ class WeaponManager :
             projectiles,events = None,None
         
         else :
-
+            self.weapon_select = id_weapon
             projectiles,events = res[0],res[1]
 
         return projectiles,events
