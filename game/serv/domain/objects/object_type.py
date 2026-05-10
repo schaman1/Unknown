@@ -20,6 +20,6 @@ class upgrade_size_weapon(interactable_object):
 
     def __init__(self,id_categorie,pos_x,pos_y,price=0):
 
-        super().__init__(id_categorie,pos_x,pos_y,price,unique_use=True)
+        super().__init__(id_categorie,pos_x,pos_y,price)
 
         self.trigger_value = "UpgradeWeapon"

@@ -48,6 +48,8 @@ class objects_manager:
 
     def destroy_object(self,chunk,id):
 
+        print("Delete : ",chunk,id)
+
         del self.chunk_objects[chunk][id]
 
     def convert_pos(self,x,y):

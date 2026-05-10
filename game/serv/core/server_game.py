@@ -196,6 +196,8 @@ class Server_game(Server) :
             elif action=="UpgradeWeapon":
 
                 info_weapon = self.lClient[sender].upgrade_size_weapon()
+                self.send_data_all([16,chunk,id]) #Destroy
+                
                 self.send_data([10,info_weapon],sender)
 
     def throw_spell(self,id_weapon,id_spell,sender):
