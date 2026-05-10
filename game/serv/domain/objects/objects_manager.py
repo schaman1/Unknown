@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.objects.object_type import spell_on_ground,healer_respawn
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon
 
 class objects_manager:
 
@@ -43,6 +43,14 @@ class objects_manager:
 
             return id,ele
         
+        elif ele_idx=="UpgradeWeapon":
+
+            ele = upgrade_size_weapon(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
         else :
             print("Unknown type in add_object")
             return None
@@ -63,5 +71,3 @@ class objects_manager:
                 self.destroy_object(chunk,id)
 
             return element.trigger_value,chunk,id,element
-
-

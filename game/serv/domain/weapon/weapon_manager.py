@@ -65,3 +65,6 @@ class WeaponManager :
             projectiles,events = res[0],res[1]
 
         return projectiles,events
+    
+    def add_slot(self):
+        return self.lWeapons[self.weapon_select].add_slot(self.weapon_select) #10 car id envoie ? 

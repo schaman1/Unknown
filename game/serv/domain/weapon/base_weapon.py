@@ -156,3 +156,10 @@ class Weapon :
 
         else :
             self.spells_on_shot[idx]=function
+
+    def add_slot(self,i):
+        self.nbr_slot+=1
+        self.spells_on_shot.append(None)
+        self.nbr_spells_max+=1
+
+        return self.return_info(i)
