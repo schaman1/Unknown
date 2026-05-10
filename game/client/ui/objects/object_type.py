@@ -24,7 +24,7 @@ class healer_spawn(interactable):
 
     def found_path(self):
 
-        self.size_img = (size.CELL_SIZE*4,size.CELL_SIZE*8)
+        self.size_img = (size.CELL_SIZE*8,size.CELL_SIZE*16)
         self.init_img(assets.HEALER)
 
 class upgrade_weapon(interactable):
