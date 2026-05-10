@@ -9,7 +9,7 @@ class FloatingValueDisplay:
         self.speed_up = cell_size*10//3
         self.lFloatingValue = []
         self.lFloatingValueFix = []
-        self.distance_max_regroup = cell_size//2
+        self.distance_max_regroup = cell_size*2
 
     def add_floating_value(self,text,pos,type):
 

@@ -15,3 +15,11 @@ class healer_respawn(interactable_object):
         super().__init__(id_categorie,pos_x,pos_y,price,unique_use=False)
 
         self.trigger_value = "Heal"
+
+class upgrade_size_weapon(interactable_object):
+
+    def __init__(self,id_categorie,pos_x,pos_y,price=0):
+
+        super().__init__(id_categorie,pos_x,pos_y,price,unique_use=True)
+
+        self.trigger_value = "UpgradeWeapon"

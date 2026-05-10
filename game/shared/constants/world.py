@@ -21,5 +21,6 @@ NBRWEAPONSTOCK = 4
 
 TYPE_OBJECT = {
     "SPELL":0,
-    "HEALER":1
+    "HEALER":1,
+    "UpgradeWeapon":2
 }

@@ -7,7 +7,7 @@ class Intro_story:
 
         self.screen_size = screenSize
         self.blit_intro = False
-        self.len_images = [2,2,2,2,2] #=> 1sec for each image
+        self.len_images = [2,3,4,3,5] #=> 1sec for each image
         self.nbr_images = 5
         self.current_image = 0
         self.images = []

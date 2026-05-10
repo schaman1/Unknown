@@ -26,3 +26,16 @@ class healer_spawn(interactable):
 
         self.size_img = (size.CELL_SIZE*4,size.CELL_SIZE*8)
         self.init_img(assets.HEALER)
+
+class upgrade_weapon(interactable):
+
+    def __init__(self,id_img,pos_x,pos_y,price = 0):
+
+        super().__init__(pos_x,pos_y,price)
+
+        self.found_path()
+
+    def found_path(self):
+
+        self.size_img = (size.CELL_SIZE*4,size.CELL_SIZE*4)
+        self.init_img(assets.ADD_SLOT_WEAPON)

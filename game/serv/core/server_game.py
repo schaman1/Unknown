@@ -170,6 +170,7 @@ class Server_game(Server) :
     def add_elements_to_game(self):
 
         self.add_object("HEALER",1,5511,17500,0)
+        self.add_object("UpgradeWeapon",2,5511,17100,0)
 
     def trigger(self,chunk,id,sender):
         
@@ -191,6 +192,11 @@ class Server_game(Server) :
             elif action=="Heal":
 
                 self.lClient[sender].heal_respawn(element)
+
+            elif action=="UpgradeWeapon":
+
+                info_weapon = self.lClient[sender].upgrade_size_weapon()
+                self.send_data([10,info_weapon],sender)
 
     def throw_spell(self,id_weapon,id_spell,sender):
 
