@@ -45,7 +45,6 @@ class objects_manager:
 
             self.chunk_objects[chunk][id] = upgrade_weapon(img,pos_x,pos_y,price)
 
-
     def destroy_object(self,chunk,id):
 
         print("Delete : ",chunk,id)
@@ -59,12 +58,12 @@ class objects_manager:
 
         return x,y
 
-    def blit_object(self,element,screen,x,y):
+    def blit_object(self,element,screen,x,y,dt):
         """Blit le monstre avec l'id id_objects sur le canva des monstres"""
 
-        element.blit(screen,x,y)
+        element.blit(screen,x,y,dt)
     
-    def blit_all_objects(self,screen,x,y,pos_player):
+    def blit_all_objects(self,screen,x,y,pos_player,dt):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.chunk_objects :
@@ -72,7 +71,7 @@ class objects_manager:
 
                 dist = self.distance(pos_player,self.chunk_objects[pos][id_objects])
 
-                self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y)
+                self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y,dt)
 
                 if dist<self.distance_max_trigger:
 

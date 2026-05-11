@@ -146,7 +146,7 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
+        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos(),dt)
         self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y,dt)
         self.blit_players(screen,x,y,dt)
@@ -274,6 +274,7 @@ class Game :
             if not touch_pnj and res[1]!=None:
 
                 chunk,id = res[1]
+                self.objects_manager.chunk_objects[chunk][id].start_anim_trigger()
                 self.player_command.append([8,chunk,id])
 
             return touch_pnj
