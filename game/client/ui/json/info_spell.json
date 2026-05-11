@@ -20,14 +20,14 @@
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
-        "description":["Augmente la vitesse du",
-                    "prochain projectile."],
+        "description":["Multipli la vitesse",
+                        " du projectile par 2."],
         "time_reload": 0
     },
     "SPELL11":{
         "type":"augment",
         "name":"Rebond",
-        "description":["Ajoute rebond au ",
+        "description":["Ajoute le rebond au",
                     "prochain projectile."],
         "time_reload": 0
     },

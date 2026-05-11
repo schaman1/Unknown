@@ -62,7 +62,7 @@ class AddSpeed(Upgrade):
 
     def trigger(self,weapon):
 
-        weapon.speed_mult+=2
+        weapon.speed_mult+=1
 
         return 0,None,None
     

@@ -30,6 +30,7 @@ class Projectile :
     def update_angle_pos(self,new_angle,new_pos):
         self.pos_x,self.pos_y=new_pos
         self.angle=new_angle
+        print("Created with value : ",self.angle,self.vx,self.pos_x,self.pos_y)
         self.load()
 
     def load(self):
@@ -72,7 +73,7 @@ class Projectile :
 
         self.pos_x+=complete_mov_to_touch_wall
 
-        self.pos_y+=(complete_mov_to_touch_wall+deltax)/self.vx*self.vy#*(self.return_signe(self.pos_y))
+        self.pos_y+=((complete_mov_to_touch_wall+deltax)/self.vx)*self.vy#*(self.return_signe(self.pos_y))
         #print(self.pos)
 
     def complete_mov_y(self,s,rest_y_to_complete_mouv,complete_mov_to_touch_wall):
@@ -90,11 +91,13 @@ class Projectile :
 
         dist = self.base_movement
 
+        tmp_death = False
+
         while remaining > 0 :
 
             for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.is_dead is False and self.touch_wall(j,0,map) :
+                if tmp_death is False and self.touch_wall(j,0,map) :
                     
                     rest_y_to_complete_mouv = self.vy*dt - (self.pos_y-old_pos)
 
@@ -105,24 +108,28 @@ class Projectile :
 
                         #Rebond en y
                         self.vy=-self.vy
-                        s =-s
-                        self.angle = (-self.angle)%360
+                        #s =-s
+                        self.angle = (180-self.angle)%360
                         #Complete la dist pr toucher le mur
+                        #print("Die on y")
+                        tmp_death = True
 
-                        if self.rebond :
-                            self.to_update = True
+            if tmp_death :
+                if self.rebond :
+                    self.to_update = True
+                    remaining = 0
 
-                        else :
-                            self.is_dead = True
-                            remaining=0
+                else :
+                    self.is_dead = True
+                    remaining=0
 
             if dist < remaining :
                 self.pos_y+=dist*s
+                remaining -= self.base_movement
 
             else :
                 self.pos_y+= remaining*s
-
-            remaining -= self.base_movement
+                remaining -= self.base_movement
 
             #if self.is_dead:
             #    print(self.pos_y)
@@ -138,48 +145,59 @@ class Projectile :
 
         dist = self.base_movement
 
+        tmp_death = False
+
         while remaining > 0 :
 
             for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
 
-                if self.is_dead is False and self.touch_wall(0,j,map) :
+                if tmp_death is False and self.touch_wall(0,j,map) :
 
-
-                        #Complete la dist
+                    #Complete la dist
 
                     complete_mov_to_touch_wall = (self.base_movement - (self.pos_x*s)%self.base_movement)*s
 
                     if complete_mov_to_touch_wall*s<=remaining :
 
-
                         deltax = (self.pos_x-old_pos)
 
+                        #print("Remaining :",remaining,self.vx*s*dt,j)
+                        #print("Before : ",self.angle,self.vx,self.pos_x,self.pos_y)
                         self.complete_mov_x(s,deltax,complete_mov_to_touch_wall)
+                        #print("After : ",self.pos_x,self.pos_y)
 
                         #Rebond en x
                         self.vx=-self.vx
-                        s =-s
-                        self.angle = (180-self.angle)%360
+                        #s =-s
+                        self.angle = (180-self.angle)%360 #Rotate the spell
 
                         #print("old x : ",self.pos_x)
                         #print("New x :",self.pos_x+dist*s)
                         #print("normal : ",self.pos_x+dist*s)
+
+                        tmp_death = True
                         
-                        if self.rebond :
-                            self.to_update = True
-                            #self.pos_x+=dist*s
+            if tmp_death is True:
 
-                        else :
-                            self.is_dead = True
-                            remaining = 0
+                if self.rebond :
+                    
+                    self.to_update = True
+                    remaining = 0
 
-            if dist < remaining :
+                    #self.pos_x+=dist*s
+
+                else :
+                    self.is_dead = True
+                    remaining = 0
+
+            elif dist < remaining :
                 self.pos_x+=dist*s
+                remaining -= self.base_movement
             
             else :
                 self.pos_x+= remaining*s
+                remaining -= self.base_movement
 
-            remaining -= self.base_movement
 
             #if self.is_dead:
             #    print(self.pos_x)
