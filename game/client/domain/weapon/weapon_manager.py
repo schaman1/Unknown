@@ -73,8 +73,6 @@ class WeaponManager:
                 return True
         return False
 
-
-
     def update_next_allowed_shot(self,delta_time,id_weapon):
 
         now = time.perf_counter()

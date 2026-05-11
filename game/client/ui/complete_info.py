@@ -53,6 +53,8 @@ class CompleteInfo:
         self.init_surface(weapon.idx,"WEAPON")
 
         if f"WEAPON{weapon.idx}" in self.infos :
+            self.infos[f"WEAPON{weapon.idx}"]["nbr_slot"] = weapon.nbr_spell_stock
+
             self.init_text(self.infos[f"WEAPON{weapon.idx}"])
         else :
             self.init_text(self.infos["UNKNOWN_WEAPON"]) #Pour tj afficher qqch
