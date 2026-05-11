@@ -35,8 +35,10 @@ class Pnj_all :
     def init_pnj(self):
         
         pos = (38,173)
-
         self.add_pnj(pos,'pnj_tell_story')
+
+        pos = (22,57)
+        self.add_pnj(pos,'pnj_tell_healer')
 
     def add_pnj(self,pos,name):
 

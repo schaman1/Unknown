@@ -3,5 +3,10 @@
         "Ah la la, vous aussi vous etes tombe.",
         "Quoi ? Vous ne vous souvenez de rien ?",
         "Bon eh bien je vais essayer de vous expliquer avec ces dessins."
+    ],
+    "pnj_tell_healer":[
+        "Oh Oh OH... Bienvenue a toi.",
+        "Ce qui se trouve a ma gauche est un 'Halo'.",
+        "Il permet de te guerir et ton esprit reapparaitra ici !"
     ]
 }
