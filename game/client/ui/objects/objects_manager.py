@@ -32,7 +32,6 @@ class objects_manager:
 
             self.chunk_objects[chunk][id] = spell_on_ground(img,pos_x,pos_y,price)
 
-
         elif type==world.TYPE_OBJECT["HEALER"]:
 
             pos_x,pos_y = self.convert_pos(pos_x,pos_y)
