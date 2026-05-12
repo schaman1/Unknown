@@ -3,7 +3,7 @@ from serv.config import weapons
 
 class Fire(Projectile) :
 
-    def __init__(self,angle,pos,team):
+    def __init__(self,angle,pos,team,randomize):
 
         self.life_time = weapons.LIFE_FIRE
 
@@ -15,11 +15,12 @@ class Fire(Projectile) :
                          rebond = weapons.REBOND_FIRE,
                          damage = weapons.DAMAGE_FIRE,
                          weight = weapons.WEIGHT_FIRE,
-                         team=team)
+                         team=team,
+                         randomize_angle=randomize)
         
 class Magic(Projectile) :
 
-    def __init__(self,angle,pos,team):
+    def __init__(self,angle,pos,team,randomize):
 
         self.life_time = weapons.LIFE_MAGIC
 
@@ -31,11 +32,12 @@ class Magic(Projectile) :
                          rebond = weapons.REBOND_MAGIC,
                          damage = weapons.DAMAGE_MAGIC,
                          weight = weapons.WEIGHT_MAGIC,
-                         team=team)
+                         team=team,
+                         randomize_angle=randomize)
         
 class Lune(Projectile) :
 
-    def __init__(self,angle,pos,team):
+    def __init__(self,angle,pos,team,randomize):
 
         self.life_time = weapons.LUNE_LIFE
 
@@ -46,4 +48,4 @@ class Lune(Projectile) :
                          height = weapons.LUNE_HEIGHT,
                          damage = weapons.LUNE_DAMAGE,
                          team=team,
-                         )
+                         randomize_angle=randomize)

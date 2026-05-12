@@ -25,7 +25,7 @@ class CreateMagic(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team))
+        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
         return 1,projectile,None
 
@@ -38,7 +38,7 @@ class CreateFire(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team))
+        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
         return 1,projectile,None
     
@@ -50,7 +50,7 @@ class CreateLune(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team))
+        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
         return 1,projectile,None
     
@@ -77,7 +77,36 @@ class AddRebond(Upgrade):
 
         weapon.add_rebond=True
 
-        weapon.add_damage = -2
+        weapon.add_damage -=2
+
+        return 0,None,None
+    
+class Randomizer(Upgrade):
+    #Randomize la direction mais reduit le temps de rechargement de l'arme
+
+    def __init__(self):
+
+        super().__init__(id = 12,time_take = weapons.RANDOMIZER_RELOAD_TIME)
+
+        self.minus_refill_time = weapons.RANDOMIZER_REFILL_TIME
+
+    def trigger(self,weapon):
+
+        weapon.randomize_angle = True
+        weapon.loading_time_refill_current += self.minus_refill_time
+
+        return 0,None,None
+    
+class AddDamage(Upgrade):
+    #Randomize la direction mais reduit le temps de rechargement de l'arme
+
+    def __init__(self):
+
+        super().__init__(id = 13,time_take = 0)
+
+    def trigger(self,weapon):
+
+        weapon.add_damage +=3
 
         return 0,None,None
     
@@ -110,7 +139,7 @@ class CreateFire_DieEffect(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = projectile_type.Fire(weapon.angle,weapon.pos,weapon.team)
+        projectile = projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle)
 
         projectile = weapon.add_projectile(projectile)
 
@@ -161,6 +190,7 @@ UPGRADES[2] = CreateFire()
 UPGRADES[3] = CreateLune()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
+UPGRADES[12] = Randomizer()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()

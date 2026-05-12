@@ -5,6 +5,7 @@ class Weapon :
     def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team,player):
         
         self.loading_time_refill = refill_time
+        self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
         self.team=team
         self.id = id
@@ -21,6 +22,7 @@ class Weapon :
         self.speed_mult = 1
         self.add_rebond = False
         self.add_damage = 0
+        self.randomize_angle = False
 
         self.angle = 0
         self.pos = 0
@@ -50,7 +52,9 @@ class Weapon :
         self.size_mult = 1
         self.add_damage = 0
         self.add_rebond = False
+        self.randomize_angle = False
         self.nbr_upgrades_trigger = 0
+        self.loading_time_refill_current = self.loading_time_refill
 
         if self.idx == self.nbr_spells_max :
             self.idx = 0
@@ -134,7 +138,7 @@ class Weapon :
 
         if self.test_if_last_spell_of_weapon() :
             self.idx = 0
-            self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill)
+            self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill_current)
             
         else :
             self.next_allowed_shot = now+self.time_spells_take

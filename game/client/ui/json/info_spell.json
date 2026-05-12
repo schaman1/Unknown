@@ -25,7 +25,7 @@
         "description":["Multipli la vitesse",
                         "du projectile par 2."],
         "time_reload": 0,
-        "degat":-2
+        "degat":0
     },
     "SPELL11":{
         "type":"augment",
@@ -33,7 +33,24 @@
         "description":["Ajoute 'rebond' au",
                     "prochain projectile."],
         "time_reload": 0,
+        "degat":-2
+    },
+    "SPELL12":{
+        "type":"augment",
+        "name":"Rebond",
+        "description":["Reduit le temps",
+                        "de recharge totale",
+                        "de 0.4"],
+        "time_reload": -0.2,
         "degat":0
+    },
+    "SPELL13":{
+        "type":"augment",
+        "name":"Damage Plus",
+        "description":["Ajoute 3 degat",
+                        "au prochain projectile."],
+        "time_reload": 0,
+        "degat":3
     },
     "SPELL20":{
         "type":"augment",
@@ -101,8 +118,8 @@
         "description":["En appyant sur j,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":1,
-        "spell_time":0.1
+        "time_reload":0.5,
+        "spell_time":0.2
     },
     "WEAPON2":{
         "type":"weapon",
@@ -110,8 +127,8 @@
         "description":["En appyant sur k,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":1,
-        "spell_time":0.1
+        "time_reload":0.5,
+        "spell_time":0.2
     },
     "WEAPON3":{
         "type":"weapon",
@@ -119,8 +136,8 @@
         "description":["En appyant sur i,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":1,
-        "spell_time":0.1
+        "time_reload":0.5,
+        "spell_time":0.2
     }
 
 }
