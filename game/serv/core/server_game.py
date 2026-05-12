@@ -170,6 +170,7 @@ class Server_game(Server) :
     def add_elements_to_game(self):
 
         self.add_object("HEALER",1,1400,5300,0)
+        self.add_object("SPELL",12,3000,5700,10)
         self.add_object("UpgradeWeapon",2,5500,16000,0)
 
     def trigger(self,chunk,id,sender):

@@ -1,16 +1,24 @@
-import time,math
+import time,math,random
 from shared.constants.world import RATIO
 from serv.domain.mob.team import Team
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob):
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False):
         self.pos_x,self.pos_y = pos
         self.projectile_spawn_when_die = []
         self.life_time = life_time
         self.id=None
         self.spawn_time = time.time()
-        self.angle = angle
+
+        self.randomize_angle = randomize_angle
+
+        if self.randomize_angle :
+            self.angle = random.randint(1,360)
+        else :
+            self.angle = angle
+
+
         self.speed = int(speed)
         self.id_img = id_img
         self.width = width
@@ -31,8 +39,14 @@ class Projectile :
 
     def update_angle_pos(self,new_angle,new_pos):
         self.pos_x,self.pos_y=new_pos
-        self.angle=new_angle
-        print("Created with value : ",self.angle,self.vx,self.pos_x,self.pos_y)
+
+        if self.randomize_angle :
+            self.angle = random.randint(1,360)
+        else :
+            self.angle = new_angle
+
+        self.spawn_time = time.time()
+
         self.load()
 
     def load(self):
@@ -70,144 +84,11 @@ class Projectile :
         if self.is_dead is False:
             self.move_y(map,dt)
 
-#    def complete_mov_x(self,s,deltax,complete_mov_to_touch_wall):
-#        #print("before x : ",self.pos,self.id)
-#
-#        self.pos_x+=complete_mov_to_touch_wall
-#
-#        self.pos_y+=((complete_mov_to_touch_wall+deltax)/self.vx)*self.vy#*(self.return_signe(self.pos_y))
-#        #print(self.pos)
-#
-#    def complete_mov_y(self,s,rest_y_to_complete_mouv,complete_mov_to_touch_wall):
-#        #print("before y : ",self.pos,self.id)
-#        self.pos_y += complete_mov_to_touch_wall
-#
-#        self.pos_x-=(rest_y_to_complete_mouv-complete_mov_to_touch_wall)/self.vy*self.vx#*(self.return_signe(self.pos_x))
-#        #print(self.pos)
-#
-#    def move_y(self,dt,map):
-#
-#        s = self.return_signe(self.vy)
-#        remaining = self.vy*s*dt
-#        old_pos = self.pos_y
-#
-#        dist = self.base_movement
-#
-#        tmp_death = False
-#
-#        while remaining > 0 :
-#
-#            for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
-#
-#                if tmp_death is False and self.touch_wall(j,0,map) :
-#                    
-#                    rest_y_to_complete_mouv = self.vy*dt - (self.pos_y-old_pos)
-#
-#                    complete_mov_to_touch_wall = (self.base_movement - (self.pos_y*s)%self.base_movement)*s
-#                    if complete_mov_to_touch_wall*s<=remaining :
-#
-#                        self.complete_mov_y(s,rest_y_to_complete_mouv,complete_mov_to_touch_wall)
-#
-#                        #Rebond en y
-#                        self.vy=-self.vy
-#                        #s =-s
-#                        self.angle = (180-self.angle)%360
-#                        #Complete la dist pr toucher le mur
-#                        #print("Die on y")
-#                        tmp_death = True
-#
-#            if tmp_death :
-#                if self.rebond :
-#                    self.to_update = True
-#                    remaining = 0
-#
-#                else :
-#                    self.is_dead = True
-#                    remaining=0
-#
-#            if dist < remaining :
-#                self.pos_y+=dist*s
-#                remaining -= self.base_movement
-#
-#            else :
-#                self.pos_y+= remaining*s
-#                remaining -= self.base_movement
-#
-#            #if self.is_dead:
-#            #    print(self.pos_y)
-#
-#    def move_x(self,dt,map):
-#
-#        s = self.return_signe(self.vx)
-#        old_pos = self.pos_x
-#        remaining = self.vx*s*dt
-#
-#        #self.pos_x+=remaining*s
-#        #return
-#
-#        dist = self.base_movement
-#
-#        tmp_death = False
-#
-#        while remaining > 0 :
-#
-#            for j in range(0,(self.base_movement+1)*s,self.base_movement*s): #+1 car doit compter le dernier
-#
-#                if tmp_death is False and self.touch_wall(0,j,map) :
-#
-#                    #Complete la dist
-#
-#                    complete_mov_to_touch_wall = (self.base_movement - (self.pos_x*s)%self.base_movement)*s
-#
-#                    if complete_mov_to_touch_wall*s<=remaining :
-#
-#                        deltax = (self.pos_x-old_pos)
-#
-#                        #print("Remaining :",remaining,self.vx*s*dt,j)
-#                        #print("Before : ",self.angle,self.vx,self.pos_x,self.pos_y)
-#                        self.complete_mov_x(s,deltax,complete_mov_to_touch_wall)
-#                        #print("After : ",self.pos_x,self.pos_y)
-#
-#                        #Rebond en x
-#                        self.vx=-self.vx
-#                        #s =-s
-#                        self.angle = (-self.angle)%360 #Rotate the spell
-#
-#                        #print("old x : ",self.pos_x)
-#                        #print("New x :",self.pos_x+dist*s)
-#                        #print("normal : ",self.pos_x+dist*s)
-#
-#                        tmp_death = True
-#                        
-#            if tmp_death is True:
-#
-#                if self.rebond :
-#                    
-#                    self.to_update = True
-#                    remaining = 0
-#
-#                    #self.pos_x+=dist*s
-#
-#                else :
-#                    self.is_dead = True
-#                    remaining = 0
-#
-#            elif dist < remaining :
-#                self.pos_x+=dist*s
-#                remaining -= self.base_movement
-#            
-#            else :
-#                self.pos_x+= remaining*s
-#                remaining -= self.base_movement
-
-    #def touch_wall(self,i,j,map):
-    #    return self.is_type(map.return_type(self.convert_to_base(self.pos_y+i),self.convert_to_base(self.pos_x+j)),map.dur)
-    
     def move_y(self,map,dt):
 
         vy = self.vy
 
-        type = map.dur
+        type = map.dur_and_can_climb
 
         s = self.return_signe(vy)
         remaining = int(vy*s*dt)
@@ -253,7 +134,7 @@ class Projectile :
 
         vx = self.vx
 
-        type = map.dur
+        type = map.dur_and_can_climb
 
         s = self.return_signe(vx)
         remaining = int(vx*s*dt)

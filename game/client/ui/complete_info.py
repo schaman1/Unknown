@@ -129,7 +129,7 @@ class CompleteInfo:
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"Rechargement totale : {dico_info["time_reload"]} sec",True,(0,0,0))
+            text_life = self.font_small.render(f"Rechargement complet : {dico_info["time_reload"]} sec",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
         #pos_y+=self.delta_y_other_info
 

@@ -49,6 +49,7 @@ class WeaponBag(Weapon):
         self.fill_slot(0,upgrades.TripleSpell())
         self.fill_slot(1,upgrades.AddSpeed())
         self.fill_slot(2,upgrades.AddRebond())
+        self.fill_slot(9,upgrades.AddDamage())
 
 class Weapon1(Weapon) :
 
