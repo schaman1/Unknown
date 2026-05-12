@@ -7,8 +7,9 @@ class interactable:
         #Pos finale
 
         self.img = None
-
+        self.bg = None
         self.img_trigger = []
+
         self.len_anim = 0
         self.current_dt = 0
         self.current_idx = 0
@@ -16,10 +17,10 @@ class interactable:
         self.price = price
         self.price_color = (250,250,250)
         self.size_img = (None,None)
+        self.delta_size_bg = None
 
         self.trigger = False
         
-
         self.pos_x = pos_x
         self.pos_y = pos_y
 
@@ -38,6 +39,10 @@ class interactable:
     def blit(self,screen,x,y,dt):
 
         pos = self.ret_pos_blit(x,y)
+
+        if self.bg :
+            pos_bg = [pos[0] - self.delta_size_bg,pos[1]-self.delta_size_bg]
+            screen.blit(self.bg,pos_bg)
 
         if self.trigger :
             screen.blit(self.img_trigger[self.current_idx],pos)
@@ -61,7 +66,7 @@ class interactable:
 
             screen.blit(self.text_price,pos)
             
-    def init_img(self,path,path_trigger=None,len_anim = 0):
+    def init_img(self,path,path_bg=None,path_trigger=None,len_anim = 0):
         self.img = pygame.image.load(path)
         self.img = pygame.transform.scale(self.img,self.size_img)
 
@@ -70,6 +75,11 @@ class interactable:
             img = pygame.image.load(path_trigger)
             img = pygame.transform.scale(img,(self.size_img[0]*2,self.size_img[1]*2))
             self.decoupe_img(img,self.img_trigger,self.size_img)
+
+        if path_bg!=None :
+            self.bg = pygame.image.load(path_bg)
+            size_bg = (self.size_img[0] + 2*self.delta_size_bg,self.size_img[1]+ 2*self.delta_size_bg)
+            self.bg = pygame.transform.scale(self.bg,size_bg)
 
     def ret_pos_blit(self,x,y):
 

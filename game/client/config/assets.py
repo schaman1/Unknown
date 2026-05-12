@@ -23,6 +23,7 @@ for y in range(LEN_Y_CHUNK):
 BTN = resource_path("assets/ui/buttons/btn_default.png")
 BTN_HOVER = resource_path("assets/ui/buttons/btn_hover.png")
 ICONE_SPELL = resource_path("assets/ui/buttons/icone_spell.png")
+ICONE_AUGMENT_WEAPON = resource_path("assets/ui/buttons/icone_augment_weapon.png")
 
 SPELLS = {}
 SPELLS[0]=None #POS 0
