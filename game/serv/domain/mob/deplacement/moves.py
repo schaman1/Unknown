@@ -67,7 +67,9 @@ class Movable:
         s = self.return_signe(vy)
         remaining = int(vy*s*dt)
 
-        while remaining > 0 :
+        touch_wall = False
+
+        while remaining > 0 and not touch_wall:
 
             #print("remaining",remaining)
 
@@ -79,8 +81,11 @@ class Movable:
 
                     dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
 
-                    if dist < remaining :
+                    if dist <= remaining :
+                        touch_wall = True
                         self.vitesse_y = 0
+
+                    break #To stop loop for i in range
 
             if dist > remaining :
                 self.pos_y+=remaining*s
@@ -107,7 +112,9 @@ class Movable:
         s = self.return_signe(vx)
         remaining = int(vx*s*dt)
 
-        while remaining > 0 :
+        touch_wall = False
+
+        while remaining > 0 and not touch_wall:
 
             dist = self.base_movement
             for j in range(-self.half_height,self.half_height+1,self.base_movement): #+1 car doit compter le dernier
@@ -116,9 +123,11 @@ class Movable:
 
                     dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
 
-                    if dist < remaining :
-                     
+                    if dist <= remaining :
+                        touch_wall = True
                         self.vitesse_x = 0
+
+                    break #To stop loop for i in range
 
             if dist > remaining :
                 self.pos_x+=remaining*s

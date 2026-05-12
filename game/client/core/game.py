@@ -134,7 +134,9 @@ class Game :
             self.player_all.blit_infos(screen,screen_size,mouse_pos)
 
             if self.spell_blit_mouse!=None:
-                screen.blit(self.spell_blit_mouse,mouse_pos)
+                pos = [mouse_pos[0]-self.cell_size,mouse_pos[1]-self.cell_size]
+
+                screen.blit(self.spell_blit_mouse,pos)
 
     def draw(self,screen,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y"""
