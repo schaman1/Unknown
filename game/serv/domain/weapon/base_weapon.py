@@ -48,6 +48,7 @@ class Weapon :
     def reset_values(self):
         self.speed_mult = 1
         self.size_mult = 1
+        self.add_damage = 0
         self.add_rebond = False
         self.nbr_upgrades_trigger = 0
 
