@@ -44,6 +44,8 @@ SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
 HEALER = resource_path("assets/objects/healer.png")
 HEALER_TRIGGER = resource_path("assets/objects/healer_trigger.png")
 ADD_SLOT_WEAPON = resource_path("assets/objects/add_slot.png")
+CHEST_CLOSE = resource_path("assets/objects/chest_close.png")
+CHEST_OPEN = resource_path("assets/objects/chest_open.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 

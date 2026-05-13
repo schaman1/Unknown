@@ -7,7 +7,6 @@ RATIO = 100
 SPAWN_POINT = (8*RATIO*SCALE_BLOC,8*RATIO*SCALE_BLOC)
 LEN_DEATH = 5
 
-
 NBR_CELL_CAN_SEE = 20 #Nbr de cellule que peut voir
 PADDING_CANVA = 2  #Combien de cellule en plus on charge autour de l'ecran du client
 
@@ -22,5 +21,6 @@ NBRWEAPONSTOCK = 4
 TYPE_OBJECT = {
     "SPELL":0,
     "HEALER":1,
-    "UpgradeWeapon":2
+    "UpgradeWeapon":2,
+    "Chest":3,
 }
