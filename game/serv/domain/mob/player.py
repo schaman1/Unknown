@@ -4,14 +4,14 @@ from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import smooth_jump,input_handler
 from serv.domain.mob.team import Team
-from serv.config.Default_values import Player_money_start
+from serv.config import Default_values
 from shared.constants.world import LEN_DEATH
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = 100, damage = 25, money=Player_money_start): 
+    def __init__(self,pos,id,host = False, hp = Default_values.PLAYER_LIFE, damage = 25, money=Default_values.Player_money_start): 
 
         super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player,len_dead = LEN_DEATH)
 
