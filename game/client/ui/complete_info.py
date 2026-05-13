@@ -98,14 +98,14 @@ class CompleteInfo:
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            if dico_info["rebond"]==0:
-                eph = "non"
-            else :
-                eph = "oui"
-
-            text_life = self.font_small.render(f"rebond : {eph}",True,(0,0,0))
-            self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
-            pos_y+=self.delta_y_other_info
+            #if dico_info["rebond"]==0: #PUT THIS IN ANNEXE
+            #    eph = "non"
+            #else :
+            #    eph = "oui"
+#
+            #text_life = self.font_small.render(f"rebond : {eph}",True,(0,0,0))
+            #self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
+            #pos_y+=self.delta_y_other_info
 
             text_life = self.font_small.render(f"Rechargement : {dico_info["time_reload"]} sec",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))

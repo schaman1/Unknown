@@ -1,1 +1,4 @@
-Intro fix issue. Have to stay in_interaction during intro but then leave it when end
+Do an event like Dash
+Try doing a beam !, create sprite each 0.1 dt and deals 1 damage maybe
+
++ BDF+effect 1 line too much

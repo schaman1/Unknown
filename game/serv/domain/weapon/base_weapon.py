@@ -121,13 +121,14 @@ class Weapon :
 
             if spell != None : 
 
-                space_take,projectile,id_event_player = spell.trigger(self)
+                space_take,projectiles,id_event_player = spell.trigger(self)
 
                 self.nbr_upgrades_trigger+= space_take
 
-                if projectile!=None :
+                if projectiles!=None and projectiles != [] :
                     
-                    projectile_shot.append(projectile)
+                    for i in range(len(projectiles)):
+                        projectile_shot.append(projectiles[i])
 
                 if id_event_player!=None:
                     event_player.append(id_event_player)

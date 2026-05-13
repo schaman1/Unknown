@@ -17,7 +17,7 @@ def AddProjectileWhenDie(projectile,weapon):
 
     projectile.projectile_spawn_when_die=next_projectiles
     
-class CreateMagic(Upgrade):
+class CreateMagic(Upgrade): #Not use
 
     def __init__(self):
 
@@ -27,8 +27,7 @@ class CreateMagic(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
-        return 1,projectile,None
-
+        return 1,[projectile],None
 
 class CreateFire(Upgrade):
 
@@ -40,7 +39,7 @@ class CreateFire(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
-        return 1,projectile,None
+        return 1,[projectile],None
     
 class CreateLune(Upgrade):
 
@@ -52,7 +51,30 @@ class CreateLune(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
 
-        return 1,projectile,None
+        return 1,[projectile],None
+    
+class CreatePompe(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=4,time_take = weapons.POMPE_RELOAD_TIME)
+
+    def trigger(self,weapon):
+
+        projectiles = []
+
+        angle = (weapon.angle - weapons.POMPE_DISPERSION)%360
+        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+        
+        angle+= weapons.POMPE_DISPERSION
+        angle = angle%360
+        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+        
+        angle+= weapons.POMPE_DISPERSION
+        angle = angle%360
+        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+
+        return 1,projectiles,None
     
 class AddSpeed(Upgrade):
 
@@ -145,7 +167,7 @@ class CreateFire_DieEffect(Upgrade):
 
         AddProjectileWhenDie(projectile,weapon)
 
-        return 1,projectile,None
+        return 1,[projectile],None
     
 class SmallDash(Upgrade):
 

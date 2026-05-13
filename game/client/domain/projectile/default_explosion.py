@@ -42,7 +42,7 @@ class DefaultExplosion:
             self.time_remaining = 0.2+time.perf_counter()
 
             for i in range(4):
-                self.width,self.height = weapon.PROJECTILE_0_WIDTH,weapon.PROJECTILE_2_HEIGHT
+                self.width,self.height = weapon.PROJECTILE_2_WIDTH,weapon.PROJECTILE_2_HEIGHT
                 img = pygame.image.load(assets.PROJECTILE_0[i]).convert_alpha() #convert_alpha() pour le fond vide
                 img = pygame.transform.scale(img,(self.width*self.cell_size,self.height*self.cell_size)) 
                 rotated_img = pygame.transform.rotate(img, projectile.angle)

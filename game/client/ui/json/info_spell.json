@@ -7,7 +7,7 @@
         "speed":50,
         "rebond":0,
         "time_reload": 0.1,
-        "degat":5
+        "degat":4
     },
     "SPELL3":{
         "type":"projectile",
@@ -17,6 +17,17 @@
         "speed":0,
         "rebond":0,
         "time_reload": 0.2,
+        "degat":7
+    },
+    "SPELL4":{
+        "type":"projectile",
+        "name":"Pompe",
+        "description":["Tir 3 puissants",
+                        "projectiles."],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
         "degat":3
     },
     "SPELL10":{
@@ -101,7 +112,8 @@
         "life":"Not decided yet",
         "speed":99999,
         "rebond":0,
-        "time_reload":1
+        "time_reload":1,
+        "degat":0
     },
     "WEAPON0":{
         "type":"weapon",
