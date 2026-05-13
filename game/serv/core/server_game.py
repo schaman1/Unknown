@@ -1,6 +1,7 @@
 from shared.constants import fps,world
 import pygame
 from serv.core.server import Server
+from serv.config.add_objects_begin import OBJECTS
 
 class Server_game(Server) :
     """Contient tout le game = Mere. Update les particules"""
@@ -150,8 +151,14 @@ class Server_game(Server) :
 
                 self.projectile_manager.add_projectile_create(projectile)
 
-    def add_object(self,type,id_categorie,pos_x,pos_y,price=0):
+    def add_object(self,object_info):
+        
         """Create object + id_categorie = id du sous type genre spell, id=1 -> = bdf / 40 = dash"""
+        type = object_info[0]
+        id_categorie = object_info[1]
+        pos_x = object_info[2]
+        pos_y = object_info[3]
+        price= object_info[4]
 
         chunk = self.convert_to_chunk(pos_x,pos_y)
 
@@ -169,10 +176,9 @@ class Server_game(Server) :
         
     def add_elements_to_game(self):
 
-        self.add_object("HEALER",1,1400,5300,0)
-        self.add_object("SPELL",12,3000,5700,10)
-        self.add_object("Chest",1,3000,16000,0)
-        self.add_object("UpgradeWeapon",2,5500,16000,0)
+        for el in OBJECTS : #OBJECTS come from the add_objects_begin
+
+            self.add_object(el)
 
     def trigger(self,chunk,id,sender):
         
