@@ -49,3 +49,18 @@ class Lune(Projectile) :
                          damage = weapons.LUNE_DAMAGE,
                          team=team,
                          randomize_angle=randomize)
+        
+class Pompe(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize):
+
+        self.life_time = weapons.POMPE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.POMPE_V,
+                         id_img = 4,
+                         width = weapons.POMPE_WIDTH,
+                         height = weapons.POMPE_HEIGHT,
+                         damage = weapons.POMPE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize)
