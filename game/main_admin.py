@@ -1,7 +1,9 @@
 import pygame
 from shared.constants import world
+from serv.config import Default_values
 from serv.config.add_objects_begin import OBJECTS
 from serv.config.add_objects_begin_admin import OBJECTS_ADDING
+
 pygame.init()
 
 from client.core.main import Main
@@ -9,7 +11,10 @@ from client.core.main import Main
 #Change values to have access to all
 def change_values():
 
-    world.SPAWN_POINT = (32400,26100)
+    world.SPAWN_POINT = (32400,25900)
+
+    Default_values.Player_money_start = 999999
+    Default_values.PLAYER_LIFE = 99999
 
     for e in OBJECTS_ADDING:
         OBJECTS.append(e)
