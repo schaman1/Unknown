@@ -171,6 +171,7 @@ class Server_game(Server) :
 
         self.add_object("HEALER",1,1400,5300,0)
         self.add_object("SPELL",12,3000,5700,10)
+        self.add_object("Chest",1,3000,16000,0)
         self.add_object("UpgradeWeapon",2,5500,16000,0)
 
     def trigger(self,chunk,id,sender):
@@ -200,6 +201,17 @@ class Server_game(Server) :
                 self.send_data_all([16,chunk,id]) #Destroy
                 
                 self.send_data([10,info_weapon],sender)
+
+            elif action == "OpenChest":
+
+                self.send_data_all([16,chunk,id]) #Destroy
+                
+                id,ele,type = self.objects_manager.spawn_random_spell(element.id_cat,chunk,element.pos_x,element.pos_y)
+                #Spawn random object
+
+                data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
+                self.send_data_all(data)
+
 
     def throw_spell(self,id_weapon,id_spell,sender):
 

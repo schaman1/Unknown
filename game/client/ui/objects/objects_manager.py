@@ -1,8 +1,7 @@
 from shared.constants import world
 #from client.config.size_display import CELL_SIZE
-from client.ui.objects.object_type import spell_on_ground,healer_spawn,upgrade_weapon
-import pygame
-import math
+from client.ui.objects.object_type import spell_on_ground,healer_spawn,upgrade_weapon,chest
+import pygame,math,random
 
 class objects_manager:
 
@@ -44,11 +43,20 @@ class objects_manager:
 
             self.chunk_objects[chunk][id] = upgrade_weapon(img,pos_x,pos_y,price)
 
+        elif type==world.TYPE_OBJECT["Chest"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = chest(img,pos_x,pos_y,price)
+
     def destroy_object(self,chunk,id):
 
-        print("Delete : ",chunk,id)
+        #print("Delete : ",chunk,id)
+        if self.chunk_objects[chunk][id].stay_after_use :
+            self.chunk_objects[chunk][id].use()
 
-        del self.chunk_objects[chunk][id]
+        else :
+            del self.chunk_objects[chunk][id]
 
     def convert_pos(self,x,y):
 
@@ -72,7 +80,7 @@ class objects_manager:
 
                 self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y,dt)
 
-                if dist<self.distance_max_trigger:
+                if self.chunk_objects[pos][id_objects].can_trigger and dist<self.distance_max_trigger:
 
                     self.blit_interact_info(screen,self.chunk_objects[pos][id_objects],x,y)
 
@@ -102,7 +110,7 @@ class objects_manager:
 
                 dist = self.distance(pos_player,element)
 
-                if dist<nearest_el[0] :
+                if dist<nearest_el[0] and element.can_trigger:
 
                     nearest_el = [dist,[chunk,id]]
                 

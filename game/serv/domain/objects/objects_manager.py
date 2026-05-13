@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest
 
 class objects_manager:
 
@@ -23,7 +23,7 @@ class objects_manager:
             for j in range(world.LEN_Y_CHUNK) :
                 self.chunk_objects[i*100+j] = {}
 
-    def add_object(self,ele_idx,id_categorie,pos_x,pos_y,chunk,price):
+    def add_object(self,ele_idx,id_categorie,pos_x,pos_y,chunk,price): #Categorie is used for chest
 
         id = self.generate_id()
 
@@ -51,6 +51,14 @@ class objects_manager:
 
             return id,ele
         
+        elif ele_idx=="Chest":
+
+            ele = Chest(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
         else :
             print("Unknown type in add_object")
             return None
@@ -71,3 +79,22 @@ class objects_manager:
                 self.destroy_object(chunk,id)
 
             return element.trigger_value,chunk,id,element
+        
+    
+    def spawn_random_spell(self,cat,chunk,x,y):
+
+        if cat == 0 : #Means all
+
+            return
+        
+        elif cat == 1: #Means spell
+
+            id = self.generate_id()
+            spell = spell_on_ground(None,x,y,0,randomize=True)
+
+            self.chunk_objects[chunk][id] = spell
+
+            return id,spell,"SPELL"
+        
+        elif cat == 2: #Mea ns special = Upgade weapon
+            return

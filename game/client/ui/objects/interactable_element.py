@@ -7,8 +7,12 @@ class interactable:
         #Pos finale
 
         self.img = None
+        self.img_use = None
+        self.stay_after_use = False
         self.bg = None
         self.img_trigger = []
+
+        self.can_trigger = True
 
         self.len_anim = 0
         self.current_dt = 0
@@ -65,6 +69,11 @@ class interactable:
             pos = pos_object[0]+self.size_img[0]//2 - size_text[0]//2,pos_object[1]+self.size_img[1]
 
             screen.blit(self.text_price,pos)
+
+    def init_use_img(self,path):
+        self.img_use = pygame.image.load(path)
+        self.img_use = pygame.transform.scale(self.img_use,self.size_img)
+        self.stay_after_use = True
             
     def init_img(self,path,path_bg=None,path_trigger=None,len_anim = 0):
         self.img = pygame.image.load(path)
@@ -91,3 +100,8 @@ class interactable:
 
                 rect = pygame.Rect(j,i,size[0],size[1])
                 dest.append(img.subsurface(rect).copy())
+
+    def use(self):
+        self.price = 0
+        self.can_trigger = False
+        self.img = self.img_use
