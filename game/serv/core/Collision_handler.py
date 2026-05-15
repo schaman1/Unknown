@@ -18,11 +18,13 @@ class CollisionHandler:
 
                     for player in players.values() :
 
-                        touch = self.collision(projectile,player)
+                        if not player.is_dead :
 
-                        if touch :
-                            #print("Player touch")
-                            self.player_take_damage(projectile,player)
+                            touch = self.collision(projectile,player)
+
+                            if touch :
+                                #print("Player touch")
+                                self.player_take_damage(projectile,player)
                         
                 if projectile.team!=Team.Mob:
 
@@ -75,23 +77,38 @@ class CollisionHandler:
         old_pv = player.life
         die = player.take_damage(projectile.damage)
         delta_life = old_pv-player.life
+
+        if delta_life<0:
+            print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
         
-        self.effect_send.append([player.id,delta_life,chunk])
+        else :
+            self.effect_send.append([player.id,delta_life,chunk])
 
-        if die:
-            print("PLayer is dead")
-            self.die_send.append([player.id,chunk,player.die_len])
+            if die:
+                print("PLayer is dead")
+                self.die_send.append([player.id,chunk,player.die_len])
 
-        projectile.is_dead = True
+            projectile.is_dead = True
 
     def player_take_damage_no_projectile(self,damage,player,chunk=99):
 
-        if damage != 0:
-            
-            old_pv = player.life
-            player.take_damage(damage)
-            delta_life = old_pv-player.life        
+        if player.is_dead :
+            return
+
+        old_pv = player.life
+        die = player.take_damage(damage)
+        delta_life = old_pv-player.life
+
+        if delta_life<0:
+            print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
+        
+        else :
             self.effect_send.append([player.id,delta_life,chunk])
+
+            if die:
+                print("PLayer is dead")
+                self.die_send.append([player.id,chunk,player.len_dead])
+
     
     def add_ent_touch(self,ent,projectile,chunk):
 

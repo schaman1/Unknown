@@ -22,7 +22,6 @@ class Animation:
                                        "left":[],
                                        "time":0.5}}
 
-
         self.state = "idle"
         self.direction = "right"
 
@@ -74,7 +73,9 @@ class Animation:
             img_running = pygame.transform.scale(img_running,(self.width*2,self.height*2))
             self.decoupe_img(img_running,self.animation["running"],size)
 
-            self.add_tombe(cell_size)
+            img_death = pygame.image.load(assets.PLAYER_DEATH)
+            img_death = pygame.transform.scale(img_death,(self.width*2,self.height*2))
+            self.decoupe_img(img_running,self.animation["death"],size)
 
         elif entity_name == "pnj" :
 
@@ -191,8 +192,10 @@ class Animation:
         self.fct_to_do = self.end_respawn
 
     def set_to_death(self,duree):
-        self.animation["death"]["time"]=duree-2 #1 car les 4 frames de respawn durent 1 sec
 
+        print("I died")
+
+        self.animation["death"]["time"]=duree-2 #1 car les 4 frames de respawn durent 1 sec
         self.state = "death"
         self.frame = 0
         self.time_start_frame = 0
