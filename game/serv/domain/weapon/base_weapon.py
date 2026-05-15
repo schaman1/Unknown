@@ -101,7 +101,6 @@ class Weapon :
             return 
 
         self.reset_values()
-
         return self.create_projectile(angle,pos,now)
 
     def create_projectile(self,angle,pos,now=time.perf_counter()):
@@ -112,7 +111,7 @@ class Weapon :
         self.angle = angle
         self.pos = pos
 
-        self.time_spells_take = 0
+        time_spells_take = 0
 
         while self.nbr_upgrades_trigger < self.nbr_upgrades_trigger_max and self.idx < self.nbr_spells_max :
 
@@ -133,16 +132,19 @@ class Weapon :
                 if id_event_player!=None:
                     event_player.append(id_event_player)
 
-                self.time_spells_take+=spell.time_take
+                time_spells_take+=spell.time_take
 
-        self.time_spells_take+=self.loading_time_spell
+        time_spells_take+=self.loading_time_spell
 
         if self.test_if_last_spell_of_weapon() :
             self.idx = 0
-            self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill_current)
+            print("Add loading refill time",projectile_shot)
+            self.next_allowed_shot = max(self.next_allowed_shot,now+max(time_spells_take,self.loading_time_refill_current))
+            print("Next allowed shot = ",self.next_allowed_shot)
             
         else :
-            self.next_allowed_shot = now+self.time_spells_take
+            self.next_allowed_shot = max(self.next_allowed_shot,now+time_spells_take)
+            print("Next allowed shot = ",self.next_allowed_shot)
 
         return [projectile_shot,event_player]
     

@@ -56,7 +56,7 @@ class DefaultExplosion:
             Imgs = projectile.imgs
         
         else :
-            print("Unknown weapon id in client for explosion, id : ",projectile.id_img)
+            print("Unknown projectile id in client for explosion, id : ",projectile.id_img)
 
         return Imgs
 

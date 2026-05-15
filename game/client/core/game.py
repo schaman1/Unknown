@@ -204,6 +204,20 @@ class Game :
 
             return -1,None,None
         
+    def stop_blit_info(self):
+        """Stop blit info and return True if effectively stop blitting info"""
+
+        if self.blit_info == True :
+            self.blit_info = False
+            if self.blit_info and self.spell_blit_mouse != None:
+                
+                self.player_all.me.weapons.stop_holding_spell()
+                self.spell_blit_mouse=None
+
+            return True
+        return False
+
+        
     def trigger_info_key(self):
 
         if self.blit_info and self.spell_blit_mouse != None:

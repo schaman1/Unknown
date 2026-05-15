@@ -12,6 +12,7 @@ class Projectile :
         self.spawn_time = time.time()
 
         self.randomize_angle = randomize_angle
+        self.delta_angle = 0
 
         if self.randomize_angle :
             self.angle = random.randint(1,360)
@@ -43,7 +44,7 @@ class Projectile :
         if self.randomize_angle :
             self.angle = random.randint(1,360)
         else :
-            self.angle = new_angle
+            self.angle = (new_angle+self.delta_angle)%360
 
         self.spawn_time = time.time()
 
