@@ -125,16 +125,20 @@ class Player_you(Mob) :
     #    self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
 
     def calcule_new_direction(self):
-        if self.key_active["left"] and not self.key_active["right"] :
-            self.animation.direction="left"
-            self.animation.update_state("running")
+        """Update l'anim si pas dans un dead state"""
+        
+        if not self.in_dead_state():
 
-        elif self.key_active["right"] and not self.key_active["left"]:
-            self.animation.direction="right"
-            self.animation.update_state("running")
+            if self.key_active["left"] and not self.key_active["right"] :
+                self.animation.direction="left"
+                self.animation.update_state("running")
 
-        elif not self.key_active["right"] and not self.key_active["left"]:
-            self.animation.update_state("idle")
+            elif self.key_active["right"] and not self.key_active["left"]:
+                self.animation.direction="right"
+                self.animation.update_state("running")
+
+            elif not self.key_active["right"] and not self.key_active["left"]:
+                self.animation.update_state("idle")
 
     def update_direction_look(self,new_direction):
         
@@ -165,6 +169,10 @@ class Player_you(Mob) :
     def move(self,delta):
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
+
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree,"in_death")
 
 class Player_not_you(Mob) :
 
@@ -202,3 +210,7 @@ class Player_not_you(Mob) :
 
         self.move_mob(new_pos)
 
+
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree,"in_death")

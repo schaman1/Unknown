@@ -20,27 +20,12 @@ class Skeleton(Mob) :
 
         #self.init_Img(cell_size)
 
-    #def init_Img(self,cell_size):
-    #    aseprite_path = resource_path("assets/sprites/monster/skeleton.aseprite")
-    #    
-    #    if os.path.exists(aseprite_path):
-    #        try:
-    #            reader = AsepriteReader(aseprite_path)
-    #            if reader.frames:
-    #                for surface in reader.frames:
-    #                    scaled_surf = pygame.transform.scale(surface, (10*cell_size, 10*cell_size))
-    #                    self.frame_perso.append(scaled_surf)
-    #                return
-    #        except Exception as e:
-    #            print(f"Failed to load aseprite: {e}")
-#
-    #    # Fallback to PNGs if aseprite fails
-    #    for i in range(4):
-    #        
-    #        Img = pygame.image.load(assets.MONSTER_IDLE[i]).convert_alpha() #convert_alpha() pour le fond vide
-    #        Img = pygame.transform.scale(Img,(10*cell_size,10*cell_size))
-    #        self.frame_perso.append(Img)
-#
+
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree,"death")
+
+
     def update_frame(self):
         self.frame_multiplier +=1
         if self.frame_multiplier >= 10 :
