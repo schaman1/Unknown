@@ -51,10 +51,10 @@ CHEST_UPGRADE_CLOSE = resource_path("assets/objects/chest_upgrade_close.png")
 CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
+PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
+PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
-
-PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
 
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 

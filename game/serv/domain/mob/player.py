@@ -5,7 +5,8 @@ from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import smooth_jump,input_handler
 from serv.domain.mob.team import Team
 from serv.config import Default_values
-from shared.constants.world import LEN_DEATH
+from shared.constants.world import LEN_DEATH_PLAYER
+import time
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
@@ -13,12 +14,14 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False,damage = 25): 
 
-        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH)
+        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH_PLAYER)
 
         self.money = Default_values.Player_money_start
         self.send_new_money = True #Pour initialiser
 
         self.damage_taken = damage
+        self.is_dead = False
+
         self.is_host = host
         self.vitesse_max = 100*self.base_movement
         self.distance_cast_spells = self.half_width
@@ -31,6 +34,7 @@ class Player(Mob) :
 
         self.time_shot_update = False
         self.respawn_at = [self.pos_x,self.pos_y]
+        self.time_respawn = 0
 
     def take_damage(self, amount):
         """Return True/False if is dead or not"""
@@ -49,14 +53,21 @@ class Player(Mob) :
         return False
 
     def die(self):
-        self.respawn()
+        self.is_dead = True
+        self.start_dead = time.perf_counter()+ self.len_dead
         self.update_money(-50)
 
     def respawn(self):
         #print("Respown location",self.respawn_at)
         self.pos_x = self.respawn_at[0]
         self.pos_y = self.respawn_at[1]
+        self.dead = False
         self.full_heal()
+
+    def check_respawn(self):
+
+        if self.is_dead and time.perf_counter()>=self.start_dead :
+            self.respawn()
 
     def can_pick_spell(self):
 
@@ -112,17 +123,24 @@ class Player(Mob) :
 
     def update_pos(self,map,dt,collision_handler):
 
-        self.handle_input(map,dt)
+        self.check_respawn()
 
-        self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
+        if not self.dead :
 
-        delta = self.return_delta_vitesse(map,dt)
+            self.handle_input(map,dt)
 
-        self.update_vitesse(dt)
+            self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
-        collision_handler.check_if_touch_damage_obj(map,dt,self)
+            delta = self.return_delta_vitesse(map,dt)
 
-        return delta
+            self.update_vitesse(dt)
+
+            collision_handler.check_if_touch_damage_obj(map,dt,self)
+
+            return delta
+        
+        else :
+            return (0,0)
     
     def handle_input(self,map,dt):
 
