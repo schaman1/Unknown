@@ -46,15 +46,6 @@ class Mob(Movable):
     def return_pos(self):
         return [self.pos_x,self.pos_y]
 
-    def check_if_touch_damage_obj(self,map,dt):
-        """Take damage. If stay 0.5 sec, die"""
-
-        if self.touch_element(map,map.kill):
-
-            damage = int(self.max_life*dt)*2
-
-            self.take_damage(damage)
-
     def full_heal(self):
 
         if self.life != self.max_life :

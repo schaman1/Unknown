@@ -267,7 +267,7 @@ class Game :
 
             id,chunk,delta_life = e
 
-            if id==99: #Magic number je sais mais nsm
+            if chunk==99: #Magic number je sais mais nsm
                 ent = self.player_all.dic_players[id]
             else :
                 ent = self.monsters.dic_monster[chunk][id]
