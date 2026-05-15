@@ -15,12 +15,16 @@ class Animation:
                                   "time":0.2},
                             "damage":{"duree":0.2,
                                       "time":0.2},
+                            "in_death":{"right":[],
+                                        "left":[],
+                                        "time":0
+                                        },
                             "death":{"right":[],
                                      "left":[],
-                                     "time":3},
+                                     "time":0},
                             "respawn":{"right":[],
                                        "left":[],
-                                       "time":0.5}}
+                                       "time":0}}
 
         self.state = "idle"
         self.direction = "right"
@@ -75,7 +79,16 @@ class Animation:
 
             img_death = pygame.image.load(assets.PLAYER_DEATH)
             img_death = pygame.transform.scale(img_death,(self.width*2,self.height*2))
-            self.decoupe_img(img_running,self.animation["death"],size)
+            self.decoupe_img(img_death,self.animation["in_death"],size)
+
+            l = len(self.animation["in_death"]["right"])
+
+            for i in range(l):
+                self.animation["death"]["right"].append(self.animation["in_death"]["right"][l-1])
+                self.animation["death"]["left"].append(self.animation["in_death"]["left"][l-1])
+
+                self.animation["respawn"]["right"].append(self.animation["in_death"]["right"][l-i-1])
+                self.animation["respawn"]["left"].append(self.animation["in_death"]["left"][l-i-1])
 
         elif entity_name == "pnj" :
 
@@ -143,7 +156,6 @@ class Animation:
             if self.frame == 0:
                 self.fct_to_do()
 
-
         #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
         img = self.animation[self.state][self.direction][self.frame]
 
@@ -184,19 +196,41 @@ class Animation:
         pass
 
     def end_respawn(self):
+        """Respawn anim"""
         self.state = "idle"
         self.fct_to_do = self.do_nothing
 
     def end_death(self):
+        """When is dead, do it"""
         self.state = "respawn"
         self.fct_to_do = self.end_respawn
 
-    def set_to_death(self,duree):
-
-        print("I died")
-
-        self.animation["death"]["time"]=duree-2 #1 car les 4 frames de respawn durent 1 sec
+    def end_in_death(self):
+        """When died, anim"""
         self.state = "death"
+        self.fct_to_do = self.end_death
+
+    def set_to_death(self,duree,state_beginning):
+
+
+        if state_beginning == "in_death":
+
+            self.animation["in_death"]["time"]=0.2 #1 car les 4 frames de respawn durent 1 sec
+            self.animation["death"]["time"]=(duree-0.2*8)/4 #1 car les 4 frames de respawn durent 1 sec
+            self.animation["respawn"]["time"]=0.2 #1 car les 4 frames de respawn durent 1 sec
+            self.fct_to_do = self.end_in_death
+
+        elif state_beginning == "death":
+            self.animation["death"] = duree-1
+            self.animation["respawn"] = 1
+            self.fct_to_do = self.end_death
+
+        self.state = state_beginning
         self.frame = 0
         self.time_start_frame = 0
-        self.fct_to_do = self.end_death
+
+    def dead_state(self):
+        if self.state == "in_death" or self.state == "death" or self.state == "respawn" :
+            return True
+        
+        return False

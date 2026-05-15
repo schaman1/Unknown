@@ -90,9 +90,6 @@ class Mob:
 
         self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
 
-        #self.pos_x = new_pos[0]
-        #self.pos_y = new_pos[1]
+    def in_dead_state(self):
 
-    def kill(self,duree):
-
-        self.animation.set_to_death(duree)
+        return self.animation.dead_state()

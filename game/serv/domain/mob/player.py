@@ -21,6 +21,7 @@ class Player(Mob) :
 
         self.damage_taken = damage
         self.is_dead = False
+        self.has_respawn = True
 
         self.is_host = host
         self.vitesse_max = 100*self.base_movement
@@ -54,6 +55,7 @@ class Player(Mob) :
 
     def die(self):
         self.is_dead = True
+        self.has_respawn = False
         self.start_dead = time.perf_counter()+ self.len_dead
         self.update_money(-50)
 
@@ -61,13 +63,19 @@ class Player(Mob) :
         #print("Respown location",self.respawn_at)
         self.pos_x = self.respawn_at[0]
         self.pos_y = self.respawn_at[1]
-        self.dead = False
+        self.has_respawn = True
+
+    def can_move_after_death(self):
+        self.is_dead = False
         self.full_heal()
 
     def check_respawn(self):
 
-        if self.is_dead and time.perf_counter()>=self.start_dead :
+        if not self.has_respawn and time.perf_counter()>=self.start_dead-0.2*4:
             self.respawn()
+
+        if self.is_dead and time.perf_counter()>=self.start_dead :
+            self.can_move_after_death()
 
     def can_pick_spell(self):
 
@@ -125,22 +133,19 @@ class Player(Mob) :
 
         self.check_respawn()
 
-        if not self.dead :
+        if not self.is_dead : #Permet que quand est mort, trigger plus les input du joueur
 
             self.handle_input(map,dt)
 
             self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
-            delta = self.return_delta_vitesse(map,dt)
+        delta = self.return_delta_vitesse(map,dt)
 
-            self.update_vitesse(dt)
+        self.update_vitesse(dt)
 
-            collision_handler.check_if_touch_damage_obj(map,dt,self)
+        collision_handler.check_if_touch_damage_obj(map,dt,self)
 
-            return delta
-        
-        else :
-            return (0,0)
+        return delta
     
     def handle_input(self,map,dt):
 
@@ -149,7 +154,6 @@ class Player(Mob) :
         for input in (val):
 
             self.move_from_input(input,dt,map)
-                
 
     def move_from_input(self,idx,dt,map):
 
@@ -260,6 +264,10 @@ class Player(Mob) :
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
 
     def shot(self,id_weapon):
+        """Shot but if is dead don't shot"""
+
+        if self.is_dead :
+            return
 
         angle = self.is_looking
 
