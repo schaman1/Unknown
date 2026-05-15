@@ -13,8 +13,8 @@ def change_values():
 
     world.SPAWN_POINT = (32400,25900)
 
-    Default_values.Player_money_start = 999999
-    Default_values.PLAYER_LIFE = 99999
+    Default_values.Player_money_start = 65535
+    Default_values.PLAYER_LIFE = 500
 
     for e in OBJECTS_ADDING:
         OBJECTS.append(e)

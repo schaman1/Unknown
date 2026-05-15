@@ -34,7 +34,7 @@ class Mob(Movable):
 
         self.life = hp
         self.max_life = hp
-        self.send_new_life = False
+        self.send_new_life = True #Pour initialiser
         self.id = id
         self.team = team
         self.dead = False

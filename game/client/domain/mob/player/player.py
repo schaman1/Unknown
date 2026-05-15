@@ -82,7 +82,7 @@ class Player_you(Mob) :
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
             (147,165,149),  # couleur (blanc)
-            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
+            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, int(self.life/self.max_life*100)*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
 
     def draw_money(self, screen):
