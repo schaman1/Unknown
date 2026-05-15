@@ -11,11 +11,11 @@ class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = Default_values.PLAYER_LIFE, damage = 25, money=Default_values.Player_money_start): 
+    def __init__(self,pos,id,host = False,damage = 25): 
 
-        super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player,len_dead = LEN_DEATH)
+        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH)
 
-        self.money = money
+        self.money = Default_values.Player_money_start
         self.send_new_money = True #Pour initialiser
 
         self.damage_taken = damage

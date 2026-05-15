@@ -138,13 +138,10 @@ class Weapon :
 
         if self.test_if_last_spell_of_weapon() :
             self.idx = 0
-            print("Add loading refill time",projectile_shot)
             self.next_allowed_shot = max(self.next_allowed_shot,now+max(time_spells_take,self.loading_time_refill_current))
-            print("Next allowed shot = ",self.next_allowed_shot)
             
         else :
             self.next_allowed_shot = max(self.next_allowed_shot,now+time_spells_take)
-            print("Next allowed shot = ",self.next_allowed_shot)
 
         return [projectile_shot,event_player]
     

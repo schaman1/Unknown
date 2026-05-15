@@ -19,8 +19,8 @@ class Mob:
         self.interpolate_mov = [(0,0,0),(0,0,0)]  #x,y,time
         self.delay = 1/fps.FPS_SEND_POS_CLIENT
         
-        self.life=100
-        self.max_life = 100
+        self.life = 100
+        self.max_life = 1
 
         self.animation = Animation(name,cell_size,size[0],size[1])
 
@@ -37,6 +37,10 @@ class Mob:
         return nbr//self.base_movement
     
     def update_life(self,amount):
+
+        if self.max_life == 1:
+            print("set Max life",amount)
+            self.max_life = amount
 
         if amount!=self.life :
 
