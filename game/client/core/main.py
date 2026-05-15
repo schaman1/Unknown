@@ -129,8 +129,9 @@ class Main:
                             self.key_command.append([3,2])
                             self.state.game.player_all.me.update_direction_look(2)
                         
-                        if event.key == pygame.K_ESCAPE and self.objClicked is None:
-                            self.escape_menu.toggle()
+                        if event.key == pygame.K_ESCAPE :# and self.objClicked is None: #What is the purpose of this ?
+                            if self.state.game.stop_blit_info() == False :
+                                self.escape_menu.toggle()
                         
                     elif self.objClicked != None:
 

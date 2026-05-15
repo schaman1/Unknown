@@ -12,8 +12,9 @@ class Upgrade:
         self.ratio = RATIO
 
 def AddProjectileWhenDie(projectile,weapon):
+    """If want to update it can make that if put dash after bdf, dash trigger when bdf touch ?"""
     
-    next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos,weapon.team)
+    next_projectiles,next_id_event_player = weapon.trigger_shot(weapon.angle,weapon.pos)
 
     projectile.projectile_spawn_when_die=next_projectiles
 
@@ -64,15 +65,20 @@ class CreatePompe(Upgrade):
         projectiles = []
 
         angle = (weapon.angle - weapons.POMPE_DISPERSION)%360
-        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        proj.delta_angle = -weapons.POMPE_DISPERSION
+        projectiles.append(weapon.add_projectile(proj))
         
         angle+= weapons.POMPE_DISPERSION
         angle = angle%360
-        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        projectiles.append(weapon.add_projectile(proj))
         
         angle+= weapons.POMPE_DISPERSION
         angle = angle%360
-        projectiles.append(weapon.add_projectile(projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)))
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        proj.delta_angle = weapons.POMPE_DISPERSION
+        projectiles.append(weapon.add_projectile(proj))
 
         return 1,projectiles,None
     
@@ -210,9 +216,11 @@ UPGRADES = {}
 #UPGRADES[1] = CreateMagic()
 UPGRADES[2] = CreateFire()
 UPGRADES[3] = CreateLune()
+UPGRADES[4] = CreatePompe()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
+UPGRADES[13] = AddDamage()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()

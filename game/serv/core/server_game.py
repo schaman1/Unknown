@@ -225,4 +225,4 @@ class Server_game(Server) :
 
         pos = self.lClient[sender].return_pos()
 
-        self.add_object("SPELL",spell_id_type,pos[0],pos[1],0)
+        self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))
