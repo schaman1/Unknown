@@ -39,7 +39,6 @@ class Mob:
     def update_life(self,amount):
 
         if self.max_life == 1:
-            print("set Max life",amount)
             self.max_life = amount
 
         if amount!=self.life :

@@ -37,7 +37,7 @@ class Monster(Mob):
 
     # --- Boucle de comportement basique pour tous les monstres ---
 
-    def update(self, map,lPlayer):
+    def update(self,map,dt,lPlayer,collision_handler):
         
         if not self.is_alive():
             self.state = "dead"
@@ -61,7 +61,7 @@ class Monster(Mob):
                 self.state = "moving"
             elif dist <= self.attack_radius:
                 # Attaquer le joueur
-                 self.attack(target)
+                 self.attack(target,collision_handler,dt)
 
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
@@ -146,12 +146,12 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer,dt):
+    def update(self, map, lPlayer,dt,collision_handler):
 
         if self.still_dead():
             return
         
-        super().update(map,lPlayer)
+        super().update(map,dt,lPlayer,collision_handler)
        # --- Deplacement selon l'état ---
         if self.state == "idle":
             self.idle_behavior(map,dt)
@@ -267,7 +267,13 @@ class Skeleton(Monster):
             self.direction = 1 if intended_vx > 0 else -1
             
     # attaque le joueur le plus proche    
-    def attack(self, lPlayer):
+    def attack(self, Player,collision_handler,dt):
        # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
-        for _ in range(self.attack_speed):
-            lPlayer.take_damage(self.damage)
+        #for _ in range(self.attack_speed):
+        #    Player.take_damage(self.damage)
+
+        #Tim : j'ai juste commente pcq dcp j'ai rajoute le collision handler qui permet de check direct si touche avec 2 rect
+        #Et aussi le collision handler envoi au client les degat pour les afficher :)
+
+        damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
+        collision_handler.player_take_damage_no_projectile(damage,Player)

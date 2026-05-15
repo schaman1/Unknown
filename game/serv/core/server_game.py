@@ -30,7 +30,7 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt) #Mettre dt plus tard pour les monstres
+            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
@@ -63,20 +63,12 @@ class Server_game(Server) :
 
         for socket in self.lClient.keys():
 
-            delta = self.lClient[socket].update_pos(self.map_cell,dt)
-            
-            #cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
-
-            #if cell != []:
-            #    self.send_data([3,cell],socket)
-            #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
-            #if delta != (0,0):
+            delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
             if self.count_send_pos == self.send_pos_every_x_frame :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
                 self.count_send_pos = 0
             self.count_send_pos+=1
-
 
             if self.lClient[socket].send_new_life == True :
                 life,id_player = self.lClient[socket].send_life()

@@ -279,7 +279,7 @@ class Network_handler :
 
         for life in data:
             id,new_life,chunk = life
-            packet+=struct.pack("!HHB",id,chunk,new_life)
+            packet+=struct.pack("!HHH",id,chunk,new_life)
 
     def pack_die_update(self,data,packet):
 

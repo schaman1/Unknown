@@ -110,7 +110,7 @@ class Player(Mob) :
 
             self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
 
-    def update_pos(self,map,dt):
+    def update_pos(self,map,dt,collision_handler):
 
         self.handle_input(map,dt)
 
@@ -120,7 +120,7 @@ class Player(Mob) :
 
         self.update_vitesse(dt)
 
-        self.check_if_touch_damage_obj(map,dt)
+        collision_handler.check_if_touch_damage_obj(map,dt,self)
 
         return delta
     

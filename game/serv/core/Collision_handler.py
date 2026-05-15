@@ -83,6 +83,15 @@ class CollisionHandler:
             self.die_send.append([player.id,chunk,player.die_len])
 
         projectile.is_dead = True
+
+    def player_take_damage_no_projectile(self,damage,player,chunk=99):
+
+        if damage != 0:
+            
+            old_pv = player.life
+            player.take_damage(damage)
+            delta_life = old_pv-player.life        
+            self.effect_send.append([player.id,delta_life,chunk])
     
     def add_ent_touch(self,ent,projectile,chunk):
 
@@ -115,3 +124,12 @@ class CollisionHandler:
                 self.die_send.append([ent.id,chunk,ent.len_dead])
 
         self.ent_touch.clear()
+
+    def check_if_touch_damage_obj(self,map,dt,player):
+        """Take damage. If stay 0.5 sec, die"""
+
+        if player.touch_element(map,map.kill):
+
+            damage = int(250*dt)
+
+            self.player_take_damage_no_projectile(damage,player,chunk=99)
