@@ -47,6 +47,8 @@ class Mob:
             self.animation.update_color(self.life-amount)
             self.life = amount
 
+            self.text_life = self.font.render(str(self.life),True, self.text_life_color)
+
     def update_interpolate_pos(self):
         
         time_now = time.perf_counter()-self.delay
