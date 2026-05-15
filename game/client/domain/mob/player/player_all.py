@@ -15,6 +15,7 @@ class Player_all :
         self.screen_size = screenSize
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
         self.vision = world.NBR_CELL_CAN_SEE
+        self.can_see_others = False
 
     def create_light(self,screen):
         """Permet de faire genre que le personnage voit à une certaine portée"""
@@ -23,6 +24,9 @@ class Player_all :
         for i in range(10):
 
             for player in self.dic_players.values() :
+
+                if player != self.me and not self.can_see_others :
+                    pass
 
                 x,y = player.pos_blit[0] + player.height//1,player.pos_blit[1]+player.width//1
 
@@ -43,7 +47,7 @@ class Player_all :
         else :
             self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,False)
 
-        print(self.dic_players)
+        print("players : ",self.dic_players)
 
     def blit_client_utils(self,screen,screen_size):
 

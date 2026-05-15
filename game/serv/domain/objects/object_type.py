@@ -29,6 +29,14 @@ class upgrade_size_weapon(interactable_object):
 
         self.trigger_value = "UpgradeWeapon"
 
+class upgrade_life(interactable_object):
+
+    def __init__(self,id_categorie,pos_x,pos_y,price=0):
+
+        super().__init__(id_categorie,pos_x,pos_y,price,power = 50)
+
+        self.trigger_value = "UpgradeLife"
+
 class Chest(interactable_object):
 
     def __init__(self,id_categorie,pos_x,pos_y,price=0):

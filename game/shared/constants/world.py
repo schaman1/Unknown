@@ -23,4 +23,5 @@ TYPE_OBJECT = {
     "HEALER":1,
     "UpgradeWeapon":2,
     "Chest":3,
+    "UpgradeLife":4,
 }

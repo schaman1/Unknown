@@ -17,7 +17,7 @@ class Player_you(Mob) :
         self.font = FONT
 
         self.text_life_color = (250,250,250)
-        self.text_life = self.font.render(str(self.life),True, self.text_life_color)  # True = anti-aliasing
+        self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
         
         self.text_money_color = (250,250,250)
         self.pos_money = (screen_size[0]//2,screen_size[1]*0.85)
