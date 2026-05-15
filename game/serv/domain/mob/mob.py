@@ -41,7 +41,7 @@ class Mob(Movable):
 
     def send_life(self):
         self.send_new_life = False
-        return self.life,self.id
+        return self.life,self.max_life,self.id
 
     def return_pos(self):
         return [self.pos_x,self.pos_y]
@@ -51,3 +51,8 @@ class Mob(Movable):
         if self.life != self.max_life :
             self.life = self.max_life
             self.send_new_life = True
+
+    def add_life(self,amount):
+
+        self.max_life+= amount
+        self.send_new_life = True

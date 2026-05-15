@@ -1,11 +1,14 @@
 from shared.constants import world
-from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest,upgrade_life
+import random
 
 class objects_manager:
 
     def __init__(self):
 
         self.chunk_objects = {}
+        self.upgrades = {"UpgradeWeapon":upgrade_size_weapon,
+                         "UpgradeLife":upgrade_life}
         self.id_curr = 0
 
         self.init_dico_dic_objects()
@@ -51,6 +54,14 @@ class objects_manager:
 
             return id,ele
         
+        elif ele_idx=="UpgradeLife":
+
+            ele = upgrade_life(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
         elif ele_idx=="Chest":
 
             ele = Chest(id_categorie,pos_x,pos_y,price)
@@ -80,7 +91,6 @@ class objects_manager:
 
             return element.trigger_value,chunk,id,element
         
-    
     def spawn_random_spell(self,cat,chunk,x,y):
 
         if cat == 0 : #Means all
@@ -97,4 +107,13 @@ class objects_manager:
             return id,spell,"SPELL"
         
         elif cat == 2: #Mea ns special = Upgade weapon
-            return
+
+            id = self.generate_id()
+
+            name = random.choice(list(self.upgrades.keys()))
+
+            upgrade = self.upgrades[name](0,x,y,0)
+
+            self.chunk_objects[chunk][id] = upgrade
+
+            return id,upgrade,name

@@ -44,8 +44,11 @@ SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
 HEALER = resource_path("assets/objects/healer.png")
 HEALER_TRIGGER = resource_path("assets/objects/healer_trigger.png")
 ADD_SLOT_WEAPON = resource_path("assets/objects/add_slot.png")
-CHEST_CLOSE = resource_path("assets/objects/chest_close.png")
-CHEST_OPEN = resource_path("assets/objects/chest_open.png")
+ADD_LIFE = resource_path("assets/objects/add_life.png")
+CHEST_SPELL_CLOSE = resource_path("assets/objects/chest_close.png")
+CHEST_SPELL_OPEN = resource_path("assets/objects/chest_open.png")
+CHEST_UPGRADE_CLOSE = resource_path("assets/objects/chest_upgrade_close.png")
+CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 

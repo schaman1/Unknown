@@ -139,7 +139,7 @@ class Game :
                 screen.blit(self.spell_blit_mouse,pos)
 
     def draw(self,screen,dt,mouse_pos=None):
-        """Blit le canva sur le screen à la position x,y"""
+        """Blit le canva sur le screen à la position x,y + return weither is in interaction or not"""
 
         x,y = self.camera.return_camera_pos(self.player_all.me)
 
@@ -169,7 +169,9 @@ class Game :
         self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
 
-        return self.intro_story.draw_intro(screen)
+        in_interaction = self.intro_story.draw_intro(screen)
+
+        return in_interaction
 
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
@@ -237,8 +239,9 @@ class Game :
             #self.add_popup(self.player_all.me,delta_life)
 
             id_player = data[1]
+            max_life = data[2]
 
-            self.player_all.dic_players[id_player].update_life(new_life)
+            self.player_all.dic_players[id_player].update_life(new_life,max_life)
 
     def update_money(self,money):
 

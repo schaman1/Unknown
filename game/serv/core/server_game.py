@@ -71,8 +71,8 @@ class Server_game(Server) :
             self.count_send_pos+=1
 
             if self.lClient[socket].send_new_life == True :
-                life,id_player = self.lClient[socket].send_life()
-                self.send_data_all((12,(life,id_player)))
+                life,max_life,id_player = self.lClient[socket].send_life()
+                self.send_data_all((12,(life,max_life,id_player)))
             
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
@@ -200,6 +200,11 @@ class Server_game(Server) :
                 
                 self.send_data([10,info_weapon],sender)
 
+            elif action=="UpgradeLife":
+
+                info_weapon = self.lClient[sender].add_life(element.power)
+                self.send_data_all([16,chunk,id]) #Destroy
+                
             elif action == "OpenChest":
 
                 self.send_data_all([16,chunk,id]) #Destroy
@@ -209,7 +214,6 @@ class Server_game(Server) :
 
                 data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
                 self.send_data_all(data)
-
 
     def throw_spell(self,id_weapon,id_spell,sender):
 

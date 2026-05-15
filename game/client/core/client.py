@@ -160,7 +160,7 @@ class Client:
                 msg_size = 1+3
 
             elif msg_id==12:
-                msg_size = 1+3
+                msg_size = 1+5
 
             elif msg_id == 13:
                 msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
@@ -302,9 +302,9 @@ class Client:
             self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
 
         elif id==12:
-            life,id = struct.unpack("!HB",data[1:4])
+            life,max_life,id = struct.unpack("!HHB",data[1:6])
 
-            self.main.state.game.update_life(life,("Player",id))
+            self.main.state.game.update_life(life,("Player",id,max_life))
 
             #self.main.state.game.create_weapon()
         

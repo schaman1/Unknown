@@ -36,17 +36,20 @@ class Mob:
     def convert_from_base(self,nbr):
         return nbr//self.base_movement
     
-    def update_life(self,amount):
-
-        if self.max_life == 1:
-            self.max_life = amount
+    def update_life(self,amount,max_life):
 
         if amount!=self.life :
 
             self.animation.update_color(self.life-amount)
             self.life = amount
 
-            self.text_life = self.font.render(str(self.life),True, self.text_life_color)
+            self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
+        
+        self.update_max_life(max_life)
+
+    def update_max_life(self,amount):
+        self.max_life = amount
+        self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
 
     def update_interpolate_pos(self):
         

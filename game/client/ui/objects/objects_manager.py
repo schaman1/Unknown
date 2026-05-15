@@ -1,6 +1,6 @@
 from shared.constants import world
 #from client.config.size_display import CELL_SIZE
-from client.ui.objects.object_type import spell_on_ground,healer_spawn,upgrade_weapon,chest
+from client.ui.objects.object_type import spell_on_ground,healer_spawn,upgrade_weapon,chest,upgrade_life
 import pygame,math,random
 
 class objects_manager:
@@ -42,6 +42,12 @@ class objects_manager:
             pos_x,pos_y = self.convert_pos(pos_x,pos_y)
 
             self.chunk_objects[chunk][id] = upgrade_weapon(img,pos_x,pos_y,price)
+
+        elif type==world.TYPE_OBJECT["UpgradeLife"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = upgrade_life(img,pos_x,pos_y,price)
 
         elif type==world.TYPE_OBJECT["Chest"]:
 
