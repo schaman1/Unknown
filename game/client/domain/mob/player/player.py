@@ -15,10 +15,14 @@ class Player_you(Mob) :
         self.is_you = is_you
 
         self.font = FONT
+
+        self.text_life_color = (250,250,250)
+        self.text_life = self.font.render(str(self.life),True, self.text_life_color)  # True = anti-aliasing
+        
         self.text_money_color = (250,250,250)
         self.pos_money = (screen_size[0]//2,screen_size[1]*0.85)
-        self.pos_blit_text = [None,None]
         self.text_money = self.font.render(str(self.money),True, self.text_money_color)  # True = anti-aliasing
+        self.pos_blit_text = [None,None]
 
         self.padding_life = 0.02
         self.key_active = {"right":False,
@@ -85,13 +89,16 @@ class Player_you(Mob) :
             pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, int(self.life/self.max_life*100)*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
 
+        screen.blit(self.text_life, (screen_size[0]//4,screen_size[1]*0.90))
+
     def draw_money(self, screen):
 
         screen.blit(self.text_money, self.pos_blit_text)
 
     def update_pos_blit_money(self):
         size = FONT.size(str(self.money))
-        self.pos_blit_text = [self.pos_money[0],self.pos_money[1]+size[1]//2]
+        self.pos_blit_text = [self.pos_money[0],self.pos_money[1]]
+        self.pos_blit_money = [self.pos_money[0]+size[0]//2,self.pos_money[1]]
 
     def draw_weapon(self,screen,angle,pos_draw) :
 
