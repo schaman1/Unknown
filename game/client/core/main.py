@@ -96,12 +96,12 @@ class Main:
                                     self.send_stop_move()
 
                         if event.key == pygame.K_RETURN :
-                            new_interaction,pnj_name = self.state.game.pnj_all.press_enter()
+                            new_interaction,pnj = self.state.game.pnj_all.press_enter()
 
                             self.set_interaction(new_interaction)
 
-                            if pnj_name!=None:
-                                self.trigger_pnj(pnj_name)
+                            if pnj!=None:
+                                self.trigger_pnj(pnj,new_interaction)
 
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
@@ -364,8 +364,15 @@ class Main:
     def stop_game_serv(self):
         self.Server.stop_server()
 
-    def trigger_pnj(self,pnj_name):
+    def trigger_pnj(self,pnj,is_talking):
 
-        if pnj_name=="pnj_tell_story":
-            self.in_interaction = True
-            self.state.game.draw_story()
+        print(pnj.text.text_id,pnj.text.start_blit_text)
+
+        if pnj.name=="pnj_tell_story":
+
+            if pnj.text.text_id==0 and not is_talking and pnj.text.start_blit_text==0:
+                self.in_interaction = True
+                self.state.game.draw_story()
+
+            elif pnj.text.text_id == 2 and pnj.text.start_blit_text == 0:
+                self.state.game.player_all.now_can_see_others()
