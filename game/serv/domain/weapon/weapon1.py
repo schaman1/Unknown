@@ -132,4 +132,4 @@ class WeaponLaseroide(Weapon):
     def init_slot(self):
 
         for i in range(self.nbr_slot) :
-            self.fill_slot(i,upgrades.CreateFire())
+            self.fill_slot(i,upgrades.CreateLaser())
