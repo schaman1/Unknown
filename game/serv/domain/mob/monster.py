@@ -1,5 +1,6 @@
 from serv.domain.mob.mob import Mob
 from serv.config import monster_info
+from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
@@ -150,8 +151,9 @@ class Laseroide(Monster) :
         super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 15,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
 
         self.name = 1 #Permet d'affihcer le bon monstre
+        self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
-    def update(self, map, lPlayer,dt,collision_handler):
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
         if self.still_dead():
             return
@@ -168,7 +170,7 @@ class Laseroide(Monster) :
             self.leave_behavior(self.target,map,dt)
             
         elif self.state == "attacking":
-            self.attack(self.target,collision_handler,dt)
+            self.attack(self.target,collision_handler,dt,projectile_manager)
 
         self.move_all(map,dt,collision_handler)
 
@@ -192,8 +194,14 @@ class Laseroide(Monster) :
         else :
             self.move_left(dt)
 
-    def attack(self,target,collision_handler,dt):
-        pass
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        
+        projectiles,events = self.weapon.trigger_shot(0,(self.pos_x,self.pos_y))
+
+        for proj in projectiles :
+
+            projectile_manager.add_projectile_create(proj)
+
 
 class Skeleton(Monster):
 
@@ -217,7 +225,7 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer,dt,collision_handler):
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
         if self.still_dead():
             return
