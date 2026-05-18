@@ -381,4 +381,4 @@ class Main:
                 self.state.game.player_all.now_can_see_others()
 
     def launch_game(self):
-        self.main.state.mod = "intro start"
+        self.state.mod = "intro start"
