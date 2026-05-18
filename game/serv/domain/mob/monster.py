@@ -19,6 +19,9 @@ class Monster(Mob):
         self.radius = rad
 
         self.target = None #Set the target to None
+        self.dist = 0 #Dist to target player
+
+        self.focus = False #Focus = don't change state
         
         self.state = "idle"  # idle, moving, attacking, dead
 
@@ -57,32 +60,43 @@ class Monster(Mob):
             return
         
         if self.target == None : #Set the target and change only if has no target
-            self.target, dist = self.distance_to_nearest_player(lPlayer)
+            self.target, self.dist = self.distance_to_nearest_player(lPlayer)
         else :
-            dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+            self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
-        if self.state == "idle":
-            if dist <= self.radius:
+
+        #------------degat de collision-----------------#
+        if self.dist<self.width/2/self.base_movement : 
+            damage = int(100*dt) 
+            collision_handler.player_take_damage_no_projectile(damage,self.target)
+            #FIn
+
+        if self.focus :
+            return
+
+        elif self.state == "idle":
+            if self.dist <= self.radius:
                 self.state = "moving"
        
         elif self.state == "attacking":
-            if dist > self.attack_radius:
+            if self.dist > self.attack_radius:
                # Revenir à l'état de déplacement si le joueur s'éloigne
                 self.state = "moving"
-            elif dist <= self.run_away_rad:
+            elif self.dist <= self.run_away_rad:
                 # Fui car ennemy trop proche. Si pas cette up, jamais declenché
                 self.state = "run away"
 
         elif self.state == "moving":
-            if dist <= self.attack_radius:
+            if self.dist <= self.attack_radius:
                 self.state = "attacking"
-            elif dist > self.radius * 1.2:
+            elif self.dist > self.radius * 1.2:
                 self.state = "idle"
                 self.target = None #Reset de l'aggro
 
         elif self.state == "run away":
-            if dist >= self.attack_radius +0 : #0 = delta
+            if self.dist >= self.attack_radius +0 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
+
 
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
@@ -125,18 +139,14 @@ class Monster(Mob):
         self.dead = False
         self.full_heal()
 
-    def get_angle(self,player):
+    def get_angle(self, player):
+        adjacent = player.pos_x - self.pos_x
+        opp = -((player.pos_y ) - self.pos_y)  # négatif !
 
-        adjacent = player.pos_x-self.pos_x
+        angle = math.atan2(opp, adjacent)
+        angle = angle * 180 / math.pi
 
-        opp = (player.pos_y + player.height//2)-self.pos_y
-
-        hyp = math.sqrt(opp**2+adjacent**2)
-        angle = math.acos(adjacent/hyp)
-
-        angle = angle*180/math.pi #Convert to deg
-
-        return int(angle)
+        return int(angle) % 360
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -170,6 +180,9 @@ class Laseroide(Monster) :
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
         self.last_time_jump = time.perf_counter()
+        self.begin_shot = time.perf_counter()
+        self.time_before_shot = 1
+        self.angle = 0
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
@@ -177,6 +190,7 @@ class Laseroide(Monster) :
             return
         
         super().update(map,dt,lPlayer,collision_handler)
+
        # --- Deplacement selon l'état ---
         if self.state == "idle":
             self.idle_behavior(map,dt)
@@ -188,11 +202,28 @@ class Laseroide(Monster) :
             self.leave_behavior(self.target,map,dt)
             
         elif self.state == "attacking":
-            self.attack(self.target,collision_handler,dt,projectile_manager)
+            if not self.focus : 
+                self.state = "loading"
+                self.focus = True
+                self.angle = self.get_angle(self.target)
+                self.begin_shot = time.perf_counter()
+
+                if self.angle>90 and self.angle<270 :
+                    self.pos_x -= 100
+                else :
+                    self.pos_x += 100
+
+            else :
+                self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        elif self.state == "loading" :
+            if self.begin_shot+self.time_before_shot <= time.perf_counter() :
+                self.state = "attacking"
 
         delta = self.move_all(map,dt,collision_handler)
 
-        self.check_if_jump(delta,map)
+        if not self.focus :
+            self.check_if_jump(delta,map)
 
     def check_if_jump(self,delta,map):
 
@@ -229,10 +260,8 @@ class Laseroide(Monster) :
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
-
-        angle = self.get_angle(self.target)
         
-        infos = self.weapon.trigger_shot(angle,(self.pos_x,self.pos_y))
+        infos = self.weapon.trigger_shot(self.angle,(self.pos_x,self.pos_y))
 
         if infos != None :
 
@@ -242,6 +271,8 @@ class Laseroide(Monster) :
 
                 projectile_manager.add_projectile_create(proj)
 
+        if self.weapon.idx == 0:
+            self.focus = False
 
 class Skeleton(Monster):
 
