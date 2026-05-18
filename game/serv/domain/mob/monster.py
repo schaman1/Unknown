@@ -19,6 +19,7 @@ class Monster(Mob):
         self.radius = rad
 
         self.target = None #Set the target to None
+        self.dist = 0 #Dist to target player
         
         self.state = "idle"  # idle, moving, attacking, dead
 
@@ -57,31 +58,31 @@ class Monster(Mob):
             return
         
         if self.target == None : #Set the target and change only if has no target
-            self.target, dist = self.distance_to_nearest_player(lPlayer)
+            self.target, self.dist = self.distance_to_nearest_player(lPlayer)
         else :
-            dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+            self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
         if self.state == "idle":
-            if dist <= self.radius:
+            if self.dist <= self.radius:
                 self.state = "moving"
        
         elif self.state == "attacking":
-            if dist > self.attack_radius:
+            if self.dist > self.attack_radius:
                # Revenir à l'état de déplacement si le joueur s'éloigne
                 self.state = "moving"
-            elif dist <= self.run_away_rad:
+            elif self.dist <= self.run_away_rad:
                 # Fui car ennemy trop proche. Si pas cette up, jamais declenché
                 self.state = "run away"
 
         elif self.state == "moving":
-            if dist <= self.attack_radius:
+            if self.dist <= self.attack_radius:
                 self.state = "attacking"
-            elif dist > self.radius * 1.2:
+            elif self.dist > self.radius * 1.2:
                 self.state = "idle"
                 self.target = None #Reset de l'aggro
 
         elif self.state == "run away":
-            if dist >= self.attack_radius +0 : #0 = delta
+            if self.dist >= self.attack_radius +0 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
     def take_damage(self, amount,player_did_damage):
@@ -229,6 +230,11 @@ class Laseroide(Monster) :
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
+
+        if self.dist < self.width/2/self.base_movement :
+            damage = int(100*dt)
+            collision_handler.player_take_damage_no_projectile(damage,target)
+            return
 
         angle = self.get_angle(self.target)
         
