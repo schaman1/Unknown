@@ -49,7 +49,7 @@ class Laseroide(Mob) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(10,10),name="Laseroide")
+        super().__init__(x,y,cell_size,size=(10,5),name="Laseroide")
 
         self.name = "Laseroide"
         self.chunk = pos_chunk
