@@ -62,6 +62,7 @@ class Main:
 
                 if self.state.mod == "game" :
                     self.musique.update_music_walktrough()
+                    Musique.update_volume(0.5)
                 
                 else:
                     self.musique.client_music()
@@ -419,5 +420,6 @@ class Main:
         self.state.mod = "intro start"
         self.musique.unload_music()
         self.musique.update_music_walktrough()
+        Musique.update_volume(0.5)
 
 
