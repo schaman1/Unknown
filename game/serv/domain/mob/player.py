@@ -24,7 +24,6 @@ class Player(Mob) :
         self.has_respawn = True
 
         self.is_host = host
-        self.vitesse_max = 100*self.base_movement
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
