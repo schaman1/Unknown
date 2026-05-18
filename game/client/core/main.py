@@ -373,9 +373,12 @@ class Main:
             if pnj.text.text_id==0 and not is_talking and pnj.text.start_blit_text==0:
                 self.in_interaction = True
                 self.state.game.draw_story()
+                pnj.text.text_to_blit[0] = "Oy, l'ami."
+                pnj.text.text_to_blit[1] = "Mais je t'ai deja vu !"
                 pnj.text.text_to_blit[2] = "Bon je sais que tu en meurt d'envie."
 
             elif pnj.text.text_id == 2 and pnj.text.start_blit_text == 0:
                 self.state.game.player_all.now_can_see_others()
-                pnj.text.text_to_blit[0] = "Oy, l'ami."
-                pnj.text.text_to_blit[1] = "Mais je t'ai deja vu !"
+
+    def launch_game(self):
+        self.main.state.mod = "intro start"
