@@ -14,6 +14,8 @@ class Monster(Mob):
         self.attack_speed = atk_speed
 
         self.radius = rad
+
+        self.target = None #Set the target to None
         
         self.state = "idle"  # idle, moving, attacking, dead
 
@@ -34,7 +36,15 @@ class Monster(Mob):
         if target is None:
             return None, float("inf")
         return target, best / self.base_movement
+    
+    def dist_to_target_player(self,player):
+        """Return dis to target player"""
 
+        dx = player.pos_x - self.pos_x
+        dy = player.pos_y - self.pos_y
+        d = math.hypot(dx, dy)
+        
+        return d/self.base_movement
     # --- Boucle de comportement basique pour tous les monstres ---
 
     def update(self,map,dt,lPlayer,collision_handler):
@@ -42,8 +52,11 @@ class Monster(Mob):
         if not self.is_alive():
             self.state = "dead"
             return
-
-        target, dist = self.distance_to_nearest_player(lPlayer)
+        
+        if self.target == None : #Set the target and change only if has no target
+            self.target, dist = self.distance_to_nearest_player(lPlayer)
+        else :
+            dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
         if self.state == "idle":
             if dist <= self.radius:
@@ -54,14 +67,15 @@ class Monster(Mob):
                 self.state = "attacking"
             elif dist > self.radius * 1.2:
                 self.state = "idle"
+                self.target = None #Reset de l'aggro
                
         elif self.state == "attacking":
             if dist > self.attack_radius:
                # Revenir à l'état de déplacement si le joueur s'éloigne
                 self.state = "moving"
             elif dist <= self.attack_radius:
-                # Attaquer le joueur
-                 self.attack(target,collision_handler,dt)
+                # Change rien et attaque dans le monstrte, stay en attacking
+                pass
 
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
@@ -123,8 +137,40 @@ class Monster(Mob):
 
 #Creation d'un monstre spécifique : le squelette
 
-class Skeleton(Monster):
+class Laseroide(Monster) :
 
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 10,atk_speed = 1,id=id,prime = 15)
+
+        self.name = 1 #Permet d'affihcer le bon monstre
+
+    def update(self, map, lPlayer,dt,collision_handler):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+            self.attack(self.target,collision_handler,dt)
+
+    def idle_behavior(self,map,dt):
+        """Stay in his spot"""
+        return
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+        if target.pos_x<self.pos_x :
+            self.vitesse_x
+
+class Skeleton(Monster):
 
     def __init__(self, x, y, id):
         super().__init__(hp=20, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
@@ -160,7 +206,7 @@ class Skeleton(Monster):
             self.moving_behavior(lPlayer, map,dt)
             
         elif self.state == "attacking":
-            pass
+            self.attack(self.target,collision_handler,dt)
     
     def can_walk_on(self, cells_arr, new_x, new_y, cell_dur, cell_vide, cell_liquid):
         
@@ -230,8 +276,6 @@ class Skeleton(Monster):
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
         target, _ = self.distance_to_nearest_player(lPlayer)
-
-        #print("Here")
 
         if target is None:
             return
