@@ -6,7 +6,7 @@ import math,time
 class Monster(Mob):
     def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
 
-        super().__init__((x,y),hp,id,acceleration=acceleration,height = 5)
+        super().__init__((x,y),hp,id,acceleration=acceleration,height = 6)
 
         self.hp = hp
         self.damage = damage
@@ -108,6 +108,7 @@ class Monster(Mob):
         player_did_damage.update_money(self.prime)
 
         self.dead = True
+        self.target = None
         self.start_dead = time.perf_counter()
 
     def still_dead(self):
@@ -163,8 +164,12 @@ class Laseroide(Monster) :
 
         super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
 
+        self.acceleration_y = 20* self.acceleration
+
         self.name = 1 #Permet d'affihcer le bon monstre
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+
+        self.last_time_jump = time.perf_counter()
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
@@ -185,7 +190,22 @@ class Laseroide(Monster) :
         elif self.state == "attacking":
             self.attack(self.target,collision_handler,dt,projectile_manager)
 
-        self.move_all(map,dt,collision_handler)
+        delta = self.move_all(map,dt,collision_handler)
+
+        self.check_if_jump(delta,map)
+
+    def check_if_jump(self,delta,map):
+
+        if delta[0]==0 and self.state == "run away" or self.state=="moving" and self.last_time_jump+2 < time.perf_counter():
+            if self.jump(map): #if succesfull
+                self.last_time_jump = time.perf_counter()
+
+        elif delta[1]>0:
+            self.jump(map)
+
+        elif delta[0]!=0:
+            self.last_time_jump = time.perf_counter()
+
 
     def idle_behavior(self,map,dt):
         """Stay in his spot"""
