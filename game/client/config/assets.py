@@ -59,7 +59,7 @@ PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 
-MONSTER_2 = resource_path("assets/sprites/monster/idle/téléchargé.jpg")
+MONSTER_2 = resource_path("assets/sprites/monster/idle/lasertoide.png")
 
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 

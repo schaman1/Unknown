@@ -4,9 +4,9 @@ from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
+    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
 
-        super().__init__((x,y),hp,id,acceleration=acceleration)
+        super().__init__((x,y),hp,id,acceleration=acceleration,height = 5)
 
         self.hp = hp
         self.damage = damage
@@ -124,6 +124,19 @@ class Monster(Mob):
         self.dead = False
         self.full_heal()
 
+    def get_angle(self,player):
+
+        adjacent = player.pos_x-self.pos_x
+
+        opp = (player.pos_y + player.height//2)-self.pos_y
+
+        hyp = math.sqrt(opp**2+adjacent**2)
+        angle = math.acos(adjacent/hyp)
+
+        angle = angle*180/math.pi #Convert to deg
+
+        return int(angle)
+
     # --- Déplacement pour gestion des collisions ---
 
     # Vérifie si une cellule est bloquante (dure ou liquide)
@@ -195,8 +208,10 @@ class Laseroide(Monster) :
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
+
+        angle = self.get_angle(self.target)
         
-        infos = self.weapon.trigger_shot(0,(self.pos_x,self.pos_y))
+        infos = self.weapon.trigger_shot(angle,(self.pos_x,self.pos_y))
 
         if infos != None :
 
