@@ -40,6 +40,13 @@ class Skeleton(Mob) :
         return
 
     def move(self,delta):
+
+
+        if delta[0]<0:
+            self.animation.direction = "left"
+        elif delta[0]>0:
+            self.animation.direction = "right"
+    
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
 
@@ -77,5 +84,13 @@ class Laseroide(Mob) :
         return
     
     def move(self,delta):
+
+        dx = delta[0]*self.cell_size//self.base_movement-self.pos_x
+
+        if dx<0:
+            self.animation.direction = "left"
+        elif dx>0:
+            self.animation.direction = "right"
+
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
