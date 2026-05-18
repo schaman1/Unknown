@@ -7,8 +7,8 @@ class Weapon :
         self.loading_time_refill = refill_time
         self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
-        self.reel_team = self.team
         self.team=team
+        self.reel_team = self.team
         self.id = id
         self.owner = player
 
