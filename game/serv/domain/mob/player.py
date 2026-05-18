@@ -2,7 +2,7 @@ from serv.config import collisions
 from serv.domain.mob.mob import Mob
 from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
-from serv.domain.mob.deplacement import smooth_jump,input_handler
+from serv.domain.mob.deplacement import input_handler
 from serv.domain.mob.team import Team
 from serv.config import Default_values
 from shared.constants.world import LEN_DEATH_PLAYER
@@ -24,13 +24,11 @@ class Player(Mob) :
         self.has_respawn = True
 
         self.is_host = host
-        self.vitesse_max = 100*self.base_movement
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
         self.weapons = WeaponManager(self.team,self)
         self.upgrade_handler = UpgradeHandler()
-        self.smooth_jump = smooth_jump.SmoothJump()
         self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
@@ -109,8 +107,6 @@ class Player(Mob) :
 
             self.handle_input(map,dt)
 
-            self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
-
         self.upgrade_handler.trigger_event_on_player(self,dt,map)
 
         self.move_all(map,dt,collision_handler)
@@ -156,11 +152,6 @@ class Player(Mob) :
 
         if key == 1 :
             self.is_climbing = True
-
-    def can_jump(self):
-        
-        if self.smooth_jump.can_jump():
-            return True
 
     def is_alive(self):
         return self.life > 0

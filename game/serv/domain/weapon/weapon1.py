@@ -112,3 +112,24 @@ class Weapon3(Weapon) :
 
     def init_slot(self):
         self.fill_slot(0,upgrades.CreateLune())
+
+class WeaponLaseroide(Weapon):
+
+    def __init__(self,team,player):
+
+        super().__init__(
+            refill_time = weapons.REFILL_TIME_LASEROIDE,
+            spell_time= weapons.SPELL_TIME_LASEROIDE,
+            nbr_slot = weapons.NBR_SLOT_LASEROIDE,
+            nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_LASEROIDE,
+            id = -1,   #on s'en fiche normalement
+            team=team,
+            player=player
+        )
+
+        self.init_slot()
+
+    def init_slot(self):
+
+        for i in range(self.nbr_slot) :
+            self.fill_slot(i,upgrades.CreateLaser())

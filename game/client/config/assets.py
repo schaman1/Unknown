@@ -32,6 +32,7 @@ SPELLS[1]=resource_path("assets/sprites/projectile/projectile_1_0.png") #Pos 1
 SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
 SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
+SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
@@ -57,6 +58,8 @@ PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png
 PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
+
+MONSTER_2 = resource_path("assets/sprites/monster/idle/lasertoide.png")
 
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 
