@@ -311,6 +311,7 @@ class Client:
         elif id==13 :
             money = struct.unpack("!H", data[1:3])[0]
             self.main.state.game.update_money(money)
+            # self.draw_money(self.screen)
             #pass
 
         elif id==14:
