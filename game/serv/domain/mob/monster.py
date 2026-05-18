@@ -161,6 +161,8 @@ class Laseroide(Monster) :
         elif self.state == "attacking":
             self.attack(self.target,collision_handler,dt)
 
+        self.move_all(map,dt,collision_handler)
+
     def idle_behavior(self,map,dt):
         """Stay in his spot"""
         return
@@ -168,7 +170,10 @@ class Laseroide(Monster) :
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
         if target.pos_x<self.pos_x :
-            self.vitesse_x
+            self.move_left()
+        
+        else :
+            self.move_right()
 
 class Skeleton(Monster):
 
