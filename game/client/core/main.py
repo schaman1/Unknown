@@ -4,6 +4,7 @@ from client.core.client import Client
 from serv.core.server_game import Server_game
 from shared.constants import fps
 from client.config import size_display as size
+from client.ui.escape_menu import EscapeMenu, SettingsMenu
 from client.ui.escape_menu import EscapeMenu
 from client.domain.Sounds.default_music import Musique
 from client.config import display_text
@@ -38,6 +39,7 @@ class Main:
         self.state = State(self.screen,self.screenSize,self.font,self.client,size.CELL_SIZE)
         
         self.escape_menu = EscapeMenu(self.screenSize, self.font)
+        self.settings_menu = SettingsMenu(self.screenSize, self.font)
 
         self.musique = Musique()
 
@@ -136,10 +138,20 @@ class Main:
                             self.key_command.append([3,2])
                             self.state.game.player_all.me.update_direction_look(2)
                         
-                        if event.key == pygame.K_ESCAPE :# and self.objClicked is None: #What is the purpose of this ?
-                            if self.state.game.stop_blit_info() == False :
+                        if event.key == pygame.K_ESCAPE and self.objClicked is None:
+
+                            if self.state.game.stop_blit_info()==False :
                                 self.escape_menu.toggle()
-                        
+
+                        if event.key == pygame.K_ESCAPE :
+                            if self.settings_menu.visible:
+                                self.settings_menu.visible = False
+                                self.escape_menu.visible = True
+
+                        if self.settings_menu.visible:
+                            self.settings_menu.handle_key(event.key)
+                            continue
+
                     elif self.objClicked != None:
 
                         txt = self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"]
@@ -167,11 +179,18 @@ class Main:
 
                         if self.escape_menu.visible:
                             action= self.escape_menu.handle_click(event.pos)
+                            if action == "settings":
+                                self.settings_menu.visible = True
+                                self.escape_menu.visible = False
                             if action == "quit":
                                 self.quit_game()
                                 self.escape_menu.visible = False
                             elif action =="settings":
                                 pass
+
+                        if self.settings_menu.visible:
+                            self.settings_menu.handle_click(event.pos)
+                            continue
 
                         info,spell_1,spell_2 = self.state.game.trigger_mouse_down(event.pos)
                         
@@ -266,6 +285,9 @@ class Main:
             if self.escape_menu.visible:
                 self.escape_menu.draw(self.screen, pygame.mouse.get_pos())
 
+            if self.settings_menu.visible :
+                self.settings_menu.draw(self.screen, pygame.mouse.get_pos())
+
             self.handle_events_send()
             self.handle_events_receive()
 
@@ -305,7 +327,7 @@ class Main:
         #is_looking = None
         #dt_send = int(self.dt*1000)
 
-        if key[pygame.K_j] :
+        if key[self.settings_menu.controls["spell1"]] :
             self.state.game.shot(1)
 
         if key[pygame.K_k]:
@@ -313,6 +335,7 @@ class Main:
 
         if key[pygame.K_l]:
             self.state.game.shot(3)
+        
 
         #if buttons[0] :
 

@@ -1,5 +1,6 @@
 from shared.constants import world
 from client.domain.mob.player.player import Player_you,Player_not_you
+
 import pygame
 
 class Player_all :
@@ -15,7 +16,7 @@ class Player_all :
         self.screen_size = screenSize
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
         self.vision = world.NBR_CELL_CAN_SEE//2
-        self.can_see_others = False
+        self.can_see_others = world.START_SEE
 
     def create_light(self,screen):
         """Permet de faire genre que le personnage voit à une certaine portée"""
