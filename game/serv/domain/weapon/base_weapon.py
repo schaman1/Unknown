@@ -8,6 +8,7 @@ class Weapon :
         self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
         self.team=team
+        self.reel_team = self.team
         self.id = id
         self.owner = player
 
@@ -48,6 +49,7 @@ class Weapon :
         return id
 
     def reset_values(self):
+        self.team = self.reel_team
         self.speed_mult = 1
         self.size_mult = 1
         self.add_damage = 0

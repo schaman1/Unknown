@@ -323,7 +323,8 @@ class Game :
     
         if chunk==99 :
             self.player_all.dic_players[id].kill(duree)
-            self.fade.set_values(3,duree-3-0.2*4)
+            if self.player_all.dic_players[id] == self.player_all.me :
+                self.fade.set_values(3,duree-3-0.2*4)
 
         else :
             self.monsters.dic_monster[chunk][id].kill(duree)
