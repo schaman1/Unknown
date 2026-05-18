@@ -56,6 +56,7 @@ class Mob:
         time_now = time.perf_counter()-self.delay
 
         l = len(self.interpolate_mov)
+    
 
         if l<=1:
             return
@@ -63,9 +64,6 @@ class Mob:
         while l>2 and time_now > self.interpolate_mov[1][2] :
             l-=1
             self.interpolate_mov.pop(0)
-
-        #print(self.interpolate_mov)
-
 
         div = self.interpolate_mov[1][2]-self.interpolate_mov[0][2]
 
