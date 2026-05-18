@@ -65,7 +65,7 @@
     },
     "SPELL20":{
         "type":"augment",
-        "name":"Double",
+        "name":"Simple",
         "description":["Permet de lancer",
                     "1 sort de plus."],
         "time_reload": 0,
@@ -73,7 +73,7 @@
     },
     "SPELL21":{
         "type":"augment",
-        "name":"Triple",
+        "name":"Double",
         "description":["Permet de lancer",
                     "2 sorts de plus."],
         "time_reload": 0,

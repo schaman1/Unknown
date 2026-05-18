@@ -64,13 +64,11 @@ class Player_all :
 
         for player in self.dic_players.values():
 
-            #if player.is_you :
+            if not player.is_you :
 
-            player.draw(screen_global,dt,xscreen,yscreen)
+                player.draw(screen_global,dt,xscreen,yscreen)
 
-            #else :
-#
-            #    player.draw(screen_global,dt)
+        self.me.draw(screen_global,dt,xscreen,yscreen)
 
     def draw_light(self,screen_global):
 
