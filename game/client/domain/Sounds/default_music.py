@@ -21,10 +21,15 @@ class Musique :
                              "assets/musiques/energetic-colorfull_fight.mp3", "assets/musiques/energetic-colorfull_fight2.mp3", 
                              "assets/musiques/fight_fast.mp3", "assets/musiques/Mine_bossfight.mp3"]
         
+
+        self.Lmusic_Tim = ["assets/musiques/Tim/crystal2VF.MP3", "assets/musiques/Tim/FiestaVF.MP3",
+                           "assets/musiques/Tim/Good_1.MP3", "assets/musiques/Tim/Slow_1.MP3"]
+        
         
         self.music_client = "assets/musiques/Boucle client.MP3"
         
-        self.taille = (len(self.Lmusic_walktrought) - 1, len(self.Lmusic_fight) -1)
+        self.taille = (len(self.Lmusic_walktrought) - 1, len(self.Lmusic_Tim) -1)
+        self.Lmusics = [self.Lmusic_walktrought, self.Lmusic_Tim]
 
 
     def load_music(self, name):
@@ -56,8 +61,9 @@ class Musique :
         self.music = pygame.mixer.music.set_volume(new_volume)
 
     def update_music_walktrough(self):
-        i = randint(0, self.taille[0]) #taille de la liste de musiques walkthrough
-        self.load_music(self.Lmusic_walktrought[i])
+        j = randint(0, 1)
+        i = randint(0, self.taille[j]) #taille de la liste de musiques walkthrough
+        self.load_music(self.Lmusics[j][i])
     
     def next_music(next_music):
         pygame.mixer.music.queue(next_music)
