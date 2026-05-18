@@ -36,6 +36,12 @@ class Player_you(Mob) :
 
         self.weapons = WeaponManager(screen_size,cell_size)
 
+        self.money_image = pygame.image.load("assets/sprites/divers/money.png")
+        self.money_image = self.money_image.convert_alpha()
+        # self.money_image = pygame.transform.rotate(self.money_image, -30)
+        self.money_image = pygame.transform.scale(self.money_image, (self.money_image.get_width() * 3, self.money_image.get_height() *3) )
+        # self.money_image = self.money_image.
+
         self.update_pos_blit_money()
     
     def get_angle(self, pos, mouse_pos) -> int:
@@ -92,7 +98,9 @@ class Player_you(Mob) :
         screen.blit(self.text_life, (screen_size[0]//4,screen_size[1]*0.90))
 
     def draw_money(self, screen):
+        self.pos_blit_im_money = [self.pos_blit_text[0] - 90, self.pos_blit_text[1] - 30]
 
+        screen.blit(self.money_image, self.pos_blit_im_money)
         screen.blit(self.text_money, self.pos_blit_text)
 
     def update_pos_blit_money(self):
