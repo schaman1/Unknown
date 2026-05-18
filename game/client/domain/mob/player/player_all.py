@@ -34,8 +34,10 @@ class Player_all :
         screen.blit(self.light,(0,0))
 
     def now_can_see_others(self):
-        self.vision = self.vision*2
-        self.can_see_others = True
+
+        if not self.can_see_others :
+            self.vision = self.vision*2
+            self.can_see_others = True
 
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
