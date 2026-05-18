@@ -33,7 +33,7 @@
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
-        "description":["Multipli la vitesse",
+        "description":["Multiplie la vitesse",
                         "du projectile par 2."],
         "time_reload": 0,
         "degat":0
@@ -48,17 +48,17 @@
     },
     "SPELL12":{
         "type":"augment",
-        "name":"Rebond",
-        "description":["Reduit le temps",
-                        "de recharge totale",
-                        "de 0.4"],
+        "name":"Recharge",
+        "description":["Reduit le temps de",
+                        "recharge totale de 0.4",
+                        "+ tir aleatoire."],
         "time_reload": -0.2,
         "degat":0
     },
     "SPELL13":{
         "type":"augment",
-        "name":"Damage Plus",
-        "description":["Ajoute 3 degat",
+        "name":"Degat plus",
+        "description":["Ajoute 3 degats",
                         "au prochain projectile."],
         "time_reload": 0,
         "degat":3

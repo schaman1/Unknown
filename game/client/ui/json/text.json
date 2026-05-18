@@ -1,11 +1,12 @@
 {
     "pnj_tell_story":[
-        "Ah la la, vous aussi vous etes tombe.",
-        "Quoi ? Vous ne vous souvenez de rien ?",
-        "Bon eh bien je vais essayer de vous expliquer avec ces dessins."
+        "Oy l'ami ! Oh t'es un p'tit nouveau toi ca se voit!",
+        "Laisse moi te donner ca pour mieux voir !",
+        "Je suppose que tu ne te rappele pas comment tu es arrive ici ?",
+        "Tiens, voici des dessins qui t'aideront a comprendre !"
     ],
     "pnj_tell_healer":[
-        "Oh Oh OH... Bienvenue a toi.",
+        "Oy, bienvenue a toi.",
         "Ce qui se trouve a ma gauche est un 'Halo'.",
         "Il permet de te guerir et ton esprit reapparaitra ici !"
     ]

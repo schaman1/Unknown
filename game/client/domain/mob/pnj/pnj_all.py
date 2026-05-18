@@ -113,12 +113,12 @@ class Pnj_all :
 
             end_text = self.talks_to.text.press_enter()
             if end_text :
-                pnj_name = self.talks_to.name
+                pnj = self.talks_to
                 self.stop_talk()
                 
-                return False,pnj_name
+                return False,pnj
 
-            return True,None
+            return True,self.talks_to
         
         else :
             return None,None

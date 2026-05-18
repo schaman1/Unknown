@@ -15,7 +15,6 @@ class Pnj(Mob):
         self.id = id #id = id_text
         self.text = AnimatedText(text,cell_size)
 
-
     def blit(self,screen,x,y,dt):
         
         self.pos_blit = self.calculate_pos_blit(x,y)

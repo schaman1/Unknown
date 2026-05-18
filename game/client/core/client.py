@@ -226,7 +226,7 @@ class Client:
         #    )
 
         if id == 0:
-            self.main.state.mod = "intro start"
+            self.main.launch_game()
 
         elif id == 1 :
 
