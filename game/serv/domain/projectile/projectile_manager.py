@@ -64,7 +64,9 @@ class ProjectileManager :
 
         projectiles_die = [[] for _ in range(l)]
 
-        for l_projectile in self.dic_projectiles.values() :
+        projectiles_change_chunk_to_had = []
+
+        for chunk,l_projectile in self.dic_projectiles.items() :
 
             for i in range(len(l_projectile)-1,-1,-1) :
 
@@ -83,6 +85,13 @@ class ProjectileManager :
 
                     self.add_on_client_see_update(lClient,l_projectile[i],projectiles_create)
                     l_projectile[i].to_update = False
+
+                    if chunk != self.calculate_chunk(l_projectile[i]) :
+                        projectiles_change_chunk_to_had.append((self.calculate_chunk(l_projectile[i]),l_projectile[i]))
+                        del l_projectile[i]
+
+        for chunk,proj in projectiles_change_chunk_to_had:
+            self.dic_projectiles[chunk].append(proj)
 
         infos_shot = []
 

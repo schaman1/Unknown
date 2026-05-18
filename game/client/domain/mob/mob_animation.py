@@ -25,6 +25,9 @@ class Animation:
                             "loading":{"right":[],
                                        "left":[],
                                        "time":1/4,},
+                            "attacking":{"right":[],
+                                       "left":[],
+                                       "time":1/4,},
                             "respawn":{"right":[],
                                        "left":[],
                                        "time":0}}
@@ -116,15 +119,27 @@ class Animation:
             #size_img = 50*cell_size
             size = (self.width,self.height)
             img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
-            img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["loading"],size)
 
             self.add_tombe(cell_size)
 
-            #img_running = pygame.image.load(assets.PLAYER_RUNNING)
-            #img_running = pygame.transform.scale(img_running,(self.width,self.height))
-            #self.decoupe_img(img_running,self.animation["running"],size)
+        elif entity_name == "Foulli" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.FOULLI)
+            img_idle = pygame.transform.scale(img_idle,(self.width,self.height)) #*2 car en a 2 par ligne
+            self.animation["idle"]["right"] = [img_idle]
+            self.animation["idle"]["left"] = [img_idle]
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.FOULLI_ATTACK)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["attacking"],size)
+
+            self.add_tombe(cell_size)
 
         elif entity_name == "Skeleton":
 
@@ -219,12 +234,7 @@ class Animation:
     def do_nothing(self):
         pass
 
-    def do_loading(self):
-        """go to idle after"""
-        self.state = "idle"
-        self.fct_to_do = self.do_nothing
-
-    def end_respawn(self):
+    def next_idle(self):
         """Respawn anim"""
         self.state = "idle"
         self.fct_to_do = self.do_nothing
@@ -232,7 +242,7 @@ class Animation:
     def end_death(self):
         """When is dead, do it"""
         self.state = "respawn"
-        self.fct_to_do = self.end_respawn
+        self.fct_to_do = self.next_idle
 
     def end_in_death(self):
         """When died, anim"""
