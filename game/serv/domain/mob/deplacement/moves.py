@@ -17,6 +17,7 @@ class Movable:
     acceleration_y: float
     screen_global_size: tuple[int, int]
     is_climbing: bool = True
+    in_dash:bool=False
 
     def convert_to_base(self,nbr):
         """Retourne le nbr en 100 pour 1"""
@@ -26,23 +27,29 @@ class Movable:
         """Retourne le nbr en 1 pour 100"""
         return nbr*self.base_movement
 
-    def gravity_effect(self):
+    def gravity_effect(self,dt):
+        """Update vitesse_y according to gravity physics"""
 
+        #if self.in_dash==True : #Pas de gravité quand est dans un dash
+        #    return
 
-        #return
-
-        #if self.vitesse_y < 500*self.base_movement:
-        #print("before gravity",self.vitesse_y)
-        self.vitesse_y += self.base_movement*2
+        self.vitesse_y += self.base_movement*2*self.acceleration*dt
         s=self.return_signe(self.vitesse_y)
 
         gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+
         if self.vitesse_y<0:
             gravity_power_mult-=0.1
         else :
             gravity_power_mult+=0.25
 
-        self.vitesse_y = self.vitesse_y*gravity_power_mult
+        #delta = self.vitesse_y*gravity_power_mult - self.vitesse_y
+        #print(dt)
+        #delta = delta**(dt)
+
+        self.vitesse_y = self.vitesse_y*(gravity_power_mult**(dt*60))
+
+        #self.vitesse_y += delta
 
         if self.vitesse_y>self.base_movement*100:
             self.vitesse_y = self.base_movement*100
@@ -60,7 +67,9 @@ class Movable:
         s = self.return_signe(vy)
         remaining = int(vy*s*dt)
 
-        while remaining > 0 :
+        touch_wall = False
+
+        while remaining > 0 and not touch_wall:
 
             #print("remaining",remaining)
 
@@ -72,8 +81,11 @@ class Movable:
 
                     dist = self.base_movement - ((self.pos_y)*s)%self.base_movement -1 #-j*s
 
-                    if dist < remaining :
+                    if dist <= remaining :
+                        touch_wall = True
                         self.vitesse_y = 0
+
+                    break #To stop loop for i in range
 
             if dist > remaining :
                 self.pos_y+=remaining*s
@@ -85,6 +97,12 @@ class Movable:
 
             remaining -= self.base_movement
 
+        #self.go_up_while_touch_strong(map)
+
+    #def go_up_while_touch_strong(self,map):
+    #    while self.touch_type(-(self.half_height+self.base_movement),0,map,map.cannot_be_inside) :
+    #        self.pos_y-=self.base_movement
+
         #return self.pos_y - pos_before
 
     def collision_x(self,map,dt,vx):
@@ -94,7 +112,9 @@ class Movable:
         s = self.return_signe(vx)
         remaining = int(vx*s*dt)
 
-        while remaining > 0 :
+        touch_wall = False
+
+        while remaining > 0 and not touch_wall:
 
             dist = self.base_movement
             for j in range(-self.half_height,self.half_height+1,self.base_movement): #+1 car doit compter le dernier
@@ -103,9 +123,11 @@ class Movable:
 
                     dist = (self.base_movement - ((self.pos_x+self.half_width)*s)%self.base_movement -1) #-j*s
 
-                    if dist < remaining :
-                     
+                    if dist <= remaining :
+                        touch_wall = True
                         self.vitesse_x = 0
+
+                    break #To stop loop for i in range
 
             if dist > remaining :
                 self.pos_x+=remaining*s
@@ -141,6 +163,8 @@ class Movable:
         return False
     
     def return_signe(self,e):
+
+        #print(e)
         if e<0:
             return -1
         else :
@@ -322,8 +346,21 @@ class Movable:
         else:
             self.is_climbing = False
 
-    def dash(self,map,dt,v):
+    def dash(self,v):
+        """Now dash update the speed"""
 
-        self.collision_x(map,dt,v[0])
+        #if self.vitesse_y<0 : #Test pour améliorer le feeling
+        #    self.vitesse_y = 0
 
-        self.collision_y(map,dt,v[1])
+        if v[0]!=0 :
+            self.vitesse_x = v[0]
+            self.vitesse_y = 0
+        if v[1]!=0 : 
+            self.vitesse_y = v[1] #Permet d'annuler la gravité en dash
+
+    def stop_dash(self):
+
+        self.in_dash = False
+
+    def start_dash(self):
+        self.in_dash = True

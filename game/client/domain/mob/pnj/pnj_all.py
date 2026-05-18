@@ -14,6 +14,7 @@ class Pnj_all :
         self.distance_max_blit = screenSize[1]
         self.distance_max_trigger = world.NBR_CELL_CAN_SEE*cell_size
 
+
         self.pos_blit_text = screenSize[1]-10*self.cell_size
 
         self.interact_img = pygame.image.load("assets/ui/infos/interact.png")
@@ -24,7 +25,7 @@ class Pnj_all :
         self.talks_to = None
 
 
-        with open("client/ui/text.json") as f:
+        with open("client/ui/json/text.json") as f:
 
             self.dialogues = json.load(f)
             f.close()
@@ -33,11 +34,17 @@ class Pnj_all :
 
     def init_pnj(self):
         
-        pos = (387,1689)
-        self.add_pnj(pos,'pnj_intro')
+        pos = (38,173)
+        self.add_pnj(pos,'pnj_tell_story')
+
+        pos = (22,57)
+        self.add_pnj(pos,'pnj_tell_healer')
 
     def add_pnj(self,pos,name):
-        ele = Pnj(pos,self.color_compteur,self.id_compteur,self.cell_size,self.dialogues[name])
+
+        pos = [pos[0]*self.cell_size,pos[1]*self.cell_size]
+
+        ele = Pnj(pos,self.color_compteur,self.id_compteur,self.cell_size,self.dialogues[name],name)
         self.container_pnj.append(ele)
         self.update_values()
 
@@ -73,20 +80,27 @@ class Pnj_all :
         screen.blit(self.interact_img,(pos_x,pos_y))
 
 
-    def test_trigger(self,pos_player):
+    def test_trigger(self,pos_player,min_dist_other_ele):
+
+        dist_min_pnj = [self.distance_max_blit,None]
         
         for pnj in self.container_pnj :
 
             dist = self.distance(pos_player,pnj)
 
-            if dist<self.distance_max_trigger :
+            if dist<dist_min_pnj[0] :
 
-                self.is_talking = True
-                self.talks_to = pnj
+                dist_min_pnj = [dist,pnj]
 
-                return True
+        if min_dist_other_ele>dist_min_pnj[0] :
+            self.is_talking = True
+            self.talks_to = dist_min_pnj[1]
+
+            return True
+
+        else :
             
-        return False
+            return False
 
     def distance(self,pos_player,pnj):
 
@@ -99,14 +113,15 @@ class Pnj_all :
 
             end_text = self.talks_to.text.press_enter()
             if end_text :
+                pnj = self.talks_to
                 self.stop_talk()
                 
-                return False
+                return False,pnj
 
-            return True
+            return True,self.talks_to
         
         else :
-            return False
+            return None,None
 
     def stop_talk(self):
         self.is_talking = False

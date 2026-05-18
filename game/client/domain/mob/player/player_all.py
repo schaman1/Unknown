@@ -14,7 +14,8 @@ class Player_all :
         self.me = None
         self.screen_size = screenSize
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
-        self.vision = world.NBR_CELL_CAN_SEE
+        self.vision = world.NBR_CELL_CAN_SEE//2
+        self.can_see_others = False
 
     def create_light(self,screen):
         """Permet de faire genre que le personnage voit à une certaine portée"""
@@ -24,11 +25,19 @@ class Player_all :
 
             for player in self.dic_players.values() :
 
-                x,y = player.pos_blit[0] + player.height//1,player.pos_blit[1]+player.width//1
+                if player == self.me or self.can_see_others :
+                
+                    x,y = player.pos_blit[0] + player.animation.height//2,player.pos_blit[1]+player.animation.width//2
 
-                self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(x,y),(self.vision-i/2)*self.cell_size)
+                    self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(x,y),(self.vision-i/2)*self.cell_size)
 
         screen.blit(self.light,(0,0))
+
+    def now_can_see_others(self):
+
+        if not self.can_see_others :
+            self.vision = self.vision*2
+            self.can_see_others = True
 
     def draw_circle(self,screen,color,pos,r,width=0):
         pygame.draw.circle(screen, color, pos, r, width)
@@ -43,15 +52,15 @@ class Player_all :
         else :
             self.dic_players[id] = Player_not_you(self.cell_size,self.spawn_point,pseudo,False)
 
-        print(self.dic_players)
+        print("players : ",self.dic_players)
 
     def blit_client_utils(self,screen,screen_size):
 
-        self.dic_players[self.client_id].draw_utils(screen,screen_size)
+        self.me.draw_utils(screen,screen_size)
 
-    def blit_infos(self,screen,screen_size):
+    def blit_infos(self,screen,screen_size,mouse_pos):
 
-        self.dic_players[self.client_id].weapons.draw_spells(screen,screen_size)
+        self.me.weapons.draw_spells(screen,screen_size,mouse_pos)
 
     def return_pos(self):
         return self.me.pos_x,self.me.pos_y
@@ -60,15 +69,11 @@ class Player_all :
 
         for player in self.dic_players.values():
 
-            player.update_pos_blit(xscreen,yscreen)
+            if not player.is_you :
 
-            if player.is_you :
+                player.draw(screen_global,dt,xscreen,yscreen)
 
-                player.draw(screen_global,dt)
-
-            else :
-
-                player.draw(screen_global,dt)
+        self.me.draw(screen_global,dt,xscreen,yscreen)
 
     def draw_light(self,screen_global):
 

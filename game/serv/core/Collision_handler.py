@@ -4,6 +4,9 @@ class CollisionHandler:
 
     def __init__(self):
         self.effect_send = []
+        self.die_send = []
+
+        self.ent_touch = {}
 
     def trigger_collision(self,mobs,players,projectiles):
 
@@ -15,11 +18,13 @@ class CollisionHandler:
 
                     for player in players.values() :
 
-                        touch = self.collision(projectile,player)
+                        if not player.is_dead :
 
-                        if touch :
-                            #print("Player touch")
-                            self.handle_touch(projectile,player,99)
+                            touch = self.collision(projectile,player)
+
+                            if touch :
+                                #print("Player touch")
+                                self.player_take_damage(projectile,player)
                         
                 if projectile.team!=Team.Mob:
 
@@ -30,8 +35,10 @@ class CollisionHandler:
 
                         if touch :
                             #print("Mob touch")
+                            #self.add_ent_touch(mob,projectile.damage)
                             self.handle_touch(projectile,mob,chunk)
 
+        self.trigger_ent_touch()
 
     def collision(self,ent1,ent2):
 
@@ -64,12 +71,82 @@ class CollisionHandler:
                 return True
         
         return False
+    
+    def player_take_damage(self,projectile,player,chunk=99):
+
+        old_pv = player.life
+        die = player.take_damage(projectile.damage)
+        delta_life = old_pv-player.life
+
+        if delta_life<0:
+            print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
+        
+        else :
+            self.effect_send.append([player.id,delta_life,chunk])
+
+            if die:
+                print("PLayer is dead")
+                self.die_send.append([player.id,chunk,player.die_len])
+
+            projectile.is_dead = True
+
+    def player_take_damage_no_projectile(self,damage,player,chunk=99):
+
+        if player.is_dead :
+            return
+
+        old_pv = player.life
+        die = player.take_damage(damage)
+        delta_life = old_pv-player.life
+
+        if delta_life<0:
+            print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
+        
+        else :
+            self.effect_send.append([player.id,delta_life,chunk])
+
+            if die:
+                print("PLayer is dead")
+                self.die_send.append([player.id,chunk,player.len_dead])
+
+    
+    def add_ent_touch(self,ent,projectile,chunk):
+
+        if ent.id in self.ent_touch :
+            self.ent_touch[ent.id][0]+=projectile.damage
+
+        else :
+            self.ent_touch[ent.id] = [projectile.damage,projectile.owner,chunk,ent]
 
     def handle_touch(self,projectile,ent,chunk):
-        old_pv = ent.life
-        ent.take_damage(projectile.damage)
-        delta_life = old_pv-ent.life
 
-        self.effect_send.append([ent.id,delta_life,chunk])
+        self.add_ent_touch(ent,projectile,chunk)
 
         projectile.is_dead = True
+
+    def trigger_ent_touch(self):
+
+        for ent_id,(damage,owner,chunk,ent) in self.ent_touch.items():
+
+            old_pv = ent.life
+
+            die = ent.take_damage(damage,owner)
+
+            delta_life = old_pv-ent.life
+
+            if delta_life!=0:
+                self.effect_send.append([ent.id,delta_life,chunk])
+            
+            if die:
+                self.die_send.append([ent.id,chunk,ent.len_dead])
+
+        self.ent_touch.clear()
+
+    def check_if_touch_damage_obj(self,map,dt,player):
+        """Take damage. If stay 0.5 sec, die"""
+
+        if player.touch_element(map,map.kill):
+
+            damage = int(250*dt)
+
+            self.player_take_damage_no_projectile(damage,player,chunk=99)

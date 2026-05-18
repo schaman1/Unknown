@@ -3,7 +3,7 @@ import pygame
 
 class Spell:
 
-    def __init__(self,id,x,y,idx_weapon,idx_spell):
+    def __init__(self,id,x,y,idx_weapon,idx_spell,icone_size):
 
         self.pos_x = x
         self.pos_y = y
@@ -14,20 +14,28 @@ class Spell:
 
         self.blit_icone = True
 
-        self.icone_size=size.CELL_SIZE*4
+        self.icone_size=icone_size
 
         self.icone_spell = pygame.image.load(assets.ICONE_SPELL).convert_alpha()
         self.icone_spell = pygame.transform.scale(self.icone_spell,(self.icone_size,self.icone_size))
 
         self.img = None
+        self.id_spell_draw = id
+
+        self.rect = None
+        self.load_rect()
+        self.load_image()
+
+    def load_rect(self):
+        """Permet de le reload après quand change la pos"""
         self.rect = self.icone_spell.get_rect(topleft = (self.pos_x,self.pos_y))
-        self.load_image(id)
 
-    def load_image(self,id_spell):
+    def load_image(self):
 
-        if id_spell != 0:
 
-            self.img = pygame.image.load(assets.SPELLS[id_spell]).convert_alpha()
+        if self.id_spell_draw != 0:
+
+            self.img = pygame.image.load(assets.SPELLS[self.id_spell_draw]).convert_alpha()
             self.img = pygame.transform.scale(self.img,(self.icone_size//2,self.icone_size//2))
 
     def draw(self,screen):
@@ -38,5 +46,3 @@ class Spell:
         if self.img!=None and self.blit_icone:
 
             screen.blit(self.img,(self.pos_x+self.icone_size//4,self.pos_y+self.icone_size//4))
-
-

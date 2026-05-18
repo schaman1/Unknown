@@ -1,13 +1,14 @@
 from serv.domain.mob.mob import Mob
-import math
+import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None):
+    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None,prime = 10):
 
         super().__init__((x,y),hp,id)
 
         self.hp = hp
         self.damage = damage
+        self.prime = prime
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
@@ -36,7 +37,7 @@ class Monster(Mob):
 
     # --- Boucle de comportement basique pour tous les monstres ---
 
-    def update(self, map,lPlayer):
+    def update(self,map,dt,lPlayer,collision_handler):
         
         if not self.is_alive():
             self.state = "dead"
@@ -60,7 +61,47 @@ class Monster(Mob):
                 self.state = "moving"
             elif dist <= self.attack_radius:
                 # Attaquer le joueur
-                 self.attack(target)
+                 self.attack(target,collision_handler,dt)
+
+    def take_damage(self, amount,player_did_damage):
+        """Return True/False if is dead or not"""
+
+        if self.dead:
+            return False
+
+        if amount!=0 :
+
+            self.life -= amount
+            self.send_new_life = True
+
+            if self.life <= 0:
+                self.life = 0
+                self.die(player_did_damage)
+
+                return True
+
+        return False
+    
+    def die(self,player_did_damage):
+
+        player_did_damage.update_money(self.prime)
+
+        self.dead = True
+        self.start_dead = time.perf_counter()
+
+    def still_dead(self):
+
+        if not self.dead :
+            return False
+
+        if self.start_dead+self.len_dead < time.perf_counter():
+            self.respawn()
+
+        return self.dead
+
+    def respawn(self):
+        self.dead = False
+        self.full_heal()
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -83,8 +124,10 @@ class Monster(Mob):
 #Creation d'un monstre spécifique : le squelette
 
 class Skeleton(Monster):
+
+
     def __init__(self, x, y, id):
-        super().__init__(hp=50, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id)
+        super().__init__(hp=20, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
 
         self.name = 0
         
@@ -103,9 +146,12 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer,dt):
+    def update(self, map, lPlayer,dt,collision_handler):
+
+        if self.still_dead():
+            return
         
-        super().update(map,lPlayer)
+        super().update(map,dt,lPlayer,collision_handler)
        # --- Deplacement selon l'état ---
         if self.state == "idle":
             self.idle_behavior(map,dt)
@@ -146,7 +192,7 @@ class Skeleton(Monster):
             self.direction *= -1
             intended_vx = self.direction * max(1, self.base_movement // 8)
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
 
         self.vitesse_x = intended_vx
         moved_x = self.collision_x(map,dt,self.vitesse_x)
@@ -196,7 +242,7 @@ class Skeleton(Monster):
         else:
             intended_vx = self.speed_max if dx > 0 else -self.speed_max
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
         self.vitesse_x = intended_vx
         moved_x = self.collision_x(map,dt,self.vitesse_x)
         self.collision_y(map,dt,self.vitesse_y)
@@ -221,7 +267,13 @@ class Skeleton(Monster):
             self.direction = 1 if intended_vx > 0 else -1
             
     # attaque le joueur le plus proche    
-    def attack(self, lPlayer):
+    def attack(self, Player,collision_handler,dt):
        # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
-        for _ in range(self.attack_speed):
-            lPlayer.take_damage(self.damage)
+        #for _ in range(self.attack_speed):
+        #    Player.take_damage(self.damage)
+
+        #Tim : j'ai juste commente pcq dcp j'ai rajoute le collision handler qui permet de check direct si touche avec 2 rect
+        #Et aussi le collision handler envoi au client les degat pour les afficher :)
+
+        damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
+        collision_handler.player_take_damage_no_projectile(damage,Player)

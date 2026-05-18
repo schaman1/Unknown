@@ -1,64 +1,104 @@
 class UpgradeHandler:
 
     def __init__(self):
-        pass
-
-    def trigger_event_on_player(self,list_events:list,player,dt,map):
         
-        #if len(list_events)!=0:
-        #    print(list_events)
+        self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
-        for i in range(len(list_events)-1,-1,-1) :
+        self.distance_dash = [0,0]
 
-            id = list_events[i][0]
+    def add_event(self,events_player,player):
 
-            if id==3:
+        for event in events_player :
+
+            if event[0]==40 or event[0]==41:
+
+                player.start_dash()
+    
+            self.id_event_player_do.append(event)
+
+    def trigger_event_on_player(self,player,dt,map):
+
+        for i in range(len(self.id_event_player_do)-1,-1,-1) :
+
+            id = self.id_event_player_do[i][0]
+
+            if id==40 or id==41:
                 
-                res = self.trigger_dash(list_events[i],player,dt,map)
+                res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
+                
+                self.dash_player(player)
+
+            elif id == 42 :
+
+                self.trigger_jump(player,dt,map)
+                res = False #Bcs jump 1 time no more
 
             else :
-                print("Unknown id in upgrade handle. Event :",list_events[i])
+                print("Unknown id in upgrade handle. Event :",self.id_event_player_do[i])
                 res = False
 
             if res==False :
-                list_events.pop(i)
+                self.id_event_player_do.pop(i)
+
 
     def trigger_dash(self,event,player,dt,map):
                 
-                delta_time,time_base,distance,angle=event[1]
+        delta_time,time_base,distance,angle=event[1]
 
-                dist = distance/time_base
+        dist = distance/time_base
 
-                distance = self.return_dist_angle(dist,angle)
-                #print(distance)
+        distance = self.return_dist_angle(dist,angle)
+        #print(distance)
 
-                if delta_time>time_base:
+        if delta_time>time_base:
 
-                    trunca_dt = time_base-(delta_time-dt)
+            #trunca_dt = time_base-delta_time
+            #alpha = trunca_dt/dt
 
-                    player.dash(map,trunca_dt,distance)
-                    return False
-                
-                else :
-                    player.dash(map,dt,distance)
-                    if angle==90:
-                        player.vitesse_y = 0
-                    event[1][0]+=dt
-                    return True
+            #print(alpha,dt,trunca_dt,distance,delta_time,time_base)
+
+            #distance[0] = distance[0]*trunca_dt/dt
+            #distance[1] = distance[1]*trunca_dt/dt
+
+            #self.distance_dash[0]+=distance[0]
+            #self.distance_dash[1]+=distance[1]
+
+            player.stop_dash()
+            return False
+        
+        else :
+
+            self.distance_dash[0]+=distance[0]
+            self.distance_dash[1]+=distance[1]
+
+            #if angle==90: #Y did i do that ???
+            #    player.vitesse_y = 0
+            
+            event[1][0]+=dt
+            return True
                 
     def return_dist_angle(self,dist,angle):
         """return un couple de dist a faire en fonction de l'angle choisis, x/y"""
 
         if angle==0:
-            return (dist,0)
+            return [dist,0]
         
         elif angle==2*90:
-            return (-dist,0)
+            return [-dist,0]
         
         elif angle==1*90:
-            return (0,-dist)
-        
+            return [0,-dist]        
         else :
-            return(0,dist)
+            return[0,dist]
                     
+    def reset_distance_dash(self):
+        self.distance_dash = [0,0]
 
+    def dash_player(self,player):
+
+        player.dash(self.distance_dash)
+        self.reset_distance_dash()
+
+    def trigger_jump(self,player,dt,map):
+        """Force the player to jump even if don't touch the gorund"""
+        player.jump(map = map,force_jump = True)

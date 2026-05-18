@@ -1,0 +1,163 @@
+{
+    "SPELL2":{
+        "type":"projectile",
+        "name":"Boule de feu",
+        "description":["Nothing"],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.1,
+        "degat":4
+    },
+    "SPELL3":{
+        "type":"projectile",
+        "name":"Taillade",
+        "description":["Nothing"],
+        "life":0.1,
+        "speed":0,
+        "rebond":0,
+        "time_reload": 0.2,
+        "degat":7
+    },
+    "SPELL4":{
+        "type":"projectile",
+        "name":"Pompe",
+        "description":["Tir 3 puissants",
+                        "projectiles."],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL10":{
+        "type":"augment",
+        "name":"Vitesse",
+        "description":["Multiplie la vitesse",
+                        "du projectile par 2."],
+        "time_reload": 0,
+        "degat":0
+    },
+    "SPELL11":{
+        "type":"augment",
+        "name":"Rebond",
+        "description":["Ajoute 'rebond' au",
+                    "prochain projectile."],
+        "time_reload": 0,
+        "degat":-2
+    },
+    "SPELL12":{
+        "type":"augment",
+        "name":"Recharge",
+        "description":["Reduit le temps de",
+                        "recharge totale de 0.4",
+                        "+ tir aleatoire."],
+        "time_reload": -0.2,
+        "degat":0
+    },
+    "SPELL13":{
+        "type":"augment",
+        "name":"Degat plus",
+        "description":["Ajoute 3 degats",
+                        "au prochain projectile."],
+        "time_reload": 0,
+        "degat":3
+    },
+    "SPELL20":{
+        "type":"augment",
+        "name":"Simple",
+        "description":["Permet de lancer",
+                    "1 sort de plus."],
+        "time_reload": 0,
+        "degat":0
+    },
+    "SPELL21":{
+        "type":"augment",
+        "name":"Double",
+        "description":["Permet de lancer",
+                    "2 sorts de plus."],
+        "time_reload": 0,
+        "degat":0
+    },
+    "SPELL30":{
+        "type":"projectile",
+        "name":"BDF + effet",
+        "description":["Invoque le PROJECTILE",
+                    "suivant a sa disparition."],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.3,
+        "degat":5
+    },
+    "SPELL40":{
+        "type":"augment",
+        "name":"Dash court",
+        "description":["D'ou vient ce pouvoir ?"],
+        "time_reload": 1,
+        "degat":0
+    },
+    "SPELL41":{
+        "type":"augment",
+        "name":"Dash long",
+        "description":["Il vous permettra d'aller",
+                        "dans de nouvelles zones."],
+        "time_reload": 1,
+        "degat":0
+    },
+    "SPELL42":{
+        "type":"augment",
+        "name":"Jump",
+        "description":["Il vous permettra d'aller",
+                        "dans de nouvelles zones."],
+        "time_reload": 5,
+        "degat":0
+    },
+    "UNKNOWN_SPELL":{
+        "type":"projectile",
+        "name":"Unknown",
+        "description":["Doit implementer ses infos."],
+        "life":"Not decided yet",
+        "speed":99999,
+        "rebond":0,
+        "time_reload":1,
+        "degat":0
+    },
+    "WEAPON0":{
+        "type":"weapon",
+        "name":"Sac à dos",
+        "description":["Il vous sert à transporter",
+                        "vos objets."],
+        "nbr_slot":10,
+        "time_reload":0,
+        "spell_time":0
+    },
+    "WEAPON1":{
+        "type":"weapon",
+        "name":"Arme J",
+        "description":["En appyant sur j,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":0.5,
+        "spell_time":0.2
+    },
+    "WEAPON2":{
+        "type":"weapon",
+        "name":"Arme K",
+        "description":["En appyant sur k,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":0.5,
+        "spell_time":0.2
+    },
+    "WEAPON3":{
+        "type":"weapon",
+        "name":"Arme I",
+        "description":["En appyant sur i,",
+                        "il lancera vos sorts !"],
+        "nbr_slot":3,
+        "time_reload":0.5,
+        "spell_time":0.2
+    }
+
+}

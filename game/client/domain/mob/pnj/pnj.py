@@ -3,17 +3,17 @@ from client.ui.text import AnimatedText
 
 class Pnj(Mob):
 
-    def __init__(self,pos,color_idx,id,cell_size,text):
+    def __init__(self,pos,color_idx,id,cell_size,text,name):
 
         super().__init__(0,0,cell_size,(8,8),"pnj")
         self.pos_x = pos[0]
         self.pos_y = pos[1]
         self.pos_blit = (0,0)
+        self.name = name
 
         self.color_idx = color_idx
         self.id = id #id = id_text
         self.text = AnimatedText(text,cell_size)
-
 
     def blit(self,screen,x,y,dt):
         

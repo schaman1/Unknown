@@ -122,7 +122,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -160,13 +160,13 @@ class Client:
                 msg_size = 1+3
 
             elif msg_id==12:
-                msg_size = 1+1
+                msg_size = 1+5
 
             elif msg_id == 13:
                 msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
 
             elif msg_id == 14:
-                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*5
+                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
 
             elif msg_id == 15:
                 msg_size = 1+3+8+2+2
@@ -176,6 +176,9 @@ class Client:
 
             elif msg_id == 17:
                 msg_size = 1+3
+
+            elif msg_id==18:
+                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -223,7 +226,7 @@ class Client:
         #    )
 
         if id == 0:
-            self.main.state.mod = "intro start"
+            self.main.launch_game()
 
         elif id == 1 :
 
@@ -275,13 +278,8 @@ class Client:
                 id,pos_x,pos_y = struct.unpack("!LLL",data[3+i*12:15+i*12])
                 self.main.state.game.projectiles.remove_projectile(id,pos_x,pos_y)
 
-        elif id==11: 
-
-            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
-            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
-
         elif id == 9 :
-            self.main.state.mod = "intro end"
+            self.main.state.stop_intro()
 
         elif id==10:
             idx_weapon_pos,id_weapon = struct.unpack("!BB",data[2:4])
@@ -298,10 +296,15 @@ class Client:
             #else:
             #    self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
 
-        elif id==12:
-            life = struct.unpack("!B",data[1:2])[0]
+        elif id==11: 
 
-            self.main.state.game.update_life(life,("Player",None))
+            delta_time,id_weapon = struct.unpack("!HB",data[1:4])
+            self.main.state.game.update_next_allowed_shot(delta_time,id_weapon)
+
+        elif id==12:
+            life,max_life,id = struct.unpack("!HHB",data[1:6])
+
+            self.main.state.game.update_life(life,("Player",id,max_life))
 
             #self.main.state.game.create_weapon()
         
@@ -317,7 +320,7 @@ class Client:
 
             for i in range(len):
 
-                id,chunk,delta_life = struct.unpack("!HHB",data[5*i+3:5*i+8])
+                id,chunk,delta_life = struct.unpack("!HHH",data[6*i+3:6*i+9])
                 
                 popup_to_create.append((id,chunk,delta_life))
 
@@ -339,6 +342,16 @@ class Client:
             id_weapon,id_spell,idx_pos = struct.unpack("!BBB",data[1:4])
 
             self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
+
+        elif id==18:
+
+            len = struct.unpack("!H", data[1:3])[0]
+
+            for i in range(len):
+
+                id,chunk,duree = struct.unpack("!HHH",data[6*i+3:6*i+9])
+                
+                self.main.state.game.kill_ent(id,chunk,duree)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

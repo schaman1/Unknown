@@ -1,11 +1,14 @@
 from shared.constants import world
-from serv.domain.objects.spell_on_ground import spell_on_ground
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest,upgrade_life
+import random
 
 class objects_manager:
 
     def __init__(self):
 
         self.chunk_objects = {}
+        self.upgrades = {"UpgradeWeapon":upgrade_size_weapon,
+                         "UpgradeLife":upgrade_life}
         self.id_curr = 0
 
         self.init_dico_dic_objects()
@@ -23,13 +26,45 @@ class objects_manager:
             for j in range(world.LEN_Y_CHUNK) :
                 self.chunk_objects[i*100+j] = {}
 
-    def add_object(self,ele_idx,id_categorie,pos_x,pos_y,chunk,price):
+    def add_object(self,ele_idx,id_categorie,pos_x,pos_y,chunk,price): #Categorie is used for chest
 
         id = self.generate_id()
 
         if ele_idx=="SPELL":
 
             ele = spell_on_ground(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
+        elif ele_idx=="HEALER":
+
+            ele = healer_respawn(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
+        elif ele_idx=="UpgradeWeapon":
+
+            ele = upgrade_size_weapon(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
+        elif ele_idx=="UpgradeLife":
+
+            ele = upgrade_life(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+
+            return id,ele
+        
+        elif ele_idx=="Chest":
+
+            ele = Chest(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
 
@@ -51,8 +86,34 @@ class objects_manager:
 
             player.update_money(-element.price)
 
-            self.destroy_object(chunk,id)
+            if element.unique_use :
+                self.destroy_object(chunk,id)
 
-            return "AddToInventaire",chunk,id,element
+            return element.trigger_value,chunk,id,element
+        
+    def spawn_random_spell(self,cat,chunk,x,y):
 
+        if cat == 0 : #Means all
 
+            return
+        
+        elif cat == 1: #Means spell
+
+            id = self.generate_id()
+            spell = spell_on_ground(None,x,y,0,randomize=True)
+
+            self.chunk_objects[chunk][id] = spell
+
+            return id,spell,"SPELL"
+        
+        elif cat == 2: #Mea ns special = Upgade weapon
+
+            id = self.generate_id()
+
+            name = random.choice(list(self.upgrades.keys()))
+
+            upgrade = self.upgrades[name](0,x,y,0)
+
+            self.chunk_objects[chunk][id] = upgrade
+
+            return id,upgrade,name

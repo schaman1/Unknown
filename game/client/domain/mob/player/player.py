@@ -15,10 +15,14 @@ class Player_you(Mob) :
         self.is_you = is_you
 
         self.font = FONT
+
+        self.text_life_color = (250,250,250)
+        self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
+        
         self.text_money_color = (250,250,250)
         self.pos_money = (screen_size[0]//2,screen_size[1]*0.85)
-        self.pos_blit_text = [None,None]
         self.text_money = self.font.render(str(self.money),True, self.text_money_color)  # True = anti-aliasing
+        self.pos_blit_text = [None,None]
 
         self.padding_life = 0.02
         self.key_active = {"right":False,
@@ -30,7 +34,7 @@ class Player_you(Mob) :
 
         self.rect_black_life = pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, (screen_size[0]/2), screen_size[1]*0.03)
 
-        self.weapons = WeaponManager()
+        self.weapons = WeaponManager(screen_size,cell_size)
 
         self.update_pos_blit_money()
     
@@ -53,7 +57,11 @@ class Player_you(Mob) :
 
         return delta_money
 
-    def draw(self,screen,dt):
+    def draw(self,screen,dt,xscreen,yscreen):
+
+        self.update_interpolate_pos()
+
+        self.update_pos_blit(xscreen,yscreen)
 
         self.animation.draw(dt,self.pos_blit,screen)
 
@@ -61,6 +69,8 @@ class Player_you(Mob) :
 
         self.draw_life(screen,screen_size)
         self.draw_money(screen)
+
+        self.weapons.draw_timer_all(screen)
 
     def draw_life(self,screen,screen_size):
 
@@ -76,8 +86,10 @@ class Player_you(Mob) :
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
             (147,165,149),  # couleur (blanc)
-            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, self.life*(screen_size[0]/2)//100, screen_size[1]*0.03)
+            pygame.Rect(screen_size[0]//4,screen_size[1]*0.90, int(self.life/self.max_life*100)*(screen_size[0]/2)//100, screen_size[1]*0.03)
         )
+
+        screen.blit(self.text_life, (screen_size[0]//4,screen_size[1]*0.90))
 
     def draw_money(self, screen):
 
@@ -85,7 +97,8 @@ class Player_you(Mob) :
 
     def update_pos_blit_money(self):
         size = FONT.size(str(self.money))
-        self.pos_blit_text = [self.pos_money[0]+size[0]//2,self.pos_money[1]+size[1]//2]
+        self.pos_blit_text = [self.pos_money[0],self.pos_money[1]]
+        self.pos_blit_money = [self.pos_money[0]+size[0]//2,self.pos_money[1]]
 
     def draw_weapon(self,screen,angle,pos_draw) :
 
@@ -107,21 +120,25 @@ class Player_you(Mob) :
         else :
             return
 
-    def move(self,delta):
-        self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
-        self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
+    #def move(self,delta):
+    #    self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
+    #    self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
 
     def calcule_new_direction(self):
-        if self.key_active["left"] and not self.key_active["right"] :
-            self.animation.direction="left"
-            self.animation.update_state("running")
+        """Update l'anim si pas dans un dead state"""
+        
+        if not self.in_dead_state():
 
-        elif self.key_active["right"] and not self.key_active["left"]:
-            self.animation.direction="right"
-            self.animation.update_state("running")
+            if self.key_active["left"] and not self.key_active["right"] :
+                self.animation.direction="left"
+                self.animation.update_state("running")
 
-        elif not self.key_active["right"] and not self.key_active["left"]:
-            self.animation.update_state("idle")
+            elif self.key_active["right"] and not self.key_active["left"]:
+                self.animation.direction="right"
+                self.animation.update_state("running")
+
+            elif not self.key_active["right"] and not self.key_active["left"]:
+                self.animation.update_state("idle")
 
     def update_direction_look(self,new_direction):
         
@@ -149,6 +166,14 @@ class Player_you(Mob) :
 
             self.calcule_new_direction()
 
+    def move(self,delta):
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        self.move_mob(new_pos)
+
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree,"in_death")
+
 class Player_not_you(Mob) :
 
     def __init__(self,cell_size,pos, pseudo = "Coming soon",is_you = False):
@@ -158,51 +183,55 @@ class Player_not_you(Mob) :
         self.pseudo = pseudo
         self.is_you = is_you
 
+        self.len_anim = {"running":0.2,
+                         "idle":0, #Always idle when no state
+                         }
+        self.remaining_time_anim = 0
+
+        #self.font = FONT
+
         self.cell_size=cell_size
 
-    def draw(self,screen,dt):
+    def draw(self,screen,dt,xscreen,yscreen):
         
         #self.update_angle()
 
         #self.pos_blit = self.calculate_pos_blit(xscreen,yscreen)
         #self.angle = self.get_angle(center, mouse_pos)
+
+        self.update_interpolate_pos()
+
+        self.update_state_animation(dt)
+
+        self.update_pos_blit(xscreen,yscreen)
 #
         self.animation.draw(dt,self.pos_blit,screen)
 
-
-    #def update_angle(self):
-    #    self.angle+=1
-
-    #def draw_weapon(self,screen,pos):
-#
-    #    rotated_img = pygame.transform.rotate(self.dr_weapon, self.angle)
-    #    rotated_polish = rotated_img.get_rect(center = pos)
-    #    screen.blit(rotated_img, rotated_polish.topleft)
-#
-    #def add_weapon(self,id_weapon):
-#
-    #    for i in range(4):
-    #        img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-    #        img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
-    #        self.frame_weapon.append(img_weapon)
-#
-    #    for i in range(2, 0, -1):
-    #        img_weapon = pygame.image.load(assets.RANGED_WEAPON[i]).convert_alpha()
-    #        img_weapon = pygame.transform.scale(img_weapon,(weapon.HEIGHT_WEAPON1*self.cell_size,weapon.WIDTH_WEAPON1*self.cell_size))
-    #        self.frame_weapon.append(img_weapon)
-#
     def move(self,delta):
-        old_pos = self.pos_x
+
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         
-        self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
-        self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
-
-        delta_x = self.pos_x-old_pos
-
-        if delta_x>=0:
+        if new_pos[0]-self.pos_x>0:
             self.animation.direction = "right"
+            self.animation.set_state("running")
+            self.remaining_time_anim = self.len_anim["running"]
 
-        else :
+        elif new_pos[0]-self.pos_x<0 :
             self.animation.direction = "left"
+            self.animation.set_state("running")
+            self.remaining_time_anim = self.len_anim["running"]
+
+        self.move_mob(new_pos)
 
 
+    def kill(self,duree):
+
+        self.animation.set_to_death(duree,"in_death")
+
+    def update_state_animation(self,dt):
+
+        self.remaining_time_anim -= dt
+        if self.remaining_time_anim<0:
+            self.remaining_time_anim = 0
+
+            self.animation.set_state("idle")

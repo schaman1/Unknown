@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
@@ -9,6 +9,8 @@ from client.ui.objects.objects_manager import objects_manager
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
+from client.domain.intro.intro_story import Intro_story
+from client.ui.add_fading import Fading
 
 from client.config import assets
 from shared.constants import world
@@ -29,6 +31,24 @@ class Game :
         self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
         self.grey_layer.fill((10,10,10,150))
 
+        self.waiting_img = pygame.image.load(assets.BG_WAITING).convert()
+        self.fading_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
+        self.alpha_fading = 255
+        size = self.waiting_img.get_size()
+        scale = (screenSize[0]//2)*size[1]//size[0]
+        self.waiting_img = pygame.transform.scale(self.waiting_img,(screenSize[0]//2,scale))
+        self.rect_img_waiting = self.waiting_img.get_rect(center = ((screenSize[0]//2,screenSize[1]//2)))
+
+        self.team_img = pygame.image.load(assets.TEAM_NIKA).convert()
+        size = self.team_img.get_size()
+        scale = (screenSize[0]//4)*size[1]//size[0]
+        self.team_img = pygame.transform.scale(self.team_img,(screenSize[0]//4,scale))
+        self.rect_img_team = self.team_img.get_rect(center = ((screenSize[0]//2,screenSize[1]*3//4)))
+        
+        #For fading on intro
+        self.len_fading = 2
+        self.end_fading = None
+
         self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
         self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
@@ -48,19 +68,42 @@ class Game :
 
         self.camera = Camera(screenSize)
 
+        self.intro_story = Intro_story(self.screen_size)
+
+        self.fade = Fading(screenSize)
+
         self.player_command = []
         self.blit_info=False
         self.spell_blit_mouse=None
+
+    def draw_story(self):
+        self.intro_story.start_intro()
         
     def draw_intro_start(self,screen):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0))
+        screen.blit(self.waiting_img,self.rect_img_waiting)
+        screen.blit(self.team_img,self.rect_img_team)
 
-    def draw_intro_end(self,screen):
+    def draw_intro_end(self,screen,dt,mouse_pos):
 
-        screen.blit(pygame.image.load(assets.BG_WAITING).convert(),(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+        self.draw(screen,dt,mouse_pos)
+        self.fading_layer.fill((0,0,0,self.alpha_fading))
+        screen.blit(self.fading_layer,(0,0))
 
-        return True #If end animation else return False
+        self.waiting_img.set_alpha(self.alpha_fading)
+        self.team_img.set_alpha(self.alpha_fading)
+
+        screen.blit(self.waiting_img,self.rect_img_waiting) #Faire un decrescendo ou un truc stylé d'animation
+        screen.blit(self.team_img,self.rect_img_team)
+
+        delta_time = max(self.end_fading - time.perf_counter(),0)
+        #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
+        self.alpha_fading = int(255*delta_time//self.len_fading)
+
+        if delta_time<=0 :
+            return True
+    
+        return False #True If end animation else return False
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -75,8 +118,8 @@ class Game :
         if not self.blit_info:
             self.player_command.append(self.player_all.me.shot(id_key))
 
-    def blit_monsters(self,screen,x,y):
-        self.monsters.blit_all_monsters(screen,x,y)
+    def blit_monsters(self,screen,x,y,dt):
+        self.monsters.blit_all_monsters(screen,x,y,dt)
 
     def blit_players(self,screen,x,y,dt):
         self.player_all.blit_players(screen,x,y,dt)
@@ -100,13 +143,15 @@ class Game :
 
             #screen.fill((50,50,50)) #A changer pour mettre transparence
 
-            self.player_all.blit_infos(screen,screen_size)
+            self.player_all.blit_infos(screen,screen_size,mouse_pos)
 
             if self.spell_blit_mouse!=None:
-                screen.blit(self.spell_blit_mouse,mouse_pos)
+                pos = [mouse_pos[0]-self.cell_size,mouse_pos[1]-self.cell_size]
+
+                screen.blit(self.spell_blit_mouse,pos)
 
     def draw(self,screen,dt,mouse_pos=None):
-        """Blit le canva sur le screen à la position x,y"""
+        """Blit le canva sur le screen à la position x,y + return weither is in interaction or not"""
 
         x,y = self.camera.return_camera_pos(self.player_all.me)
 
@@ -115,9 +160,9 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
+        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos(),dt)
         self.blit_pnj(screen,x,y,dt)
-        self.blit_monsters(screen,x,y)
+        self.blit_monsters(screen,x,y,dt)
         self.blit_players(screen,x,y,dt)
 
         self.blit_projectiles_explosions(screen,x,y,dt)
@@ -135,6 +180,12 @@ class Game :
         self.pnj_all.blit_dialogue(screen,dt)
         self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
+
+        self.fade.trigger(screen,dt)
+
+        in_interaction = self.intro_story.draw_intro(screen)
+
+        return in_interaction
 
     def convert_from_base(self,nbr): #Est utilisé ???
         return nbr//self.base_movement
@@ -169,6 +220,20 @@ class Game :
 
             return -1,None,None
         
+    def stop_blit_info(self):
+        """Stop blit info and return True if effectively stop blitting info"""
+
+        if self.blit_info == True :
+            self.blit_info = False
+            if self.blit_info and self.spell_blit_mouse != None:
+                
+                self.player_all.me.weapons.stop_holding_spell()
+                self.spell_blit_mouse=None
+
+            return True
+        return False
+
+        
     def trigger_info_key(self):
 
         if self.blit_info and self.spell_blit_mouse != None:
@@ -187,7 +252,10 @@ class Game :
             #delta_life = new_life - self.player_all.me.life
             #self.add_popup(self.player_all.me,delta_life)
 
-            self.player_all.me.update_life(new_life)
+            id_player = data[1]
+            max_life = data[2]
+
+            self.player_all.dic_players[id_player].update_life(new_life,max_life)
 
     def update_money(self,money):
 
@@ -195,14 +263,20 @@ class Game :
 
         pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
 
-        self.add_popup_on_screen(pos,str(delta_money),type = "money")
+        if delta_money>0:
+            delta_money_txt = "+"+str(delta_money)
+
+        else :
+            delta_money_txt = str(delta_money)
+
+        self.add_popup_on_screen(pos,str(delta_money_txt),type = "money")
     
     def add_popup(self,ent,text,type = "damage"):
 
-        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type)
+        self.floating_values.add_floating_value(text,[ent.pos_x,ent.pos_y],type)
 
     def add_popup_on_screen(self,pos,text,type):
-        self.floating_values.add_floating_value(str(text),pos,type)
+        self.floating_values.add_floating_value(text,pos,type)
 
     def add_many_popup_life(self,data):
 
@@ -210,7 +284,7 @@ class Game :
 
             id,chunk,delta_life = e
 
-            if id==99: #Magic number je sais mais nsm
+            if chunk==99: #Magic number je sais mais nsm
                 ent = self.player_all.dic_players[id]
             else :
                 ent = self.monsters.dic_monster[chunk][id]
@@ -218,6 +292,7 @@ class Game :
             self.add_popup(ent,delta_life)
 
     def interact(self):
+        """Look around player if can interact with an object + interact with the closest one """
 
         pos_player = self.player_all.return_pos()
 
@@ -226,12 +301,29 @@ class Game :
         res = self.objects_manager.test_trigger(pos_player)
 
         if res!=None:
-            chunk,id = res
 
-            self.player_command.append([8,chunk,id])
-        
+            touch_pnj = self.pnj_all.test_trigger(pos_player,res[0])
+
+            if not touch_pnj and res[1]!=None:
+
+                chunk,id = res[1]
+                self.objects_manager.chunk_objects[chunk][id].start_anim_trigger()
+                self.player_command.append([8,chunk,id])
+
+            return touch_pnj
+
         else :
         
-            touch_pnj = self.pnj_all.test_trigger(pos_player)
-                
-        return touch_pnj
+            return False
+        
+    def kill_ent(self,id,chunk,duree):
+        """Put the death animation on target ent"""
+
+        duree = duree/1000
+    
+        if chunk==99 :
+            self.player_all.dic_players[id].kill(duree)
+            self.fade.set_values(3,duree-3-0.2*4)
+
+        else :
+            self.monsters.dic_monster[chunk][id].kill(duree)
