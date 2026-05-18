@@ -16,7 +16,7 @@ def change_values():
     Default_values.Player_money_start = 65535
     Default_values.PLAYER_LIFE = 65535
     world.START_SEE = True
-    world.NBR_CELL_CAN_SEE *=2
+    world.NBR_CELL_CAN_SEE *=10
 
     for e in OBJECTS_ADDING:
         OBJECTS.append(e)
