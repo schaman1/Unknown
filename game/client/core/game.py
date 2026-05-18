@@ -109,9 +109,9 @@ class Game :
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
         for (chunk, id, x, y, state) in data_monster :
+
+            self.monsters.dic_monster[chunk][id].move((x,y))
                 
-            self.monsters.dic_monster[chunk][id].pos_x = self.convert_from_base(x*self.cell_size)
-            self.monsters.dic_monster[chunk][id].pos_y = self.convert_from_base(y*self.cell_size)
             self.monsters.dic_monster[chunk][id].state = state
 
     def shot(self,id_key):

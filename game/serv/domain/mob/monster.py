@@ -196,12 +196,13 @@ class Laseroide(Monster) :
 
     def check_if_jump(self,delta,map):
 
-        if delta[0]==0 and self.state == "run away" or self.state=="moving" and self.last_time_jump+2 < time.perf_counter():
+        if delta[0]==0 and (self.state == "run away" or self.state=="moving") and self.last_time_jump+1 < time.perf_counter():
             if self.jump(map): #if succesfull
                 self.last_time_jump = time.perf_counter()
 
-        elif delta[1]>0:
-            self.jump(map)
+        elif delta[1]>0 and self.last_time_jump+1 < time.perf_counter() :
+            if self.jump(map): #if succesfull
+                self.last_time_jump = time.perf_counter()
 
         elif delta[0]!=0:
             self.last_time_jump = time.perf_counter()
