@@ -183,6 +183,11 @@ class Player_not_you(Mob) :
         self.pseudo = pseudo
         self.is_you = is_you
 
+        self.len_anim = {"running":0.2,
+                         "idle":0, #Always idle when no state
+                         }
+        self.remaining_time_anim = 0
+
         #self.font = FONT
 
         self.cell_size=cell_size
@@ -196,6 +201,8 @@ class Player_not_you(Mob) :
 
         self.update_interpolate_pos()
 
+        self.update_state_animation(dt)
+
         self.update_pos_blit(xscreen,yscreen)
 #
         self.animation.draw(dt,self.pos_blit,screen)
@@ -206,9 +213,13 @@ class Player_not_you(Mob) :
         
         if new_pos[0]-self.pos_x>0:
             self.animation.direction = "right"
+            self.animation.set_state("running")
+            self.remaining_time_anim = self.len_anim["running"]
 
         elif new_pos[0]-self.pos_x<0 :
             self.animation.direction = "left"
+            self.animation.set_state("running")
+            self.remaining_time_anim = self.len_anim["running"]
 
         self.move_mob(new_pos)
 
@@ -216,3 +227,11 @@ class Player_not_you(Mob) :
     def kill(self,duree):
 
         self.animation.set_to_death(duree,"in_death")
+
+    def update_state_animation(self,dt):
+
+        self.remaining_time_anim -= dt
+        if self.remaining_time_anim<0:
+            self.remaining_time_anim = 0
+
+            self.animation.set_state("idle")
