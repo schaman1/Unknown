@@ -10,6 +10,7 @@ from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
 from client.domain.intro.intro_story import Intro_story
+from client.ui.add_fading import Fading
 
 from client.config import assets
 from shared.constants import world
@@ -44,7 +45,7 @@ class Game :
         self.team_img = pygame.transform.scale(self.team_img,(screenSize[0]//4,scale))
         self.rect_img_team = self.team_img.get_rect(center = ((screenSize[0]//2,screenSize[1]*3//4)))
         
-
+        #For fading on intro
         self.len_fading = 2
         self.end_fading = None
 
@@ -69,6 +70,8 @@ class Game :
 
         self.intro_story = Intro_story(self.screen_size)
 
+        self.fade = Fading(screenSize)
+
         self.player_command = []
         self.blit_info=False
         self.spell_blit_mouse=None
@@ -82,7 +85,6 @@ class Game :
         screen.blit(self.team_img,self.rect_img_team)
 
     def draw_intro_end(self,screen,dt,mouse_pos):
-
 
         self.draw(screen,dt,mouse_pos)
         self.fading_layer.fill((0,0,0,self.alpha_fading))
@@ -178,6 +180,8 @@ class Game :
         self.pnj_all.blit_dialogue(screen,dt)
         self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
+
+        self.fade.trigger(screen,dt)
 
         in_interaction = self.intro_story.draw_intro(screen)
 
@@ -319,6 +323,7 @@ class Game :
     
         if chunk==99 :
             self.player_all.dic_players[id].kill(duree)
+            self.fade.set_values(3,duree-3-0.2*4)
 
         else :
             self.monsters.dic_monster[chunk][id].kill(duree)
