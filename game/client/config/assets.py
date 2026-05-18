@@ -62,6 +62,9 @@ PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 MONSTER_2 = resource_path("assets/sprites/monster/idle/lasertoide.png")
 MONSTER_2_LOADING = resource_path("assets/sprites/monster/lasertoide_loading.png")
 
+FOULLI = resource_path("assets/sprites/monster/Foulli/Foulli_idle.png")
+FOULLI_ATTACK = resource_path("assets/sprites/monster/Foulli/Foulli_attack.png")
+
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 
 MONSTER_IDLE_2 = resource_path("assets/sprites/monster/idle/monster_idle_2.png") 

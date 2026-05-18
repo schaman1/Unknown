@@ -4,9 +4,9 @@ from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
+    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10):
 
-        super().__init__((x,y),hp,id,acceleration=acceleration,height = 6)
+        super().__init__((x,y),hp,id,acceleration=acceleration,height = height,width = width)
 
         self.hp = hp
         self.damage = damage
@@ -15,6 +15,8 @@ class Monster(Mob):
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
         self.run_away_rad = run_away
+
+        self.collision_damage = True
 
         self.radius = rad
 
@@ -66,7 +68,7 @@ class Monster(Mob):
 
 
         #------------degat de collision-----------------#
-        if self.dist<self.width/2/self.base_movement : 
+        if self.dist<self.width/2/self.base_movement and self.collision_damage: 
             damage = int(100*dt) 
             collision_handler.player_take_damage_no_projectile(damage,self.target)
             #FIn
@@ -75,6 +77,9 @@ class Monster(Mob):
             return
 
         elif self.state == "idle":
+            if self.dist<= self.attack_radius :
+                self.state = "attacking"
+
             if self.dist <= self.radius:
                 self.state = "moving"
        
@@ -172,7 +177,7 @@ class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 6)
 
         self.acceleration_y = 20* self.acceleration
 
@@ -273,6 +278,73 @@ class Laseroide(Monster) :
 
         if self.weapon.idx == 0:
             self.focus = False
+
+class Foulli(Monster) :
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=10,damage =5,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
+
+        self.name = 2 #Permet d'afficher le bon monstre / In monster all dans client
+        self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+
+        self.begin_shot = time.perf_counter()
+        self.time_before_shot = 0.3
+        self.time_after_shot = 0.5
+
+        self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+            if not self.focus :
+                self.focus = True
+                self.state = "loading"
+                self.begin_shot = time.perf_counter()
+            
+            else :
+
+                if self.begin_shot+self.time_after_shot <= time.perf_counter() :
+                    self.state = "idle"
+                    self.focus = False
+
+        elif self.state == "loading" :
+            if self.begin_shot+self.time_before_shot <= time.perf_counter() :
+                self.state = "attacking"
+                self.begin_shot = time.perf_counter()
+                if self.dist <=self.attack_radius :
+                    self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """Stay in his spot"""
+        return
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+        return
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+        return
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        
+        damage = self.damage
+        collision_handler.player_take_damage_no_projectile(damage,self.target)
 
 class Skeleton(Monster):
 

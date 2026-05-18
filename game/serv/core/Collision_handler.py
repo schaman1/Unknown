@@ -30,7 +30,6 @@ class CollisionHandler:
 
                     for mob in mobs[chunk] :
 
-
                         touch = self.collision(projectile,mob)
 
                         if touch :
@@ -52,25 +51,18 @@ class CollisionHandler:
 
         return bool_res
     
-    def collision_rec(self,center1,width1,height1,center2,width2,height2):
+    def collision_rec(self, center1, width1, height1, center2, width2, height2):
 
-        xleft1,xright1 = center1[0]-width1//2,center1[0]+width1//2
-        yleft1,yright1 = center1[1]-height1//2,center1[1]+height1//2
+        xleft1,  xright1 = center1[0] - width1  / 2, center1[0] + width1  / 2
+        yleft1,  yright1 = center1[1] - height1 / 2, center1[1] + height1 / 2
 
-        xleft2,xright2 = center2[0]-width2//2,center2[0]+width2//2
-        yleft2,yright2 = center2[1]-height2//2,center2[1]+height2//2
+        xleft2,  xright2 = center2[0] - width2  / 2, center2[0] + width2  / 2
+        yleft2,  yright2 = center2[1] - height2 / 2, center2[1] + height2 / 2
 
-        #print("X : ",xleft1,xright1,xleft2,xright2)
-        #print("Y : ",yleft1,yright1,yleft2,yright2)
+        overlap_x = xleft1 <= xright2 and xright1 >= xleft2
+        overlap_y = yleft1 <= yright2 and yright1 >= yleft2
 
-        if (xleft1<=xright2 and xright1>=xleft2) or (xleft1>=xright2 and xright1<=xleft2):
-
-            if (yleft1<=yright2 and yright1>=yleft2) or (yleft1>=yright2 and yright1<=yleft2) :
-
-
-                return True
-        
-        return False
+        return overlap_x and overlap_y
     
     def player_take_damage(self,projectile,player,chunk=99):
 
