@@ -139,18 +139,14 @@ class Monster(Mob):
         self.dead = False
         self.full_heal()
 
-    def get_angle(self,player):
+    def get_angle(self, player):
+        adjacent = player.pos_x - self.pos_x
+        opp = -((player.pos_y ) - self.pos_y)  # négatif !
 
-        adjacent = player.pos_x-self.pos_x
+        angle = math.atan2(opp, adjacent)
+        angle = angle * 180 / math.pi
 
-        opp = (player.pos_y + player.height//2)-self.pos_y
-
-        hyp = math.sqrt(opp**2+adjacent**2)
-        angle = math.acos(adjacent/hyp)
-
-        angle = angle*180/math.pi #Convert to deg
-
-        return int(angle)
+        return int(angle) % 360
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -207,16 +203,22 @@ class Laseroide(Monster) :
             
         elif self.state == "attacking":
             if not self.focus : 
+                self.state = "loading"
                 self.focus = True
                 self.angle = self.get_angle(self.target)
                 self.begin_shot = time.perf_counter()
 
-                #if self.angle<90 or self.angle >270 :
-                #    self.pos_x +=10
-                #else :
-                #    self.pos_x -=10
+                if self.angle>90 and self.angle<270 :
+                    self.pos_x -= 100
+                else :
+                    self.pos_x += 100
 
-            self.attack(self.target,collision_handler,dt,projectile_manager)
+            else :
+                self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        elif self.state == "loading" :
+            if self.begin_shot+self.time_before_shot <= time.perf_counter() :
+                self.state = "attacking"
 
         delta = self.move_all(map,dt,collision_handler)
 
@@ -258,10 +260,6 @@ class Laseroide(Monster) :
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
-
-
-        if self.begin_shot+self.time_before_shot > time.perf_counter() :
-            return
         
         infos = self.weapon.trigger_shot(self.angle,(self.pos_x,self.pos_y))
 
