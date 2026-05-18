@@ -150,7 +150,7 @@ class Animation:
     def draw(self,dt,pos_blit,screen):
         self.time_start_frame+=dt
 
-        if self.animation[self.state]["time"]<self.time_start_frame:
+        if self.animation[self.state]["time"]<=self.time_start_frame:
 
             self.time_start_frame-=self.animation[self.state]["time"]
 
@@ -215,11 +215,10 @@ class Animation:
 
     def set_to_death(self,duree,state_beginning):
 
-
         if state_beginning == "in_death":
 
             self.animation["in_death"]["time"]=0.2 #1 car les 4 frames de respawn durent 1 sec
-            self.animation["death"]["time"]=(duree-0.2*4-0.3*4)/4 #a 0.2*2 de trop pour le fade in fade out
+            self.animation["death"]["time"]=(duree-0.2*4)/4 #a 0.2*2 de trop pour le fade in fade out
             self.animation["respawn"]["time"]=0.3 #1 car les 4 frames de respawn durent 1 sec
             self.fct_to_do = self.end_in_death
 
