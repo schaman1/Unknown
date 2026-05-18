@@ -33,7 +33,7 @@ class Musique :
 
     def play_music(self): #volume entre 0 et 1
         pygame.mixer.music.play(loops=0, start=0, fade_ms=15000)
-        pygame.mixer.music.set_volume(self.volume)
+        self.update_volume(self.volume)
 
     def unload_music(self):
         self.stop_music()
@@ -44,19 +44,19 @@ class Musique :
         #pygame.mixer.music.stop()
 
     
-    def pause_music():
-        pygame.mixer.music.pause()
+    def pause_music(self):
+        self.musique = pygame.mixer.music.pause()
 
-    def unpause_music():
-        pygame.mixer.music.unpause()
+    def unpause_music(self):
+        self.musique = pygame.mixer.music.unpause()
 
 
-    def update_volume(new_volume):
+    def update_volume(self, new_volume):
         '''Pour dialogues ou interactions ?'''
-        pygame.mixer.music.set_volume(new_volume)
+        self.music = pygame.mixer.music.set_volume(new_volume)
 
     def update_music_walktrough(self):
-        i = randint(0, self.taille[0]) #taille des musiques walkthrough
+        i = randint(0, self.taille[0]) #taille de la liste de musiques walkthrough
         self.load_music(self.Lmusic_walktrought[i])
     
     def next_music(next_music):

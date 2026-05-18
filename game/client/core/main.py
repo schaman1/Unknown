@@ -62,7 +62,7 @@ class Main:
 
                 if self.state.mod == "game" :
                     self.musique.update_music_walktrough()
-                    Musique.update_volume(0.5)
+                    self.musique.update_volume(0.3)
                 
                 else:
                     self.musique.client_music()
@@ -400,11 +400,12 @@ class Main:
         self.Server.stop_server()
 
     def trigger_pnj(self,pnj,is_talking):
+        self.musique.update_volume(0.1)
 
         print(pnj.text.text_id,pnj.text.start_blit_text)
 
         if pnj.name=="pnj_tell_story":
-
+            
             if pnj.text.text_id==0 and not is_talking and pnj.text.start_blit_text==0:
                 self.in_interaction = True
                 self.state.game.draw_story()
@@ -414,12 +415,15 @@ class Main:
 
             elif pnj.text.text_id == 2 and pnj.text.start_blit_text == 0:
                 self.state.game.player_all.now_can_see_others()
+            
+        self.musique.update_volume(0.3)
 
     def launch_game(self):
         # self.musique.unload_music()
         self.state.mod = "intro start"
+
         self.musique.unload_music()
         self.musique.update_music_walktrough()
-        Musique.update_volume(0.5)
+        self.musique.update_volume(0.3)
 
 
