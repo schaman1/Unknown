@@ -14,10 +14,15 @@ class Musique :
         self.Lmusic_walktrought = ["assets/musiques/forge-dungeon.mp3", "assets/musiques/lunch_cave.mp3", 
                                    "assets/musiques/lunch_cave.mp3", "assets/musiques/volcanic_biome.mp3", 
                                    "assets/musiques/world_discovery.mp3", "assets/musiques/world_discovery2.mp3"]
+        
+
         self.Lmusic_fight = ["assets/musiques/combat_agro.mp3", "assets/musiques/combat-bossfight.mp3", 
                              "assets/musiques/crystal_crusher.mp3", "assets/musiques/crystal_crusher2.mp3", 
                              "assets/musiques/energetic-colorfull_fight.mp3", "assets/musiques/energetic-colorfull_fight2.mp3", 
                              "assets/musiques/fight_fast.mp3", "assets/musiques/Mine_bossfight.mp3"]
+        
+        
+        self.music_client = "assets/musiques/Boucle client.MP3"
         
         self.taille = (len(self.Lmusic_walktrought) - 1, len(self.Lmusic_fight) -1)
 
@@ -34,8 +39,8 @@ class Musique :
         self.stop_music()
         self.music = pygame.mixer.music.unload()
 
-    def stop_music(time = 0):
-        pygame.mixer.music.fadeout(time)
+    def stop_music(self, time = 1):
+        self.music = pygame.mixer.music.fadeout(time)
         #pygame.mixer.music.stop()
 
     
@@ -56,4 +61,9 @@ class Musique :
     
     def next_music(next_music):
         pygame.mixer.music.queue(next_music)
+
+
+    def client_music(self):
+        self.load_music(self.music_client)
+        
     

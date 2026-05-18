@@ -55,8 +55,15 @@ class Main:
 
             self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
-            if not pygame.mixer.music.get_busy() :
-                self.musique.update_music_walktrough()
+                
+            if not pygame.mixer.music.get_busy():
+
+                if self.state.mod == "game" :
+                    self.musique.update_music_walktrough()
+                
+                else:
+                    self.musique.client_music()
+
             
             if self.state.mod == "game":
                 self.key_event()
@@ -237,6 +244,8 @@ class Main:
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
 
+                            self.musique.unload_music()
+                            print("Host\n")
                             self.start_game()
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
@@ -247,7 +256,7 @@ class Main:
                             if self.Server is not None:
                                 self.Server.stop_server()
                                 self.Server = None
-                                self.state.add_alert("Serveur stoppé",)
+                                self.state.add_alert("Serveur stoppé",)                      
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
             self.set_interaction(self.state.a_state(self.dt))
@@ -353,6 +362,9 @@ class Main:
 
     def quit_game(self):
         
+        self.musique.unload_music()
+        self.musique.client_music()
+
         self.state.mod = "menu"
         self.state.add_alert("Quit game",time=5)
 
