@@ -22,6 +22,9 @@ class Animation:
                             "death":{"right":[],
                                      "left":[],
                                      "time":0},
+                            "loading":{"right":[],
+                                       "left":[],
+                                       "time":1/4,},
                             "respawn":{"right":[],
                                        "left":[],
                                        "time":0}}
@@ -109,6 +112,13 @@ class Animation:
             img_idle = pygame.image.load(assets.MONSTER_2)
             img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
+            img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["loading"],size)
 
             self.add_tombe(cell_size)
 
@@ -209,6 +219,11 @@ class Animation:
     def do_nothing(self):
         pass
 
+    def do_loading(self):
+        """go to idle after"""
+        self.state = "idle"
+        self.fct_to_do = self.do_nothing
+
     def end_respawn(self):
         """Respawn anim"""
         self.state = "idle"
@@ -253,3 +268,4 @@ class Animation:
         """Set a specific state of anim if ! not death"""
         if not self.dead_state():
             self.state = state_name
+            self.frame = 0
