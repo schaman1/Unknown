@@ -1,13 +1,16 @@
 from shared.constants import world
 from serv.domain.mob.deplacement.moves import Movable
+from serv.domain.mob.deplacement import smooth_jump
 from serv.domain.mob.team import Team
 
 class Mob(Movable):
 
-    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5,acceleration = world.RATIO):
+    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5,acceleration = 1):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
         
+        self.smooth_jump = smooth_jump.SmoothJump()
+
         self.len_dead = len_dead
         self.start_dead = 0
 
@@ -15,13 +18,14 @@ class Mob(Movable):
 
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
 
-        self.acceleration = acceleration
+        self.acceleration = acceleration*self.base_movement
         self.gravity_power = 1
         self.vitesse_down_base = self.acceleration*self.gravity_power
         self.acceleration_x = 2 * self.acceleration
         self.acceleration_y = 10 * self.acceleration
         self.jump_strenght = 150 * self.acceleration
         self.frottement_power = 0.75
+        self.vitesse_max = 100*self.base_movement
         self.vitesse_x = 0
         self.vitesse_y = 0
 
@@ -64,6 +68,9 @@ class Mob(Movable):
         if force_jump or self.can_jump():
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.jump_strenght
+
+            return True
+        return False
 
             
     def move_left(self,dt):
@@ -133,8 +140,15 @@ class Mob(Movable):
 
     def move_all(self,map,dt,collision_handler):
 
+        self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
+
         delta = self.return_delta_vitesse(map,dt)
 
         self.update_vitesse(dt)
 
         return delta
+
+    def can_jump(self):
+        
+        if self.smooth_jump.can_jump():
+            return True

@@ -12,3 +12,4 @@ Make a jew
 Make ADOLF HITLER having seggs
 
 CC = ${JEWS}.stoleTheHumanity
+- Add projectile to LASEROIDE

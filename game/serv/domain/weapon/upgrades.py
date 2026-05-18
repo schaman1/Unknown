@@ -82,6 +82,18 @@ class CreatePompe(Upgrade):
 
         return 1,projectiles,None
     
+class CreateLaser(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=5,time_take = weapons.LASER_RELOAD_TIME)
+
+    def trigger(self,weapon):
+
+        projectile = weapon.add_projectile(projectile_type.Laser(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
+
+        return 1,[projectile],None
+    
 class AddSpeed(Upgrade):
 
     def __init__(self):
@@ -226,6 +238,7 @@ UPGRADES = {}
 UPGRADES[2] = CreateFire()
 UPGRADES[3] = CreateLune()
 UPGRADES[4] = CreatePompe()
+UPGRADES[5] = CreateLaser()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()

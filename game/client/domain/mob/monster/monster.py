@@ -34,22 +34,20 @@ class Skeleton(Mob) :
 
     def blit(self,screen,x,y,dt):
 
+        self.update_interpolate_pos()
         self.animation.draw(dt,self.calculate_pos_blit(x,y),screen)
 
         return
 
-        screen.blit(self.frame_perso[self.frame%4],self.calculate_pos_blit(x,y))
-
-        if self.state == 0: # Idle
-            self.update_frame()
-        else:
-            self.frame = 0 # Reset to first frame (static) for other states
+    def move(self,delta):
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        self.move_mob(new_pos)
 
 class Laseroide(Mob) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(10,10),name="Laseroide")
+        super().__init__(x,y,cell_size,size=(8,6),name="Laseroide")
 
         self.name = "Laseroide"
         self.chunk = pos_chunk
@@ -73,6 +71,11 @@ class Laseroide(Mob) :
 
     def blit(self,screen,x,y,dt):
 
+        self.update_interpolate_pos()
         self.animation.draw(dt,self.calculate_pos_blit(x,y),screen)
 
         return
+    
+    def move(self,delta):
+        new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
+        self.move_mob(new_pos)

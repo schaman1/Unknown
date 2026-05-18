@@ -1,10 +1,12 @@
 from serv.domain.mob.mob import Mob
+from serv.config import monster_info
+from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None,prime = 10):
+    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
 
-        super().__init__((x,y),hp,id)
+        super().__init__((x,y),hp,id,acceleration=acceleration,height = 6)
 
         self.hp = hp
         self.damage = damage
@@ -12,6 +14,7 @@ class Monster(Mob):
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
+        self.run_away_rad = run_away
 
         self.radius = rad
 
@@ -62,20 +65,24 @@ class Monster(Mob):
             if dist <= self.radius:
                 self.state = "moving"
        
+        elif self.state == "attacking":
+            if dist > self.attack_radius:
+               # Revenir à l'état de déplacement si le joueur s'éloigne
+                self.state = "moving"
+            elif dist <= self.run_away_rad:
+                # Fui car ennemy trop proche. Si pas cette up, jamais declenché
+                self.state = "run away"
+
         elif self.state == "moving":
             if dist <= self.attack_radius:
                 self.state = "attacking"
             elif dist > self.radius * 1.2:
                 self.state = "idle"
                 self.target = None #Reset de l'aggro
-               
-        elif self.state == "attacking":
-            if dist > self.attack_radius:
-               # Revenir à l'état de déplacement si le joueur s'éloigne
-                self.state = "moving"
-            elif dist <= self.attack_radius:
-                # Change rien et attaque dans le monstrte, stay en attacking
-                pass
+
+        elif self.state == "run away":
+            if dist >= self.attack_radius +0 : #0 = delta
+                self.state = "attacking"
 
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
@@ -101,6 +108,7 @@ class Monster(Mob):
         player_did_damage.update_money(self.prime)
 
         self.dead = True
+        self.target = None
         self.start_dead = time.perf_counter()
 
     def still_dead(self):
@@ -116,6 +124,19 @@ class Monster(Mob):
     def respawn(self):
         self.dead = False
         self.full_heal()
+
+    def get_angle(self,player):
+
+        adjacent = player.pos_x-self.pos_x
+
+        opp = (player.pos_y + player.height//2)-self.pos_y
+
+        hyp = math.sqrt(opp**2+adjacent**2)
+        angle = math.acos(adjacent/hyp)
+
+        angle = angle*180/math.pi #Convert to deg
+
+        return int(angle)
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -141,11 +162,16 @@ class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 10,atk_speed = 1,id=id,prime = 15)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
+
+        self.acceleration_y = 20* self.acceleration
 
         self.name = 1 #Permet d'affihcer le bon monstre
+        self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
-    def update(self, map, lPlayer,dt,collision_handler):
+        self.last_time_jump = time.perf_counter()
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
         if self.still_dead():
             return
@@ -157,11 +183,30 @@ class Laseroide(Monster) :
             
         elif self.state == "moving":
             self.moving_behavior(self.target, map,dt)
+
+        elif self.state == "run away":
+            self.leave_behavior(self.target,map,dt)
             
         elif self.state == "attacking":
-            self.attack(self.target,collision_handler,dt)
+            self.attack(self.target,collision_handler,dt,projectile_manager)
 
-        self.move_all(map,dt,collision_handler)
+        delta = self.move_all(map,dt,collision_handler)
+
+        self.check_if_jump(delta,map)
+
+    def check_if_jump(self,delta,map):
+
+        if delta[0]==0 and (self.state == "run away" or self.state=="moving") and self.last_time_jump+1 < time.perf_counter():
+            if self.jump(map): #if succesfull
+                self.last_time_jump = time.perf_counter()
+
+        elif delta[1]>0 and self.last_time_jump+1 < time.perf_counter() :
+            if self.jump(map): #if succesfull
+                self.last_time_jump = time.perf_counter()
+
+        elif delta[0]!=0:
+            self.last_time_jump = time.perf_counter()
+
 
     def idle_behavior(self,map,dt):
         """Stay in his spot"""
@@ -170,10 +215,33 @@ class Laseroide(Monster) :
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
         if target.pos_x<self.pos_x :
-            self.move_left()
+            self.move_left(dt)
         
         else :
-            self.move_right()
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+        if target.pos_x<self.pos_x :
+            self.move_right(dt)
+        
+        else :
+            self.move_left(dt)
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+
+        angle = self.get_angle(self.target)
+        
+        infos = self.weapon.trigger_shot(angle,(self.pos_x,self.pos_y))
+
+        if infos != None :
+
+            projectiles,events = infos
+
+            for proj in projectiles :
+
+                projectile_manager.add_projectile_create(proj)
+
 
 class Skeleton(Monster):
 
@@ -197,7 +265,7 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer,dt,collision_handler):
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
         if self.still_dead():
             return

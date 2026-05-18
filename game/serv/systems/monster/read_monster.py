@@ -34,14 +34,14 @@ class Read_monster :
                 #list_modif[i] = []
                 for monster in self.dic_monster[chunk] :
 
-                    state_id = self.state_map.get(monster.state, 0)
-                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
+                    #state_id = self.state_map.get(monster.state, 0) #Why ? Always 0 by default
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name))
 
         return list_modif
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(Laseroide(3411,17500,1))
+        self.dic_monster[200].append(Laseroide(3411,17400,1))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
@@ -53,7 +53,7 @@ class Read_monster :
                         
         #            self.dic_monster[y//self.size_chunk_all[0]*100+x//self.size_chunk_all[1]].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
 
-    def return_chg(self, lInfoClient, map,dt,collision_handler) :
+    def return_chg(self, lInfoClient, map,dt,collision_handler,projectile_manager) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""
 
         list_modif = []
@@ -70,7 +70,7 @@ class Read_monster :
 
                     for monster in self.dic_monster[chunk] :
 
-                        monster.update(map,lInfoClient,dt,collision_handler)
+                        monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
 
                         #state_id = self.state_map.get(monster.state, 0)
 
