@@ -2,9 +2,27 @@ import pygame
 from client.config import assets
 from client.domain.mob.mob import Mob
 from utils.resource_path import resource_path
+from client.domain.mob.monster.states import STATES
 import os
 
-class Skeleton(Mob) :
+class Monster(Mob):
+
+    def __init__(self,x,y,cell_size,size,name):
+
+        super().__init__(x,y,cell_size,size=size,name=name)
+
+    def change_state(self,new_state):
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0]=="loading" and self.animation.state != "loading":
+            self.animation.state = "loading"
+            self.animation.set_state("loading")
+            self.animation.fct_to_do = self.animation.do_loading
+
+
+
+class Skeleton(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
@@ -25,7 +43,6 @@ class Skeleton(Mob) :
 
         self.animation.set_to_death(duree,"death")
 
-
     def update_frame(self):
         self.frame_multiplier +=1
         if self.frame_multiplier >= 10 :
@@ -40,10 +57,16 @@ class Skeleton(Mob) :
         return
 
     def move(self,delta):
+
+        if delta[0]<0:
+            self.animation.direction = "left"
+        elif delta[0]>0:
+            self.animation.direction = "right"
+    
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
 
-class Laseroide(Mob) :
+class Laseroide(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
@@ -77,5 +100,13 @@ class Laseroide(Mob) :
         return
     
     def move(self,delta):
+
+        dx = delta[0]*self.cell_size//self.base_movement-self.pos_x
+
+        if dx<0:
+            self.animation.direction = "left"
+        elif dx>0:
+            self.animation.direction = "right"
+
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)

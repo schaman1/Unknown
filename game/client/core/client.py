@@ -102,10 +102,16 @@ class Client:
             return
 
         # Déconnexion détectée
-        if not data:
+        try :
+            if not data:
+                print("Connexion perdue")
+                self.connected = False
+                return
+        except :
             print("Connexion perdue")
             self.connected = False
             return
+
 
         # Ajoute les données au buffer
         self.buffer.extend(data)

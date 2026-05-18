@@ -64,9 +64,6 @@ class Mob:
             l-=1
             self.interpolate_mov.pop(0)
 
-        #print(self.interpolate_mov)
-
-
         div = self.interpolate_mov[1][2]-self.interpolate_mov[0][2]
 
         if div == 0:

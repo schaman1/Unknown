@@ -112,7 +112,7 @@ class Game :
 
             self.monsters.dic_monster[chunk][id].move((x,y))
                 
-            self.monsters.dic_monster[chunk][id].state = state
+            self.monsters.dic_monster[chunk][id].change_state(state)
 
     def shot(self,id_key):
         if not self.blit_info:

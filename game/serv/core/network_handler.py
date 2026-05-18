@@ -32,7 +32,13 @@ class Network_handler :
             except Exception as e : 
                     print("Erreur reception :",e)
 
-            if not data:
+            try :
+                if not data:
+                    print(f"Client déconnecté proprement.")
+
+                    self.server.remove_client(client_socket)
+                    continue
+            except :
                 print(f"Client déconnecté proprement.")
 
                 self.server.remove_client(client_socket)
