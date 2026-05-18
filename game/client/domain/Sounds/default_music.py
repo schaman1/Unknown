@@ -56,7 +56,7 @@ class Musique :
         pygame.mixer.music.set_volume(new_volume)
 
     def update_music_walktrough(self):
-        i = randint(0, self.taille[0])
+        i = randint(0, self.taille[0]) #taille des musiques walkthrough
         self.load_music(self.Lmusic_walktrought[i])
     
     def next_music(next_music):

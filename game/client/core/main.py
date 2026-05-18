@@ -62,6 +62,7 @@ class Main:
 
                 if self.state.mod == "game" :
                     self.musique.update_music_walktrough()
+                    Musique.update_volume(0.5)
                 
                 else:
                     self.musique.client_music()
@@ -263,8 +264,7 @@ class Main:
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
 
-                            self.musique.unload_music()
-                            print("Host\n")
+                            # print("Host\n")
                             self.start_game()
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
@@ -295,7 +295,7 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
-        Musique.unload_music()
+        self.musique.unload_music()
         pygame.quit()
 
     def set_interaction(self,new_interaction):
@@ -416,4 +416,10 @@ class Main:
                 self.state.game.player_all.now_can_see_others()
 
     def launch_game(self):
+        # self.musique.unload_music()
         self.state.mod = "intro start"
+        self.musique.unload_music()
+        self.musique.update_music_walktrough()
+        Musique.update_volume(0.5)
+
+
