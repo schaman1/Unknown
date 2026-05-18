@@ -85,6 +85,10 @@ class Monster(Mob):
             if self.dist >= self.attack_radius +0 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
+        if self.dist<self.width/2/self.base_movement : #Degat collision automatique
+            damage = int(100*dt) #degat de collision
+            collision_handler.player_take_damage_no_projectile(damage,self.target)
+
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
 
@@ -231,10 +235,10 @@ class Laseroide(Monster) :
 
     def attack(self,target,collision_handler,dt,projectile_manager):
 
-        if self.dist < self.width/2/self.base_movement :
-            damage = int(100*dt)
-            collision_handler.player_take_damage_no_projectile(damage,target)
-            return
+        #if self.dist < self.width/2/self.base_movement :
+        #    damage = int(100*dt) #degat de collision
+        #    collision_handler.player_take_damage_no_projectile(damage,target)
+        #    return
 
         angle = self.get_angle(self.target)
         
