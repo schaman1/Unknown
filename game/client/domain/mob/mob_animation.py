@@ -24,7 +24,10 @@ class Animation:
                                      "time":0},
                             "respawn":{"right":[],
                                        "left":[],
-                                       "time":0}}
+                                       "time":0},
+                            "fade":{"in_time":0,
+                                    "out_time":0,
+                                    "alpha":0}}
 
         self.state = "idle"
         self.direction = "right"
@@ -216,13 +219,14 @@ class Animation:
         if state_beginning == "in_death":
 
             self.animation["in_death"]["time"]=0.2 #1 car les 4 frames de respawn durent 1 sec
-            self.animation["death"]["time"]=(duree-0.2*8)/4 #1 car les 4 frames de respawn durent 1 sec
-            self.animation["respawn"]["time"]=0.2 #1 car les 4 frames de respawn durent 1 sec
+            self.animation["death"]["time"]=(duree-0.2*4-0.3*4)/4 #a 0.2*2 de trop pour le fade in fade out
+            self.animation["respawn"]["time"]=0.3 #1 car les 4 frames de respawn durent 1 sec
             self.fct_to_do = self.end_in_death
 
         elif state_beginning == "death":
-            self.animation["death"] = duree-1
-            self.animation["respawn"] = 1
+            print("Duree death skeleton = ",duree)
+            self.animation["death"]["time"] = (duree-0.3*4)
+            self.animation["respawn"]["time"] = 0.3
             self.fct_to_do = self.end_death
 
         self.state = state_beginning

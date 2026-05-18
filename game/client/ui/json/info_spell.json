@@ -105,6 +105,14 @@
         "time_reload": 1,
         "degat":0
     },
+    "SPELL42":{
+        "type":"augment",
+        "name":"Jump",
+        "description":["Il vous permettra d'aller",
+                        "dans de nouvelles zones."],
+        "time_reload": 5,
+        "degat":0
+    },
     "UNKNOWN_SPELL":{
         "type":"projectile",
         "name":"Unknown",

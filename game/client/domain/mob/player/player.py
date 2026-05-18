@@ -183,6 +183,8 @@ class Player_not_you(Mob) :
         self.pseudo = pseudo
         self.is_you = is_you
 
+        #self.font = FONT
+
         self.cell_size=cell_size
 
     def draw(self,screen,dt,xscreen,yscreen):

@@ -187,9 +187,9 @@ class Player(Mob) :
         if key == 1 :
             self.is_climbing = True
 
-    def jump(self,map):
+    def jump(self,map,force_jump = False):
 
-        if self.can_jump():
+        if force_jump or self.can_jump():
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.jump_strenght
 
