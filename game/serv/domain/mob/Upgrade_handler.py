@@ -10,10 +10,9 @@ class UpgradeHandler:
 
         for event in events_player :
 
-            if event[0]>=40 and event[0]<50:
+            if event[0]==40 or event[0]==41:
 
                 player.start_dash()
-
     
             self.id_event_player_do.append(event)
 
@@ -23,9 +22,16 @@ class UpgradeHandler:
 
             id = self.id_event_player_do[i][0]
 
-            if id>=40 and id<50:
+            if id==40 or id==41:
                 
                 res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
+                
+                self.dash_player(player)
+
+            elif id == 42 :
+
+                self.trigger_jump(player,dt,map)
+                res = False #Bcs jump 1 time no more
 
             else :
                 print("Unknown id in upgrade handle. Event :",self.id_event_player_do[i])
@@ -34,7 +40,6 @@ class UpgradeHandler:
             if res==False :
                 self.id_event_player_do.pop(i)
 
-        self.dash_player(player)
 
     def trigger_dash(self,event,player,dt,map):
                 
@@ -93,3 +98,7 @@ class UpgradeHandler:
 
         player.dash(self.distance_dash)
         self.reset_distance_dash()
+
+    def trigger_jump(self,player,dt,map):
+        """Force the player to jump even if don't touch the gorund"""
+        player.jump(map = map,force_jump = True)

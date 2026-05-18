@@ -198,7 +198,16 @@ class LongDash(Upgrade):
     def trigger(self,weapon):
 
         return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
+    
+class Jump(Upgrade):
 
+    def __init__(self):
+
+        super().__init__(id=42,time_take=weapons.JUMP_RELOAD)
+
+    def trigger(self,weapon):
+
+        return 1,None,[self.id]
     
 #Remove too difficult and useless
 #class AddSize(Upgrade):
@@ -226,3 +235,4 @@ UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
+UPGRADES[42] = Jump()
