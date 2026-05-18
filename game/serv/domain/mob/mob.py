@@ -4,7 +4,7 @@ from serv.domain.mob.team import Team
 
 class Mob(Movable):
 
-    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5):
+    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5,acceleration = world.RATIO):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
         
@@ -15,7 +15,7 @@ class Mob(Movable):
 
         self.base_movement = world.RATIO #C'est le mouv de base = si ajoute 100, se deplace de 1 carre plus vite
 
-        self.acceleration = self.base_movement
+        self.acceleration = acceleration
         self.gravity_power = 1
         self.vitesse_down_base = self.acceleration*self.gravity_power
         self.acceleration_x = 2 * self.acceleration
@@ -56,3 +56,85 @@ class Mob(Movable):
 
         self.max_life+= amount
         self.send_new_life = True
+
+    #-----------------Things the player use ! so works-------------------#
+    
+    def jump(self,map,force_jump = False):
+
+        if force_jump or self.can_jump():
+        #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
+            self.vitesse_y=-self.jump_strenght
+
+            
+    def move_left(self,dt):
+        self.is_looking = 2
+        s=self.return_signe(self.vitesse_x)
+
+        if self.vitesse_x>-self.vitesse_max:
+            self.vitesse_x-=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1-0.1*s)
+
+        if self.vitesse_x<-self.vitesse_max:
+            self.vitesse_x = -self.vitesse_max
+
+    def move_right(self,dt):
+        self.is_looking = 0
+        s=self.return_signe(self.vitesse_x)
+
+        if self.vitesse_x<self.vitesse_max:
+            self.vitesse_x+=self.acceleration*self.acceleration_x*dt
+            self.vitesse_x*=(1+0.1*s)
+
+        if self.vitesse_x>self.vitesse_max:
+            self.vitesse_x = self.vitesse_max
+
+    def move_up(self,dt,map):
+        #self.pos_y-=1
+        self.is_looking=1
+
+        if self.can_climb(map):
+            #self.is_climbing = True
+            self.vitesse_y = -self.acceleration_y*dt*self.acceleration
+
+        #else :
+        #    self.is_climbing = False
+
+    def move_down(self,dt):
+        #self.pos_y+=1
+        self.is_looking=3
+        if self.vitesse_y<self.vitesse_max:
+            self.vitesse_y+=self.acceleration_y*dt
+
+    def return_delta_vitesse(self,map,dt):
+
+        old_pos_x = self.pos_x
+        old_pos_y = self.pos_y
+
+        self.gravity_effect(dt)
+
+        self.collision_x(map,dt,self.vitesse_x)
+
+        self.collision_y(map,dt,self.vitesse_y)
+
+        delta_x = self.pos_x-old_pos_x
+        delta_y = self.pos_y-old_pos_y
+
+        return (delta_x,delta_y)
+    
+    def update_vitesse(self,dt):
+
+        s = self.return_signe(self.vitesse_x)
+
+        if self.vitesse_x*s<self.acceleration:
+            self.vitesse_x = 0
+        else :
+
+            self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
+
+    def move_all(self,map,dt,collision_handler):
+
+        delta = self.return_delta_vitesse(map,dt)
+
+        self.update_vitesse(dt)
+
+        return delta
