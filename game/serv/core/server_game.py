@@ -30,7 +30,7 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler) #Mettre dt plus tard pour les monstres
+            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
