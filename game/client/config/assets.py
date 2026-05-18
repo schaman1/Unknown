@@ -5,6 +5,7 @@ BG_GLOBAL = resource_path("assets/background/global/back.png")
 MAP_SEEN = resource_path("assets/background/entities/cell.png")
 MAP_UNSEEN = resource_path("assets/background/entities/monster.png")
 BG_WAITING = resource_path("assets/ui/infos/niflheim.png")
+TEAM_NIKA = resource_path("assets/ui/infos/team_nika.png")
 
 BG_MAP_COLORED =[]
 BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
