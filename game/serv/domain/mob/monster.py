@@ -1,10 +1,11 @@
 from serv.domain.mob.mob import Mob
+from serv.config import monster_info
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1, id = None,prime = 10):
+    def __init__(self, hp, damage, x, y, rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2):
 
-        super().__init__((x,y),hp,id)
+        super().__init__((x,y),hp,id,acceleration=acceleration)
 
         self.hp = hp
         self.damage = damage
@@ -12,6 +13,7 @@ class Monster(Mob):
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
+        self.run_away_rad = run_away
 
         self.radius = rad
 
@@ -62,20 +64,24 @@ class Monster(Mob):
             if dist <= self.radius:
                 self.state = "moving"
        
+        elif self.state == "attacking":
+            if dist > self.attack_radius:
+               # Revenir à l'état de déplacement si le joueur s'éloigne
+                self.state = "moving"
+            elif dist <= self.run_away_rad:
+                # Fui car ennemy trop proche. Si pas cette up, jamais declenché
+                self.state = "run away"
+
         elif self.state == "moving":
             if dist <= self.attack_radius:
                 self.state = "attacking"
             elif dist > self.radius * 1.2:
                 self.state = "idle"
                 self.target = None #Reset de l'aggro
-               
-        elif self.state == "attacking":
-            if dist > self.attack_radius:
-               # Revenir à l'état de déplacement si le joueur s'éloigne
-                self.state = "moving"
-            elif dist <= self.attack_radius:
-                # Change rien et attaque dans le monstrte, stay en attacking
-                pass
+
+        elif self.state == "run away":
+            if dist >= self.attack_radius +0 : #0 = delta
+                self.state = "attacking"
 
     def take_damage(self, amount,player_did_damage):
         """Return True/False if is dead or not"""
@@ -141,7 +147,7 @@ class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 10,atk_speed = 1,id=id,prime = 15)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 15,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
 
         self.name = 1 #Permet d'affihcer le bon monstre
 
@@ -157,6 +163,9 @@ class Laseroide(Monster) :
             
         elif self.state == "moving":
             self.moving_behavior(self.target, map,dt)
+
+        elif self.state == "run away":
+            self.leave_behavior(self.target,map,dt)
             
         elif self.state == "attacking":
             self.attack(self.target,collision_handler,dt)
@@ -170,10 +179,21 @@ class Laseroide(Monster) :
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
         if target.pos_x<self.pos_x :
-            self.move_left()
+            self.move_left(dt)
         
         else :
-            self.move_right()
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+        if target.pos_x<self.pos_x :
+            self.move_right(dt)
+        
+        else :
+            self.move_left(dt)
+
+    def attack(self,target,collision_handler,dt):
+        pass
 
 class Skeleton(Monster):
 

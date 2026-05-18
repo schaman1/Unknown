@@ -1,5 +1,5 @@
 from shared.constants import world
-from client.domain.mob.monster.monster import Skeleton
+from client.domain.mob.monster.monster import Skeleton,Laseroide
 
 class Monster_all :
 
@@ -19,11 +19,11 @@ class Monster_all :
 
         for (chunk, id, x, y, name) in lchunck_monsters :
 
-            if name == 1:
+            if name == 0:
                 self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
-            elif name == 2:
-                self.dic_monster[chunk][id] = (x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+            elif name == 1:
+                self.dic_monster[chunk][id] = Laseroide(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
 
             else :

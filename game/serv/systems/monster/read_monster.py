@@ -34,8 +34,8 @@ class Read_monster :
                 #list_modif[i] = []
                 for monster in self.dic_monster[chunk] :
 
-                    state_id = self.state_map.get(monster.state, 0)
-                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
+                    #state_id = self.state_map.get(monster.state, 0) #Why ? Always 0 by default
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name))
 
         return list_modif
 
