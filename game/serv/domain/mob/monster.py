@@ -148,7 +148,7 @@ class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = 15,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION)
 
         self.name = 1 #Permet d'affihcer le bon monstre
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -196,11 +196,15 @@ class Laseroide(Monster) :
 
     def attack(self,target,collision_handler,dt,projectile_manager):
         
-        projectiles,events = self.weapon.trigger_shot(0,(self.pos_x,self.pos_y))
+        infos = self.weapon.trigger_shot(0,(self.pos_x,self.pos_y))
 
-        for proj in projectiles :
+        if infos != None :
 
-            projectile_manager.add_projectile_create(proj)
+            projectiles,events = infos
+
+            for proj in projectiles :
+
+                projectile_manager.add_projectile_create(proj)
 
 
 class Skeleton(Monster):
