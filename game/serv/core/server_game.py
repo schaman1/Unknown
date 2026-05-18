@@ -1,6 +1,7 @@
 from shared.constants import fps,world
 import pygame
 from serv.core.server import Server
+from serv.config.add_objects_begin import OBJECTS
 
 class Server_game(Server) :
     """Contient tout le game = Mere. Update les particules"""
@@ -16,6 +17,8 @@ class Server_game(Server) :
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
 
+        self.send_pos_every_x_frame = fps.FPS_SERVER//fps.FPS_SEND_POS_CLIENT
+        self.count_send_pos = 0
 
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
 
@@ -27,13 +30,16 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt) #Mettre dt plus tard pour les monstres
+            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
             if len(self.collision_handler.effect_send)!=0:
                 self.send_data_all([14,self.collision_handler.effect_send])
                 self.collision_handler.effect_send.clear()
+            if len(self.collision_handler.die_send)!=0:
+                self.send_data_all([18,self.collision_handler.die_send])
+                self.collision_handler.die_send.clear()
 
             if len(return_monster)!=0 and len(return_monster[0]) != 0 :
                 self.send_data_update(return_monster,4)
@@ -57,19 +63,16 @@ class Server_game(Server) :
 
         for socket in self.lClient.keys():
 
-            delta = self.lClient[socket].update_pos(self.map_cell,dt)
+            delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
-            #cell = self.map_cell.return_cells_delta(self.lClient[socket],self.convert_list_base(delta))
-
-            #if cell != []:
-            #    self.send_data([3,cell],socket)
-            #self.send_data_all((6,self.lClient[socket].id,delta[0],delta[1]))
-            if delta != (0,0):
+            if self.count_send_pos == self.send_pos_every_x_frame :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
+                self.count_send_pos = 0
+            self.count_send_pos+=1
 
             if self.lClient[socket].send_new_life == True :
-                life = self.lClient[socket].send_life()
-                self.send_data((12,life),socket)
+                life,max_life,id_player = self.lClient[socket].send_life()
+                self.send_data((12,(life,max_life,id_player)),socket)
             
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
@@ -95,7 +98,7 @@ class Server_game(Server) :
         self.is_running_menu = not self.is_running_menu
 
     def start_game(self):
-        print("start game")
+        print("start intro")
         self.change_state()
 
         self.send_data_all([0]) #0 pour start game
@@ -109,8 +112,11 @@ class Server_game(Server) :
         #self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
 
+
+        pygame.time.wait(int(1.5*1000))
         self.send_data_all([9]) #9 : a fini de load
 
+        print("Start game")
         self.loop_server_game()
 
     def convert_to_base(self,nbr):
@@ -137,7 +143,14 @@ class Server_game(Server) :
 
                 self.projectile_manager.add_projectile_create(projectile)
 
-    def add_object(self,type,id_categorie,pos_x,pos_y,price=0):
+    def add_object(self,object_info):
+        
+        """Create object + id_categorie = id du sous type genre spell, id=1 -> = bdf / 40 = dash"""
+        type = object_info[0]
+        id_categorie = object_info[1]
+        pos_x = object_info[2]
+        pos_y = object_info[3]
+        price= object_info[4]
 
         chunk = self.convert_to_chunk(pos_x,pos_y)
 
@@ -155,7 +168,9 @@ class Server_game(Server) :
         
     def add_elements_to_game(self):
 
-        self.add_object("SPELL",1,5511,17500,10)
+        for el in OBJECTS : #OBJECTS come from the add_objects_begin
+
+            self.add_object(el)
 
     def trigger(self,chunk,id,sender):
         
@@ -174,10 +189,36 @@ class Server_game(Server) :
 
                 self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)
 
+            elif action=="Heal":
+
+                self.lClient[sender].heal_respawn(element)
+
+            elif action=="UpgradeWeapon":
+
+                info_weapon = self.lClient[sender].upgrade_size_weapon()
+                self.send_data_all([16,chunk,id]) #Destroy
+                
+                self.send_data([10,info_weapon],sender)
+
+            elif action=="UpgradeLife":
+
+                info_weapon = self.lClient[sender].add_life(element.power)
+                self.send_data_all([16,chunk,id]) #Destroy
+                
+            elif action == "OpenChest":
+
+                self.send_data_all([16,chunk,id]) #Destroy
+                
+                id,ele,type = self.objects_manager.spawn_random_spell(element.id_cat,chunk,element.pos_x,element.pos_y)
+                #Spawn random object
+
+                data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
+                self.send_data_all(data)
+
     def throw_spell(self,id_weapon,id_spell,sender):
 
         spell_id_type = self.lClient[sender].remove_spell(id_weapon,id_spell)
 
         pos = self.lClient[sender].return_pos()
 
-        self.add_object("SPELL",spell_id_type,pos[0],pos[1],0)
+        self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))

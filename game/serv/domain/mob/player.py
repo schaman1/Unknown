@@ -4,32 +4,78 @@ from serv.domain.mob.Upgrade_handler import UpgradeHandler
 from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import smooth_jump,input_handler
 from serv.domain.mob.team import Team
-from serv.config.Default_values import Player_money_start
+from serv.config import Default_values
+from shared.constants.world import LEN_DEATH_PLAYER
+import time
 
 class Player(Mob) :
     '''IL FAUT METTRE EN PLACE LA VITESSE HORIZONTALE ET L'APPLIQUER DANS LES MOUVEMENTS,
     il faut aussi rajouter les dashs (vitesse horizontale temporaire)'''
 
-    def __init__(self,pos,id,host = False, hp = 100, damage = 25, money=Player_money_start): 
+    def __init__(self,pos,id,host = False,damage = 25): 
 
-        super().__init__(pos,hp,id,collisions.PLAYER_COLLISION_X,collisions.PLAYER_COLLISION_Y,Team.Player)
+        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH_PLAYER)
 
-        self.hp = hp
-        self.money = money
+        self.money = Default_values.Player_money_start
         self.send_new_money = True #Pour initialiser
 
         self.damage_taken = damage
+        self.is_dead = False
+        self.has_respawn = True
+
         self.is_host = host
-        self.vitesse_max = 30*self.base_movement
+        self.vitesse_max = 100*self.base_movement
         self.distance_cast_spells = self.half_width
         self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
 
-        self.weapons = WeaponManager(self.team)
+        self.weapons = WeaponManager(self.team,self)
         self.upgrade_handler = UpgradeHandler()
         self.smooth_jump = smooth_jump.SmoothJump()
         self.input_handler = input_handler.InputHandler()
 
         self.time_shot_update = False
+        self.respawn_at = [self.pos_x,self.pos_y]
+        self.time_respawn = 0
+
+    def take_damage(self, amount):
+        """Return True/False if is dead or not"""
+
+        if amount!=0 :
+
+            self.life -= amount
+            self.send_new_life = True
+
+            if self.life <= 0:
+                self.life = 0
+                self.die()
+
+                return True
+            
+        return False
+
+    def die(self):
+        self.is_dead = True
+        self.has_respawn = False
+        self.start_dead = time.perf_counter()+ self.len_dead
+        self.update_money(-50)
+
+    def respawn(self):
+        #print("Respown location",self.respawn_at)
+        self.pos_x = self.respawn_at[0]
+        self.pos_y = self.respawn_at[1]
+        self.has_respawn = True
+
+    def can_move_after_death(self):
+        self.is_dead = False
+        self.full_heal()
+
+    def check_respawn(self):
+
+        if not self.has_respawn and time.perf_counter()>=self.start_dead-0.2*4:
+            self.respawn()
+
+        if self.is_dead and time.perf_counter()>=self.start_dead :
+            self.can_move_after_death()
 
     def can_pick_spell(self):
 
@@ -60,9 +106,9 @@ class Player(Mob) :
         old_pos_x = self.pos_x
         old_pos_y = self.pos_y
 
-        self.gravity_effect()
+        self.gravity_effect(dt)
         
-        self.upgrade_handler.trigger_event_on_player(self.weapons.id_event_player_do,self,dt,map)
+        self.upgrade_handler.trigger_event_on_player(self,dt,map)
 
         self.collision_x(map,dt,self.vitesse_x)
 
@@ -73,28 +119,31 @@ class Player(Mob) :
 
         return (delta_x,delta_y)
 
-    def update_vitesse(self):
+    def update_vitesse(self,dt):
 
         s = self.return_signe(self.vitesse_x)
 
         if self.vitesse_x*s<self.acceleration:
             self.vitesse_x = 0
         else :
-            #self.vitesse_x-=self.acceleration_x*s#self.acceleration_x
-            #if self.smooth_jump.is_falling :
-                #self.vitesse_x=self.vitesse_x*0.99 #Car en l'air peut changer de direction plus difficilement
-            if not self.smooth_jump.is_falling :
-                self.vitesse_x=self.vitesse_x*0.8
 
-    def update_pos(self,map,dt):
+            self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
 
-        self.handle_input(map,dt)
+    def update_pos(self,map,dt,collision_handler):
 
-        self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
+        self.check_respawn()
+
+        if not self.is_dead : #Permet que quand est mort, trigger plus les input du joueur
+
+            self.handle_input(map,dt)
+
+            self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
         delta = self.return_delta_vitesse(map,dt)
 
-        self.update_vitesse()
+        self.update_vitesse(dt)
+
+        collision_handler.check_if_touch_damage_obj(map,dt,self)
 
         return delta
     
@@ -105,7 +154,6 @@ class Player(Mob) :
         for input in (val):
 
             self.move_from_input(input,dt,map)
-                
 
     def move_from_input(self,idx,dt,map):
 
@@ -127,23 +175,6 @@ class Player(Mob) :
     def move_from_key(self,key,map): 
         '''déplacement en fonction des collisions, peut rajouter un paramètre vitesse plus tard'''
 
-        # Check for ladder interaction
-        #if self.can_climb(map):
-        #    if delta == 0: # UP
-        #        self.climb(map, -1, 1)
-        #        return
-        #    elif delta == 1: # DOWN
-        #        self.climb(map, 1, 1)
-        #        return
-        #    
-        #    # If moving side-ways on ladder, maybe fall off?
-        #    # For now let's keep is_climbing true unless we move off
-        #    
-        #else:
-        #    self.is_climbing = False
-
-        #0 : up/1 : down/ 2 : left/ 3 : right
-
         self.input_handler.update_value(key)
         
         if key == 1 :
@@ -156,9 +187,9 @@ class Player(Mob) :
         if key == 1 :
             self.is_climbing = True
 
-    def jump(self,map):
+    def jump(self,map,force_jump = False):
 
-        if self.can_jump():
+        if force_jump or self.can_jump():
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.jump_strenght
 
@@ -190,7 +221,7 @@ class Player(Mob) :
 
         if self.vitesse_x>-self.vitesse_max:
             self.vitesse_x-=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1-0.2*s)
+            self.vitesse_x*=(1-0.1*s)
 
         if self.vitesse_x<-self.vitesse_max:
             self.vitesse_x = -self.vitesse_max
@@ -201,7 +232,7 @@ class Player(Mob) :
 
         if self.vitesse_x<self.vitesse_max:
             self.vitesse_x+=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1+0.2*s)
+            self.vitesse_x*=(1+0.1*s)
 
         if self.vitesse_x>self.vitesse_max:
             self.vitesse_x = self.vitesse_max
@@ -211,9 +242,13 @@ class Player(Mob) :
     
     def update_money(self, amount):
 
+        old_money = self.money
         self.money+= amount
 
-        if amount!=0 :
+        if self.money<0:
+            self.money = 0
+
+        if self.money-old_money!=0 :
 
             self.send_new_money = True
     
@@ -229,12 +264,22 @@ class Player(Mob) :
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
 
     def shot(self,id_weapon):
+        """Shot but if is dead don't shot"""
+
+        if self.is_dead :
+            return
 
         angle = self.is_looking
 
         pos = self.return_pos_for_shot(angle)
 
-        return self.weapons.create_shot(id_weapon,pos,angle)
+        projectiles,player_event = self.weapons.create_shot(id_weapon,pos,angle)
+
+        if player_event!=None :
+
+            self.upgrade_handler.add_event(player_event,self)
+
+        return projectiles
     
     def return_pos_for_shot(self,angle):
         pos = self.return_pos()
@@ -256,3 +301,16 @@ class Player(Mob) :
         spell_id = self.weapons.lWeapons[id_weapon].del_spell(id_spell)
 
         return spell_id
+
+    def heal_respawn(self,element):
+
+        self.full_heal()
+
+        self.set_respawn_point(element)
+
+    def set_respawn_point(self,element):
+
+        self.respawn_at = [element.pos_x,element.pos_y]
+
+    def upgrade_size_weapon(self):
+        return  self.weapons.add_slot()

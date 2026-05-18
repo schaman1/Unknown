@@ -6,6 +6,7 @@ from shared.constants import fps
 from client.config import size_display as size
 from client.ui.escape_menu import EscapeMenu, SettingsMenu
 from client.ui.escape_menu import EscapeMenu
+from client.domain.Sounds.default_music import Musique
 from client.config import display_text
 
 #from C_inGame import InGame
@@ -40,8 +41,14 @@ class Main:
         self.escape_menu = EscapeMenu(self.screenSize, self.font)
         self.settings_menu = SettingsMenu(self.screenSize, self.font)
 
+        self.musique = Musique()
+
     def set_CELL_SIZE(self,screen_size):
-        size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
+        #size.CELL_SIZE = screen_size[1]//size.nbr_cell_see_y
+        puissance = 1
+        while 2**puissance*size.nbr_cell_see_y<self.screenSize[1] :
+            puissance+=1
+        size.CELL_SIZE = 2**(puissance-1)
 
     def run(self):
         """Ce qui est run à chaque itérations"""
@@ -49,6 +56,16 @@ class Main:
         while running:
 
             self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
+
+                
+            if not pygame.mixer.music.get_busy():
+
+                if self.state.mod == "game" :
+                    self.musique.update_music_walktrough()
+                
+                else:
+                    self.musique.client_music()
+
             
             if self.state.mod == "game":
                 self.key_event()
@@ -84,9 +101,16 @@ class Main:
                         if event.key == pygame.K_e:
                             if not self.in_interaction :
                                 self.in_interaction = self.state.game.interact()
+                                if self.in_interaction:
+                                    self.send_stop_move()
 
                         if event.key == pygame.K_RETURN :
-                            self.in_interaction = self.state.game.pnj_all.press_enter()
+                            new_interaction,pnj = self.state.game.pnj_all.press_enter()
+
+                            self.set_interaction(new_interaction)
+
+                            if pnj!=None:
+                                self.trigger_pnj(pnj,new_interaction)
 
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
@@ -237,6 +261,8 @@ class Main:
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
 
+                            self.musique.unload_music()
+                            print("Host\n")
                             self.start_game()
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
@@ -247,10 +273,10 @@ class Main:
                             if self.Server is not None:
                                 self.Server.stop_server()
                                 self.Server = None
-                                self.state.add_alert("Serveur stoppé",)
+                                self.state.add_alert("Serveur stoppé",)                      
 
             #Affiche ce qu'il doit être affiché en fonction du mode (reglage/menu/game)
-            self.state.a_state(self.dt)
+            self.set_interaction(self.state.a_state(self.dt))
 
             if self.client.connected :
                 self.client.poll_reception()
@@ -267,10 +293,14 @@ class Main:
             # Update le screen = sans sa l'ecran est pas mis a jour
             pygame.display.flip()
 
+        Musique.unload_music()
         pygame.quit()
 
-    def start_game(self):
+    def set_interaction(self,new_interaction):
+        if new_interaction!=None:
+            self.in_interaction = new_interaction
 
+    def start_game(self):
         threading.Thread(target=self.Server.start_game, daemon=True).start()
 
     def connect_serv(self):
@@ -292,27 +322,9 @@ class Main:
     def key_event(self):
 
         key = pygame.key.get_pressed()
-        buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
-        is_looking = None
-        dt_send = int(self.dt*1000)
-
-        #if key[pygame.K_z] :
-        #    self.client.send_data(id=3,data=[0,dt_send]) #lié au serveur les données/haut
-        #    is_looking=1
-#
-        #if key[pygame.K_s] :
-        #    self.client.send_data(id=3,data=[1,dt_send]) #lié au serveur les données/bas
-        #    is_looking=3
-#
-        #if key[pygame.K_d] :
-        #    self.client.send_data(id=3,data=[3,dt_send]) #lié au serveur les données /right
-        #    is_looking=0
-#
-        #if key[pygame.K_q] :
-        #    self.client.send_data(id=3,data=[2,dt_send]) #lié au serveur les données/gauche
-        #    is_looking=2
-#
-        #self.state.game.player_all.me.update_direction_look(is_looking)
+        #buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
+        #is_looking = None
+        #dt_send = int(self.dt*1000)
 
         if key[self.settings_menu.controls["spell1"]] :
             self.state.game.shot(1)
@@ -334,7 +346,13 @@ class Main:
         #    self.client.send_data({"id":"dash"}) #futur dash (vitesse x), set vitesse y à 0
 
         #if key[pygame.K_SPACE] : #futur saut (vitesse y)
-        #    self.client.send_data("id":"move", "deplacement":"jump") 
+        #    self.client.send_data("id":"move", "deplacement":"jump")
+    def send_stop_move(self):
+
+        self.client.send_data(id=4,data=[0])
+        self.client.send_data(id=4,data=[1])
+        self.client.send_data(id=4,data=[2])
+        self.client.send_data(id=4,data=[3])
 
     def handle_events_send(self):
 
@@ -353,12 +371,6 @@ class Main:
 
             self.client.send_data(id=id,data=input[1:])
 
-            #if id==4 :
-            #
-            #elif id == 3 :
-            #    #print(f"Send, {input[1:]}")
-            #    self.client.send_data(id=id,data=input[1:])
-
         self.state.game.player_command.clear()
         self.key_command.clear()
 
@@ -371,6 +383,9 @@ class Main:
 
     def quit_game(self):
         
+        self.musique.unload_music()
+        self.musique.client_music()
+
         self.state.mod = "menu"
         self.state.add_alert("Quit game",time=5)
 
@@ -381,3 +396,22 @@ class Main:
 
     def stop_game_serv(self):
         self.Server.stop_server()
+
+    def trigger_pnj(self,pnj,is_talking):
+
+        print(pnj.text.text_id,pnj.text.start_blit_text)
+
+        if pnj.name=="pnj_tell_story":
+
+            if pnj.text.text_id==0 and not is_talking and pnj.text.start_blit_text==0:
+                self.in_interaction = True
+                self.state.game.draw_story()
+                pnj.text.text_to_blit[0] = "Oy, l'ami."
+                pnj.text.text_to_blit[1] = "Mais je t'ai deja vu !"
+                pnj.text.text_to_blit[2] = "Bon je sais que tu en meurt d'envie."
+
+            elif pnj.text.text_id == 2 and pnj.text.start_blit_text == 0:
+                self.state.game.player_all.now_can_see_others()
+
+    def launch_game(self):
+        self.state.mod = "intro start"

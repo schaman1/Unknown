@@ -53,7 +53,7 @@ class Read_monster :
                         
         #            self.dic_monster[y//self.size_chunk_all[0]*100+x//self.size_chunk_all[1]].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
 
-    def return_chg(self, lInfoClient, map,dt) :
+    def return_chg(self, lInfoClient, map,dt,collision_handler) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""
 
         list_modif = []
@@ -70,7 +70,7 @@ class Read_monster :
 
                     for monster in self.dic_monster[chunk] :
 
-                        monster.update(map,lInfoClient,dt)
+                        monster.update(map,lInfoClient,dt,collision_handler)
 
                         state_id = self.state_map.get(monster.state, 0)
 

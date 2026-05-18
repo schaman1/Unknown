@@ -1,17 +1,16 @@
 from shared.constants.world import NBRWEAPONSTOCK
-from serv.domain.weapon.weapon1 import Weapon1,WeaponBag
+from serv.domain.weapon.weapon1 import WeaponBag,Weapon1,Weapon2,Weapon3
 
 class WeaponManager :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         self.lWeapons = []
         #self.bag = WeaponBag()
 
         self.weapon_select = 1
-        self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
 
-        self.init_lWeapons(team)
+        self.init_lWeapons(team,player)
 
     def bag_not_full(self):
         return self.lWeapons[0].not_full()
@@ -19,15 +18,25 @@ class WeaponManager :
     def add_spell(self,id,id_weapon):
         return self.lWeapons[id_weapon].add_spell(id)
 
-    def init_lWeapons(self,team):
+    def init_lWeapons(self,team,player):
 
         for i in range(NBRWEAPONSTOCK):
 
-            if 0==i:
+            if i==0:
 
-                self.lWeapons.append(WeaponBag(team))
+                self.lWeapons.append(WeaponBag(team,player))
+        
+            elif i==1 :
+                self.lWeapons.append(Weapon1(team,player))
+
+            elif i==2 :
+                self.lWeapons.append(Weapon2(team,player))
+            
+            elif i==3 :
+                self.lWeapons.append(Weapon3(team,player))
+
             else :
-                self.lWeapons.append(Weapon1(team))
+                self.lWeapons.append(Weapon1(team,player))
 
     def return_all_weapon(self):
 
@@ -52,10 +61,10 @@ class WeaponManager :
             projectiles,events = None,None
         
         else :
-
+            self.weapon_select = id_weapon
             projectiles,events = res[0],res[1]
 
-
-            self.id_event_player_do+=events
-
-        return projectiles
+        return projectiles,events
+    
+    def add_slot(self):
+        return self.lWeapons[self.weapon_select].add_slot(self.weapon_select) #10 car id envoie ? 

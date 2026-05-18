@@ -4,7 +4,8 @@ from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 BG_GLOBAL = resource_path("assets/background/global/back.png")
 MAP_SEEN = resource_path("assets/background/entities/cell.png")
 MAP_UNSEEN = resource_path("assets/background/entities/monster.png")
-BG_WAITING = resource_path("assets/background/global/back.png")
+BG_WAITING = resource_path("assets/ui/infos/niflheim.png")
+TEAM_NIKA = resource_path("assets/ui/infos/team_nika.png")
 
 BG_MAP_COLORED =[]
 BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
@@ -23,16 +24,39 @@ for y in range(LEN_Y_CHUNK):
 BTN = resource_path("assets/ui/buttons/btn_default.png")
 BTN_HOVER = resource_path("assets/ui/buttons/btn_hover.png")
 ICONE_SPELL = resource_path("assets/ui/buttons/icone_spell.png")
+ICONE_AUGMENT_WEAPON = resource_path("assets/ui/buttons/icone_augment_weapon.png")
 
-SPELLS = []
-SPELLS.append(None) #POS 0
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_1_0.png")) #Pos 1
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_2_0.png"))
-SPELLS.append(resource_path("assets/sprites/projectile/projectile_3_0.png"))#Pos 3 then have to do a boucle
+SPELLS = {}
+SPELLS[0]=None #POS 0
+SPELLS[1]=resource_path("assets/sprites/projectile/projectile_1_0.png") #Pos 1
+SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
+SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
+SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
+SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
+SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
+SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
+SPELLS[13] = resource_path("assets/sprites/projectile/projectile_13_0.png")
+SPELLS[20] = resource_path("assets/sprites/projectile/projectile_20_0.png")
+SPELLS[21] = resource_path("assets/sprites/projectile/projectile_21_0.png")
+SPELLS[30] = resource_path("assets/sprites/projectile/projectile_30_0.png")
+SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
+SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
+SPELLS[42] = resource_path("assets/sprites/projectile/projectile_42_0.png")
+
+HEALER = resource_path("assets/objects/healer.png")
+HEALER_TRIGGER = resource_path("assets/objects/healer_trigger.png")
+ADD_SLOT_WEAPON = resource_path("assets/objects/add_slot.png")
+ADD_LIFE = resource_path("assets/objects/add_life.png")
+CHEST_SPELL_CLOSE = resource_path("assets/objects/chest_close.png")
+CHEST_SPELL_OPEN = resource_path("assets/objects/chest_open.png")
+CHEST_UPGRADE_CLOSE = resource_path("assets/objects/chest_upgrade_close.png")
+CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
-
 PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
+PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
+
+PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 
 MONSTER_IDLE_4 = resource_path("assets/sprites/monster/idle/monster_idle_4.png") 
 MONSTER_IDLE_1 = resource_path("assets/sprites/monster/idle/monster_idle_1.png") 
@@ -40,6 +64,11 @@ MONSTER_IDLE_2 = resource_path("assets/sprites/monster/idle/monster_idle_2.png")
 MONSTER_IDLE_3 = resource_path("assets/sprites/monster/idle/monster_idle_3.png") 
 
 MONSTER_IDLE = [MONSTER_IDLE_1,MONSTER_IDLE_2,MONSTER_IDLE_3,MONSTER_IDLE_4]
+
+MONSTER_DIE = resource_path("assets/sprites/monster/death/tombe.png") 
+TOMBE_DESTROY = resource_path("assets/sprites/monster/death/tombe_destroy.png") 
+
+MONSTER_SKELETON = resource_path("assets/sprites/monster/skeleton.aseprite")
 
 PROJECTILE_0_0 = resource_path("assets/sprites/projectile/projectile_0_0.png") 
 PROJECTILE_0_1 = resource_path("assets/sprites/projectile/projectile_0_1.png") 
@@ -55,9 +84,16 @@ RANGED_WEAPON_3 = resource_path("assets/sprites/weapon/idle/ranged_weapon_0_3.pn
 
 RANGED_WEAPON = [RANGED_WEAPON_0,RANGED_WEAPON_1,RANGED_WEAPON_2,RANGED_WEAPON_3]
 
-PROJECTILE_2_0 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
-PROJECTILE_2_1 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
-PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
-PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_1_0.png") 
+PROJECTILE_2_0 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
+PROJECTILE_2_1 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
+PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
+PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
 
 PROJECTILE_2 = [PROJECTILE_2_0,PROJECTILE_2_1,PROJECTILE_2_2,PROJECTILE_2_3]
+
+intro_images = []
+for i in range(5):
+    image = resource_path(f"assets/intro/Intro-{i+1}.png")
+    intro_images.append(image)
+
+COMPLETE_INFO_BG = resource_path("assets/ui/infos/fond_complete_info.png")

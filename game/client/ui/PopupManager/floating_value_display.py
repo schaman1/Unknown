@@ -1,4 +1,4 @@
-import time,pygame
+import time,math
 from client.config.display_text import FONT
 
 class FloatingValueDisplay:
@@ -9,6 +9,7 @@ class FloatingValueDisplay:
         self.speed_up = cell_size*10//3
         self.lFloatingValue = []
         self.lFloatingValueFix = []
+        self.distance_max_regroup = cell_size*2
 
     def add_floating_value(self,text,pos,type):
 
@@ -33,10 +34,33 @@ class FloatingValueDisplay:
 
         popup = FloatingValue(text=text,pos=pos,color = color,font = self.font,size=size,lenght_go_up=self.speed_up,fix_on_screen=fix)
 
+        if self.check_if_another_same_value_exist(popup,fix)==False :
+
+            if fix :
+                self.lFloatingValueFix.append(popup)
+            else :
+                self.lFloatingValue.append(popup)
+
+    def check_if_another_same_value_exist(self,popup,fix):
+
         if fix :
-            self.lFloatingValueFix.append(popup)
+            l = self.lFloatingValueFix
         else :
-            self.lFloatingValue.append(popup)
+            l = self.lFloatingValue
+
+        for value in l :
+
+            if value.color == popup.color :
+            
+                dist = math.sqrt((value.pos[0]-popup.pos[0])**2 + (value.pos[1]-popup.pos[1])**2)
+
+                if dist<self.distance_max_regroup :
+
+                    value.value_init+=popup.value_init
+                    value.text = value.font.render(str(value.value_init), True, value.color)
+                    return True
+        
+        return False
 
     def draw_floating_values(self,screen,x,y,dt):
 
@@ -59,7 +83,8 @@ class FloatingValue:
 
     def __init__(self,text,pos,color,time_lenght=2,font = None,size = 10,lenght_go_up = 0,fix_on_screen=False):
 
-        self.pos=pos
+        size = font.size(str(text))
+        self.pos=[pos[0]+size[0]//2,pos[1]]
         self.fix_on_screen = fix_on_screen
         self.alpha = 255
         self.color=color
@@ -67,8 +92,10 @@ class FloatingValue:
         self.time_when_destroy = time_lenght+time.perf_counter()
         self.font = font
         self.vy = lenght_go_up
+        self.value_init = text
 
-        self.text = font.render(text, True, color)
+        self.text = font.render(str(self.value_init), True, color)
+
         self.rect = self.text.get_rect(center=self.pos)
 
     def draw(self,screen,x,y,dt):

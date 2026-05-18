@@ -4,9 +4,12 @@ from serv.domain.mob.team import Team
 
 class Mob(Movable):
 
-    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob):
+    def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
+        
+        self.len_dead = len_dead
+        self.start_dead = 0
 
         self.screen_global_size = world.BG_SIZE_SERVER
 
@@ -18,8 +21,11 @@ class Mob(Movable):
         self.acceleration_x = 2 * self.acceleration
         self.acceleration_y = 10 * self.acceleration
         self.jump_strenght = 150 * self.acceleration
+        self.frottement_power = 0.75
         self.vitesse_x = 0
         self.vitesse_y = 0
+
+        self.in_dash = False
         
         self.width = (width)*self.base_movement
         self.half_width = self.width//2
@@ -28,20 +34,25 @@ class Mob(Movable):
 
         self.life = hp
         self.max_life = hp
-        self.send_new_life = False
+        self.send_new_life = True #Pour initialiser
         self.id = id
         self.team = team
+        self.dead = False
 
     def send_life(self):
         self.send_new_life = False
-        return self.life
-        
+        return self.life,self.max_life,self.id
+
     def return_pos(self):
         return [self.pos_x,self.pos_y]
-    
-    def take_damage(self, amount):
-        self.life -= amount
-        if self.life < 10:
-            self.life = 10
 
+    def full_heal(self):
+
+        if self.life != self.max_life :
+            self.life = self.max_life
+            self.send_new_life = True
+
+    def add_life(self,amount):
+
+        self.max_life+= amount
         self.send_new_life = True

@@ -2,12 +2,14 @@ import time
 
 class Weapon :
 
-    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team):
+    def __init__(self,refill_time,spell_time,nbr_slot,nbr_upgrades_trigger,id,team,player):
         
         self.loading_time_refill = refill_time
+        self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
         self.team=team
         self.id = id
+        self.owner = player
 
         self.spells_on_shot = [None for _ in range(nbr_slot)]
         self.nbr_slot = nbr_slot
@@ -20,6 +22,7 @@ class Weapon :
         self.speed_mult = 1
         self.add_rebond = False
         self.add_damage = 0
+        self.randomize_angle = False
 
         self.angle = 0
         self.pos = 0
@@ -27,12 +30,12 @@ class Weapon :
 
     def return_info(self,i):
         spells_id = []
-        for weapon in self.spells_on_shot :
-            if weapon == None :
+        for upgrade in self.spells_on_shot :
+            if upgrade == None :
                 spells_id.append(0)
                 
             else :
-                spells_id.append(weapon.id)
+                spells_id.append(upgrade.id)
 
         #print("spells_id",self.nbr_spells_max)
 
@@ -47,8 +50,11 @@ class Weapon :
     def reset_values(self):
         self.speed_mult = 1
         self.size_mult = 1
+        self.add_damage = 0
         self.add_rebond = False
+        self.randomize_angle = False
         self.nbr_upgrades_trigger = 0
+        self.loading_time_refill_current = self.loading_time_refill
 
         if self.idx == self.nbr_spells_max :
             self.idx = 0
@@ -85,6 +91,8 @@ class Weapon :
         projectile.width=int(projectile.width*self.size_mult)
         projectile.height=int(projectile.height*self.size_mult)
 
+        projectile.owner = self.owner
+
     def trigger_shot(self,angle,pos):
 
         now = time.perf_counter()
@@ -93,7 +101,6 @@ class Weapon :
             return 
 
         self.reset_values()
-
         return self.create_projectile(angle,pos,now)
 
     def create_projectile(self,angle,pos,now=time.perf_counter()):
@@ -104,7 +111,7 @@ class Weapon :
         self.angle = angle
         self.pos = pos
 
-        self.time_spells_take = 0
+        time_spells_take = 0
 
         while self.nbr_upgrades_trigger < self.nbr_upgrades_trigger_max and self.idx < self.nbr_spells_max :
 
@@ -113,25 +120,51 @@ class Weapon :
 
             if spell != None : 
 
-                space_take,projectile,id_event_player = spell.trigger(self)
+                space_take,projectiles,id_event_player = spell.trigger(self)
 
                 self.nbr_upgrades_trigger+= space_take
 
-                if projectile!=None :
-                    projectile_shot.append(projectile)
+                if projectiles!=None and projectiles != [] :
+                    
+                    for i in range(len(projectiles)):
+                        projectile_shot.append(projectiles[i])
 
                 if id_event_player!=None:
                     event_player.append(id_event_player)
 
-                self.time_spells_take+=spell.time_take
+                time_spells_take+=spell.time_take
 
-        self.time_spells_take+=self.loading_time_spell
+        time_spells_take+=self.loading_time_spell
 
-        if self.idx==self.nbr_spells_max :
-            self.next_allowed_shot = now+max(self.time_spells_take,self.loading_time_refill)
+        if self.test_if_last_spell_of_weapon() :
+            self.idx = 0
+            self.next_allowed_shot = max(self.next_allowed_shot,now+max(time_spells_take,self.loading_time_refill_current))
+            
         else :
-            self.next_allowed_shot = now+self.time_spells_take
-
-        #print(projectile,event_player)
+            self.next_allowed_shot = max(self.next_allowed_shot,now+time_spells_take)
 
         return [projectile_shot,event_player]
+    
+    def test_if_last_spell_of_weapon(self):
+        
+        i = self.idx
+
+        while i<self.nbr_spells_max and self.spells_on_shot[i] == None:
+            i+=1
+
+        return i==self.nbr_spells_max
+
+    def fill_slot(self,idx,function):
+
+        if idx >= len(self.spells_on_shot):
+            print("Unable to fill spot in weapon bcs idx tooo high")
+
+        else :
+            self.spells_on_shot[idx]=function
+
+    def add_slot(self,i):
+        self.nbr_slot+=1
+        self.spells_on_shot.append(None)
+        self.nbr_spells_max+=1
+
+        return self.return_info(i)

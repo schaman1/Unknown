@@ -1,8 +1,7 @@
 from shared.constants import world
 #from client.config.size_display import CELL_SIZE
-from client.ui.objects.spell_on_ground import spell_on_ground
-import pygame
-import math
+from client.ui.objects.object_type import spell_on_ground,healer_spawn,upgrade_weapon,chest,upgrade_life
+import pygame,math,random
 
 class objects_manager:
 
@@ -32,9 +31,38 @@ class objects_manager:
 
             self.chunk_objects[chunk][id] = spell_on_ground(img,pos_x,pos_y,price)
 
+        elif type==world.TYPE_OBJECT["HEALER"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = healer_spawn(img,pos_x,pos_y,price)
+
+        elif type==world.TYPE_OBJECT["UpgradeWeapon"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = upgrade_weapon(img,pos_x,pos_y,price)
+
+        elif type==world.TYPE_OBJECT["UpgradeLife"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = upgrade_life(img,pos_x,pos_y,price)
+
+        elif type==world.TYPE_OBJECT["Chest"]:
+
+            pos_x,pos_y = self.convert_pos(pos_x,pos_y)
+
+            self.chunk_objects[chunk][id] = chest(img,pos_x,pos_y,price)
+
     def destroy_object(self,chunk,id):
 
-        del self.chunk_objects[chunk][id]
+        #print("Delete : ",chunk,id)
+        if self.chunk_objects[chunk][id].stay_after_use :
+            self.chunk_objects[chunk][id].use()
+
+        else :
+            del self.chunk_objects[chunk][id]
 
     def convert_pos(self,x,y):
 
@@ -43,12 +71,12 @@ class objects_manager:
 
         return x,y
 
-    def blit_object(self,element,screen,x,y):
+    def blit_object(self,element,screen,x,y,dt):
         """Blit le monstre avec l'id id_objects sur le canva des monstres"""
 
-        element.blit(screen,x,y)
+        element.blit(screen,x,y,dt)
     
-    def blit_all_objects(self,screen,x,y,pos_player):
+    def blit_all_objects(self,screen,x,y,pos_player,dt):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.chunk_objects :
@@ -56,9 +84,9 @@ class objects_manager:
 
                 dist = self.distance(pos_player,self.chunk_objects[pos][id_objects])
 
-                self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y)
+                self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y,dt)
 
-                if dist<self.distance_max_trigger:
+                if self.chunk_objects[pos][id_objects].can_trigger and dist<self.distance_max_trigger:
 
                     self.blit_interact_info(screen,self.chunk_objects[pos][id_objects],x,y)
 
@@ -80,14 +108,16 @@ class objects_manager:
     
     def test_trigger(self,pos_player): #To opti
 
+        nearest_el = [self.distance_max_trigger,None]
+
         for chunk in self.chunk_objects.keys() :
 
             for id,element in self.chunk_objects[chunk].items():
 
                 dist = self.distance(pos_player,element)
 
-                if dist<self.distance_max_trigger :
+                if dist<nearest_el[0] and element.can_trigger:
 
-                    return (chunk,id)
+                    nearest_el = [dist,[chunk,id]]
                 
-        return None
+        return nearest_el

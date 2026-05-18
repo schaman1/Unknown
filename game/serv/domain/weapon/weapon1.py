@@ -4,7 +4,7 @@ from serv.domain.weapon import upgrades
 
 class WeaponBag(Weapon):
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = 0,
@@ -12,7 +12,8 @@ class WeaponBag(Weapon):
             nbr_slot = weapons.WEAPON_BAG_NBR_SLOT,
             nbr_upgrades_trigger = 0,
             id = weapons.ID_WEAPON_BAG,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()
@@ -44,23 +45,16 @@ class WeaponBag(Weapon):
 
 
     def init_slot(self):
-        pass
-        #self.fill_slot(0,upgrades.CreateFire())
-        #self.fill_slot(1,upgrades.CreateFire())
-        #self.fill_slot(2,upgrades.CreateMagic())
 
-    def fill_slot(self,idx,function):
-
-        if idx >= len(self.spells_on_shot):
-            print("Unable to fill spot in weapon bcs idx tooo high")
-
-        else :
-            self.spells_on_shot[idx]=function
-
+        self.fill_slot(0,upgrades.TripleSpell())
+        self.fill_slot(1,upgrades.AddSpeed())
+        self.fill_slot(2,upgrades.AddRebond())
+        self.fill_slot(3,upgrades.CreatePompe())
+        self.fill_slot(9,upgrades.AddDamage())
 
 class Weapon1(Weapon) :
 
-    def __init__(self,team):
+    def __init__(self,team,player):
 
         super().__init__(
             refill_time = weapons.REFILL_TIME_WEAPON1,
@@ -68,20 +62,53 @@ class Weapon1(Weapon) :
             nbr_slot = weapons.NBR_SLOT_WEAPON1,
             nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
             id = weapons.ID_WEAPON1,
-            team=team
+            team=team,
+            player=player
         )
 
         self.init_slot()
 
     def init_slot(self):
-        #self.fill_slot(0,upgrades.SmallDash())
-        self.fill_slot(1,upgrades.SmallDash())
-        self.fill_slot(2,upgrades.CreateFire())
+        self.fill_slot(0,upgrades.SmallDash())
+        self.fill_slot(1,upgrades.Jump())
+        #self.fill_slot(2,upgrades.LongDash())
+        #self.fill_slot(2,upgrades.CreateFire())
 
-    def fill_slot(self,idx,function):
+class Weapon2(Weapon) :
 
-        if idx >= len(self.spells_on_shot):
-            print("Unable to fill spot in weapon bcs idx tooo high")
+    def __init__(self,team,player):
 
-        else :
-            self.spells_on_shot[idx]=function
+        super().__init__(
+            refill_time = weapons.REFILL_TIME_WEAPON1,
+            spell_time= weapons.SPELL_TIME_WEAPON1,
+            nbr_slot = weapons.NBR_SLOT_WEAPON1,
+            nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
+            id = weapons.ID_WEAPON1,
+            team=team,
+            player=player
+        )
+
+        self.init_slot()
+
+    def init_slot(self):
+        self.fill_slot(0,upgrades.CreateFire())
+        self.fill_slot(1,upgrades.CreateFire_DieEffect())
+
+class Weapon3(Weapon) :
+
+    def __init__(self,team,player):
+
+        super().__init__(
+            refill_time = weapons.REFILL_TIME_WEAPON1,
+            spell_time= weapons.SPELL_TIME_WEAPON1,
+            nbr_slot = weapons.NBR_SLOT_WEAPON1,
+            nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_WEAPON1,
+            id = weapons.ID_WEAPON1,
+            team=team,
+            player=player
+        )
+
+        self.init_slot()
+
+    def init_slot(self):
+        self.fill_slot(0,upgrades.CreateLune())

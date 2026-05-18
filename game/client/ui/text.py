@@ -20,7 +20,6 @@ class AnimatedText:
         self.lenght_current_text = None
         self.set_lenght_text()
 
-
     def set_lenght_text(self):
         self.lenght_current_text = len(self.text_to_blit[self.text_id])
 
