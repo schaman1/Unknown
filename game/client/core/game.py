@@ -38,6 +38,13 @@ class Game :
         self.waiting_img = pygame.transform.scale(self.waiting_img,(screenSize[0]//2,scale))
         self.rect_img_waiting = self.waiting_img.get_rect(center = ((screenSize[0]//2,screenSize[1]//2)))
 
+        self.team_img = pygame.image.load(assets.TEAM_NIKA).convert()
+        size = self.team_img.get_size()
+        scale = (screenSize[0]//4)*size[1]//size[0]
+        self.team_img = pygame.transform.scale(self.team_img,(screenSize[0]//4,scale))
+        self.rect_img_team = self.team_img.get_rect(center = ((screenSize[0]//2,screenSize[1]*3//4)))
+        
+
         self.len_fading = 2
         self.end_fading = None
 
@@ -72,6 +79,7 @@ class Game :
     def draw_intro_start(self,screen):
 
         screen.blit(self.waiting_img,self.rect_img_waiting)
+        screen.blit(self.team_img,self.rect_img_team)
 
     def draw_intro_end(self,screen,dt,mouse_pos):
 
@@ -81,8 +89,10 @@ class Game :
         screen.blit(self.fading_layer,(0,0))
 
         self.waiting_img.set_alpha(self.alpha_fading)
+        self.team_img.set_alpha(self.alpha_fading)
 
         screen.blit(self.waiting_img,self.rect_img_waiting) #Faire un decrescendo ou un truc stylé d'animation
+        screen.blit(self.team_img,self.rect_img_team)
 
         delta_time = max(self.end_fading - time.perf_counter(),0)
         #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
