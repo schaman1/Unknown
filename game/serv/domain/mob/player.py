@@ -101,34 +101,6 @@ class Player(Mob) :
         else :
             return []
 
-    def return_delta_vitesse(self,map,dt):
-
-        old_pos_x = self.pos_x
-        old_pos_y = self.pos_y
-
-        self.gravity_effect(dt)
-        
-        self.upgrade_handler.trigger_event_on_player(self,dt,map)
-
-        self.collision_x(map,dt,self.vitesse_x)
-
-        self.collision_y(map,dt,self.vitesse_y)
-
-        delta_x = self.pos_x-old_pos_x
-        delta_y = self.pos_y-old_pos_y
-
-        return (delta_x,delta_y)
-
-    def update_vitesse(self,dt):
-
-        s = self.return_signe(self.vitesse_x)
-
-        if self.vitesse_x*s<self.acceleration:
-            self.vitesse_x = 0
-        else :
-
-            self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
-
     def update_pos(self,map,dt,collision_handler):
 
         self.check_respawn()
@@ -139,13 +111,11 @@ class Player(Mob) :
 
             self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
-        delta = self.return_delta_vitesse(map,dt)
+        self.upgrade_handler.trigger_event_on_player(self,dt,map)
 
-        self.update_vitesse(dt)
+        self.move_all(map,dt,collision_handler)
 
         collision_handler.check_if_touch_damage_obj(map,dt,self)
-
-        return delta
     
     def handle_input(self,map,dt):
 
@@ -187,56 +157,11 @@ class Player(Mob) :
         if key == 1 :
             self.is_climbing = True
 
-    def jump(self,map,force_jump = False):
-
-        if force_jump or self.can_jump():
-        #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
-            self.vitesse_y=-self.jump_strenght
-
     def can_jump(self):
         
         if self.smooth_jump.can_jump():
             return True
 
-    def move_up(self,dt,map):
-        #self.pos_y-=1
-        self.is_looking=1
-
-        if self.can_climb(map):
-            #self.is_climbing = True
-            self.vitesse_y = -self.acceleration_y*dt*self.acceleration
-
-        #else :
-        #    self.is_climbing = False
-
-    def move_down(self,dt):
-        #self.pos_y+=1
-        self.is_looking=3
-        if self.vitesse_y<self.vitesse_max:
-            self.vitesse_y+=self.acceleration_y*dt
-            
-    def move_left(self,dt):
-        self.is_looking = 2
-        s=self.return_signe(self.vitesse_x)
-
-        if self.vitesse_x>-self.vitesse_max:
-            self.vitesse_x-=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1-0.1*s)
-
-        if self.vitesse_x<-self.vitesse_max:
-            self.vitesse_x = -self.vitesse_max
-
-    def move_right(self,dt):
-        self.is_looking = 0
-        s=self.return_signe(self.vitesse_x)
-
-        if self.vitesse_x<self.vitesse_max:
-            self.vitesse_x+=self.acceleration*self.acceleration_x*dt
-            self.vitesse_x*=(1+0.1*s)
-
-        if self.vitesse_x>self.vitesse_max:
-            self.vitesse_x = self.vitesse_max
-    
     def is_alive(self):
         return self.life > 0
     
@@ -255,7 +180,6 @@ class Player(Mob) :
     def send_money(self):
         self.send_new_money = False
         return self.money
-
 
     def switch_spell(self,spell_1_weapon,spell_1_idx,spell_2_weapon,spell_2_idx):
 
