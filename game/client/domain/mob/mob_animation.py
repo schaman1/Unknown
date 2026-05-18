@@ -24,10 +24,7 @@ class Animation:
                                      "time":0},
                             "respawn":{"right":[],
                                        "left":[],
-                                       "time":0},
-                            "fade":{"in_time":0,
-                                    "out_time":0,
-                                    "alpha":0}}
+                                       "time":0}}
 
         self.state = "idle"
         self.direction = "right"
@@ -237,3 +234,8 @@ class Animation:
             return True
         
         return False
+    
+    def set_state(self,state_name):
+        """Set a specific state of anim if ! not death"""
+        if not self.dead_state():
+            self.state = state_name
