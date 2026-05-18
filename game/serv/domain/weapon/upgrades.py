@@ -1,6 +1,7 @@
 from serv.domain.projectile import projectile_type
 from shared.constants.world import RATIO
 from serv.config import weapons
+from serv.domain.mob.team import Team
 
 
 class Upgrade:
@@ -147,6 +148,7 @@ class AddDamage(Upgrade):
     def trigger(self,weapon):
 
         weapon.add_damage +=3
+        weapon.team = Team.All
 
         return 0,None,None
     

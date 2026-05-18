@@ -86,7 +86,7 @@ class CollisionHandler:
 
             if die:
                 print("PLayer is dead")
-                self.die_send.append([player.id,chunk,player.die_len])
+                self.die_send.append([player.id,chunk,player.len_dead])
 
             projectile.is_dead = True
 
