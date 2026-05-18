@@ -17,8 +17,18 @@ class Monster_all :
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 
-        for (chunk, id, x, y, state) in lchunck_monsters :
-            self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,state)
+        for (chunk, id, x, y, name) in lchunck_monsters :
+
+            if name == 1:
+                self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+
+            elif name == 2:
+                self.dic_monster[chunk][id] = (x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+
+
+            else :
+                print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
+
 
     def blit_monster(self,monster,screen,x,y,dt):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
