@@ -18,11 +18,11 @@ class Pnj_all :
 
         self.interact_img = pygame.image.load("assets/ui/infos/interact.png")
         self.interact_img = pygame.transform.scale(self.interact_img,(10*cell_size,1*cell_size))
+        self.white_surf = pygame.Surface((screenSize[0],cell_size*10),pygame.SRCALPHA)
 
         self.is_talking = False
         self.talks_to = None
 
-        self.white_surf = pygame.Surface((screenSize[0],cell_size*10),pygame.SRCALPHA)
 
         with open("client/ui/text.json") as f:
 
