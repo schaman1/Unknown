@@ -13,8 +13,13 @@ class WeaponManager :
 
         self.init_lWeapons(team)
 
-    def init_lWeapons(self,team):
+    def bag_not_full(self):
+        return self.lWeapons[0].not_full()
 
+    def add_spell(self,id,id_weapon):
+        return self.lWeapons[id_weapon].add_spell(id)
+
+    def init_lWeapons(self,team):
 
         for i in range(NBRWEAPONSTOCK):
 

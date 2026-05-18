@@ -5,6 +5,7 @@ from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.mob.pnj.pnj_all import Pnj_all
 from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
+from client.ui.objects.objects_manager import objects_manager
 from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
@@ -42,6 +43,8 @@ class Game :
         self.projectiles = ProjectileManager(cell_size)
 
         self.floating_values = FloatingValueDisplay(cell_size)
+
+        self.objects_manager = objects_manager(cell_size)
 
         self.camera = Camera(screenSize)
 
@@ -112,15 +115,17 @@ class Game :
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.blit_projectiles_explosions(screen,x,y,dt)
-
+        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos())
         self.blit_pnj(screen,x,y,dt)
         self.blit_monsters(screen,x,y)
         self.blit_players(screen,x,y,dt)
 
+        self.blit_projectiles_explosions(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
         self.player_all.draw_light(screen)
+
+        self.floating_values.draw_floating_values_fix(screen,x,y,dt)
 
         self.blit_utils(screen,self.screen_size)
 
@@ -154,6 +159,10 @@ class Game :
             elif info==0: #Blit spell_1 a pos=souris car c l'img du spell
                 self.spell_blit_mouse =spell_1 
 
+            elif info==-1 and spell_1!=None: #In air
+                self.spell_blit_mouse = None
+
+
             return info,spell_1,spell_2
         
         else :
@@ -180,10 +189,20 @@ class Game :
 
             self.player_all.me.update_life(new_life)
 
-    
-    def add_popup(self,ent,text):
+    def update_money(self,money):
 
-        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type="damage")
+        delta_money = self.player_all.me.update_money(money)
+
+        pos = [self.player_all.me.pos_blit_text[0],self.player_all.me.pos_blit_text[1]]
+
+        self.add_popup_on_screen(pos,str(delta_money),type = "money")
+    
+    def add_popup(self,ent,text,type = "damage"):
+
+        self.floating_values.add_floating_value(str(text),[ent.pos_x,ent.pos_y],type)
+
+    def add_popup_on_screen(self,pos,text,type):
+        self.floating_values.add_floating_value(str(text),pos,type)
 
     def add_many_popup_life(self,data):
 
@@ -199,7 +218,20 @@ class Game :
             self.add_popup(ent,delta_life)
 
     def interact(self):
-        
-        touch_pnj = self.pnj_all.test_trigger(self.player_all.return_pos())
 
+        pos_player = self.player_all.return_pos()
+
+        touch_pnj = False
+
+        res = self.objects_manager.test_trigger(pos_player)
+
+        if res!=None:
+            chunk,id = res
+
+            self.player_command.append([8,chunk,id])
+        
+        else :
+        
+            touch_pnj = self.pnj_all.test_trigger(pos_player)
+                
         return touch_pnj

@@ -1,6 +1,7 @@
 from serv.domain.projectile import projectile_type
 from shared.constants.world import RATIO
 
+
 class Upgrade:
 
     def __init__(self,id,time_take):
@@ -14,6 +15,7 @@ def AddProjectileWhenDie(projectile,weapon):
     next_projectiles,next_time = weapon.create_projectile(weapon.angle,weapon.pos,weapon.team)
 
     projectile.projectile_spawn_when_die=next_projectiles
+
 
 class CreateFire(Upgrade):
 
@@ -129,3 +131,12 @@ class SmallDash(Upgrade):
 #        weapon.size_mult +=2
 #
 #        return 0
+
+UPGRADES = {}
+UPGRADES[1] = CreateFire()
+UPGRADES[2] = CreateMagic()
+UPGRADES[3] = CreateLune()
+UPGRADES[10] = AddSpeed()
+UPGRADES[11] = AddRebond()
+UPGRADES[20] = DoubleSpell()
+UPGRADES[30] = CreateFire_DieEffect()
