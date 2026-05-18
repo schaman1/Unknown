@@ -41,7 +41,7 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(Laseroide(3411,17500,1))
+        self.dic_monster[200].append(Laseroide(3411,17400,1))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
