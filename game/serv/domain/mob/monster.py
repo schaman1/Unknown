@@ -10,6 +10,7 @@ class Monster(Mob):
 
         self.hp = hp
         self.damage = damage
+        self.resist = False #Resist = Can't take damage
         self.prime = prime
         
         self.attack_radius = atk_rad
@@ -69,7 +70,7 @@ class Monster(Mob):
 
         #------------degat de collision-----------------#
         if self.dist<self.width/2/self.base_movement and self.collision_damage: 
-            damage = int(100*dt) 
+            damage = int(100*dt) #Always 1
             collision_handler.player_take_damage_no_projectile(damage,self.target)
             #FIn
 
@@ -111,14 +112,16 @@ class Monster(Mob):
 
         if amount!=0 :
 
-            self.life -= amount
-            self.send_new_life = True
+            if not self.resist :
 
-            if self.life <= 0:
-                self.life = 0
-                self.die(player_did_damage)
+                self.life -= amount
+                self.send_new_life = True
 
-                return True
+                if self.life <= 0:
+                    self.life = 0
+                    self.die(player_did_damage)
+
+                    return True
 
         return False
     
@@ -152,6 +155,25 @@ class Monster(Mob):
         angle = angle * 180 / math.pi
 
         return int(angle) % 360
+
+    def check_if_player_collide_attack(self,target,side,hit_box_damage_width):
+
+
+
+        #Test en y :
+        if target.pos_y-target.half_height > self.pos_y + self.half_height or target.pos_y + target.half_height < self.pos_y - self.half_height :
+            return False
+
+        if side == "right":
+            if self.pos_x + hit_box_damage_width*self.base_movement < target.pos_x-target.half_width or self.pos_x > target.pos_x + target.half_width :
+                return False
+            
+        if side == "left":
+            if self.pos_x - hit_box_damage_width*self.base_movement > target.pos_x+target.half_width or self.pos_x < target.pos_x - target.half_width :
+                return False
+            
+        return True
+
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -345,6 +367,118 @@ class Foulli(Monster) :
         
         damage = self.damage
         collision_handler.player_take_damage_no_projectile(damage,self.target)
+
+class Defendeur(Monster) :
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 6)
+
+        self.name = 3 #Permet d'afficher le bon monstre / In monster all dans client
+        #self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+
+        self.begin_shot = time.perf_counter()
+        self.time_for_shot = 2
+        self.begin_attack = time.perf_counter()
+        self.time_for_move_to_reach_player = 0.5
+        self.time_after_shot = 1
+        self.time_to_relax = time.perf_counter()
+        self.side = "left" #Side attack
+        self.hit_box_damage_width = 5
+        self.resist = True
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            if self.begin_shot+self.time_for_shot <= time.perf_counter() and self.focus :# self.time_to_relax + self.begin_shot<= time.perf_counter() :
+                self.focus = False
+                self.resist = True
+
+            if self.focus and self.begin_attack + self.time_for_move_to_reach_player > time.perf_counter() :
+                
+                #if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+                #    self.begin_attack = 0 #Means instatly attack
+                
+                if self.side == "right" :
+                    self.move_right(dt)
+                else :
+                    self.move_left(dt)
+
+            elif self.begin_attack + self.time_for_move_to_reach_player < time.perf_counter() :
+                self.state = "attacking"
+
+                self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            if not self.focus :
+                self.focus = True
+                self.begin_shot = time.perf_counter()
+                self.begin_attack = time.perf_counter()
+
+                if self.pos_x < self.target.pos_x : #Set the side in whitch attack
+                    self.side = "right"
+                else :
+                    self.side = "left"
+
+                self.state = "moving"
+            
+            if self.begin_shot+self.time_for_shot <= time.perf_counter() :
+
+                self.time_to_relax = time.perf_counter()
+                self.state = "moving"
+
+            if self.begin_shot + self.time_for_move_to_reach_player < time.perf_counter():
+
+                self.resist = False
+                self.attack(self.target,collision_handler,dt,projectile_manager)
+                self.begin_shot += self.time_for_move_to_reach_player
+
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """Stay in his spot"""
+        return
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+
+        if target.pos_x<self.pos_x :
+            self.move_left(dt)
+        
+        else :
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+        if target.pos_x<self.pos_x :
+            self.move_right(dt)
+        
+        else :
+            self.move_left(dt)
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        """Return True if well touch the player"""
+        
+        if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+            damage = self.damage
+            collision_handler.player_take_damage_no_projectile(damage,self.target)
+            return True
+        
+        return False
 
 class Skeleton(Monster):
 

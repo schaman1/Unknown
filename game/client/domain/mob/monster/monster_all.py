@@ -1,5 +1,5 @@
 from shared.constants import world
-from client.domain.mob.monster.monster import Skeleton,Laseroide,Foulli
+from client.domain.mob.monster.monster import Skeleton,Laseroide,Foulli,Defendeur
 
 class Monster_all :
 
@@ -27,6 +27,9 @@ class Monster_all :
 
             elif name == 2:
                 self.dic_monster[chunk][id] = Foulli(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+
+            elif name == 3:
+                self.dic_monster[chunk][id] = Defendeur(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
 
             else :
