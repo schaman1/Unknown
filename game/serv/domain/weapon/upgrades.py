@@ -14,8 +14,13 @@ class Upgrade:
 
 def AddProjectileWhenDie(projectile,weapon):
     """If want to update it can make that if put dash after bdf, dash trigger when bdf touch ?"""
+
+    if not weapon.test_if_last_spell_of_weapon() :
     
-    next_projectiles,next_id_event_player = weapon.trigger_shot(weapon.angle,weapon.pos)
+        next_projectiles,next_id_event_player = weapon.trigger_shot(weapon.angle,weapon.pos)
+
+    else :
+        next_projectiles = []
 
     projectile.projectile_spawn_when_die=next_projectiles
 
