@@ -26,7 +26,6 @@ class Projectile :
         else :
             self.angle = angle
 
-
         self.speed = int(speed)
         self.id_img = id_img
         self.width = width

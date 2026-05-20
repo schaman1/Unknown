@@ -114,8 +114,7 @@ class CreateManyLune(Upgrade):
         dif_pos[1][0] -= delta_pos
         dif_pos[2][1] += delta_pos
         dif_pos[3][1] -= delta_pos
-        dif_pos[0][0] += delta_pos
-        dif_pos[0][0] += delta_pos
+
         delta_pos_force[0][0] += delta_pos
         delta_pos_force[1][0] -= delta_pos
         delta_pos_force[2][1] += delta_pos
