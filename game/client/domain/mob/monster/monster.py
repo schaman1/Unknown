@@ -11,6 +11,8 @@ class Monster(Mob):
 
         super().__init__(x,y,cell_size,size=size,name=name)
 
+        self.old_state = None
+
     def blit(self,screen,x,y,dt):
 
         self.update_interpolate_pos()
@@ -101,8 +103,6 @@ class Foulli(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
-        self.old_state = None
-
     def change_state(self,new_state):
         """Base pour mettre anim"""
 
@@ -131,7 +131,34 @@ class Defendeur(Monster) :
         self.animation.animation["attacking"]["time"] = 0.1
         self.animation.animation["idle"]["time"] = 2/4
 
-        self.old_state = None
+    def change_state(self,new_state):
+        """Base pour mettre anim"""
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0] != self.old_state :
+            self.animation.set_state(key[0])
+
+        self.old_state = key[0]
+
+class Escargot(Monster) :
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        super().__init__(x,y,cell_size,size=(8,8),name="Escargot")
+
+        self.name = "Escargot"
+        self.chunk = pos_chunk
+        self.state = state
+        self.frame_perso = []
+
+        #Inutile ----
+        self.frame = 0
+        #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
+        self.frame_multiplier = 0
+        #------
+
+        self.animation.animation["running"]["time"] = 0.3
 
     def change_state(self,new_state):
         """Base pour mettre anim"""

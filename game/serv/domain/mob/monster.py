@@ -495,6 +495,56 @@ class Defendeur(Monster) :
         
         return False
 
+class Escargot(Monster) :
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
+
+        self.name = 4 #Permet d'afficher le bon monstre / In monster all dans client
+        self.direction = "right"
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+
+        if target.pos_x<self.pos_x :
+            self.move_left(dt)
+        
+        else :
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        """Return True if well touch the player"""
+
 class Skeleton(Monster):
 
     def __init__(self, x, y, id):

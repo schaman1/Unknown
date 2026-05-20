@@ -1,5 +1,5 @@
 from shared.constants import world
-from client.domain.mob.monster.monster import Skeleton,Laseroide,Foulli,Defendeur
+from client.domain.mob.monster import monster
 
 class Monster_all :
 
@@ -20,17 +20,19 @@ class Monster_all :
         for (chunk, id, x, y, name) in lchunck_monsters :
 
             if name == 0:
-                self.dic_monster[chunk][id] = Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+                self.dic_monster[chunk][id] = monster.Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
             elif name == 1:
-                self.dic_monster[chunk][id] = Laseroide(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+                self.dic_monster[chunk][id] = monster.Laseroide(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
             elif name == 2:
-                self.dic_monster[chunk][id] = Foulli(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+                self.dic_monster[chunk][id] = monster.Foulli(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
             elif name == 3:
-                self.dic_monster[chunk][id] = Defendeur(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
-
+                self.dic_monster[chunk][id] = monster.Defendeur(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+            
+            elif name == 4:
+                self.dic_monster[chunk][id] = monster.Escargot(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)

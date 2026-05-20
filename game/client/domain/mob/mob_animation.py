@@ -158,6 +158,23 @@ class Animation:
 
             self.add_tombe(cell_size)
 
+        elif entity_name == "Escargot" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.ESCARGOT_IDLE)
+            img_idle = pygame.transform.scale(img_idle,(self.width,self.height)) #*2 car en a 2 par ligne
+            self.animation["idle"]["right"] = [img_idle]
+            self.animation["idle"]["left"] = [img_idle]
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.ESCARGOT_RUNNING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+
+            self.add_tombe(cell_size)
+
         elif entity_name == "Skeleton":
 
             #self.decoupe_img(img_idle,self.animation["idle"],size)
