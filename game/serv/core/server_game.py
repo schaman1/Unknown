@@ -31,10 +31,10 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            should_send = True
-            #if self.next_send_time <= time.perf_counter():
-            #    self.next_send_time += self.send_interval
-            #    should_send = True
+            #should_send = True
+            if self.next_send_time <= time.perf_counter():
+                self.next_send_time += self.send_interval
+                should_send = True
 
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
