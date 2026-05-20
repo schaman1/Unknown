@@ -61,11 +61,8 @@ STONE_WIDTH = 1*RATIO
 STONE_HEIGHT = 1*RATIO
 STONE_DAMAGE = 1
 STONE_RELOAD_TIME = 0.1
-<<<<<<< HEAD
 STONE_WEIGHT = 100
-=======
 KNOCKBACK_STONE = 2     #Knockback multiplier (0 = no knockback)
->>>>>>> 64cb3d7fbc01ba8a25ce0208a55b2c60e5ec373c
 
 
 RANDOMIZER_RELOAD_TIME = -0.2
