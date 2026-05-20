@@ -18,6 +18,9 @@ class Monster(Mob):
         self.run_away_rad = run_away
 
         self.collision_damage = True
+        self.collision_atk = 10
+        self.collision_time_reload = 0.5
+        self.collision_start = time.perf_counter()
 
         self.radius = rad
 
@@ -70,8 +73,11 @@ class Monster(Mob):
 
         #------------degat de collision-----------------#
         if self.dist<self.width/2/self.base_movement and self.collision_damage: 
-            damage = int(100*dt) #Always 1
-            collision_handler.player_take_damage_no_projectile(damage,self.target)
+
+            if self.collision_start + self.collision_time_reload <= time.perf_counter():
+                self.collision_start=time.perf_counter()
+
+                collision_handler.player_take_damage_no_projectile(self.collision_atk,self.target)
             #FIn
 
         if self.focus :
@@ -381,10 +387,10 @@ class Defendeur(Monster) :
         self.time_for_move_to_reach_player = 0.5
         self.len_attack = 2
         self.begin_time_for_attack = time.perf_counter()
-        self.time_between_attacks = 0.4
+        self.time_between_attacks = 0.2
 
         self.begin_relax = time.perf_counter()
-        self.time_to_relax = 1
+        self.time_to_relax = 2
         self.side = "left" #Side attack
         self.hit_box_damage_width = 5
         self.resist = True
@@ -407,7 +413,7 @@ class Defendeur(Monster) :
             if self.focus :
                 if self.begin_attack + self.time_for_move_to_reach_player > time.perf_counter() :
 
-                    if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+                    if self.check_if_player_collide_attack(self.target,self.side,2) :
                         self.state = "attacking"
                         #self.resist = False #here if too difficult
                         self.begin_attack = time.perf_counter()-self.time_for_move_to_reach_player
@@ -429,6 +435,7 @@ class Defendeur(Monster) :
 
             if not self.focus :
                 self.focus = True
+                self.resist = True
                 self.begin_attack = time.perf_counter()
 
                 if self.pos_x < self.target.pos_x : #Set the side in whitch attack
@@ -443,7 +450,7 @@ class Defendeur(Monster) :
                 if self.begin_attack+self.len_attack <= time.perf_counter() : #Means stop attack
 
                     self.begin_relax = time.perf_counter()
-                    self.ressit = False
+                    self.resist = False
                     self.state = "idle"
 
                 if self.begin_time_for_attack + self.time_between_attacks < time.perf_counter():

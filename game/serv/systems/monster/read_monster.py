@@ -62,6 +62,8 @@ class Read_monster :
 
         list_chunk_client_see = self.return_list_chunk_client_see(lInfoClient,list_modif)
 
+        list_monster_change_chunk = []
+
         for y in range(self.size_chunk_all[0]) :
             for x in range(self.size_chunk_all[1]) :
 
@@ -70,7 +72,10 @@ class Read_monster :
                 liste_client_see = self.return_client_see(x,y,list_chunk_client_see)
                 if liste_client_see != [] :
 
-                    for monster in self.dic_monster[chunk] :
+                    #for monster in self.dic_monster[chunk] :
+                    for i in range(len(self.dic_monster[chunk])-1,-1,-1):
+
+                        monster = self.dic_monster[chunk][i]
 
                         monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
 
@@ -79,6 +84,13 @@ class Read_monster :
                         for client_idx in liste_client_see :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
+
+                        if self.return_chunk(monster.pos_x,monster.pos_y) != chunk:
+                            list_monster_change_chunk.append((chunk,monster))
+                            del self.dic_monster[chunk][i]
+
+        for chunk,monster in list_monster_change_chunk :
+            self.dic_monster[chunk].append(monster)
 
         return list_modif
     

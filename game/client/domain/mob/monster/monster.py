@@ -129,7 +129,7 @@ class Defendeur(Monster) :
         self.frame_multiplier = 0
 
         self.animation.animation["attacking"]["time"] = 0.1
-        self.animation.animation["idle"]["time"] = 1/4
+        self.animation.animation["idle"]["time"] = 2/4
 
         self.old_state = None
 

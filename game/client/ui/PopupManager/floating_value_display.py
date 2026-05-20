@@ -1,5 +1,5 @@
 import time,math
-from client.config.display_text import FONT
+from client.config.display_text import FONT,FONT_SMALL
 
 class FloatingValueDisplay:
 
@@ -54,7 +54,7 @@ class FloatingValueDisplay:
             
                 dist = math.sqrt((value.pos[0]-popup.pos[0])**2 + (value.pos[1]-popup.pos[1])**2)
 
-                if dist<self.distance_max_regroup :
+                if dist<self.distance_max_regroup and value.value_init != 0 and popup.value_init!=0:
 
                     value.value_init+=popup.value_init
                     value.text = value.font.render(str(value.value_init), True, value.color)
@@ -84,6 +84,7 @@ class FloatingValue:
     def __init__(self,text,pos,color,time_lenght=2,font = None,size = 10,lenght_go_up = 0,fix_on_screen=False):
 
         size = font.size(str(text))
+
         self.pos=[pos[0]+size[0]//2,pos[1]]
         self.fix_on_screen = fix_on_screen
         self.alpha = 255
@@ -94,7 +95,12 @@ class FloatingValue:
         self.vy = lenght_go_up
         self.value_init = text
 
-        self.text = font.render(str(self.value_init), True, color)
+        if self.value_init!=0 :
+            self.text = font.render(str(self.value_init), True, color)
+        else :
+            self.text = FONT_SMALL.render("Bloque", True, color)
+            self.time_when_destroy -= 1 #Dure 1 sec de moins
+
 
         self.rect = self.text.get_rect(center=self.pos)
 
