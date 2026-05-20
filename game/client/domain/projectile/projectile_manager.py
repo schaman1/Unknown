@@ -10,9 +10,10 @@ class ProjectileManager :
         self.explosion = []
         self.cell_size = cell_size
 
-
     def create_projectile(self,id,pos_x,pos_y,angle,vitesse,weight,id_img):
 
+        #print("weight",weight)
+        
         self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,weight,id_img,self.cell_size)
 
     def add_explosion(self,pos,projectile,cell_size):
@@ -40,7 +41,6 @@ class ProjectileManager :
 
             projectile.move(dt)
             projectile.blit(screen,x,y)
-
 
         for i in range(len(self.explosion)-1,-1,-1):
 
