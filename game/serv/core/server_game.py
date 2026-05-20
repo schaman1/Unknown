@@ -31,7 +31,7 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
-            #should_send = True
+            should_send = False
             if self.next_send_time <= time.perf_counter():
                 self.next_send_time += self.send_interval
                 should_send = True
