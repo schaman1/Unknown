@@ -13,7 +13,7 @@ class DefaultProjectile :
 
         self.height,self.width = None,None
         self.base_movement = world.RATIO
-        self.weight = 255*self.base_movement
+        self.weight = weight
 
         self.vx,self.vy = self.create_vx_vy(angle,vitesse)
 
@@ -27,7 +27,13 @@ class DefaultProjectile :
         return vx,vy
     
     def gravity(self,dt):
-        pass#self.vy+=self.weight*dt
+
+        self.vy += self.base_movement*self.weight*dt
+        #print(self.base_movement,self.weight)
+
+        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+
+        self.vy = self.vy*(gravity_power_mult**(dt*60))
     
     def move(self,dt):
 
@@ -76,6 +82,13 @@ class DefaultProjectile :
                 img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
                 rotated_img = pygame.transform.rotate(img, angle)
                 Imgs.append(rotated_img)
+            
+        elif id_img==7:
+            self.width,self.height = weapon.PROJECTILE_7_WIDTH,weapon.PROJECTILE_7_HEIGHT
+            img = pygame.image.load(assets.SPELLS[id_img]).convert_alpha() #convert_alpha() pour le fond vide
+            img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
+            rotated_img = pygame.transform.rotate(img, angle)
+            Imgs.append(rotated_img)
 
         else :
             print("Unknown weapon id in client /domain/projectile/Default projectiles",id_img)

@@ -8,8 +8,8 @@ BG_WAITING = resource_path("assets/ui/infos/niflheim.png")
 TEAM_NIKA = resource_path("assets/ui/infos/team_nika.png")
 
 BG_MAP_COLORED =[]
-BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
-BLACK_LAYER_COLORED = resource_path("assets/background/map/X2Y1.png")
+BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X0Y0__IntGrid_layer-int.png")
+BLACK_LAYER_COLORED = resource_path("assets/background/map/X0Y0.png")
 
 for y in range(LEN_Y_CHUNK):
 
@@ -33,6 +33,8 @@ SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
 SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
 SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
+SPELLS[6] = resource_path("assets/sprites/projectile/projectile_6_0.png") #En attendant
+SPELLS[7] = resource_path("assets/sprites/projectile/projectile_2_0.png") #zizi jvais te faire un fist fuck
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
