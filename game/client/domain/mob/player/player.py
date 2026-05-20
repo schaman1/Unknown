@@ -17,7 +17,7 @@ class Player_you(Mob) :
         self.font = FONT
         self.text_pseudo_color = (250,250,250)
         self.text_pseudo = FONT_SMALL.render(str(self.pseudo[:-7]),True, self.text_pseudo_color)  # True = anti-aliasing
-        size = FONT_SMALL.size(str(self.pseudo))
+        size = FONT_SMALL.size(str(self.pseudo[:-7]))
         self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
         self.text_life_color = (250,250,250)
@@ -212,7 +212,7 @@ class Player_not_you(Mob) :
         self.old_state = "idle"
 
         self.text_pseudo_color = (250,250,250)
-        self.text_pseudo = FONT_SMALL.render("Me",True, self.text_pseudo_color)  # True = anti-aliasing
+        self.text_pseudo = FONT_SMALL.render(str(self.pseudo),True, self.text_pseudo_color)  # True = anti-aliasing
         size = FONT_SMALL.size(str(self.pseudo))
         self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
