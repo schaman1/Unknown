@@ -55,7 +55,7 @@ class Network_handler :
                 msg_id = buffer[0]
 
                 # Exemple : ID 0 = start_game (1 byte)
-                if msg_id == 0: #Start game
+                if msg_id == 0 or msg_id ==10 or msg_id == 11: #Start game
                     msg_size = 1
 
                 elif msg_id == 1: #
@@ -193,6 +193,13 @@ class Network_handler :
             id_weapon,id_spell = struct.unpack("!BB",data[1:3])
 
             self.server.throw_spell(id_weapon,id_spell,sender)
+
+        elif id_msg == 10 :
+
+            self.server.try_tp_to_boss()
+
+        elif id_msg == 11:
+            pass
 
 
         else :

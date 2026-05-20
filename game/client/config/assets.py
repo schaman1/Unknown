@@ -52,6 +52,8 @@ ADD_SLOT_WEAPON = resource_path("assets/objects/add_slot.png")
 ADD_LIFE = resource_path("assets/objects/add_life.png")
 CHEST_SPELL_CLOSE = resource_path("assets/objects/chest_close.png")
 CHEST_SPELL_OPEN = resource_path("assets/objects/chest_open.png")
+CHEST_SPELL_RARE_CLOSE = resource_path("assets/objects/chest_rare_close.png")
+CHEST_SPELL_RARE_OPEN = resource_path("assets/objects/chest_rare_open.png")
 CHEST_UPGRADE_CLOSE = resource_path("assets/objects/chest_upgrade_close.png")
 CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 

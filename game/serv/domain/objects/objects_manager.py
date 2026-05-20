@@ -97,10 +97,10 @@ class objects_manager:
 
             return
         
-        elif cat == 1: #Means spell
+        elif cat == 1: #Means spell_low_quality
 
             id = self.generate_id()
-            spell = spell_on_ground(None,x,y,0,randomize=True)
+            spell = spell_on_ground(None,x,y,0,randomize=True,rarity="common")
 
             self.chunk_objects[chunk][id] = spell
 
@@ -117,3 +117,12 @@ class objects_manager:
             self.chunk_objects[chunk][id] = upgrade
 
             return id,upgrade,name
+        
+        elif cat == 3: #Means Rare spell
+
+            id = self.generate_id()
+            spell = spell_on_ground(None,x,y,0,randomize=True,rarity="rare")
+
+            self.chunk_objects[chunk][id] = spell
+
+            return id,spell,"SPELL"

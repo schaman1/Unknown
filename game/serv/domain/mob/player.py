@@ -38,12 +38,12 @@ class Player(Mob) :
     def take_damage(self, amount):
         """Retourne True/False selon si le joueur est mort ou non"""
 
-        if amount!=0 :
+        if amount!=0 and self.is_dead == False:
 
             self.life -= amount
             self.send_new_life = True
 
-            if self.life <= 0:
+            if self.life <= 0 :
                 self.life = 0
                 self.die()
 
@@ -58,7 +58,7 @@ class Player(Mob) :
         self.update_money(-50)
 
     def respawn(self):
-        #print("Respown location",self.respawn_at)
+
         self.pos_x = self.respawn_at[0]
         self.pos_y = self.respawn_at[1]
         self.has_respawn = True
@@ -101,7 +101,7 @@ class Player(Mob) :
 
     def update_pos(self,map,dt,collision_handler):
 
-        print("pos :",self.pos_x,self.pos_y)
+        #print("pos :",self.pos_x,self.pos_y)
 
         self.check_respawn()
 

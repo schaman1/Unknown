@@ -76,5 +76,9 @@ class chest(interactable):
             self.init_img(assets.CHEST_UPGRADE_CLOSE)
             self.init_use_img(assets.CHEST_UPGRADE_OPEN)
 
+        elif id_img==3:
+            self.init_img(assets.CHEST_SPELL_RARE_CLOSE)
+            self.init_use_img(assets.CHEST_SPELL_RARE_OPEN)
+
         else :
             print("Unknown chest id in client/ui/object_type",id_img)
