@@ -1,4 +1,4 @@
-from serv.domain.mob.monster import Skeleton,Laseroide,Foulli,Defendeur
+from serv.domain.mob import monster
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
 class Read_monster :
@@ -41,9 +41,9 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(Defendeur(3411,17300,1))
-        self.dic_monster[200].append(Foulli(7900,15400,2))
-        self.dic_monster[201].append(Foulli(12000,15400,3))
+        self.dic_monster[200].append(monster.Escargot(3411,17300,1))
+        self.dic_monster[200].append(monster.Foulli(7900,15400,2))
+        self.dic_monster[201].append(monster.Foulli(12000,15400,3))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
