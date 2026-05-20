@@ -533,11 +533,31 @@ class Escargot(Monster) :
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
 
-        if target.pos_x<self.pos_x :
-            self.move_left(dt)
-        
-        else :
-            self.move_right(dt)
+        if self.direction == "right":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = self.half_width+self.base_movement
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "left"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "left"
+            
+            else :
+                self.move_right(dt)
+
+        elif self.direction == "left":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = -(self.half_width+self.base_movement)
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "right"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "right"
+            
+            else :
+                self.move_left(dt)
     
     def leave_behavior(self,target,map,dt):
         """Move to the player"""
