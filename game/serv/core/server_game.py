@@ -41,7 +41,7 @@ class Server_game(Server) :
                 self.send_data_all([18,self.collision_handler.die_send])
                 self.collision_handler.die_send.clear()
 
-            if len(return_monster)!=0 and len(return_monster[0]) != 0 :
+            if len(return_monster)!=0 :
                 
                 if self.count_send_pos == 0 :
                     self.send_data_update(return_monster,4)

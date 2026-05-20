@@ -6,7 +6,7 @@
         "life":2,
         "speed":50,
         "rebond":0,
-        "time_reload": 0.1,
+        "time_reload": 1.5,
         "degat":4
     },
     "SPELL3":{
@@ -87,7 +87,7 @@
         "life":2,
         "speed":50,
         "rebond":0,
-        "time_reload": 0.3,
+        "time_reload": 1.5,
         "degat":5
     },
     "SPELL40":{
