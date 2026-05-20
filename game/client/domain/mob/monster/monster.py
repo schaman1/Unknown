@@ -128,6 +128,8 @@ class Defendeur(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
+        self.animation.animation["attacking"]["time"] = 0.1
+
         self.old_state = None
 
     def change_state(self,new_state):

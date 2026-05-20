@@ -158,8 +158,6 @@ class Monster(Mob):
 
     def check_if_player_collide_attack(self,target,side,hit_box_damage_width):
 
-
-
         #Test en y :
         if target.pos_y-target.half_height > self.pos_y + self.half_height or target.pos_y + target.half_height < self.pos_y - self.half_height :
             return False
@@ -377,12 +375,14 @@ class Defendeur(Monster) :
         self.name = 3 #Permet d'afficher le bon monstre / In monster all dans client
         #self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
-        self.begin_shot = time.perf_counter()
-        self.time_for_shot = 2
         self.begin_attack = time.perf_counter()
         self.time_for_move_to_reach_player = 0.5
-        self.time_after_shot = 1
-        self.time_to_relax = time.perf_counter()
+        self.len_attack = 2
+        self.begin_time_for_attack = time.perf_counter()
+        self.time_between_attacks = 0.4
+
+        self.begin_relax = time.perf_counter()
+        self.time_to_relax = 1
         self.side = "left" #Side attack
         self.hit_box_damage_width = 5
         self.resist = True
@@ -402,22 +402,23 @@ class Defendeur(Monster) :
             
         elif self.state == "moving":
 
-            if self.begin_shot+self.time_for_shot <= time.perf_counter() and self.focus :# self.time_to_relax + self.begin_shot<= time.perf_counter() :
-                self.focus = False
-                self.resist = True
+            if self.focus :
+                if self.begin_attack + self.time_for_move_to_reach_player > time.perf_counter() :
 
-            if self.focus and self.begin_attack + self.time_for_move_to_reach_player > time.perf_counter() :
-                
-                #if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
-                #    self.begin_attack = 0 #Means instatly attack
-                
-                if self.side == "right" :
-                    self.move_right(dt)
+                    if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+                        self.state = "attacking"
+                        self.begin_attack = time.perf_counter()-self.time_for_move_to_reach_player
+
+                    if self.side == "right":
+                        self.move_right(dt)
+                    else :
+                        self.move_left(dt)
+
                 else :
-                    self.move_left(dt)
+                    self.state = "attacking"
+                    self.resist = False
 
-            elif self.begin_attack + self.time_for_move_to_reach_player < time.perf_counter() :
-                self.state = "attacking"
+            else :
 
                 self.moving_behavior(self.target, map,dt)
             
@@ -425,7 +426,6 @@ class Defendeur(Monster) :
 
             if not self.focus :
                 self.focus = True
-                self.begin_shot = time.perf_counter()
                 self.begin_attack = time.perf_counter()
 
                 if self.pos_x < self.target.pos_x : #Set the side in whitch attack
@@ -434,24 +434,28 @@ class Defendeur(Monster) :
                     self.side = "left"
 
                 self.state = "moving"
+
+            if self.focus :
             
-            if self.begin_shot+self.time_for_shot <= time.perf_counter() :
+                if self.begin_attack+self.len_attack <= time.perf_counter() : #Means stop attack
 
-                self.time_to_relax = time.perf_counter()
-                self.state = "moving"
+                    self.begin_relax = time.perf_counter()
+                    self.state = "idle"
 
-            if self.begin_shot + self.time_for_move_to_reach_player < time.perf_counter():
+                if self.begin_time_for_attack + self.time_between_attacks < time.perf_counter():
 
-                self.resist = False
-                self.attack(self.target,collision_handler,dt,projectile_manager)
-                self.begin_shot += self.time_for_move_to_reach_player
-
+                    self.attack(self.target,collision_handler,dt,projectile_manager)
+                    self.begin_time_for_attack = time.perf_counter()
 
         delta = self.move_all(map,dt,collision_handler)
 
     def idle_behavior(self,map,dt):
-        """Stay in his spot"""
-        return
+        """est épuisé"""
+        if self.focus :
+            if self.time_to_relax + self.begin_relax <= time.perf_counter():
+                self.focus = False
+                self.resist = True
+                #self.state = "moving"
     
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
