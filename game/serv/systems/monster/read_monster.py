@@ -128,6 +128,9 @@ class Read_monster :
         liste_client_see = []
 
         for i,e in enumerate(list_chunk_client_see) :
+
+            #liste_client_see.append(i)
+
             x_chunk = e[0]
             y_chunk = e[1]
 
