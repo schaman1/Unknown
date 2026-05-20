@@ -15,3 +15,5 @@ CC = ${JEWS}.stoleTheHumanity
 - Add projectile to LASEROIDE
 
 
+coffre : 16647 9699
+coffre rare : 21410 8099
