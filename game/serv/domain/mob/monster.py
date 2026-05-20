@@ -30,11 +30,41 @@ class Monster(Mob):
     def is_alive(self):
         return self.hp > 0
         
-    def distance_to_nearest_player(self, lPlayer):
+    def has_line_of_sight(self, map, target):
+        x0, y0 = self.pos_x, self.pos_y
+        x1, y1 = target.pos_x, target.pos_y
+        dx = x1 - x0
+        dy = y1 - y0
+        dist = math.hypot(dx, dy)
+        if dist == 0:
+            return True
+        
+        step_x = dx / dist * self.base_movement
+        step_y = dy / dist * self.base_movement
+        
+        steps = int(dist // self.base_movement)
+        
+        curr_x, curr_y = x0, y0
+        for _ in range(steps):
+            bx = self.convert_to_base(curr_x)
+            by = self.convert_to_base(curr_y)
+            try:
+                cell_type = map.return_type(by, bx)
+                if self.is_type(cell_type, map.dur):
+                    return False
+            except Exception:
+                pass
+            curr_x += step_x
+            curr_y += step_y
+        return True
+
+    def distance_to_nearest_player(self, lPlayer, map):
         """Distance euclidienne en cases entre le monstre et le joueur."""
         target = None
         best = None
         for p in lPlayer.values():
+            if not self.has_line_of_sight(map, p):
+                continue
             dx = p.pos_x - self.pos_x
             dy = p.pos_y - self.pos_y
             d = math.hypot(dx, dy)
@@ -60,9 +90,16 @@ class Monster(Mob):
         if not self.is_alive():
             self.state = "dead"
             return
+            
+        if self.state == "stunned":
+            if time.perf_counter() > getattr(self, 'stun_timer', 0):
+                self.state = "idle"
+                self.target = None
+            else:
+                return
         
         if self.target == None : #Set the target and change only if has no target
-            self.target, self.dist = self.distance_to_nearest_player(lPlayer)
+            self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
         else :
             self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
@@ -113,6 +150,16 @@ class Monster(Mob):
 
             self.life -= amount
             self.send_new_life = True
+
+            if hasattr(player_did_damage, 'pos_x'):
+                dx = self.pos_x - player_did_damage.pos_x
+                dir = 1 if dx > 0 else -1
+                self.vitesse_x = dir * self.base_movement * 15
+                self.vitesse_y = -self.base_movement * 5
+                
+            self.state = "stunned"
+            self.stun_timer = time.perf_counter() + 0.2
+            self.focus = False
 
             if self.life <= 0:
                 self.life = 0
@@ -383,6 +430,11 @@ class Skeleton(Monster):
             
         elif self.state == "attacking":
             self.attack(self.target,collision_handler,dt)
+        elif self.state == "stunned":
+            self.gravity_effect(dt)
+            self.collision_x(map, dt, self.vitesse_x)
+            self.collision_y(map, dt, self.vitesse_y)
+            self.update_vitesse(dt)
     
     def can_walk_on(self, cells_arr, new_x, new_y, cell_dur, cell_vide, cell_liquid):
         
@@ -451,7 +503,7 @@ class Skeleton(Monster):
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
-        target, _ = self.distance_to_nearest_player(lPlayer)
+        target, _ = self.distance_to_nearest_player(lPlayer, map)
 
         if target is None:
             return
