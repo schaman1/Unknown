@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = []  #x,y,time
-        self.delay = 1/20*1.5#1/fps.FPS_SEND_POS_CLIENT
+        self.delay = 1/20*2#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
         self.max_life = 1
@@ -70,7 +70,7 @@ class Mob:
         alpha = (time_now - t0) / div
 
         if alpha >= 1.0:
-            print("Bloqué en attente du prochain paquet", len(self.interpolate_mov))
+            print("Bloqué en attente du prochain paquet", self.interpolate_mov)
 
         if alpha <= 1.0:
             # Interpolation normale
