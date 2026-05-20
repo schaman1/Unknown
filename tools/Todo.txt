@@ -17,3 +17,4 @@ CC = ${JEWS}.stoleTheHumanity
 
 coffre : 16647 9699
 coffre rare : 21410 8099
+coffre rare : 44360 19299

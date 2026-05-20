@@ -8,8 +8,8 @@ BG_WAITING = resource_path("assets/ui/infos/niflheim.png")
 TEAM_NIKA = resource_path("assets/ui/infos/team_nika.png")
 
 BG_MAP_COLORED =[]
-BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X2Y1__IntGrid_layer-int.png")
-BLACK_LAYER_COLORED = resource_path("assets/background/map/X2Y1.png")
+BLACK_LAYER_UNCOLORED = resource_path("assets/background/map/X0Y0__IntGrid_layer-int.png")
+BLACK_LAYER_COLORED = resource_path("assets/background/map/X0Y0.png")
 
 for y in range(LEN_Y_CHUNK):
 
