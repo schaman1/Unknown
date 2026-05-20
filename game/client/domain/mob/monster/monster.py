@@ -169,3 +169,67 @@ class Escargot(Monster) :
             self.animation.set_state(key[0])
 
         self.old_state = key[0]
+
+
+class Limace(Monster) :
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        super().__init__(x,y,cell_size,size=(8,8),name="Limace")
+
+        self.name = "Limace"
+        self.chunk = pos_chunk
+        self.state = state
+        self.frame_perso = []
+
+        #Inutile ----
+        self.frame = 0
+        #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
+        self.frame_multiplier = 0
+        #------
+
+        self.animation.animation["idle"]["time"] = 0.5
+        self.animation.animation["attacking"]["time"] = 0.1
+        self.animation.animation["running"]["time"] = 0.6
+        self.animation.animation["loading"]["time"] = 0.1
+
+
+    def change_state(self,new_state):
+        """Base pour mettre anim"""
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0] != self.old_state :
+            self.animation.set_state(key[0])
+
+        self.old_state = key[0]
+
+# class Limace(Monster) :
+
+#     def __init__(self, x,y,pos_chunk,cell_size,state):
+
+#         super().__init__(x,y,cell_size,size=(8,8),name="Limace")
+
+#         self.name = "Limace"
+#         self.chunk = pos_chunk
+#         self.state = state
+#         self.frame_perso = []
+
+#         #Inutile ----
+#         self.frame = 0
+#         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
+#         self.frame_multiplier = 0
+#         #------
+
+#         self.animation.animation["running"]["time"] = 0.3
+
+#     def change_state(self,new_state):
+#         """Base pour mettre anim"""
+
+#         key = [key for key,val in STATES.items() if val == new_state]
+
+#         if key[0] != self.old_state :
+#             self.animation.set_state(key[0])
+
+#         self.old_state = key[0]
+

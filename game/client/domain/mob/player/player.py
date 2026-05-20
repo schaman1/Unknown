@@ -40,7 +40,7 @@ class Player_you(Mob) :
 
         self.weapons = WeaponManager(screen_size,cell_size)
 
-        self.money_image = pygame.image.load("assets/sprites/divers/money.png")
+        self.money_image = pygame.image.load("assets/sprites/ressources/money.png")
         self.money_image = self.money_image.convert_alpha()
         # self.money_image = pygame.transform.rotate(self.money_image, -30)
         self.money_image = pygame.transform.scale(self.money_image, (self.money_image.get_width() * 3, self.money_image.get_height() *3) )
