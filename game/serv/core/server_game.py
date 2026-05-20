@@ -42,7 +42,9 @@ class Server_game(Server) :
                 self.collision_handler.die_send.clear()
 
             if len(return_monster)!=0 and len(return_monster[0]) != 0 :
-                self.send_data_update(return_monster,4)
+                
+                if self.count_send_pos == 0 :
+                    self.send_data_update(return_monster,4)
 
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
@@ -53,6 +55,8 @@ class Server_game(Server) :
 
             self.handle_clients()
             self.handle_player(dt)
+
+            self.count_send_pos = (self.count_send_pos+1)%self.send_pos_every_x_frame
 
             #if fps < 30 : #Affiche le fps quand c'est critique
             #    print(fps)
@@ -67,8 +71,6 @@ class Server_game(Server) :
             
             if self.count_send_pos == 0 :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
-
-            self.count_send_pos = (self.count_send_pos+1)%self.send_pos_every_x_frame
 
             if self.lClient[socket].send_new_life == True :
                 life,max_life,id_player = self.lClient[socket].send_life()
