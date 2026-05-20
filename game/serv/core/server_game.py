@@ -31,6 +31,11 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = self.fpsClock.tick(self.fps)/1000
 
+            should_send = False
+            if self.next_send_time <= time.perf_counter():
+                self.next_send_time += self.send_interval
+                should_send = True
+
             return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
@@ -44,7 +49,7 @@ class Server_game(Server) :
 
             if len(return_monster)!=0 :
                 
-                if self.next_send_time <= time.perf_counter() :
+                if should_send :
                     self.send_data_update(return_monster,4)
 
             if len(result_projectile)!= 0 :
@@ -55,23 +60,20 @@ class Server_game(Server) :
                 self.send_data_update(result_projectile[2],11)
 
             self.handle_clients()
-            self.handle_player(dt)
-
-            if self.next_send_time <= time.perf_counter():
-                self.next_send_time += self.send_interval
+            self.handle_player(dt,should_send)
 
             #if fps < 30 : #Affiche le fps quand c'est critique
             #    print(fps)
 
         print("End boucle loop_server_game")
 
-    def handle_player(self,dt): #Player = key/input/le nain a l'écran quoi pas les msg
+    def handle_player(self,dt,should_send): #Player = key/input/le nain a l'écran quoi pas les msg
 
         for socket in self.lClient.keys():
 
             delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
-            if self.next_send_time <= time.perf_counter() :
+            if should_send :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
 
             if self.lClient[socket].send_new_life == True :
