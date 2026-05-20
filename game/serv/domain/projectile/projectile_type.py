@@ -14,7 +14,6 @@ class Fire(Projectile) :
                          height = weapons.HEIGHT_FIRE,
                          rebond = weapons.REBOND_FIRE,
                          damage = weapons.DAMAGE_FIRE,
-                         weight = weapons.WEIGHT_FIRE,
                          team=team,
                          randomize_angle=randomize,
                          owner_pos=owner)
@@ -97,6 +96,7 @@ class Stone(Projectile) :
                          width = weapons.STONE_WIDTH,
                          height = weapons.STONE_HEIGHT,
                          damage = weapons.STONE_DAMAGE,
+                         weight = weapons.STONE_WEIGHT,
                          team=team,
                          randomize_angle=randomize,
                          owner_pos=owner)

@@ -40,7 +40,7 @@ class Projectile :
         self.team = team
 
         self.base_movement = RATIO 
-        self.weight = weight*self.base_movement
+        self.weight = weight
 
         self.owner = None
 
@@ -96,6 +96,14 @@ class Projectile :
             self.is_dead = True
 
     # je t'aime
+    #--------------Gravity
+        self.vy += self.base_movement*self.weight*dt
+        print(self.base_movement,self.weight)
+
+        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+
+        self.vy = self.vy*(gravity_power_mult**(dt*60))
+    #----End gravity
 
         if self.is_dead is False:
             self.move_x(map,dt)
@@ -227,7 +235,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,int(self.pos_x),int(self.pos_y),self.angle,self.speed,self.weight//self.base_movement,self.id_img]
+        return [self.id,int(self.pos_x),int(self.pos_y),self.angle,self.speed,self.weight,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """

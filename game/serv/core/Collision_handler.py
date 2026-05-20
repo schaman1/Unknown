@@ -84,7 +84,7 @@ class CollisionHandler:
 
     def player_take_damage_no_projectile(self,damage,player,chunk=99):
 
-        if player.is_dead :
+        if player.dead :
             return
 
         old_pv = player.life

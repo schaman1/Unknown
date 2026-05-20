@@ -92,6 +92,8 @@ class Monster(Mob):
 
     def update(self,map,dt,lPlayer,collision_handler):
         
+        self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
+
         if not self.is_alive():
             self.state = "dead"
             return
@@ -102,12 +104,10 @@ class Monster(Mob):
                 self.target = None
             else:
                 return
-        
-        if self.target == None : #Set the target and change only if has no target
-            self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
-        else :
-            self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
+        #if self.target == None : #Set the target and change only if has no target
+        #else :
+        #    self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
         #------------degat de collision-----------------#
         if self.dist<self.width/2/self.base_movement and self.collision_damage: 
