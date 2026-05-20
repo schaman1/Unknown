@@ -84,3 +84,19 @@ class Pompe(Projectile) :
                          team=team,
                          randomize_angle=randomize,
                          owner_pos=owner)
+        
+class Stone(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.STONE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.STONE_V,
+                         id_img = 7,
+                         width = weapons.STONE_WIDTH,
+                         height = weapons.STONE_HEIGHT,
+                         damage = weapons.STONE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         owner_pos=owner)

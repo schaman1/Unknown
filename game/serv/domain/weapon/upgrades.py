@@ -121,6 +121,18 @@ class CreateManyLune(Upgrade):
             l.append(projectile)
 
         return 1,l,None
+
+class CreateStone(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=7,time_take = weapons.STONE_RELOAD_TIME)
+
+    def trigger(self,weapon):
+
+        projectile = weapon.add_projectile(projectile_type.Stone(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+
+        return 1,[projectile],None
     
 class AddSpeed(Upgrade):
 
@@ -269,6 +281,7 @@ UPGRADES[3] = CreateLune()
 UPGRADES[4] = CreatePompe()
 UPGRADES[5] = CreateLaser()
 UPGRADES[6] = CreateManyLune()
+UPGRADES[7] = CreateStone()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
