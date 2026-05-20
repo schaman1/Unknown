@@ -34,6 +34,9 @@ class Monster_all :
             elif name == 4:
                 self.dic_monster[chunk][id] = monster.Escargot(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
 
+            elif name == 5:
+                self.dic_monster[chunk][id] =  monster.Limace(x, y, chunk, self.cell_size, 0) #state 0 == idle
+
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 

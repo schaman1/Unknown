@@ -134,3 +134,22 @@ class WeaponLaseroide(Weapon):
 
         for i in range(self.nbr_slot) :
             self.fill_slot(i,upgrades.CreateLaser())
+
+
+class WeaponLimace(Weapon):
+    def __init__(self, team, player) :
+        super().__init__(
+            refill_time= weapons.RELOAD_LIMACE,
+            spell_time= weapons.SPELL_TIME_LIMACE,
+            nbr_slot = weapons.NBR_MUNITIONS,
+            nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_LIMACE,
+            id = -2, team = team, player = player
+        )
+        
+        self.init_slot()
+
+    def init_slot(self):
+        return
+        for i in range(self.nbr_slot):
+            self.fill_slot(i, upgrades.CreateCayou())
+
