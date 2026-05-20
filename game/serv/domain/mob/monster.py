@@ -65,10 +65,10 @@ class Monster(Mob):
             self.state = "dead"
             return
         
-        if self.target == None : #Set the target and change only if has no target
-            self.target, self.dist = self.distance_to_nearest_player(lPlayer)
-        else :
-            self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+        #if self.target == None : #Set the target and change only if has no target
+        self.target, self.dist = self.distance_to_nearest_player(lPlayer)
+        #else :
+            #self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
 
         #------------degat de collision-----------------#
@@ -311,7 +311,7 @@ class Foulli(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=10,damage =5,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
+        super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
         self.name = 2 #Permet d'afficher le bon monstre / In monster all dans client
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
