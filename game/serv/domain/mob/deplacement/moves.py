@@ -4,7 +4,7 @@ if TYPE_CHECKING:
 
 class Movable:
 
-    # Type hints to satisfy linters since these attributes are injected by subclasses
+    # Annotations de type pour satisfaire les linters, car ces attributs sont injectés par les sous-classes
     base_movement: int
     vitesse_x: float
     vitesse_y: float
@@ -28,7 +28,7 @@ class Movable:
         return nbr*self.base_movement
 
     def gravity_effect(self,dt):
-        """Update vitesse_y according to gravity physics"""
+        """Met à jour vitesse_y selon la physique de la gravité"""
 
         #if self.in_dash==True : #Pas de gravité quand est dans un dash
         #    return
@@ -85,7 +85,7 @@ class Movable:
                         touch_wall = True
                         self.vitesse_y = 0
 
-                    break #To stop loop for i in range
+                    break #Pour arrêter la boucle for i in range
 
             if dist > remaining :
                 self.pos_y+=remaining*s
@@ -127,7 +127,7 @@ class Movable:
                         touch_wall = True
                         self.vitesse_x = 0
 
-                    break #To stop loop for i in range
+                    break #Pour arrêter la boucle for i in range
 
             if dist > remaining :
                 self.pos_x+=remaining*s
@@ -170,7 +170,7 @@ class Movable:
         else :
             return 1
             
-    # From Monster
+    # Provient de Monster
     
     def is_blocking_cell(self, cell_type, cell_dur, cell_liquid):
         return self.is_type(cell_type, cell_dur) or self.is_type(cell_type, cell_liquid)
@@ -319,35 +319,35 @@ class Movable:
             return True
 
     def climb(self, map, direction, dt):
-        #direction: -1 for UP, 1 for DOWN
+        #direction : -1 pour HAUT, 1 pour BAS
         if self.can_climb(map):
             self.is_climbing = True
             
-            speed = self.base_movement * 40 # Climbing speed (similar to max speed)
+            speed = self.base_movement * 40 # Vitesse d'escalade (proche de la vitesse max)
             self.vitesse_y = direction * speed
-            
-            # Predict movement
+
+            # Prédit le mouvement
             new_y = self.pos_y + self.vitesse_y * dt
-            
-            # Check bounds/collision if needed, but for now simple movement
-            # Validate if new position is still on ladder? 
-            # If we move OFF the ladder, we should probably stop climbing or fall
-            
-            # For simplicity, move first
+
+            # Vérifier les bords/collisions si besoin, mais pour l'instant mouvement simple
+            # Vérifier si la nouvelle position est toujours sur l'échelle ?
+            # Si on sort de l'échelle, on devrait sûrement arrêter de grimper ou tomber
+
+            # Pour faire simple, on bouge d'abord
             pos_before = self.pos_y
             self.pos_y = new_y
-            
+
             if not self.can_climb(map):
-                # If we moved off the ladder
-                # If going UP, we might have reached the top.
-                # If going DOWN, we might have reached the bottom.
+                # Si on est sorti de l'échelle
+                # Si on montait, on a peut-être atteint le haut.
+                # Si on descendait, on a peut-être atteint le bas.
                 pass
             
         else:
             self.is_climbing = False
 
     def dash(self,v):
-        """Now dash update the speed"""
+        """Désormais le dash met à jour la vitesse"""
 
         #if self.vitesse_y<0 : #Test pour améliorer le feeling
         #    self.vitesse_y = 0

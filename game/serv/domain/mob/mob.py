@@ -61,7 +61,7 @@ class Mob(Movable):
         self.max_life+= amount
         self.send_new_life = True
 
-    #-----------------Things the player use ! so works-------------------#
+    #-----------------Choses que le joueur utilise ! donc fonctionne-------------------#
     
     def jump(self,map,force_jump = False):
 
