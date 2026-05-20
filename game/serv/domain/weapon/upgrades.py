@@ -24,18 +24,6 @@ def AddProjectileWhenDie(projectile,weapon):
 
     projectile.projectile_spawn_when_die=next_projectiles
 
-#class CreateMagic(Upgrade): #Not use
-#
-#    def __init__(self):
-#
-#        super().__init__(id = 1,time_take = weapons.MAGIC_RELOAD_TIME)
-#
-#    def trigger(self,weapon):
-#
-#        projectile = weapon.add_projectile(projectile_type.Magic(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
-#
-#        return 1,[projectile],None
-#
 class CreateFire(Upgrade):
 
     def __init__(self):
@@ -44,7 +32,7 @@ class CreateFire(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
+        projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
         return 1,[projectile],None
     
@@ -56,7 +44,7 @@ class CreateLune(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
+        projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
         return 1,[projectile],None
     
@@ -71,18 +59,18 @@ class CreatePompe(Upgrade):
         projectiles = []
 
         angle = (weapon.angle - weapons.POMPE_DISPERSION)%360
-        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
         proj.delta_angle = -weapons.POMPE_DISPERSION
         projectiles.append(weapon.add_projectile(proj))
         
         angle+= weapons.POMPE_DISPERSION
         angle = angle%360
-        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
         projectiles.append(weapon.add_projectile(proj))
         
         angle+= weapons.POMPE_DISPERSION
         angle = angle%360
-        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        proj = projectile_type.Pompe(angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
         proj.delta_angle = weapons.POMPE_DISPERSION
         projectiles.append(weapon.add_projectile(proj))
 
@@ -96,9 +84,43 @@ class CreateLaser(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = weapon.add_projectile(projectile_type.Laser(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle))
+        projectile = weapon.add_projectile(projectile_type.Laser(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
         return 1,[projectile],None
+    
+class CreateManyLune(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=6,time_take = weapons.MANY_LUNE_RELOAD_TIME)
+
+        self.ajout_angle = weapons.MANY_LUNE_DISPERSION
+
+    def trigger(self,weapon):
+
+        l = []
+
+        delta_angle = [0,180,270,90]
+
+        delta_pos = weapon.owner.distance_cast_spells*2
+
+        dif_pos = []
+        for i in range(4):
+            dif_pos.append(weapon.owner.return_pos())
+
+        dif_pos[0][0] += delta_pos
+        dif_pos[1][0] -= delta_pos
+        dif_pos[2][1] += delta_pos
+        dif_pos[3][1] -= delta_pos
+
+        for i in range(4):
+            projectile = weapon.add_projectile(projectile_type.Lune(delta_angle[i],dif_pos[i],weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+            projectile.damage = weapons.MANY_LUNE_DAMAGE
+            projectile.force_angle = True
+            projectile.angle_force = projectile.angle
+            l.append(projectile)
+
+        return 1,l,None
     
 class AddSpeed(Upgrade):
 
@@ -186,7 +208,7 @@ class CreateFire_DieEffect(Upgrade):
 
     def trigger(self,weapon):
 
-        projectile = projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle)
+        projectile = projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
 
         projectile = weapon.add_projectile(projectile)
 
@@ -246,6 +268,7 @@ UPGRADES[2] = CreateFire()
 UPGRADES[3] = CreateLune()
 UPGRADES[4] = CreatePompe()
 UPGRADES[5] = CreateLaser()
+UPGRADES[6] = CreateManyLune()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
