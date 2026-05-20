@@ -103,17 +103,14 @@ class Monster(Mob):
             else:
                 return
         
-<<<<<<< HEAD
         if self.target == None : #Set the target and change only if has no target
             self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
         else :
             self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
-=======
         #if self.target == None : #Set the target and change only if has no target
         self.target, self.dist = self.distance_to_nearest_player(lPlayer)
         #else :
             #self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
->>>>>>> eebb972d80cfbc4462dbcadd9ae819b6b5382fb0
 
 
         #------------degat de collision-----------------#
@@ -166,7 +163,6 @@ class Monster(Mob):
             self.life -= amount
             self.send_new_life = True
 
-<<<<<<< HEAD
             if hasattr(player_did_damage, 'pos_x'):
                 dx = self.pos_x - player_did_damage.pos_x
                 dir = 1 if dx > 0 else -1
@@ -180,10 +176,8 @@ class Monster(Mob):
             if self.life <= 0:
                 self.life = 0
                 self.die(player_did_damage)
-=======
                 self.life -= amount
                 self.send_new_life = True
->>>>>>> eebb972d80cfbc4462dbcadd9ae819b6b5382fb0
 
                 if self.life <= 0:
                     self.life = 0
