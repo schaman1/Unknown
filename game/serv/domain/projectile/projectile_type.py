@@ -17,7 +17,8 @@ class Fire(Projectile) :
                          weight = weapons.WEIGHT_FIRE,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_FIRE)
         
 class Magic(Projectile) :
 
@@ -35,7 +36,8 @@ class Magic(Projectile) :
                          weight = weapons.WEIGHT_MAGIC,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_MAGIC)
         
 class Lune(Projectile) :
 
@@ -51,7 +53,8 @@ class Lune(Projectile) :
                          damage = weapons.LUNE_DAMAGE,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_LUNE)
         
 class Laser(Projectile) :
 
@@ -67,7 +70,8 @@ class Laser(Projectile) :
                          damage = weapons.LASER_DAMAGE,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_LASER)
         
 class Pompe(Projectile) :
 
@@ -83,7 +87,8 @@ class Pompe(Projectile) :
                          damage = weapons.POMPE_DAMAGE,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_POMPE)
         
 class Stone(Projectile) :
 
@@ -99,4 +104,5 @@ class Stone(Projectile) :
                          damage = weapons.STONE_DAMAGE,
                          team=team,
                          randomize_angle=randomize,
-                         owner_pos=owner)
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_STONE)

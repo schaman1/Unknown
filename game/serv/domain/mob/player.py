@@ -25,7 +25,7 @@ class Player(Mob) :
 
         self.is_host = host
         self.distance_cast_spells = self.half_width
-        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
+        self.is_looking = 0 #0 = droite / 1 = haut / 2 = gauche / 3 = bas
 
         self.weapons = WeaponManager(self.team,self)
         self.upgrade_handler = UpgradeHandler()
@@ -36,7 +36,7 @@ class Player(Mob) :
         self.time_respawn = 0
 
     def take_damage(self, amount):
-        """Return True/False if is dead or not"""
+        """Retourne True/False selon si le joueur est mort ou non"""
 
         if amount!=0 :
 
@@ -181,7 +181,7 @@ class Player(Mob) :
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
 
     def shot(self,id_weapon):
-        """Shot but if is dead don't shot"""
+        """Tire, mais ne tire pas si le joueur est mort"""
 
         if self.is_dead :
             return
