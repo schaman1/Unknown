@@ -36,7 +36,7 @@ class Monster(Mob):
 
     def is_alive(self):
         return self.hp > 0
-        
+
     def has_line_of_sight(self, map, target):
         x0, y0 = self.pos_x, self.pos_y
         x1, y1 = target.pos_x, target.pos_y
