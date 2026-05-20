@@ -65,16 +65,15 @@ class Server_game(Server) :
 
             delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
-            if self.count_send_pos == self.send_pos_every_x_frame :
+            if self.count_send_pos == 0 :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
-                #self.count_send_pos = 0
-                
+
             self.count_send_pos = (self.count_send_pos+1)%self.send_pos_every_x_frame
 
             if self.lClient[socket].send_new_life == True :
                 life,max_life,id_player = self.lClient[socket].send_life()
                 self.send_data((12,(life,max_life,id_player)),socket)
-            
+
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
                 self.send_data((13,money), socket)
