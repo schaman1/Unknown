@@ -26,7 +26,6 @@ class Projectile :
         else :
             self.angle = angle
 
-
         self.speed = int(speed)
         self.id_img = id_img
         self.width = width
@@ -47,9 +46,11 @@ class Projectile :
 
     def update_angle_pos(self,new_angle,new_pos,owner_pos):
 
+        #print(self.force_pos,new_pos,self.delta_pos)
+
         if self.force_pos :
-            self.pos_x = owner_pos[0]+self.delta_pos[0]
-            self.pos_x = owner_pos[1]+self.delta_pos[1]
+            self.pos_x = new_pos[0]+self.delta_pos[0]
+            self.pos_y = new_pos[1]+self.delta_pos[1]
 
         else :
             self.pos_x,self.pos_y=new_pos
