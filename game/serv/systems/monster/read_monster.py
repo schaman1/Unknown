@@ -41,7 +41,7 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(monster.Defendeur(3411,17300,1))
+        self.dic_monster[200].append(monster.Escargot(3411,17300,1))
         self.dic_monster[200].append(monster.Foulli(7900,15400,2))
         self.dic_monster[201].append(monster.Foulli(12000,15400,3))
 
