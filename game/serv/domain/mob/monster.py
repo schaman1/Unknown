@@ -145,6 +145,8 @@ class Monster(Mob):
 
     def respawn(self):
         self.dead = False
+        self.focus = False
+        self.state = "idle"
         self.full_heal()
 
     def get_angle(self, player):
@@ -407,6 +409,7 @@ class Defendeur(Monster) :
 
                     if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
                         self.state = "attacking"
+                        #self.resist = False #here if too difficult
                         self.begin_attack = time.perf_counter()-self.time_for_move_to_reach_player
 
                     if self.side == "right":
@@ -416,7 +419,7 @@ class Defendeur(Monster) :
 
                 else :
                     self.state = "attacking"
-                    self.resist = False
+                    #self.resist = False# Here if too difficult
 
             else :
 
@@ -440,6 +443,7 @@ class Defendeur(Monster) :
                 if self.begin_attack+self.len_attack <= time.perf_counter() : #Means stop attack
 
                     self.begin_relax = time.perf_counter()
+                    self.ressit = False
                     self.state = "idle"
 
                 if self.begin_time_for_attack + self.time_between_attacks < time.perf_counter():
