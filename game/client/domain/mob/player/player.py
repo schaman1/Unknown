@@ -1,6 +1,6 @@
 import pygame, math
 from client.domain.mob.mob import Mob
-from client.config.display_text import FONT
+from client.config.display_text import FONT,FONT_SMALL
 from client.config import size_display
 from client.domain.weapon.weapon_manager import WeaponManager
 
@@ -15,6 +15,10 @@ class Player_you(Mob) :
         self.is_you = is_you
 
         self.font = FONT
+        self.text_pseudo_color = (250,250,250)
+        self.text_pseudo = FONT_SMALL.render(str(self.pseudo[:-7]),True, self.text_pseudo_color)  # True = anti-aliasing
+        size = FONT_SMALL.size(str(self.pseudo[:-7]))
+        self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
         self.text_life_color = (250,250,250)
         self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
@@ -70,6 +74,15 @@ class Player_you(Mob) :
         self.update_pos_blit(xscreen,yscreen)
 
         self.animation.draw(dt,self.pos_blit,screen)
+
+        self.draw_pseudo(screen,self.pos_blit)
+
+    def draw_pseudo(self,screen,pos_blit):
+
+        pos = [self.delta_pos_pseudo[0],self.delta_pos_pseudo[1]]
+        pos[0]+=pos_blit[0]
+        pos[1]+=pos_blit[1]
+        screen.blit(self.text_pseudo, pos)
 
     def draw_utils(self,screen,screen_size):
 
@@ -198,7 +211,10 @@ class Player_not_you(Mob) :
 
         self.old_state = "idle"
 
-        #self.font = FONT
+        self.text_pseudo_color = (250,250,250)
+        self.text_pseudo = FONT_SMALL.render(str(self.pseudo),True, self.text_pseudo_color)  # True = anti-aliasing
+        size = FONT_SMALL.size(str(self.pseudo))
+        self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
         self.cell_size=cell_size
 
@@ -216,6 +232,15 @@ class Player_not_you(Mob) :
         self.update_pos_blit(xscreen,yscreen)
 #
         self.animation.draw(dt,self.pos_blit,screen)
+
+        self.draw_pseudo(screen,self.pos_blit)
+
+    def draw_pseudo(self,screen,pos_blit):
+
+        pos = [self.delta_pos_pseudo[0],self.delta_pos_pseudo[1]]
+        pos[0]+=pos_blit[0]
+        pos[1]+=pos_blit[1]
+        screen.blit(self.text_pseudo, pos)
 
     def move(self,delta):
 
@@ -236,7 +261,6 @@ class Player_not_you(Mob) :
                 self.remaining_time_anim = self.len_anim["running"]
 
         self.move_mob(new_pos)
-
 
     def kill(self,duree):
 

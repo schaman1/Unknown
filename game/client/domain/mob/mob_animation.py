@@ -162,6 +162,9 @@ class Animation:
 
             #size_img = 50*cell_size
             size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.ESCARGOT_RUNNING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
             img_idle = pygame.image.load(assets.ESCARGOT_IDLE)
             img_idle = pygame.transform.scale(img_idle,(self.width,self.height)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["idle"],size)
@@ -169,6 +172,26 @@ class Animation:
             #size_img = 50*cell_size
             size = (self.width,self.height)
             img_idle_loading = pygame.image.load(assets.ESCARGOT_RUNNING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            self.add_tombe(cell_size)
+        
+        elif entity_name == "Limace" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.LIMACE_IDLE) #LIMACE_IDLE
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            img_attack = pygame.image.load(assets.LIMACE_ATTACK) #LIMACE_ATTACK
+            img_idle = pygame.transform.scale(img_attack,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["attacking"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.LIMACE_RUNNING)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["running"],size)
 
@@ -199,6 +222,7 @@ class Animation:
             self.decoupe_img(img_idle,self.animation["loading"],size)
 
             self.add_tombe(cell_size)
+
 
 
         elif entity_name == "Skeleton":

@@ -4,13 +4,15 @@ from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10):
+    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10,knockback_res = 0):
 
         super().__init__((x,y),hp,id,acceleration=acceleration,height = height,width = width)
 
         self.hp = hp
         self.damage = damage
-        self.resist = False #Resist = Can't take damage
+        self.resist = False #Resist = ne peut pas subir de dégâts
+        #Résistance au knockback : soustraite au knockback reçu. toujours entre [0,3] (0 = aucune résistance)
+        self.knockback_res = max(0, min(3, knockback_res))
         self.prime = prime
         
         self.attack_radius = atk_rad
@@ -21,24 +23,55 @@ class Monster(Mob):
         self.collision_atk = 10
         self.collision_time_reload = 0.5
         self.collision_start = time.perf_counter()
+        self.collision_damage = True
 
         self.radius = rad
 
-        self.target = None #Set the target to None
-        self.dist = 0 #Dist to target player
+        self.target = None #Met la cible à None
+        self.dist = 0 #Distance jusqu'au joueur ciblé
 
-        self.focus = False #Focus = don't change state
-        
-        self.state = "idle"  # idle, moving, attacking, dead
+        self.focus = False #Focus = ne change pas d'état
+
+        self.state = "idle"  # états possibles : idle, moving, attacking, dead
 
     def is_alive(self):
         return self.hp > 0
         
-    def distance_to_nearest_player(self, lPlayer):
+    def has_line_of_sight(self, map, target):
+        x0, y0 = self.pos_x, self.pos_y
+        x1, y1 = target.pos_x, target.pos_y
+        dx = x1 - x0
+        dy = y1 - y0
+        dist = math.hypot(dx, dy)
+        if dist == 0:
+            return True
+        
+        step_x = dx / dist * self.base_movement
+        step_y = dy / dist * self.base_movement
+        
+        steps = int(dist // self.base_movement)
+        
+        curr_x, curr_y = x0, y0
+        for _ in range(steps):
+            bx = self.convert_to_base(curr_x)
+            by = self.convert_to_base(curr_y)
+            try:
+                cell_type = map.return_type(by, bx)
+                if self.is_type(cell_type, map.dur):
+                    return False
+            except Exception:
+                pass
+            curr_x += step_x
+            curr_y += step_y
+        return True
+
+    def distance_to_nearest_player(self, lPlayer, map):
         """Distance euclidienne en cases entre le monstre et le joueur."""
         target = None
         best = None
         for p in lPlayer.values():
+            if not self.has_line_of_sight(map, p):
+                continue
             dx = p.pos_x - self.pos_x
             dy = p.pos_y - self.pos_y
             d = math.hypot(dx, dy)
@@ -50,7 +83,7 @@ class Monster(Mob):
         return target, best / self.base_movement
     
     def dist_to_target_player(self,player):
-        """Return dis to target player"""
+        """Retourne la distance jusqu'au joueur ciblé"""
 
         dx = player.pos_x - self.pos_x
         dy = player.pos_y - self.pos_y
@@ -61,15 +94,22 @@ class Monster(Mob):
 
     def update(self,map,dt,lPlayer,collision_handler):
         
+        self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
+
         if not self.is_alive():
             self.state = "dead"
             return
-        
-        #if self.target == None : #Set the target and change only if has no target
-        self.target, self.dist = self.distance_to_nearest_player(lPlayer)
-        #else :
-            #self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+            
+        if self.state == "stunned":
+            if time.perf_counter() > getattr(self, 'stun_timer', 0):
+                self.state = "idle"
+                self.target = None
+            else:
+                return
 
+        #if self.target == None : #Set the target and change only if has no target
+        #else :
+        #    self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
         #------------degat de collision-----------------#
         if self.dist<self.width/2/self.base_movement and self.collision_damage: 
@@ -110,24 +150,38 @@ class Monster(Mob):
                 self.state = "attacking"
 
 
-    def take_damage(self, amount,player_did_damage):
-        """Return True/False if is dead or not"""
+    def take_damage(self, amount,player_did_damage,knockback=0):
+        """Retourne True/False selon si le monstre est mort ou non.
+        knockback : force du recul (0 = aucun), définie par l'arme ou le sort."""
 
         if self.dead:
             return False
 
         if amount!=0 :
 
-            if not self.resist :
+            self.life -= amount
+            self.send_new_life = True
 
-                self.life -= amount
-                self.send_new_life = True
+            #Knockback seulement si l'arme ou le sort en a un, réduit par la résistance du monstre
+            effective_kb = max(0, knockback - self.knockback_res)
+            if effective_kb and hasattr(player_did_damage, 'pos_x'):
+                dx = self.pos_x - player_did_damage.pos_x
+                dir = 1 if dx > 0 else -1
+                self.vitesse_x = dir * self.base_movement * 15 * effective_kb
+                self.vitesse_y = -self.base_movement * 5 * effective_kb
+                
+            #Étourdi seulement quand le knockback réellement subi dépasse 1.5
+            if effective_kb > 1.5:
+                self.state = "stunned"
+                self.stun_timer = time.perf_counter() + 0.2
 
-                if self.life <= 0:
-                    self.life = 0
-                    self.die(player_did_damage)
+            self.focus = False
 
-                    return True
+            if self.life <= 0:
+                self.life = 0
+                self.die(player_did_damage)
+
+                return True
 
         return False
     
@@ -199,7 +253,7 @@ class Monster(Mob):
 
 
 
-#Creation d'un monstre spécifique : le squelette
+#Creation specifique de chaque monstre
 
 class Laseroide(Monster) :
 
@@ -208,6 +262,7 @@ class Laseroide(Monster) :
         super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 6)
 
         self.acceleration_y = 20* self.acceleration
+        self.knockback_res = 2
 
         self.name = 1 #Permet d'affihcer le bon monstre
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -261,11 +316,11 @@ class Laseroide(Monster) :
     def check_if_jump(self,delta,map):
 
         if delta[0]==0 and (self.state == "run away" or self.state=="moving") and self.last_time_jump+1 < time.perf_counter():
-            if self.jump(map): #if succesfull
+            if self.jump(map): #si réussi
                 self.last_time_jump = time.perf_counter()
 
         elif delta[1]>0 and self.last_time_jump+1 < time.perf_counter() :
-            if self.jump(map): #if succesfull
+            if self.jump(map): #si réussi
                 self.last_time_jump = time.perf_counter()
 
         elif delta[0]!=0:
@@ -273,11 +328,11 @@ class Laseroide(Monster) :
 
 
     def idle_behavior(self,map,dt):
-        """Stay in his spot"""
+        """Reste sur place"""
         return
     
     def moving_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
         if target.pos_x<self.pos_x :
             self.move_left(dt)
         
@@ -285,7 +340,7 @@ class Laseroide(Monster) :
             self.move_right(dt)
     
     def leave_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace à l'opposé du joueur"""
         if target.pos_x<self.pos_x :
             self.move_right(dt)
         
@@ -313,7 +368,9 @@ class Foulli(Monster) :
 
         super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
-        self.name = 2 #Permet d'afficher le bon monstre / In monster all dans client
+        self.knockback_res = 3
+
+        self.name = 2 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
         self.begin_shot = time.perf_counter()
@@ -358,15 +415,15 @@ class Foulli(Monster) :
         delta = self.move_all(map,dt,collision_handler)
 
     def idle_behavior(self,map,dt):
-        """Stay in his spot"""
+        """Reste sur place"""
         return
     
     def moving_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
         return
     
     def leave_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
         return
 
     def attack(self,target,collision_handler,dt,projectile_manager):
@@ -380,7 +437,8 @@ class Defendeur(Monster) :
 
         super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 6)
 
-        self.name = 3 #Permet d'afficher le bon monstre / In monster all dans client
+        self.name = 3 #Permet d'afficher le bon monstre / Dans monster all côté client
+        self.knockback_res = 3
         #self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
         self.begin_attack = time.perf_counter()
@@ -391,7 +449,7 @@ class Defendeur(Monster) :
 
         self.begin_relax = time.perf_counter()
         self.time_to_relax = 2
-        self.side = "left" #Side attack
+        self.side = "left" #Côté de l'attaque
         self.hit_box_damage_width = 5
         self.resist = True
 
@@ -438,7 +496,7 @@ class Defendeur(Monster) :
                 self.resist = True
                 self.begin_attack = time.perf_counter()
 
-                if self.pos_x < self.target.pos_x : #Set the side in whitch attack
+                if self.pos_x < self.target.pos_x : #Définit le côté de l'attaque
                     self.side = "right"
                 else :
                     self.side = "left"
@@ -447,7 +505,7 @@ class Defendeur(Monster) :
 
             if self.focus :
             
-                if self.begin_attack+self.len_attack <= time.perf_counter() : #Means stop attack
+                if self.begin_attack+self.len_attack <= time.perf_counter() : #Signifie arrêter l'attaque
 
                     self.begin_relax = time.perf_counter()
                     self.resist = False
@@ -469,7 +527,7 @@ class Defendeur(Monster) :
                 #self.state = "moving"
     
     def moving_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
 
         if target.pos_x<self.pos_x :
             self.move_left(dt)
@@ -478,7 +536,7 @@ class Defendeur(Monster) :
             self.move_right(dt)
     
     def leave_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
         if target.pos_x<self.pos_x :
             self.move_right(dt)
         
@@ -486,7 +544,7 @@ class Defendeur(Monster) :
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
-        """Return True if well touch the player"""
+        """Retourne True si le joueur est bien touché"""
         
         if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
             damage = self.damage
@@ -501,7 +559,9 @@ class Escargot(Monster) :
 
         super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
 
-        self.name = 4 #Permet d'afficher le bon monstre / In monster all dans client
+        self.knockback_res = 0.5
+
+        self.name = 4 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.direction = "right"
 
         #self.collision_damage = False
@@ -531,19 +591,39 @@ class Escargot(Monster) :
         """est épuisé"""
     
     def moving_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
 
-        if target.pos_x<self.pos_x :
-            self.move_left(dt)
-        
-        else :
-            self.move_right(dt)
+        if self.direction == "right":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = self.half_width+self.base_movement
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "left"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "left"
+            
+            else :
+                self.move_right(dt)
+
+        elif self.direction == "left":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = -(self.half_width+self.base_movement)
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "right"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "right"
+            
+            else :
+                self.move_left(dt)
     
     def leave_behavior(self,target,map,dt):
-        """Move to the player"""
+        """Se déplace vers le joueur"""
 
     def attack(self,target,collision_handler,dt,projectile_manager):
-        """Return True if well touch the player"""
+        """Retourne True si le joueur est bien touché"""
 
 
 class Limace(Monster) :
@@ -677,15 +757,17 @@ class Skeleton(Monster):
 
     def __init__(self, x, y, id):
         super().__init__(hp=20, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
+        
+        self.knockback_res = 1
 
         self.name = 0
         
-        #idle state preset, peux chnanger selon le monstre
+        #valeurs par défaut de l'état idle, peuvent changer selon le monstre
         self.direction = 1
         self.idle_min_x = x - 30 *self.base_movement
         self.idle_max_x = x + 30 *self.base_movement
         
-        #diffent speed selon l'etat
+        #vitesse différente selon l'état
         self.speed_idle = max(1, self.base_movement * 8)
         self.speed_chase = max(1, self.base_movement * 5)
         self.speed_max = max(1, self.base_movement * 6)
@@ -710,6 +792,11 @@ class Skeleton(Monster):
             
         elif self.state == "attacking":
             self.attack(self.target,collision_handler,dt)
+        elif self.state == "stunned":
+            self.gravity_effect(dt)
+            self.collision_x(map, dt, self.vitesse_x)
+            self.collision_y(map, dt, self.vitesse_y)
+            self.update_vitesse(dt)
     
     def can_walk_on(self, cells_arr, new_x, new_y, cell_dur, cell_vide, cell_liquid):
         
@@ -778,7 +865,7 @@ class Skeleton(Monster):
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
-        target, _ = self.distance_to_nearest_player(lPlayer)
+        target, _ = self.distance_to_nearest_player(lPlayer, map)
 
         if target is None:
             return

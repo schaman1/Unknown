@@ -69,9 +69,9 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.SmallDash())
+        self.fill_slot(0,upgrades.LongDash())
         self.fill_slot(1,upgrades.Jump())
-        #self.fill_slot(2,upgrades.LongDash())
+        self.fill_slot(2,upgrades.LongDash())
         #self.fill_slot(2,upgrades.CreateFire())
 
 class Weapon2(Weapon) :
@@ -111,7 +111,8 @@ class Weapon3(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateLune())
+        self.fill_slot(0,upgrades.CreateManyLune())
+        self.fill_slot(1,upgrades.CreateStone())
 
 class WeaponLaseroide(Weapon):
 
