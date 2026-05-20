@@ -16,7 +16,7 @@ class Mob:
         self.width,self.height = size
         self.pos_blit=0
 
-        self.interpolate_mov = [(0,0,0),(0,0,0)]  #x,y,time
+        self.interpolate_mov = []  #x,y,time
         self.delay = 1/20*1.5#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
@@ -52,31 +52,34 @@ class Mob:
         self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
 
     def update_interpolate_pos(self):
-        time_now = time.perf_counter() - self.delay 
+        time_now = time.perf_counter() - self.delay
 
-        # Pas assez de points pour interpoler
         if len(self.interpolate_mov) < 2:
-            print("Freeze")
-            return  
+            return
 
-        # Interpole le mouv
         while len(self.interpolate_mov) > 2 and time_now > self.interpolate_mov[1][2]:
-            self.interpolate_mov.pop(0) 
+            self.interpolate_mov.pop(0)
 
         t0 = self.interpolate_mov[0][2]
         t1 = self.interpolate_mov[1][2]
         div = t1 - t0
+
         if div == 0:
-            return  
-        
-        # alpha clampé entre 0 et 1 — plus de valeur aberrante
-        alpha = max(0.0, min(1.0, (time_now - t0) / div))   
+            return
 
-        if alpha >= 1.0:
-            print("Bloqué en attente du prochain paquet", self.interpolate_mov)
+        alpha = (time_now - t0) / div
 
-        self.pos_x = round((1 - alpha) * self.interpolate_mov[0][0] + alpha * self.interpolate_mov[1][0])
-        self.pos_y = round((1 - alpha) * self.interpolate_mov[0][1] + alpha * self.interpolate_mov[1][1])
+        if alpha <= 1.0:
+            # Interpolation normale
+            self.pos_x = round((1 - alpha) * self.interpolate_mov[0][0] + alpha * self.interpolate_mov[1][0])
+            self.pos_y = round((1 - alpha) * self.interpolate_mov[0][1] + alpha * self.interpolate_mov[1][1])
+        else:
+            # Extrapolation : continue sur la lancée au lieu de freezer
+            vx = (self.interpolate_mov[1][0] - self.interpolate_mov[0][0]) / div
+            vy = (self.interpolate_mov[1][1] - self.interpolate_mov[0][1]) / div
+            dt = time_now - t1
+            self.pos_x = round(self.interpolate_mov[1][0] + vx * dt)
+            self.pos_y = round(self.interpolate_mov[1][1] + vy * dt)
 
     #def update_interpolate_pos(self):
         #
