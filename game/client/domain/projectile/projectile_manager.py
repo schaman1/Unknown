@@ -12,8 +12,6 @@ class ProjectileManager :
 
     def create_projectile(self,id,pos_x,pos_y,angle,vitesse,weight,id_img):
 
-        #print("weight",weight)
-        
         self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,weight,id_img,self.cell_size)
 
     def add_explosion(self,pos,projectile,cell_size):
