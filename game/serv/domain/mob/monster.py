@@ -674,7 +674,7 @@ class Limace(Monster) :
                 self.focus = True #ne change plus d'état
                 self.begin_attack = time.perf_counter() #début de l'attaque
 
-                self.norme = self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
+                self.norme = self.dist#self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
 
 
                 if self.norme <= self.melee_radius : #melee attack
