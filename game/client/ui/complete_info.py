@@ -73,7 +73,7 @@ class CompleteInfo:
 
             for i in range(len(dico_info["description"])):
 
-                text_desc = self.font_small.render(f"{dico_info["description"][i]}",True,(0,0,0))
+                text_desc = self.font_small.render(f"{dico_info['description'][i]}",True,(0,0,0))
                 self.surface_text.blit(text_desc,(self.pos_x_other_info,pos_y))
 
                 if(i!=len(dico_info["description"])-1):
@@ -85,16 +85,16 @@ class CompleteInfo:
 
         if dico_info["type"]=="projectile":
 
-            text_life = self.font_small.render(f"duree : {dico_info["life"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"duree : {dico_info['life']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
             #if dico_info["degat"] != 0
-            text_life = self.font_small.render(f"degat : {dico_info["degat"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"degat : {dico_info['degat']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"vitesse : {dico_info["speed"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"vitesse : {dico_info['speed']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
@@ -107,29 +107,29 @@ class CompleteInfo:
             #self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             #pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"Rechargement : {dico_info["time_reload"]} sec",True,(0,0,0))
+            text_life = self.font_small.render(f"Rechargement : {dico_info['time_reload']} sec",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
 
         elif dico_info["type"]=="augment" :
             
-            text_life = self.font_small.render(f"degat : {dico_info["degat"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"degat : {dico_info['degat']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"Rechargement : {dico_info["time_reload"]} sec",True,(0,0,0))
+            text_life = self.font_small.render(f"Rechargement : {dico_info['time_reload']} sec",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
 
         elif dico_info["type"]=="weapon":
 
-            text_life = self.font_small.render(f"Taille : {dico_info["nbr_slot"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"Taille : {dico_info['nbr_slot']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"Temps des sorts : {dico_info["spell_time"]}",True,(0,0,0))
+            text_life = self.font_small.render(f"Temps des sorts : {dico_info['spell_time']}",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
             pos_y+=self.delta_y_other_info
 
-            text_life = self.font_small.render(f"Rechargement complet : {dico_info["time_reload"]} sec",True,(0,0,0))
+            text_life = self.font_small.render(f"Rechargement complet : {dico_info['time_reload']} sec",True,(0,0,0))
             self.surface_text.blit(text_life,(self.pos_x_other_info,pos_y))
         #pos_y+=self.delta_y_other_info
 
