@@ -33,6 +33,7 @@ SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
 SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
 SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
+SPELLS[6] = resource_path("assets/sprites/projectile/projectile_2_0.png") #En attendant
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")

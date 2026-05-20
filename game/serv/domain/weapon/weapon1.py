@@ -111,7 +111,8 @@ class Weapon3(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateLune())
+        self.fill_slot(0,upgrades.CreateManyLune())
+        self.fill_slot(1,upgrades.CreateLune())
 
 class WeaponLaseroide(Weapon):
 

@@ -30,6 +30,27 @@
         "time_reload": 0.5,
         "degat":3
     },
+    "SPELL5":{
+        "type":"projectile",
+        "name":"Laser",
+        "description":["Nothing"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL6":{
+        "type":"projectile",
+        "name":"Bouclier",
+        "description":["Attaque de",
+                        "tout part"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
