@@ -1,5 +1,5 @@
 from shared.constants import fps,world
-import pygame
+import pygame,time
 from serv.core.server import Server
 from serv.config.add_objects_begin import OBJECTS
 
@@ -17,8 +17,9 @@ class Server_game(Server) :
         self.fpsClock = pygame.time.Clock()
         self.base_movement = world.RATIO
 
-        self.send_pos_every_x_frame = fps.FPS_SERVER//fps.FPS_SEND_POS_CLIENT
-        self.count_send_pos = 0
+        # Pour eviter le lag
+        self.next_send_time = time.perf_counter()
+        self.send_interval = 1 / fps.FPS_SEND_POS_CLIENT  # 0.05s
 
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
 
@@ -41,8 +42,10 @@ class Server_game(Server) :
                 self.send_data_all([18,self.collision_handler.die_send])
                 self.collision_handler.die_send.clear()
 
-            if len(return_monster)!=0 and len(return_monster[0]) != 0 :
-                self.send_data_update(return_monster,4)
+            if len(return_monster)!=0 :
+                
+                if self.next_send_time <= time.perf_counter() :
+                    self.send_data_update(return_monster,4)
 
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
@@ -53,6 +56,9 @@ class Server_game(Server) :
 
             self.handle_clients()
             self.handle_player(dt)
+
+            if self.next_send_time <= time.perf_counter():
+                self.next_send_time += self.send_interval
 
             #if fps < 30 : #Affiche le fps quand c'est critique
             #    print(fps)
@@ -65,15 +71,13 @@ class Server_game(Server) :
 
             delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
-            if self.count_send_pos == self.send_pos_every_x_frame :
+            if self.next_send_time <= time.perf_counter() :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
-                self.count_send_pos = 0
-            self.count_send_pos+=1
 
             if self.lClient[socket].send_new_life == True :
                 life,max_life,id_player = self.lClient[socket].send_life()
                 self.send_data((12,(life,max_life,id_player)),socket)
-            
+
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
                 self.send_data((13,money), socket)

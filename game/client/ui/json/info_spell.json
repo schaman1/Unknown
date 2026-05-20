@@ -6,7 +6,7 @@
         "life":2,
         "speed":50,
         "rebond":0,
-        "time_reload": 0.1,
+        "time_reload": 1.5,
         "degat":4
     },
     "SPELL3":{
@@ -24,6 +24,27 @@
         "name":"Pompe",
         "description":["Tir 3 puissants",
                         "projectiles."],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL5":{
+        "type":"projectile",
+        "name":"Laser",
+        "description":["Nothing"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL6":{
+        "type":"projectile",
+        "name":"Bouclier",
+        "description":["Attaque de",
+                        "tout part"],
         "life":0.3,
         "speed":100,
         "rebond":0,
@@ -87,7 +108,7 @@
         "life":2,
         "speed":50,
         "rebond":0,
-        "time_reload": 0.3,
+        "time_reload": 1.5,
         "degat":5
     },
     "SPELL40":{

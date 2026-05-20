@@ -196,6 +196,8 @@ class Player_not_you(Mob) :
                          }
         self.remaining_time_anim = 0
 
+        self.old_state = "idle"
+
         #self.font = FONT
 
         self.cell_size=cell_size
@@ -221,13 +223,17 @@ class Player_not_you(Mob) :
         
         if new_pos[0]-self.pos_x>0:
             self.animation.direction = "right"
-            self.animation.set_state("running")
-            self.remaining_time_anim = self.len_anim["running"]
+            if self.old_state != "running" :
+                self.old_state = "running"
+                self.animation.set_state("running")
+                self.remaining_time_anim = self.len_anim["running"]
 
         elif new_pos[0]-self.pos_x<0 :
             self.animation.direction = "left"
-            self.animation.set_state("running")
-            self.remaining_time_anim = self.len_anim["running"]
+            if self.old_state != "running" :
+                self.old_state = "running"
+                self.animation.set_state("running")
+                self.remaining_time_anim = self.len_anim["running"]
 
         self.move_mob(new_pos)
 
@@ -242,4 +248,6 @@ class Player_not_you(Mob) :
         if self.remaining_time_anim<0:
             self.remaining_time_anim = 0
 
-            self.animation.set_state("idle")
+            if self.old_state != "idle" :
+                self.old_state = "idle"
+                self.animation.set_state("idle")

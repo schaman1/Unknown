@@ -3,7 +3,7 @@ from serv.config import weapons
 
 class Fire(Projectile) :
 
-    def __init__(self,angle,pos,team,randomize):
+    def __init__(self,angle,pos,team,randomize,owner):
 
         self.life_time = weapons.LIFE_FIRE
 
@@ -16,11 +16,12 @@ class Fire(Projectile) :
                          damage = weapons.DAMAGE_FIRE,
                          weight = weapons.WEIGHT_FIRE,
                          team=team,
-                         randomize_angle=randomize)
+                         randomize_angle=randomize,
+                         owner_pos=owner)
         
 class Magic(Projectile) :
 
-    def __init__(self,angle,pos,team,randomize):
+    def __init__(self,angle,pos,team,randomize,owner):
 
         self.life_time = weapons.LIFE_MAGIC
 
@@ -33,11 +34,12 @@ class Magic(Projectile) :
                          damage = weapons.DAMAGE_MAGIC,
                          weight = weapons.WEIGHT_MAGIC,
                          team=team,
-                         randomize_angle=randomize)
+                         randomize_angle=randomize,
+                         owner_pos=owner)
         
 class Lune(Projectile) :
 
-    def __init__(self,angle,pos,team,randomize):
+    def __init__(self,angle,pos,team,randomize,owner):
 
         self.life_time = weapons.LUNE_LIFE
 
@@ -48,11 +50,12 @@ class Lune(Projectile) :
                          height = weapons.LUNE_HEIGHT,
                          damage = weapons.LUNE_DAMAGE,
                          team=team,
-                         randomize_angle=randomize)
+                         randomize_angle=randomize,
+                         owner_pos=owner)
         
 class Laser(Projectile) :
 
-    def __init__(self,angle,pos,team,randomize):
+    def __init__(self,angle,pos,team,randomize,owner):
 
         self.life_time = weapons.LASER_LIFE
 
@@ -63,11 +66,12 @@ class Laser(Projectile) :
                          height = weapons.LASER_HEIGHT,
                          damage = weapons.LASER_DAMAGE,
                          team=team,
-                         randomize_angle=randomize)
+                         randomize_angle=randomize,
+                         owner_pos=owner)
         
 class Pompe(Projectile) :
 
-    def __init__(self,angle,pos,team,randomize):
+    def __init__(self,angle,pos,team,randomize,owner):
 
         self.life_time = weapons.POMPE_LIFE
 
@@ -78,4 +82,21 @@ class Pompe(Projectile) :
                          height = weapons.POMPE_HEIGHT,
                          damage = weapons.POMPE_DAMAGE,
                          team=team,
-                         randomize_angle=randomize)
+                         randomize_angle=randomize,
+                         owner_pos=owner)
+        
+class Stone(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.STONE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.STONE_V,
+                         id_img = 7,
+                         width = weapons.STONE_WIDTH,
+                         height = weapons.STONE_HEIGHT,
+                         damage = weapons.STONE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         owner_pos=owner)

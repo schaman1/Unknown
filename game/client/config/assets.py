@@ -33,6 +33,8 @@ SPELLS[2] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[3] = resource_path("assets/sprites/projectile/projectile_3_0.png")#Pos 3 then have to do a boucle
 SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
 SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
+SPELLS[6] = resource_path("assets/sprites/projectile/projectile_6_0.png") #En attendant
+SPELLS[7] = resource_path("assets/sprites/projectile/projectile_2_0.png")
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
@@ -61,6 +63,14 @@ PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 
 MONSTER_2 = resource_path("assets/sprites/monster/idle/lasertoide.png")
 MONSTER_2_LOADING = resource_path("assets/sprites/monster/lasertoide_loading.png")
+
+DEFENDEUR_IDLE = resource_path("assets/sprites/monster/Defendeur/Defendeur.png")
+DEFENDEUR_ATTACK = resource_path("assets/sprites/monster/Defendeur/Defendeur_attack.png")
+DEFENDEUR_RUNNING = resource_path("assets/sprites/monster/Defendeur/Defendeur_running.png")
+
+ESCARGOT_IDLE = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
+ESCARGOT_ATTACK = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
+ESCARGOT_RUNNING = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
 
 FOULLI = resource_path("assets/sprites/monster/Foulli/Foulli_idle.png")
 FOULLI_ATTACK = resource_path("assets/sprites/monster/Foulli/Foulli_attack.png")

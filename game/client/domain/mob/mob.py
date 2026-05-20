@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = [(0,0,0),(0,0,0)]  #x,y,time
-        self.delay = 1/fps.FPS_SEND_POS_CLIENT
+        self.delay = 1/20*1.5#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
         self.max_life = 1
@@ -52,34 +52,61 @@ class Mob:
         self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
 
     def update_interpolate_pos(self):
-        
-        time_now = time.perf_counter()-self.delay
+        time_now = time.perf_counter() - self.delay 
 
-        l = len(self.interpolate_mov)
+        # Pas assez de points pour interpoler
+        if len(self.interpolate_mov) < 2:
+            print("Freeze")
+            return  
 
-        if l<=1:
-            return
-        
-        while l>2 and time_now > self.interpolate_mov[1][2] :
-            l-=1
-            self.interpolate_mov.pop(0)
+        # Interpole le mouv
+        while len(self.interpolate_mov) > 2 and time_now > self.interpolate_mov[1][2]:
+            self.interpolate_mov.pop(0) 
 
-        div = self.interpolate_mov[1][2]-self.interpolate_mov[0][2]
-
+        t0 = self.interpolate_mov[0][2]
+        t1 = self.interpolate_mov[1][2]
+        div = t1 - t0
         if div == 0:
-            return
-        if div < time_now-self.interpolate_mov[0][2]:
-            div = time_now-self.interpolate_mov[0][2]
+            return  
         
-        alpha = (time_now-self.interpolate_mov[0][2])/(div)
+        # alpha clampé entre 0 et 1 — plus de valeur aberrante
+        alpha = max(0.0, min(1.0, (time_now - t0) / div))   
 
-        #alpha = 1
+        if alpha >= 1.0:
+            print("Bloqué en attente du prochain paquet", self.interpolate_mov)
 
-        #print(alpha,time_now-self.interpolate_mov["old time"],self.interpolate_mov["new time"]-self.interpolate_mov["old time"])
-        #print(self.interpolate_mov,time_now)
+        self.pos_x = round((1 - alpha) * self.interpolate_mov[0][0] + alpha * self.interpolate_mov[1][0])
+        self.pos_y = round((1 - alpha) * self.interpolate_mov[0][1] + alpha * self.interpolate_mov[1][1])
 
-        self.pos_x = round((1-alpha)*self.interpolate_mov[0][0] + (alpha*self.interpolate_mov[1][0]))
-        self.pos_y = round((1-alpha)*self.interpolate_mov[0][1] + (alpha*self.interpolate_mov[1][1]))
+    #def update_interpolate_pos(self):
+        #
+        #time_now = time.perf_counter()-self.delay
+#
+        #l = len(self.interpolate_mov)
+#
+        #if l<=1:
+        #    return
+        #
+        #while l>2 and time_now > self.interpolate_mov[1][2] :
+        #    l-=1
+        #    self.interpolate_mov.pop(0)
+#
+        #div = self.interpolate_mov[1][2]-self.interpolate_mov[0][2]
+#
+        #if div == 0:
+        #    return
+        #if div < time_now-self.interpolate_mov[0][2]:
+        #    div = time_now-self.interpolate_mov[0][2]
+        #
+        #alpha = (time_now-self.interpolate_mov[0][2])/(div)
+#
+        ##alpha = 1
+#
+        ##print(alpha,time_now-self.interpolate_mov["old time"],self.interpolate_mov["new time"]-self.interpolate_mov["old time"])
+        ##print(self.interpolate_mov,time_now)
+#
+        #self.pos_x = round((1-alpha)*self.interpolate_mov[0][0] + (alpha*self.interpolate_mov[1][0]))
+        #self.pos_y = round((1-alpha)*self.interpolate_mov[0][1] + (alpha*self.interpolate_mov[1][1]))
 
     def move_mob(self,new_pos):
 

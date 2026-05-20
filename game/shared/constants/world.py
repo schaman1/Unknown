@@ -9,7 +9,7 @@ LEN_DEATH = 10
 LEN_DEATH_PLAYER = 5
 START_SEE = False
 
-NBR_CELL_CAN_SEE = 1000 #Nbr de cellule qu'on peut voir
+NBR_CELL_CAN_SEE = 40 #Normally, 20 !
 PADDING_CANVA = 2  #Combien de cellule en plus on charge autour de l'ecran du client
 
 BG_SIZE_SERVER = (1920,1080)
