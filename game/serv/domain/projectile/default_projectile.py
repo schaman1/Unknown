@@ -4,7 +4,7 @@ from serv.domain.mob.team import Team
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None):
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None,knockback = 0):
         self.pos_x,self.pos_y = pos
         self.owner_pos = owner_pos #Use to set default pos
 
@@ -34,6 +34,7 @@ class Projectile :
         self.half_height = self.height//2
         self.rebond = rebond
         self.damage = damage
+        self.knockback = knockback #Knockback strength applied to mobs on hit (0 = none)
 
         self.is_dead = False
         self.to_update = False
