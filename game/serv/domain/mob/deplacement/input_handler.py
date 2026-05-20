@@ -8,7 +8,7 @@ class InputHandler:
                          1:False, #d
                          2:False, #s
                          3:False,
-                         7:False} #Jump, id send
+                         7:False} #Saut, id envoyé
 
     def trigger(self):
 
@@ -25,7 +25,7 @@ class InputHandler:
 
     def reset_value(self):
 
-        self.movement[7]=False #Reset jump
+        self.movement[7]=False #Réinitialise le saut
 
     def update_value(self,idx):
 
