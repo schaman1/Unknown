@@ -4,10 +4,14 @@ import random
 
 class spell_on_ground(interactable_object):
 
-    def __init__(self,id_categorie,pos_x,pos_y,price=0,randomize = False):
+    def __init__(self,id_categorie,pos_x,pos_y,price=0,randomize = False,rarity = "common"):
 
         if randomize : 
-            id_categorie = random.choice(list(upgrades.UPGRADES.keys()))
+
+            if rarity == "common" :
+                id_categorie = random.choice(upgrades.common_upgrades)
+            elif rarity == "rare":
+                id_categorie = random.choice(upgrades.rare_upgrades)
 
         super().__init__(id_categorie,pos_x,pos_y,price)
 

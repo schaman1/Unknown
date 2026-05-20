@@ -1,5 +1,5 @@
 from shared.constants import fps,world
-import pygame,time
+import pygame,time,math
 from serv.core.server import Server
 from serv.config.add_objects_begin import OBJECTS
 
@@ -230,3 +230,33 @@ class Server_game(Server) :
         pos = self.lClient[sender].return_pos()
 
         self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))
+
+    def distance(self,posa,posb):
+
+        dist = (posa[0]-posb[0])**2 + (posa[1]-posb[1])**2
+        return math.sqrt(dist)
+
+    def try_tp_to_boss(self):
+
+        for client in self.lClient.values() :
+
+            pnj_pos = world.POS_PNJ[0]*self.base_movement,world.POS_PNJ[1]*self.base_movement
+
+            dist = self.distance((client.pos_x,client.pos_y),world.POS_PNJ)
+
+            print(dist,world.DIST_TO_TP_BOSS*self.base_movement,client.pos_x,pnj_pos[0])
+
+            if dist > world.DIST_TO_TP_BOSS*self.base_movement :
+
+                return
+        
+        self.tp_to_boss()
+
+    def tp_to_boss(self):
+
+        for client in self.lClient.values() :
+
+            boss_pos = world.POS_BOSS[0]*self.base_movement,world.POS_BOSS[1]*self.base_movement
+
+            client.pos_x = boss_pos[0]
+            client.pos_y = boss_pos[1]

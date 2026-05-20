@@ -196,7 +196,7 @@ class AddDamage(Upgrade):
     def trigger(self,weapon):
 
         weapon.add_damage +=3
-        weapon.team = Team.All
+        #weapon.team = Team.All
 
         return 0,None,None
     
@@ -301,3 +301,6 @@ UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = Jump()
+
+common_upgrades = [2,3,7,10,11,12,13,20,40]
+rare_upgrades = [4,5,6,21,41,42]
