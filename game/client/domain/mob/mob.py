@@ -70,7 +70,7 @@ class Mob:
         alpha = (time_now - t0) / div
 
         if alpha >= 1.0:
-            print("Bloqué en attente du prochain paquet", len(self.interpolate_mov))
+            print("Bloqué en attente du prochain paquet", self.interpolate_mov)
 
         if alpha <= 1.0:
             # Interpolation normale
