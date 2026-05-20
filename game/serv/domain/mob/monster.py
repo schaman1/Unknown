@@ -107,10 +107,6 @@ class Monster(Mob):
             self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
         else :
             self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
-        #if self.target == None : #Set the target and change only if has no target
-        self.target, self.dist = self.distance_to_nearest_player(lPlayer)
-        #else :
-            #self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
 
 
         #------------degat de collision-----------------#
@@ -176,14 +172,8 @@ class Monster(Mob):
             if self.life <= 0:
                 self.life = 0
                 self.die(player_did_damage)
-                self.life -= amount
-                self.send_new_life = True
 
-                if self.life <= 0:
-                    self.life = 0
-                    self.die(player_did_damage)
-
-                    return True
+                return True
 
         return False
     
