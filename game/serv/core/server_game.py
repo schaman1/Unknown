@@ -67,8 +67,9 @@ class Server_game(Server) :
             
             if self.count_send_pos == self.send_pos_every_x_frame :
                 self.send_data_all((6,self.lClient[socket].id,self.lClient[socket].pos_x,self.lClient[socket].pos_y))
-                self.count_send_pos = 0
-            self.count_send_pos+=1
+                #self.count_send_pos = 0
+                
+            self.count_send_pos = (self.count_send_pos+1)%self.send_pos_every_x_frame
 
             if self.lClient[socket].send_new_life == True :
                 life,max_life,id_player = self.lClient[socket].send_life()
