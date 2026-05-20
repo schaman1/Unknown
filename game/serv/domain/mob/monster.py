@@ -10,12 +10,17 @@ class Monster(Mob):
 
         self.hp = hp
         self.damage = damage
+        self.resist = False #Resist = Can't take damage
         self.prime = prime
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
         self.run_away_rad = run_away
 
+        self.collision_damage = True
+        self.collision_atk = 10
+        self.collision_time_reload = 0.5
+        self.collision_start = time.perf_counter()
         self.collision_damage = True
 
         self.radius = rad
@@ -98,16 +103,26 @@ class Monster(Mob):
             else:
                 return
         
+<<<<<<< HEAD
         if self.target == None : #Set the target and change only if has no target
             self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
         else :
             self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+=======
+        #if self.target == None : #Set the target and change only if has no target
+        self.target, self.dist = self.distance_to_nearest_player(lPlayer)
+        #else :
+            #self.dist = self.dist_to_target_player(self.target) #If already has a target, just update the dist
+>>>>>>> eebb972d80cfbc4462dbcadd9ae819b6b5382fb0
 
 
         #------------degat de collision-----------------#
         if self.dist<self.width/2/self.base_movement and self.collision_damage: 
-            damage = int(100*dt) 
-            collision_handler.player_take_damage_no_projectile(damage,self.target)
+
+            if self.collision_start + self.collision_time_reload <= time.perf_counter():
+                self.collision_start=time.perf_counter()
+
+                collision_handler.player_take_damage_no_projectile(self.collision_atk,self.target)
             #FIn
 
         if self.focus :
@@ -151,6 +166,7 @@ class Monster(Mob):
             self.life -= amount
             self.send_new_life = True
 
+<<<<<<< HEAD
             if hasattr(player_did_damage, 'pos_x'):
                 dx = self.pos_x - player_did_damage.pos_x
                 dir = 1 if dx > 0 else -1
@@ -164,8 +180,16 @@ class Monster(Mob):
             if self.life <= 0:
                 self.life = 0
                 self.die(player_did_damage)
+=======
+                self.life -= amount
+                self.send_new_life = True
+>>>>>>> eebb972d80cfbc4462dbcadd9ae819b6b5382fb0
 
-                return True
+                if self.life <= 0:
+                    self.life = 0
+                    self.die(player_did_damage)
+
+                    return True
 
         return False
     
@@ -189,6 +213,8 @@ class Monster(Mob):
 
     def respawn(self):
         self.dead = False
+        self.focus = False
+        self.state = "idle"
         self.full_heal()
 
     def get_angle(self, player):
@@ -199,6 +225,23 @@ class Monster(Mob):
         angle = angle * 180 / math.pi
 
         return int(angle) % 360
+
+    def check_if_player_collide_attack(self,target,side,hit_box_damage_width):
+
+        #Test en y :
+        if target.pos_y-target.half_height > self.pos_y + self.half_height or target.pos_y + target.half_height < self.pos_y - self.half_height :
+            return False
+
+        if side == "right":
+            if self.pos_x + hit_box_damage_width*self.base_movement < target.pos_x-target.half_width or self.pos_x > target.pos_x + target.half_width :
+                return False
+            
+        if side == "left":
+            if self.pos_x - hit_box_damage_width*self.base_movement > target.pos_x+target.half_width or self.pos_x < target.pos_x - target.half_width :
+                return False
+            
+        return True
+
 
     # --- Déplacement pour gestion des collisions ---
 
@@ -330,7 +373,7 @@ class Foulli(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=10,damage =5,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
+        super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
         self.name = 2 #Permet d'afficher le bon monstre / In monster all dans client
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -392,6 +435,197 @@ class Foulli(Monster) :
         
         damage = self.damage
         collision_handler.player_take_damage_no_projectile(damage,self.target)
+
+class Defendeur(Monster) :
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 6)
+
+        self.name = 3 #Permet d'afficher le bon monstre / In monster all dans client
+        #self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+
+        self.begin_attack = time.perf_counter()
+        self.time_for_move_to_reach_player = 0.5
+        self.len_attack = 2
+        self.begin_time_for_attack = time.perf_counter()
+        self.time_between_attacks = 0.2
+
+        self.begin_relax = time.perf_counter()
+        self.time_to_relax = 2
+        self.side = "left" #Side attack
+        self.hit_box_damage_width = 5
+        self.resist = True
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            if self.focus :
+                if self.begin_attack + self.time_for_move_to_reach_player > time.perf_counter() :
+
+                    if self.check_if_player_collide_attack(self.target,self.side,2) :
+                        self.state = "attacking"
+                        #self.resist = False #here if too difficult
+                        self.begin_attack = time.perf_counter()-self.time_for_move_to_reach_player
+
+                    if self.side == "right":
+                        self.move_right(dt)
+                    else :
+                        self.move_left(dt)
+
+                else :
+                    self.state = "attacking"
+                    #self.resist = False# Here if too difficult
+
+            else :
+
+                self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            if not self.focus :
+                self.focus = True
+                self.resist = True
+                self.begin_attack = time.perf_counter()
+
+                if self.pos_x < self.target.pos_x : #Set the side in whitch attack
+                    self.side = "right"
+                else :
+                    self.side = "left"
+
+                self.state = "moving"
+
+            if self.focus :
+            
+                if self.begin_attack+self.len_attack <= time.perf_counter() : #Means stop attack
+
+                    self.begin_relax = time.perf_counter()
+                    self.resist = False
+                    self.state = "idle"
+
+                if self.begin_time_for_attack + self.time_between_attacks < time.perf_counter():
+
+                    self.attack(self.target,collision_handler,dt,projectile_manager)
+                    self.begin_time_for_attack = time.perf_counter()
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+        if self.focus :
+            if self.time_to_relax + self.begin_relax <= time.perf_counter():
+                self.focus = False
+                self.resist = True
+                #self.state = "moving"
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+
+        if target.pos_x<self.pos_x :
+            self.move_left(dt)
+        
+        else :
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+        if target.pos_x<self.pos_x :
+            self.move_right(dt)
+        
+        else :
+            self.move_left(dt)
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        """Return True if well touch the player"""
+        
+        if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+            damage = self.damage
+            collision_handler.player_take_damage_no_projectile(damage,self.target)
+            return True
+        
+        return False
+
+class Escargot(Monster) :
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
+
+        self.name = 4 #Permet d'afficher le bon monstre / In monster all dans client
+        self.direction = "right"
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+
+        if self.direction == "right":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = self.half_width+self.base_movement
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "left"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "left"
+            
+            else :
+                self.move_right(dt)
+
+        elif self.direction == "left":
+            
+            delta_y = self.half_height + self.base_movement
+            delta_x = -(self.half_width+self.base_movement)
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.direction = "right"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.direction = "right"
+            
+            else :
+                self.move_left(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Move to the player"""
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        """Return True if well touch the player"""
 
 class Skeleton(Monster):
 

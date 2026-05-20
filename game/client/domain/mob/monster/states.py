@@ -1,1 +1,1 @@
-STATES = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
+STATES = {"idle": 0, "running": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}

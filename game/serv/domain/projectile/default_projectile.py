@@ -4,8 +4,10 @@ from serv.domain.mob.team import Team
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False):
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None):
         self.pos_x,self.pos_y = pos
+        self.owner_pos = owner_pos #Use to set default pos
+
         self.projectile_spawn_when_die = []
         self.life_time = life_time
         self.id=None
@@ -14,11 +16,15 @@ class Projectile :
         self.randomize_angle = randomize_angle
         self.delta_angle = 0
 
+        self.force_angle = False
+        self.force_pos = False
+        self.delta_pos = [0,0]
+        self.angle_force = 0
+
         if self.randomize_angle :
             self.angle = random.randint(1,360)
         else :
             self.angle = angle
-
 
         self.speed = int(speed)
         self.id_img = id_img
@@ -38,11 +44,23 @@ class Projectile :
 
         self.owner = None
 
-    def update_angle_pos(self,new_angle,new_pos):
-        self.pos_x,self.pos_y=new_pos
+    def update_angle_pos(self,new_angle,new_pos,owner_pos):
+
+        #print(self.force_pos,new_pos,self.delta_pos)
+
+        if self.force_pos :
+            self.pos_x = new_pos[0]+self.delta_pos[0]
+            self.pos_y = new_pos[1]+self.delta_pos[1]
+
+        else :
+            self.pos_x,self.pos_y=new_pos
 
         if self.randomize_angle :
             self.angle = random.randint(1,360)
+
+        elif self.force_angle :
+            self.angle = self.angle_force
+            
         else :
             self.angle = (new_angle+self.delta_angle)%360
 
@@ -67,7 +85,7 @@ class Projectile :
 
     def check_if_projectile_spawn_when_die(self):
         for projectile in self.projectile_spawn_when_die :
-            projectile.update_angle_pos(self.angle,[self.pos_x,self.pos_y])
+            projectile.update_angle_pos(self.angle,[self.pos_x,self.pos_y],self.owner_pos)
         return self.projectile_spawn_when_die
 
     def move(self,dt,map):

@@ -1,4 +1,4 @@
-from serv.domain.mob.monster import Skeleton,Laseroide,Foulli
+from serv.domain.mob import monster
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
 class Read_monster :
@@ -41,9 +41,9 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(Laseroide(3411,17400,1))
-        self.dic_monster[200].append(Foulli(7900,15400,2))
-        self.dic_monster[201].append(Foulli(12000,15400,3))
+        self.dic_monster[200].append(monster.Escargot(3411,17300,1))
+        self.dic_monster[200].append(monster.Foulli(7900,15400,2))
+        self.dic_monster[201].append(monster.Foulli(12000,15400,3))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
@@ -62,6 +62,8 @@ class Read_monster :
 
         list_chunk_client_see = self.return_list_chunk_client_see(lInfoClient,list_modif)
 
+        list_monster_change_chunk = []
+
         for y in range(self.size_chunk_all[0]) :
             for x in range(self.size_chunk_all[1]) :
 
@@ -70,7 +72,10 @@ class Read_monster :
                 liste_client_see = self.return_client_see(x,y,list_chunk_client_see)
                 if liste_client_see != [] :
 
-                    for monster in self.dic_monster[chunk] :
+                    #for monster in self.dic_monster[chunk] :
+                    for i in range(len(self.dic_monster[chunk])-1,-1,-1):
+
+                        monster = self.dic_monster[chunk][i]
 
                         monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
 
@@ -79,6 +84,13 @@ class Read_monster :
                         for client_idx in liste_client_see :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
+
+                        if self.return_chunk(monster.pos_x,monster.pos_y) != chunk:
+                            list_monster_change_chunk.append((chunk,monster))
+                            del self.dic_monster[chunk][i]
+
+        for chunk,monster in list_monster_change_chunk :
+            self.dic_monster[chunk].append(monster)
 
         return list_modif
     
@@ -116,6 +128,9 @@ class Read_monster :
         liste_client_see = []
 
         for i,e in enumerate(list_chunk_client_see) :
+
+            #liste_client_see.append(i)
+
             x_chunk = e[0]
             y_chunk = e[1]
 

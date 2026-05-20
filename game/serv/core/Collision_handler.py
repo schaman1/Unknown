@@ -126,7 +126,8 @@ class CollisionHandler:
 
             delta_life = old_pv-ent.life
 
-            if delta_life!=0:
+            if not ent.dead or delta_life != 0:
+
                 self.effect_send.append([ent.id,delta_life,chunk])
             
             if die:

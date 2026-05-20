@@ -124,6 +124,23 @@ class Animation:
 
             self.add_tombe(cell_size)
 
+        elif entity_name == "Defendeur" :
+
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.DEFENDEUR_IDLE)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            img_attack = pygame.image.load(assets.DEFENDEUR_ATTACK)
+            img_idle = pygame.transform.scale(img_attack,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["attacking"],size)
+
+            img_running = pygame.image.load(assets.DEFENDEUR_RUNNING)
+            img_idle = pygame.transform.scale(img_running,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+
+            self.add_tombe(cell_size)
+
         elif entity_name == "Foulli" :
 
             #size_img = 50*cell_size
@@ -138,6 +155,22 @@ class Animation:
             img_idle_loading = pygame.image.load(assets.FOULLI_ATTACK)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["attacking"],size)
+
+            self.add_tombe(cell_size)
+
+        elif entity_name == "Escargot" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.ESCARGOT_RUNNING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.ESCARGOT_RUNNING)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size)
 
             self.add_tombe(cell_size)
 
@@ -237,6 +270,11 @@ class Animation:
     def next_idle(self):
         """Respawn anim"""
         self.state = "idle"
+        self.fct_to_do = self.do_nothing
+
+    def next_running(self):
+        """Respawn anim"""
+        self.state = "running"
         self.fct_to_do = self.do_nothing
 
     def end_death(self):
