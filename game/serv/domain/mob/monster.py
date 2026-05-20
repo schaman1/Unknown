@@ -344,7 +344,7 @@ class Foulli(Monster) :
             
             else :
 
-                if self.begin_shot+self.time_after_shot <= time.perf_counter() :
+                if self.begin_shot + self.time_after_shot <= time.perf_counter() :
                     self.state = "idle"
                     self.focus = False
 
@@ -544,6 +544,134 @@ class Escargot(Monster) :
 
     def attack(self,target,collision_handler,dt,projectile_manager):
         """Return True if well touch the player"""
+
+
+class Limace(Monster) :
+    """Se déplace, tire un projectile de loin, sinon attaque au corps à corps"""
+
+    def __init__(self,x,y,id):
+
+        super().__init__(hp=13,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
+
+        self.name = 5 #Permet d'afficher le bon monstre / In monster all dans client
+        self.direction = "right"
+
+
+        self.begin_attack = time.perf_counter()
+        self.isMelee = False
+        self.norme = 0
+
+        self.melee_radius = self.attack_radius/3
+        self.time_before_melee_attack = 1 #0.2
+
+
+        self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+        self.time_before_range_attack = 1 #0.7
+        self.angle = 0
+
+        self.cooldown = 1
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            if not self.focus : #1ere boucle
+
+                self.state = "loading" 
+                self.focus = True #ne change plus d'état
+                self.begin_attack = time.perf_counter() #début de l'attaque
+
+                self.norme = self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
+
+
+                if self.norme <= self.melee_radius : #melee attack
+                        # print("Locked in melee range")
+                        self.isMelee = True
+
+                else : #range attack
+                    # print("Locked in long range")
+                    self.angle = self.get_angle(self.target)
+
+            else :
+                if self.isMelee :
+                    self.melee_attack(self.target,collision_handler,dt,projectile_manager)
+                    self.isMelee = False
+                    # print("Melee ATTAQUE")
+
+                else :
+                    self.range_attack(self.target,collision_handler,dt,projectile_manager)
+                    # print("Range ATTAQUE")
+
+                self.state = "moving" 
+                self.focus = False   
+
+        
+        elif self.state == "loading" :
+
+            if self.isMelee:
+                self.jump(map)
+    
+                if self.begin_attack + self.time_before_melee_attack <= time.perf_counter() :
+                    self.state = "attacking"
+
+            else :
+                if self.begin_attack + self.time_before_range_attack <= time.perf_counter() :
+                    # self.begin_shot = time.perf_counter()
+                    self.state = "attacking"
+
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """Juste animation (Regarde autour de lui)"""
+        self.focus = False
+    
+    def moving_behavior(self,target,map,dt):
+        """Move to the player"""
+
+        if target.pos_x<self.pos_x :
+            self.move_left(dt)
+        
+        else :
+            self.move_right(dt)
+    
+    def leave_behavior(self,target,map,dt):
+        return
+    
+    def melee_attack(self,target,collision_handler,dt,projectile_manager):
+        """moves"""
+        damage = self.damage
+        
+        collision_handler.player_take_damage_no_projectile(damage,self.target)
+    
+    
+    def range_attack(self,target,collision_handler,dt,projectile_manager):
+        return
+        trigger = self.weapon.trigger_shot(self.angle,(self.pos_x,self.pos_y))
+
+        if trigger != None :
+
+            (projectiles, events) = trigger
+
+            for proj in projectiles :
+                projectile_manager.add_projectile_create(proj)
+
+        if self.weapon.idx == 0:
+            self.focus = False
+
 
 class Skeleton(Monster):
 
