@@ -104,20 +104,30 @@ class CreateManyLune(Upgrade):
 
         delta_pos = weapon.owner.distance_cast_spells*2
 
+        delta_pos_force = []
         dif_pos = []
         for i in range(4):
+            delta_pos_force.append([0,0])
             dif_pos.append(weapon.owner.return_pos())
 
         dif_pos[0][0] += delta_pos
         dif_pos[1][0] -= delta_pos
         dif_pos[2][1] += delta_pos
         dif_pos[3][1] -= delta_pos
+        dif_pos[0][0] += delta_pos
+        dif_pos[0][0] += delta_pos
+        delta_pos_force[0][0] += delta_pos
+        delta_pos_force[1][0] -= delta_pos
+        delta_pos_force[2][1] += delta_pos
+        delta_pos_force[3][1] -= delta_pos
 
         for i in range(4):
             projectile = weapon.add_projectile(projectile_type.Lune(delta_angle[i],dif_pos[i],weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
             projectile.damage = weapons.MANY_LUNE_DAMAGE
             projectile.force_angle = True
+            projectile.force_pos = True
             projectile.angle_force = projectile.angle
+            projectile.delta_pos = [delta_pos_force[i][0],delta_pos_force[i][1]]
             l.append(projectile)
 
         return 1,l,None
