@@ -74,7 +74,9 @@ class CollisionHandler:
             print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
         
         else :
-            self.effect_send.append([player.id,delta_life,chunk])
+
+            if delta_life != 0:
+                self.effect_send.append([player.id,delta_life,chunk])
 
             if die:
                 print("PLayer is dead")
