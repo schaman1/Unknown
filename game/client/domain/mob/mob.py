@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = []  #x,y,time
-        self.delay = 3/20#1/fps.FPS_SEND_POS_CLIENT
+        self.delay = 0.12#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
         self.max_life = 1
