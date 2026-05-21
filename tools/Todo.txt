@@ -2,7 +2,7 @@ Do an event like Dash
 
 Ch'ui dans le metro mdr (c pour ca j'ai tej les NIG)
 
-CC = ${JEWS}.stoleTheHumanity
+CC = ${JEWS}.stoleTheHumanity #MDRRRR
 - Add projectile to LASEROIDE
 
 

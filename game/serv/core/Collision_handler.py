@@ -28,6 +28,7 @@ class CollisionHandler:
                         
                 if projectile.team!=Team.Mob:
 
+                    #for j in range(-1,0,1):
                     for mob in mobs[chunk] :
 
                         touch = self.collision(projectile,mob)

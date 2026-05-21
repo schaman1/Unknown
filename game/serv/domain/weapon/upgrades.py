@@ -143,6 +143,18 @@ class CreateStone(Upgrade):
 
         return 1,[projectile],None
     
+class CreateLance(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=8,time_take = weapons.LANCE_RELOAD_TIME)
+
+    def trigger(self,weapon):
+
+        projectile = weapon.add_projectile(projectile_type.Lance(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+
+        return 1,[projectile],None
+    
 class AddSpeed(Upgrade):
 
     def __init__(self):
@@ -291,6 +303,7 @@ UPGRADES[4] = CreatePompe()
 UPGRADES[5] = CreateLaser()
 UPGRADES[6] = CreateManyLune()
 UPGRADES[7] = CreateStone()
+UPGRADES[8] = CreateLance()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
@@ -302,5 +315,5 @@ UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = Jump()
 
-common_upgrades = [2,3,7,10,11,12,13,20,40]
+common_upgrades = [2,3,7,8,10,11,12,13,20,40]
 rare_upgrades = [4,5,6,21,41,42]

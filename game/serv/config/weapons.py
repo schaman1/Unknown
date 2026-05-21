@@ -30,6 +30,14 @@ LUNE_DAMAGE = 6
 LUNE_RELOAD_TIME = 0.2
 KNOCKBACK_LUNE = 0      #Knockback multiplier (0 = no knockback)
 
+LANCE_LIFE = 0.1
+LANCE_V = 0
+LANCE_WIDTH = 8*RATIO
+LANCE_HEIGHT = 2*RATIO
+LANCE_DAMAGE = 6
+LANCE_RELOAD_TIME = 0.3
+KNOCKBACK_LANCE = 1      #Knockback multiplier (0 = no knockback)
+
 LASER_LIFE = 2
 LASER_V = 50*RATIO
 LASER_WIDTH = 2*RATIO

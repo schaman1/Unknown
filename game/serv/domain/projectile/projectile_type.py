@@ -106,3 +106,20 @@ class Stone(Projectile) :
                          randomize_angle=randomize,
                          owner_pos=owner,
                          knockback = weapons.KNOCKBACK_STONE)
+        
+class Lance(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.LANCE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.LANCE_V,
+                         id_img = 8,
+                         width = weapons.LANCE_WIDTH,
+                         height = weapons.LANCE_HEIGHT,
+                         damage = weapons.LANCE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_LANCE)

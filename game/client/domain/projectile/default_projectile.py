@@ -90,6 +90,13 @@ class DefaultProjectile :
             img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
             rotated_img = pygame.transform.rotate(img, angle)
             Imgs.append(rotated_img)
+            
+        elif id_img==8:
+            self.width,self.height = weapon.PROJECTILE_8_WIDTH,weapon.PROJECTILE_8_HEIGHT
+            img = pygame.image.load(assets.PROJECTILE_8_0).convert_alpha() #convert_alpha() pour le fond vide
+            img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
+            rotated_img = pygame.transform.rotate(img, angle)
+            Imgs.append(rotated_img)
 
         else :
             print("Unknown weapon id in client /domain/projectile/Default projectiles",id_img)
