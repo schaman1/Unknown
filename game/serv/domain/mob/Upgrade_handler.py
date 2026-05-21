@@ -26,7 +26,6 @@ class UpgradeHandler:
                 
                 res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
                 
-                self.dash_player(player)
 
             elif id == 42 :
 
@@ -40,6 +39,7 @@ class UpgradeHandler:
             if res==False :
                 self.id_event_player_do.pop(i)
 
+        self.dash_player(player)
 
     def trigger_dash(self,event,player,dt,map):
                 
@@ -50,7 +50,7 @@ class UpgradeHandler:
         distance = self.return_dist_angle(dist,angle)
         #print(distance)
 
-        if delta_time>time_base:
+        if delta_time>=time_base:
 
             #trunca_dt = time_base-delta_time
             #alpha = trunca_dt/dt
