@@ -132,7 +132,7 @@ class Client:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0 or msg_id == 9:          # start_game / load fini
+            if msg_id == 0 or msg_id == 9 or msg_id==19:          # start_game / load fini
                 msg_size = 1
 
             elif msg_id == 1:        # new player
@@ -359,6 +359,9 @@ class Client:
                 id,chunk,duree = struct.unpack("!HHH",data[6*i+3:6*i+9])
                 
                 self.main.state.game.kill_ent(id,chunk,duree)
+
+        elif id == 19:
+            self.main.state.add_alert("Vous devez comprendre d'ou vous venez.")
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

@@ -199,7 +199,7 @@ class Network_handler :
             self.server.try_tp_to_boss()
 
         elif id_msg == 11:
-            pass
+            self.server.player_finish_intro(sender)
 
 
         else :
@@ -315,7 +315,7 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 or id==9:
+        if id == 0 or id==9 or id==19:
             pass
 
         elif id == 1 : 

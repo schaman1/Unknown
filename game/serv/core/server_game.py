@@ -21,7 +21,7 @@ class Server_game(Server) :
         self.next_send_time = time.perf_counter()
         self.send_interval = 1 / fps.FPS_SEND_POS_CLIENT  # 0.05s
 
-        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
+        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
@@ -73,6 +73,8 @@ class Server_game(Server) :
 
         for socket in self.lClient.keys():
 
+            self.check_intro_stop(socket)
+
             delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
             if should_send :
@@ -85,7 +87,14 @@ class Server_game(Server) :
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
                 self.send_data((13,money), socket)
-            
+
+    def check_intro_stop(self,sender):
+
+        if self.lClient[sender].fct_to_do() == True :
+
+            self.lClient[sender].pos_x,self.lClient[sender].pos_y = world.POS_RESET[0]*self.base_movement,world.POS_RESET[1]*self.base_movement
+            self.send_data([19,None],sender)
+
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner
     
@@ -260,3 +269,7 @@ class Server_game(Server) :
 
             client.pos_x = boss_pos[0]
             client.pos_y = boss_pos[1]
+
+    def player_finish_intro(self,sender):
+        
+        self.lClient[sender].set_finish_intro()
