@@ -108,12 +108,13 @@ class DefaultProjectile :
         #self.pos_x,self.pos_y = 63305, 16125
 
         rect_center = self.calculate_pos_blit(xscreen,yscreen)
-        screen.blit(self.imgs[self.frame//50],rect_center)
+        #screen.blit(self.imgs[self.frame//50],rect_center)
+        screen.blit(self.imgs[0],rect_center)
 
-        self.update_frame()
+        #self.update_frame()
 
-    def update_frame(self):
-        self.frame = (self.frame+1)%1
+    #def update_frame(self):
+    #    self.frame = (self.frame+1)%1
 
     def calculate_pos_blit(self,x,y):
         xs = self.convert_from_base(self.pos_x*self.cell_size) +x

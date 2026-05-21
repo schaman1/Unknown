@@ -226,6 +226,22 @@ class AddManyDamage(Upgrade):
 
         return 0,None,None
     
+class Reloader(Upgrade):
+    #Randomize la direction mais reduit le temps de rechargement de l'arme
+
+    def __init__(self):
+
+        super().__init__(id = 15,time_take = weapons.RELOADER_RELOAD_TIME)
+
+        self.minus_refill_time = weapons.RELOADER_REFILL_TIME
+
+    def trigger(self,weapon):
+
+        #weapon.randomize_angle = True
+        weapon.loading_time_refill_current += self.minus_refill_time
+
+        return 0,None,None
+    
 class DoubleSpell(Upgrade):
 
     def __init__(self):
@@ -246,6 +262,16 @@ class TripleSpell(Upgrade):
 
         return -1,None,None #Done un slot de plus de disponible
     
+class AllSpell(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id = 22,time_take=0)
+
+    def trigger(self,weapon):
+
+        return -weapon.nbr_spells_max,None,None #Done un slot de plus de disponible
+    
 class CreateFire_DieEffect(Upgrade):
     """DieEffect = create projectile when die"""
 
@@ -262,6 +288,26 @@ class CreateFire_DieEffect(Upgrade):
         AddProjectileWhenDie(projectile,weapon)
 
         return 1,[projectile],None
+    
+class Copy(Upgrade):
+    """DieEffect = create projectile when die"""
+
+    def __init__(self):
+
+        super().__init__(id = 31,time_take = weapons.COPY_RELOAD_TIME)
+
+    def trigger(self,weapon):
+
+        while weapon.idx < weapon.nbr_spells_max and weapon.spells_on_shot[weapon.idx] == None:
+            weapon.idx +=1
+
+        if weapon.idx < weapon.nbr_spells_max :
+            spell = weapon.spells_on_shot[weapon.idx]
+            return spell.trigger(weapon)
+        
+        else : #Don't trigger
+
+            return 0,None,None
     
 class SmallDash(Upgrade):
 
@@ -323,12 +369,16 @@ UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
 UPGRADES[13] = AddDamage()
 UPGRADES[14] = AddManyDamage()
+UPGRADES[15] = Reloader()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
+UPGRADES[22] = AllSpell()
 UPGRADES[30] = CreateFire_DieEffect()
+UPGRADES[31] = Copy()
 UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,40]
 rare_upgrades = [4,5,6,14,21,41,42]
+legendary_upgrades = [15,22,31]

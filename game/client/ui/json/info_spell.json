@@ -113,6 +113,14 @@
         "time_reload": 0,
         "degat":5
     },
+    "SPELL15":{
+        "type":"augment",
+        "name":"Recharge",
+        "description":["Reduit le temps complet",
+                        "de recharge de 0.4."],
+        "time_reload": -0.2,
+        "degat":5
+    },
     "SPELL20":{
         "type":"augment",
         "name":"Simple",
@@ -129,6 +137,14 @@
         "time_reload": 0,
         "degat":0
     },
+    "SPELL22":{
+        "type":"augment",
+        "name":"Infinie",
+        "description":["Permet de lancer",
+                    "tous les sorts !"],
+        "time_reload": 0,
+        "degat":0
+    },
     "SPELL30":{
         "type":"projectile",
         "name":"BDF + effet",
@@ -139,6 +155,13 @@
         "rebond":0,
         "time_reload": 1.5,
         "degat":5
+    },
+    "SPELL31":{
+        "type":"augment",
+        "name":"Copie",
+        "description":["Copie le prochain sort/projectile."],
+        "time_reload": 0,
+        "degat":0
     },
     "SPELL40":{
         "type":"augment",

@@ -243,5 +243,9 @@ class Player(Mob) :
 
         self.respawn_at = [element.pos_x,element.pos_y]
 
-    def upgrade_size_weapon(self):
-        return  self.weapons.add_slot()
+    def upgrade_size_weapon(self,nbr):
+
+        for _ in range(nbr) :
+            infos = self.weapons.add_slot()
+
+        return infos
