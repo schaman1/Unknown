@@ -86,8 +86,11 @@ class ProjectileManager :
                     self.add_on_client_see_update(lClient,l_projectile[i],projectiles_create)
                     l_projectile[i].to_update = False
 
-                    if chunk != self.calculate_chunk(l_projectile[i]) :
-                        projectiles_change_chunk_to_had.append((self.calculate_chunk(l_projectile[i]),l_projectile[i]))
+                else :
+
+                    new_chunk = self.calculate_chunk(l_projectile[i])
+                    if chunk != new_chunk :
+                        projectiles_change_chunk_to_had.append((new_chunk,l_projectile[i]))
                         del l_projectile[i]
 
         for chunk,proj in projectiles_change_chunk_to_had:

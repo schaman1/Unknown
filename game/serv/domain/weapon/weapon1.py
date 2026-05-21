@@ -91,7 +91,7 @@ class Weapon2(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateFire())
+        self.fill_slot(0,upgrades.CreateLance())
         self.fill_slot(1,upgrades.CreateFire_DieEffect())
 
 class Weapon3(Weapon) :

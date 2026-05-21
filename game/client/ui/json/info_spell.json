@@ -51,6 +51,26 @@
         "time_reload": 0.5,
         "degat":3
     },
+    "SPELL7":{
+        "type":"projectile",
+        "name":"Caillou",
+        "description":["Lance un enorme caillou"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL8":{
+        "type":"projectile",
+        "name":"Lance",
+        "description":["Nothing"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
