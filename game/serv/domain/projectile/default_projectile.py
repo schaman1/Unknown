@@ -35,6 +35,7 @@ class Projectile :
         self.rebond = rebond
         self.damage = damage
         self.knockback = knockback #Knockback strength applied to mobs on hit (0 = none)
+        self.movable = speed!=0 #If move or not = si a vx et vy. Utilise dans collision hander car si bouge pas alors test trigger avec plus de chunk
 
         self.is_dead = False
         self.to_update = False

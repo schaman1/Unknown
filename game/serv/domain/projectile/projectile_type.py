@@ -54,7 +54,7 @@ class Lune(Projectile) :
                          randomize_angle=randomize,
                          owner_pos=owner,
                          knockback = weapons.KNOCKBACK_LUNE)
-        
+                
 class Laser(Projectile) :
 
     def __init__(self,angle,pos,team,randomize,owner):

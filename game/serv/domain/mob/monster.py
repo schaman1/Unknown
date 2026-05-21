@@ -146,6 +146,12 @@ class Monster(Mob):
                 self.target = None #Reset de l'aggro
 
         elif self.state == "run away":
+
+            #if self.dist > self.run_away_rad :
+
+            if self.dist > self.radius :
+                self.state = "moving"
+
             if self.dist >= self.run_away_rad +15 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
@@ -260,7 +266,7 @@ class Laseroide(Monster) :
         super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
 
         self.acceleration_y = 20* self.acceleration
-        self.knockback_res = 2
+        self.knockback_res = 0 #Resist pas
 
         self.name = 1 #Permet d'affihcer le bon monstre
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -376,7 +382,7 @@ class Foulli(Monster) :
 
         super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
-        self.knockback_res = 3
+        self.knockback_res = 10
 
         self.name = 2 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
