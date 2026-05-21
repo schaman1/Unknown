@@ -157,8 +157,8 @@ class Weapon :
 
         for projectile in projectiles :
 
-            projectile.pos_x += vx*projectile.half_width
-            projectile.pos_y -= vy*projectile.half_width
+            projectile.pos_x += vx*(projectile.half_width+100)
+            projectile.pos_y -= vy*(projectile.half_width+100)
     
     def test_if_last_spell_of_weapon(self):
         

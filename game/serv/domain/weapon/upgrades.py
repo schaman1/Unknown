@@ -207,8 +207,22 @@ class AddDamage(Upgrade):
 
     def trigger(self,weapon):
 
-        weapon.add_damage +=3
+        weapon.add_damage +=2
         #weapon.team = Team.All
+
+        return 0,None,None
+    
+class AddManyDamage(Upgrade):
+    #Randomize la direction mais reduit le temps de rechargement de l'arme
+
+    def __init__(self):
+
+        super().__init__(id = 14,time_take = 0)
+
+    def trigger(self,weapon):
+
+        weapon.add_damage +=5
+        weapon.team = Team.All
 
         return 0,None,None
     
@@ -308,6 +322,7 @@ UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
 UPGRADES[13] = AddDamage()
+UPGRADES[14] = AddManyDamage()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
 UPGRADES[30] = CreateFire_DieEffect()
@@ -316,4 +331,4 @@ UPGRADES[41] = LongDash()
 UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,40]
-rare_upgrades = [4,5,6,21,41,42]
+rare_upgrades = [4,5,6,14,21,41,42]

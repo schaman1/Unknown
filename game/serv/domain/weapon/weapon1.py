@@ -50,7 +50,7 @@ class WeaponBag(Weapon):
         self.fill_slot(1,upgrades.AddSpeed())
         self.fill_slot(2,upgrades.AddRebond())
         self.fill_slot(3,upgrades.CreatePompe())
-        self.fill_slot(9,upgrades.AddDamage())
+        self.fill_slot(9,upgrades.AddManyDamage())
 
 class Weapon1(Weapon) :
 

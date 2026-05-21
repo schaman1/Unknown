@@ -99,10 +99,19 @@
     "SPELL13":{
         "type":"augment",
         "name":"Degat plus",
-        "description":["Ajoute 3 degats",
+        "description":["Ajoute 2 degats",
                         "au prochain projectile."],
         "time_reload": 0,
-        "degat":3
+        "degat":2
+    },
+    "SPELL14":{
+        "type":"augment",
+        "name":"Degat plus",
+        "description":["Ajoute 5 degats",
+                        "mais les projectiles peuvent",
+                        "vous blesser."],
+        "time_reload": 0,
+        "degat":5
     },
     "SPELL20":{
         "type":"augment",
