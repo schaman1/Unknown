@@ -38,7 +38,7 @@ class Server_game(Server) :
                 while self.next_send_time <= time.perf_counter():
                     self.next_send_time += self.send_interval
 
-            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
+            return_monster,monster_change_chunk = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
@@ -50,9 +50,11 @@ class Server_game(Server) :
                 self.collision_handler.die_send.clear()
 
             if len(return_monster)!=0 :
-                
                 if should_send :
                     self.send_data_update(return_monster,4)
+
+            if len(monster_change_chunk)!=0:
+                self.send_data_all((20,monster_change_chunk))
 
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)

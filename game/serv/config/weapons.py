@@ -36,7 +36,7 @@ LANCE_WIDTH = 8*RATIO
 LANCE_HEIGHT = 2*RATIO
 LANCE_DAMAGE = 6
 LANCE_RELOAD_TIME = 0.3
-KNOCKBACK_LANCE = 1      #Knockback multiplier (0 = no knockback)
+KNOCKBACK_LANCE = 1.5    #Knockback multiplier (0 = no knockback)
 
 LASER_LIFE = 2
 LASER_V = 50*RATIO

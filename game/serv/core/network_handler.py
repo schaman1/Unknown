@@ -303,10 +303,17 @@ class Network_handler :
             duree = int(duree*1000)
             packet+=struct.pack("!HHH",id,chunk,duree)
 
+    def pack_monster_change_chunk(self,data,packet):
+
+        packet+=struct.pack("!H",len(data))
+
+        for monster in data:
+            chunk,new_chunk,id = monster
+            packet+=struct.pack("!HHH",chunk,new_chunk,id)
+
     def pack_object(self,data,packet):
 
         packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
-
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
@@ -368,6 +375,9 @@ class Network_handler :
 
         elif id==18:
             self.pack_die_update(data[1],packet)
+
+        elif id == 20 :
+            self.pack_monster_change_chunk(data[1],packet)
 
         else :
             print("Issue id not found : ",id)
