@@ -70,8 +70,8 @@ class Monster(Mob):
         target = None
         best = None
         for p in lPlayer.values():
-            if not self.has_line_of_sight(map, p):
-                continue
+            #if not self.has_line_of_sight(map, p): #Issue come from here ?
+            #    continue
             dx = p.pos_x - self.pos_x
             dy = p.pos_y - self.pos_y
             d = math.hypot(dx, dy)
@@ -79,7 +79,9 @@ class Monster(Mob):
                 best = d
                 target = p
         if target is None:
+            #print("None ! why ",lPlayer.values())
             return None, float("inf")
+        
         return target, best / self.base_movement
     
     def dist_to_target_player(self,player):
@@ -103,7 +105,7 @@ class Monster(Mob):
         if self.state == "stunned":
             if time.perf_counter() > getattr(self, 'stun_timer', 0):
                 self.state = "idle"
-                self.target = None
+                #self.target = None #Fis issue
             else:
                 return
 
