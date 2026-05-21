@@ -4,6 +4,8 @@
 DIST_TO_TP_BOSS = 400
 POS_BOSS = [20,190]
 POS_PNJ = (20,190)
+POS_RESET = (40,120)
+POS_TOO_LEFT = 20
 
 SCALE_BLOC = 4 #veut dire 1 pixel = 50 pixels
 RATIO = 100

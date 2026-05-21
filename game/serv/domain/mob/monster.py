@@ -146,7 +146,7 @@ class Monster(Mob):
                 self.target = None #Reset de l'aggro
 
         elif self.state == "run away":
-            if self.dist >= self.attack_radius +0 or self.dist < (self.width/2)/self.base_movement : #0 = delta
+            if self.dist >= self.run_away_rad +15 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
 
@@ -251,15 +251,13 @@ class Monster(Mob):
 
     # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
 
-
-
 #Creation specifique de chaque monstre
 
 class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 6)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
 
         self.acceleration_y = 20* self.acceleration
         self.knockback_res = 2
@@ -271,6 +269,8 @@ class Laseroide(Monster) :
         self.begin_shot = time.perf_counter()
         self.time_before_shot = 1
         self.angle = 0
+        self.begin_relax = time.perf_counter()
+        self.time_relax = 0.7
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
@@ -329,6 +329,12 @@ class Laseroide(Monster) :
 
     def idle_behavior(self,map,dt):
         """Reste sur place"""
+        if self.focus :
+            if self.time_relax + self.begin_relax <= time.perf_counter():
+                self.focus = False
+                self.state = "run away"
+                self.last_time_jump = time.perf_counter()#Prevent jump
+
         return
     
     def moving_behavior(self,target,map,dt):
@@ -360,7 +366,9 @@ class Laseroide(Monster) :
                 projectile_manager.add_projectile_create(proj)
 
         if self.weapon.idx == 0:
-            self.focus = False
+            #self.focus = True
+            self.state = "idle"
+            self.begin_relax = time.perf_counter()
 
 class Foulli(Monster) :
 

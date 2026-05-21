@@ -140,9 +140,12 @@ class Animation:
 
             #size_img = 50*cell_size
             size = (self.width,self.height)
-            img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
-            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
-            self.decoupe_img(img_idle,self.animation["attacking"],size)
+            for i in range(4):
+                self.animation["attacking"]["right"].append(self.animation["loading"]["right"][3])
+                self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
+            #img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
+            #img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            #self.decoupe_img(img_idle,self.animation["attacking"],size)
 
             self.add_tombe(cell_size)
 

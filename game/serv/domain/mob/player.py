@@ -5,7 +5,7 @@ from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import input_handler
 from serv.domain.mob.team import Team
 from serv.config import Default_values
-from shared.constants.world import LEN_DEATH_PLAYER
+from shared.constants import world
 import time
 
 class Player(Mob) :
@@ -14,7 +14,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False,damage = 25): 
 
-        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH_PLAYER)
+        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = world.LEN_DEATH_PLAYER)
 
         self.money = Default_values.Player_money_start
         self.send_new_money = True #Pour initialiser
@@ -34,6 +34,20 @@ class Player(Mob) :
         self.time_shot_update = False
         self.respawn_at = [self.pos_x,self.pos_y]
         self.time_respawn = 0
+
+        self.fct_to_do = self.check_if_can_leave_intro #Here to check if can leave after intro
+
+    def set_finish_intro(self):
+        self.fct_to_do = self.empty_fct
+    
+    def empty_fct(self):
+        return False
+
+    def check_if_can_leave_intro(self):
+
+        if self.pos_x <= world.POS_TOO_LEFT*self.base_movement :
+            return True
+        return False
 
     def take_damage(self, amount):
         """Retourne True/False selon si le joueur est mort ou non"""

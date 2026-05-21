@@ -34,8 +34,10 @@ class Pnj_all :
 
     def init_pnj(self):
         
-        pos = (40,125)
+        pos = (70,125)
         self.add_pnj(pos,'pnj_tell_story')
+        self.container_pnj[-1].animation.direction = "left"
+    
 
         pos = (38,173)
         self.add_pnj(pos,'pnj_tell_healer')
