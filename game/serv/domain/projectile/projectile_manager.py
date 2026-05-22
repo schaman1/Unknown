@@ -1,4 +1,5 @@
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
+from shared.constants.fps import FPS_UPDATE_POS_PROJ
 
 class ProjectileManager :
 
@@ -7,6 +8,8 @@ class ProjectileManager :
         self.size_chunk = (height_chunk,width_chunk)
 
         self.next_id = 0
+        self.accumulator = 0
+
         self.dic_projectiles = {}
         self.projectile_create = []
         self.projectile_die = []
@@ -66,11 +69,15 @@ class ProjectileManager :
 
         projectiles_change_chunk_to_had = []
 
+        should_move = self.shoudl_move(dt)
+
         for chunk,l_projectile in self.dic_projectiles.items() :
 
             for i in range(len(l_projectile)-1,-1,-1) :
 
-                l_projectile[i].move(dt,map)
+                if should_move :
+                    l_projectile[i].move(FPS_UPDATE_POS_PROJ,map)#No dt but FPS ...
+                #l_projectile[i].to_update = True
 
                 if l_projectile[i].should_destroy(map) :
 
@@ -136,3 +143,11 @@ class ProjectileManager :
 
     def client_see(self,client,projectile):
         return True
+
+    def shoudl_move(self,dt):
+        self.accumulator+=dt
+        if self.accumulator>=FPS_UPDATE_POS_PROJ :
+            self.accumulator -= FPS_UPDATE_POS_PROJ
+
+            return True
+        return False

@@ -48,7 +48,7 @@ class Projectile :
 
     def update_angle_pos(self,new_angle,new_pos,owner_pos):
 
-        #print(self.force_pos,new_pos,self.delta_pos)
+        print(self.life_time)
 
         if self.force_pos :
             self.pos_x = new_pos[0]+self.delta_pos[0]
@@ -87,7 +87,11 @@ class Projectile :
     # je t'aime
         self.vy += self.base_movement*self.weight*dt
 
-        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        if self.vy < 0:
+            gravity_power_mult -=0.1
+        else :
+            gravity_power_mult += 0.1
 
         if self.weight != 0 :
             self.vy = self.vy*(gravity_power_mult**(dt*60))
@@ -137,13 +141,17 @@ class Projectile :
                     if dist <= remaining :
                         touch_wall = True
 
+                        #print("Has to be update")
+
                         if self.rebond :
                             self.to_update = True
                         else :
                             self.is_dead = True
 
                         self.angle = (-self.angle)%360
-                        self.vy = -self.vy
+                        self.speed = int(self.speed * 0.9)
+                        self.load()
+                        #self.vy = -self.vy
 
                     break
 
@@ -190,7 +198,9 @@ class Projectile :
                             self.is_dead = True
 
                         self.angle = (180-self.angle)%360
-                        self.vx = -self.vx
+                        self.speed = int(self.speed * 0.9)
+                        self.load()
+                        #self.vx = -self.vx
 
                     break
 
@@ -228,6 +238,7 @@ class Projectile :
             return True
         
         if time.time() - self.spawn_time >= self.life_time :
+            #print(self.spawn_time,time.time(),self.life_time)
             return True
     
         else :

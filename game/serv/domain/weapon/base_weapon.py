@@ -24,6 +24,7 @@ class Weapon :
 
         self.size_mult = 1
         self.speed_mult = 1
+        self.add_life = 0
         self.add_rebond = False
         self.add_damage = 0
         self.randomize_angle = False
@@ -56,6 +57,7 @@ class Weapon :
         self.speed_mult = 1
         self.size_mult = 1
         self.add_damage = 0
+        self.add_life = 0
         self.add_rebond = False
         self.randomize_angle = False
         self.loading_time_refill_current = self.loading_time_refill
@@ -90,8 +92,10 @@ class Weapon :
         if self.add_rebond :
             projectile.rebond = True
 
-        projectile.damage += self.add_damage
+        projectile.damage = max(0,self.add_damage+projectile.damage)
         projectile.speed = projectile.speed*self.speed_mult
+        projectile.life_time += self.add_life
+        print(self.add_life)
 
         projectile.width=int(projectile.width*self.size_mult)
         projectile.height=int(projectile.height*self.size_mult)
