@@ -149,7 +149,7 @@ class WeaponLimace(Weapon):
         self.init_slot()
 
     def init_slot(self):
-        return
+        # return
         for i in range(self.nbr_slot):
-            self.fill_slot(i, upgrades.CreateCayou())
+            self.fill_slot(i, upgrades.CreateStone())
 
