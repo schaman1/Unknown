@@ -185,10 +185,10 @@ class DwarfKing(Monster) :
 
         anim = {0:"idle", 1:"running", 2:"running", 4:"running", 5:"idle"}.get(new_state,"idle")
 
-        if anim != self.old_state :
+        if anim != self.animation.old_state :
             self.animation.set_state(anim)
 
-        self.old_state = anim
+        self.animation.old_state = anim
 
 
 class Limace(Monster) :
