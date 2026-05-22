@@ -159,9 +159,21 @@
     "SPELL31":{
         "type":"augment",
         "name":"Copie",
-        "description":["Copie le prochain sort/projectile."],
+        "description":["Copie le prochain sort",
+                        "ou projectile."],
         "time_reload": 0,
         "degat":0
+    },
+    "SPELL32":{
+        "type":"projectile",
+        "name":"Pompe + effet",
+        "description":["Invoque le PROJECTILE",
+                    "suivant a sa disparition."],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 1.5,
+        "degat":5
     },
     "SPELL40":{
         "type":"augment",
