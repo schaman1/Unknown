@@ -14,6 +14,9 @@ class Read_monster :
 
         self.id = 0
 
+        #Monstres invoqués en cours de partie (ex: par le boss), à envoyer au client (msg 5)
+        self.monster_to_create_send = []
+
         self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
 
         self.init_dic_monster()
@@ -51,11 +54,21 @@ class Read_monster :
         chunk = self.return_chunk(monster.pos_x,monster.pos_y)
         self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
 
+    def spawn_minion(self,monster):
+        """Crée un monstre en cours de partie (invoqué par un boss) et prépare son envoi au client."""
+        self.create_monster(monster)
+        chunk_y,chunk_x = self.return_chunk(monster.pos_x,monster.pos_y)
+        chunk = chunk_y*100+chunk_x
+        self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name))
+
     def create_list_monster(self) :
 
         self.create_monster(monster.Laseroide(3411,17300))
         self.create_monster(monster.Limace(30000,25000))
         self.create_monster(monster.Foulli(12000,15400))
+
+        #Le boss : Le Roi Nain, à la position POS_BOSS (20,190 en cases)
+        self.create_monster(monster.DwarfKing(2000,19000))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
@@ -76,6 +89,8 @@ class Read_monster :
 
         list_monster_change_chunk = []
 
+        list_minion_to_spawn = []
+
         for y in range(self.size_chunk_all[0]) :
             for x in range(self.size_chunk_all[1]) :
 
@@ -90,6 +105,12 @@ class Read_monster :
                         monster = self.dic_monster[chunk][i]
 
                         monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
+
+                        #Récupère les monstres invoqués par ce monstre (ex: le boss)
+                        to_spawn = getattr(monster,"monsters_to_spawn",None)
+                        if to_spawn :
+                            list_minion_to_spawn.extend(to_spawn)
+                            to_spawn.clear()
 
                         state_id = self.state_map.get(monster.state, 0)
 
@@ -107,6 +128,10 @@ class Read_monster :
             old_chunk,new_chunk,monster = list_monster_change_chunk[i]
             self.dic_monster[new_chunk].append(monster)
             list_monster_change_chunk[i][2] = monster.id
+
+        #Enregistre les monstres invoqués cette frame (les place dans un chunk + leur donne un id)
+        for minion in list_minion_to_spawn :
+            self.spawn_minion(minion)
 
         return list_modif,list_monster_change_chunk
     
