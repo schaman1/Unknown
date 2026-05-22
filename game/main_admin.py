@@ -11,7 +11,7 @@ from client.core.main import Main
 #Change values to have access to all
 def change_values():
 
-    #world.SPAWN_POINT = (32400,25500)
+    world.SPAWN_POINT = (32400,25500)
 
     Default_values.Player_money_start = 5000
     Default_values.PLAYER_LIFE = 5000

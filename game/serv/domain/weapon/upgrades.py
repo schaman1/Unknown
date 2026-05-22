@@ -43,6 +43,12 @@ def copy_projectiles(source):
             proj_copy.delta_pos = [proj.delta_pos[0],proj.delta_pos[1]]
             proj_copy.angle_force = proj.angle_force
             proj_copy.owner = proj.owner
+
+            proj_copy.life_time = proj.life_time
+            proj_copy.damage = proj.damage
+            proj_copy.speed = proj.speed
+            proj_copy.rebond = proj.rebond
+
             
             copy.append(proj_copy)
 
@@ -269,6 +275,22 @@ class Reloader(Upgrade):
 
         return 0,None,None
     
+class AddLife(Upgrade):
+    #Randomize la direction mais reduit le temps de rechargement de l'arme
+
+    def __init__(self):
+
+        super().__init__(id = 16,time_take = 0)
+
+        #self.add_life = weapons.ADD_LIFE_AMOUNT
+
+    def trigger(self,weapon,idx=0):
+
+        #weapon.randomize_angle = True
+        weapon.add_life += weapons.ADD_LIFE_AMOUNT
+
+        return 0,None,None
+    
 class DoubleSpell(Upgrade):
 
     def __init__(self):
@@ -431,12 +453,13 @@ UPGRADES[12] = Randomizer()
 UPGRADES[13] = AddDamage()
 UPGRADES[14] = AddManyDamage()
 UPGRADES[15] = Reloader()
+UPGRADES[16] = AddLife()
 UPGRADES[20] = DoubleSpell()
 UPGRADES[21] = TripleSpell()
 UPGRADES[22] = AllSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[31] = Copy()
-UPGRADES[31] = CreatePompe_DieEffect()
+UPGRADES[32] = CreatePompe_DieEffect()
 UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = Jump()

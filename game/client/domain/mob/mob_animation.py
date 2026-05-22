@@ -367,7 +367,6 @@ class Animation:
             self.fct_to_do = self.end_in_death
 
         elif state_beginning == "death":
-            print("Duree death skeleton = ",duree)
             self.animation["death"]["time"] = (duree-0.3*4)
             self.animation["respawn"]["time"] = 0.3
             self.fct_to_do = self.end_death

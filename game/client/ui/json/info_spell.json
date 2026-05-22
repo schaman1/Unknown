@@ -119,7 +119,15 @@
         "description":["Reduit le temps complet",
                         "de recharge de 0.4."],
         "time_reload": -0.2,
-        "degat":5
+        "degat":0
+    },
+    "SPELL16":{
+        "type":"augment",
+        "name":"Duree",
+        "description":["Augmente la duree",
+                        "du projectile."],
+        "time_reload": 0,
+        "degat":0
     },
     "SPELL20":{
         "type":"augment",
