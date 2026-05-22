@@ -70,6 +70,7 @@ class Player(Mob) :
         self.has_respawn = False
         self.start_dead = time.perf_counter()+ self.len_dead
         self.update_money(-50)
+        self.input_handler.stop_mov()
 
     def respawn(self):
 

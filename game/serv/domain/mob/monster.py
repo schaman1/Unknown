@@ -587,6 +587,8 @@ class Escargot(Monster) :
         if self.still_dead():
             return
         
+        #print(self.state)
+        
         super().update(map,dt,lPlayer,collision_handler)
 
        # --- Deplacement selon l'état ---
@@ -605,6 +607,7 @@ class Escargot(Monster) :
 
     def idle_behavior(self,map,dt):
         """est épuisé"""
+        self.state = "moving"
     
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
@@ -640,6 +643,7 @@ class Escargot(Monster) :
 
     def attack(self,target,collision_handler,dt,projectile_manager):
         """Retourne True si le joueur est bien touché"""
+        #self.state = "moving"
 
 
 class Limace(Monster) :

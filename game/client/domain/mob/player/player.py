@@ -171,7 +171,6 @@ class Player_you(Mob) :
             elif new_direction==2:
                 self.key_active["left"]=True
 
-
             self.calcule_new_direction()
 
     def update_direction_stop_look(self,stop_direction):
@@ -189,6 +188,9 @@ class Player_you(Mob) :
         self.move_mob(new_pos)
 
     def kill(self,duree):
+
+        self.key_active["right"] = False
+        self.key_active["left"] = False
 
         self.animation.set_to_death(duree,"in_death")
 

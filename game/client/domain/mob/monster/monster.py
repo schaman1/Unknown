@@ -11,8 +11,6 @@ class Monster(Mob):
 
         super().__init__(x,y,cell_size,size=size,name=name)
 
-        self.old_state = None
-
     def blit(self,screen,x,y,dt):
 
         self.update_interpolate_pos()
@@ -82,10 +80,10 @@ class Laseroide(Monster) :
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 class Foulli(Monster) :
 
@@ -106,11 +104,11 @@ class Foulli(Monster) :
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0]=="attacking" and self.old_state != "attacking":
+        if key[0]=="attacking" and self.animation.old_state != "attacking":
             self.animation.set_state("attacking")
             self.animation.fct_to_do = self.animation.next_idle
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 class Defendeur(Monster) :
 
@@ -134,10 +132,10 @@ class Defendeur(Monster) :
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 class Escargot(Monster) :
 
@@ -163,10 +161,10 @@ class Escargot(Monster) :
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 
 class Limace(Monster) :
@@ -197,9 +195,9 @@ class Limace(Monster) :
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 
