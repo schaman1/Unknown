@@ -17,7 +17,6 @@ class Monster_all :
     def change_chunk(self,l):
         """Change chunk for monsters"""
         for chunk,new_chunk,id in l:
-            #print("Succesfully change chunk, from : ",chunk,"to ",new_chunk," with id : ",id)
             monster =  self.dic_monster[chunk][id]
             del self.dic_monster[chunk][id]
             self.dic_monster[new_chunk][id] = monster

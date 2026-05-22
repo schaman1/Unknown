@@ -255,7 +255,7 @@ class Server_game(Server) :
 
             dist = self.distance((client.pos_x,client.pos_y),world.POS_PNJ)
 
-            print(dist,world.DIST_TO_TP_BOSS*self.base_movement,client.pos_x,pnj_pos[0])
+            print("Try tp to boss :",dist,world.DIST_TO_TP_BOSS*self.base_movement,client.pos_x,pnj_pos[0])
 
             if dist > world.DIST_TO_TP_BOSS*self.base_movement :
 
