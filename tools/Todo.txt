@@ -5,7 +5,12 @@ Ch'ui dans le metro mdr (c pour ca j'ai tej les NIG)
 CC = ${JEWS}.stoleTheHumanity #MDRRRR
 - Add projectile to LASEROIDE
 
+Done :
 
-coffre : 16647 9699
-coffre rare : 21410 8099
-coffre rare : 44360 19299
+coffre : 18832 12899 / 19110 16099 / 10416 19299
+coffre rare : 27105 19299
+coffre legendaire : 29709 23299 / 41228 18899
+
+Double jump : 15005 24899
+
+Magasin : From : 38772 23699 / To : 41112 23699

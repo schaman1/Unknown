@@ -29,7 +29,7 @@ class Server_game(Server) :
         self.add_elements_to_game()
 
         while self.is_running_game :
-            dt = self.fpsClock.tick(self.fps)/1000
+            dt = min(self.fpsClock.tick(self.fps)/1000,0.05)
 
             should_send = False
             if self.next_send_time <= time.perf_counter():
