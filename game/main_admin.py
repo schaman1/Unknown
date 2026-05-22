@@ -1,8 +1,8 @@
 import pygame
 from shared.constants import world
 from serv.config import Default_values
-from serv.config.add_objects_begin import OBJECTS
-from serv.config.add_objects_begin_admin import OBJECTS_ADDING
+from serv.config.add_objects_begin import OBJECTS,WEAPONS_BEGIN
+from serv.config.add_objects_begin_admin import OBJECTS_ADDING,WEAPONS_ADDING
 
 pygame.init()
 
@@ -22,6 +22,10 @@ def change_values():
 
     for e in OBJECTS_ADDING:
         OBJECTS.append(e)
+
+    for i in range(4):
+        for idx in WEAPONS_ADDING[i]:
+            WEAPONS_BEGIN[i].append(idx)
 
 # Set the title of the window
 pygame.display.set_caption('Unknown')
