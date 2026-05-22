@@ -1,5 +1,6 @@
 from serv.domain.mob import monster
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
+from serv.config.position_all_monsters import MONSTER_POSITION
 
 class Read_monster :
 
@@ -53,9 +54,35 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.create_monster(monster.Laseroide(3411,17300))
-        self.create_monster(monster.Limace(30000,25000))
-        self.create_monster(monster.Foulli(12000,15400))
+        for name in MONSTER_POSITION.keys() :
+
+            for pos in MONSTER_POSITION[name] :
+
+                class_monster = None
+
+                if name == "Laseroide" :
+                    class_monster = monster.Laseroide
+
+                elif name == "Limace" :
+                    class_monster = monster.Limace
+
+                elif name == "Escargot" :
+                    class_monster = monster.Escargot
+
+                elif name == "Foulli" :
+                    class_monster = monster.Foulli
+
+                elif name == "Defendeur" :
+                    class_monster = monster.Defendeur
+
+                elif name == "Skeleton" :
+                    class_monster = monster.Skeleton
+
+                if class_monster != None :
+
+                    self.create_monster(class_monster(pos[0],pos[1]))
+
+        #print(self.dic_monster)
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):

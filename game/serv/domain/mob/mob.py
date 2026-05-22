@@ -140,6 +140,8 @@ class Mob(Movable):
 
     def move_all(self,map,dt,collision_handler):
 
+        #print(self.pos_x,self.pos_y)
+
         self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 
         delta = self.return_delta_vitesse(map,dt)
