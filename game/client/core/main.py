@@ -268,7 +268,6 @@ class Main:
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
 
-                            # print("Host\n")
                             self.start_game()
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
@@ -406,7 +405,7 @@ class Main:
     def trigger_pnj(self,pnj,is_talking):
         self.musique.update_volume(0.1)
 
-        print(pnj.text.text_id,pnj.text.start_blit_text)
+        #print(pnj.text.text_id,pnj.text.start_blit_text)
 
         if pnj.name=="pnj_tell_story":
             
