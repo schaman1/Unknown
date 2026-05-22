@@ -657,15 +657,16 @@ class Limace(Monster) :
         self.isMelee = False
         self.norme = 0
 
-        self.melee_radius = self.attack_radius/3
-        self.time_before_melee_attack = 1 #0.2
+        self.melee_radius = 12 #self.attack_radius/3
+        self.time_before_melee_attack = 0.3 #0.2
 
 
-        self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
+        self.weapon = weapon1.WeaponLimace(team = self.team,player = self)
         self.time_before_range_attack = 1 #0.7
         self.angle = 0
 
-        self.cooldown = 1
+        self.start_cooldown = time.perf_counter()
+        self.cooldown = 1.5
         #self.collision_damage = False
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
@@ -674,6 +675,10 @@ class Limace(Monster) :
             return
         
         super().update(map,dt,lPlayer,collision_handler)
+
+        if self.start_cooldown + self.cooldown > time.perf_counter() : #cooldown state after ranged atk (marche)
+            self.state = "moving"
+
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -690,29 +695,35 @@ class Limace(Monster) :
                 self.focus = True #ne change plus d'état
                 self.begin_attack = time.perf_counter() #début de l'attaque
 
-                self.norme = self.dist#self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
-
+                self.norme = self.dist
 
                 if self.norme <= self.melee_radius : #melee attack
-                        # print("Locked in melee range")
                         self.isMelee = True
 
                 else : #range attack
-                    # print("Locked in long range")
                     self.angle = self.get_angle(self.target)
+
+                    if self.angle > 100 and self.angle <= 155 :
+                        self.angle -= 10
+                    elif self.angle > 155 and self.angle <= 180 :
+                        self.angle -= 20
+                    elif self.angle > 25 and self.angle <= 75 :
+                        self.angle += 10
+                    elif self.angle >= 0 and self.angle <= 25 :
+                        self.angle += 5
+                    
 
             else :
                 if self.isMelee :
                     self.melee_attack(self.target,collision_handler,dt,projectile_manager)
                     self.isMelee = False
-                    # print("Melee ATTAQUE")
 
                 else :
                     self.range_attack(self.target,collision_handler,dt,projectile_manager)
-                    # print("Range ATTAQUE")
+                    self.start_cooldown = time.perf_counter()
 
                 self.state = "moving" 
-                self.focus = False   
+                self.focus = False      
 
         
         elif self.state == "loading" :
@@ -725,7 +736,6 @@ class Limace(Monster) :
 
             else :
                 if self.begin_attack + self.time_before_range_attack <= time.perf_counter() :
-                    # self.begin_shot = time.perf_counter()
                     self.state = "attacking"
 
 
@@ -750,12 +760,11 @@ class Limace(Monster) :
     def melee_attack(self,target,collision_handler,dt,projectile_manager):
         """moves"""
         damage = self.damage
-        
         collision_handler.player_take_damage_no_projectile(damage,self.target)
     
     
     def range_attack(self,target,collision_handler,dt,projectile_manager):
-        return
+
         trigger = self.weapon.trigger_shot(self.angle,(self.pos_x,self.pos_y))
 
         if trigger != None :
@@ -767,6 +776,7 @@ class Limace(Monster) :
 
         if self.weapon.idx == 0:
             self.focus = False
+            self.state = "moving"
 
 
 class Skeleton(Monster):

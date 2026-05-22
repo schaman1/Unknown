@@ -84,7 +84,7 @@ class Projectile :
     
     def gravity(self,dt):
 
-    # je t'aime
+    # je t'aime -> pas moi
         self.vy += self.base_movement*self.weight*dt
 
         gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
