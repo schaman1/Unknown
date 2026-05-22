@@ -12,9 +12,15 @@ class Read_monster :
 
         self.base_movement = base_movement
 
+        self.id = 0
+
         self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
 
         self.init_dic_monster()
+
+    def generate_id(self):
+        self.id = (self.id+1)%255
+        return self.id
 
     def init_dic_monster(self) :
 
@@ -38,12 +44,19 @@ class Read_monster :
                     list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name))
 
         return list_modif
+    
+    def create_monster(self,monster):
+        
+        monster.id = self.generate_id()
+        chunk = self.return_chunk(monster.pos_x,monster.pos_y)
+        self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
+        print(chunk)
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(monster.Limace(3411,17300,1))
-        # self.dic_monster[200].append(monster.Limace(7900,15400,2))
-        self.dic_monster[201].append(monster.Laseroide(12000,15400,3))
+        self.create_monster(monster.Laseroide(3411,17300))
+        self.create_monster(monster.Defendeur(30000,25000))
+        self.create_monster(monster.Foulli(12000,15400))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):

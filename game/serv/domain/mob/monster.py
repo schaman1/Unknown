@@ -179,11 +179,11 @@ class Monster(Mob):
                 self.vitesse_y = -self.base_movement * 5 * effective_kb
                 
             #Étourdi seulement quand le knockback réellement subi dépasse 1.5
-            if effective_kb > 1.5:
-                self.state = "stunned"
-                self.stun_timer = time.perf_counter() + 0.2
+            #if effective_kb > 1.5: #I remove it bcs pour le defendeur en gros il doit se poser 2 sec avant de retaper mais dcp avec le stun, si on le tape il nous tape direct après
+            #    self.state = "stunned"
+            #    self.stun_timer = time.perf_counter() + 0.2
 
-            self.focus = False
+            #self.focus = False #Why ???
 
             if self.life <= 0:
                 self.life = 0
@@ -263,7 +263,7 @@ class Monster(Mob):
 
 class Laseroide(Monster) :
 
-    def __init__(self,x,y,id):
+    def __init__(self,x,y,id = 0):
 
         super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
 
@@ -380,7 +380,7 @@ class Laseroide(Monster) :
 
 class Foulli(Monster) :
 
-    def __init__(self,x,y,id):
+    def __init__(self,x,y,id=0):
 
         super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
@@ -449,7 +449,7 @@ class Foulli(Monster) :
 
 class Defendeur(Monster) :
 
-    def __init__(self,x,y,id):
+    def __init__(self,x,y,id=0):
 
         super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 6)
 
@@ -571,7 +571,7 @@ class Defendeur(Monster) :
 
 class Escargot(Monster) :
 
-    def __init__(self,x,y,id):
+    def __init__(self,x,y,id=0):
 
         super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
 
@@ -645,7 +645,7 @@ class Escargot(Monster) :
 class Limace(Monster) :
     """Se déplace, tire un projectile de loin, sinon attaque au corps à corps"""
 
-    def __init__(self,x,y,id):
+    def __init__(self,x,y,id=0):
 
         super().__init__(hp=13,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
 
@@ -781,7 +781,7 @@ class Limace(Monster) :
 
 class Skeleton(Monster):
 
-    def __init__(self, x, y, id):
+    def __init__(self, x, y, id=0):
         super().__init__(hp=20, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
         
         self.knockback_res = 1

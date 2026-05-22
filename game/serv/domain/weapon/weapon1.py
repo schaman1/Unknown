@@ -1,5 +1,6 @@
 from serv.config import weapons
 from serv.domain.weapon.base_weapon import Weapon
+from serv.config.add_objects_begin import WEAPONS_BEGIN
 from serv.domain.weapon import upgrades
 
 class WeaponBag(Weapon):
@@ -45,11 +46,11 @@ class WeaponBag(Weapon):
 
     def init_slot(self):
 
-        self.fill_slot(0,upgrades.TripleSpell())
-        self.fill_slot(1,upgrades.Reloader())
-        self.fill_slot(2,upgrades.Copy())
-        self.fill_slot(3,upgrades.AllSpell())
-        self.fill_slot(9,upgrades.Reloader())
+        id = 0
+        for idx in WEAPONS_BEGIN[0] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class Weapon1(Weapon) :
 
@@ -68,10 +69,12 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.LongDash())
-        self.fill_slot(1,upgrades.Jump())
-        self.fill_slot(2,upgrades.LongDash())
-        #self.fill_slot(2,upgrades.CreateFire())
+        id = 0
+        print(WEAPONS_BEGIN[1],WEAPONS_BEGIN)
+        for idx in WEAPONS_BEGIN[1] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class Weapon2(Weapon) :
 
@@ -90,9 +93,11 @@ class Weapon2(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateLance())
-        self.fill_slot(1,upgrades.CreateFire_DieEffect())
+        id = 0
+        for idx in WEAPONS_BEGIN[2] :
 
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 class Weapon3(Weapon) :
 
     def __init__(self,team,player):
@@ -110,8 +115,11 @@ class Weapon3(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateManyLune())
-        self.fill_slot(1,upgrades.CreateStone())
+        id = 0
+        for idx in WEAPONS_BEGIN[3] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class WeaponLaseroide(Weapon):
 
