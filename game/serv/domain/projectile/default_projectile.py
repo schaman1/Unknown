@@ -4,7 +4,7 @@ from serv.domain.mob.team import Team
 
 class Projectile :
 
-    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None):
+    def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None,knockback = 0):
         self.pos_x,self.pos_y = pos
         self.owner_pos = owner_pos #Use to set default pos
 
@@ -34,19 +34,19 @@ class Projectile :
         self.half_height = self.height//2
         self.rebond = rebond
         self.damage = damage
+        self.knockback = knockback #Knockback strength applied to mobs on hit (0 = none)
+        self.movable = speed!=0 #If move or not = si a vx et vy. Utilise dans collision hander car si bouge pas alors test trigger avec plus de chunk
 
         self.is_dead = False
         self.to_update = False
         self.team = team
 
         self.base_movement = RATIO 
-        self.weight = weight*self.base_movement
+        self.weight = weight
 
         self.owner = None
 
     def update_angle_pos(self,new_angle,new_pos,owner_pos):
-
-        #print(self.force_pos,new_pos,self.delta_pos)
 
         if self.force_pos :
             self.pos_x = new_pos[0]+self.delta_pos[0]
@@ -81,6 +81,18 @@ class Projectile :
         return vx,vy
     
     def gravity(self,dt):
+
+    # je t'aime -> pas moi
+        self.vy += self.base_movement*self.weight*dt
+
+        gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        if self.vy < 0:
+            gravity_power_mult -=0.1
+        else :
+            gravity_power_mult += 0.1
+
+        if self.weight != 0 :
+            self.vy = self.vy*(gravity_power_mult**(dt*60))
         pass#self.vy+=self.weight*dt
 
     def check_if_projectile_spawn_when_die(self):
@@ -90,12 +102,10 @@ class Projectile :
 
     def move(self,dt,map):
 
-        #self.gravity(dt)
+        self.gravity(dt)
 
         if (self.pos_x+self.vx*dt<0 or self.pos_y+self.vy < 0):
             self.is_dead = True
-
-    # je t'aime
 
         if self.is_dead is False:
             self.move_x(map,dt)
@@ -129,13 +139,17 @@ class Projectile :
                     if dist <= remaining :
                         touch_wall = True
 
+                        #print("Has to be update")
+
                         if self.rebond :
                             self.to_update = True
                         else :
                             self.is_dead = True
 
                         self.angle = (-self.angle)%360
-                        self.vy = -self.vy
+                        self.speed = int(self.speed * 0.9)
+                        self.load()
+                        #self.vy = -self.vy
 
                     break
 
@@ -182,7 +196,9 @@ class Projectile :
                             self.is_dead = True
 
                         self.angle = (180-self.angle)%360
-                        self.vx = -self.vx
+                        self.speed = int(self.speed * 0.9)
+                        self.load()
+                        #self.vx = -self.vx
 
                     break
 
@@ -220,6 +236,7 @@ class Projectile :
             return True
         
         if time.time() - self.spawn_time >= self.life_time :
+            #print(self.spawn_time,time.time(),self.life_time)
             return True
     
         else :
@@ -227,7 +244,7 @@ class Projectile :
     
     def return_info(self):
 
-        return [self.id,int(self.pos_x),int(self.pos_y),self.angle,self.speed,self.weight//self.base_movement,self.id_img]
+        return [self.id,int(self.pos_x),int(self.pos_y),self.angle,self.speed,self.weight,self.id_img]
     
     def is_type(self, type_cell, type_check):
         """

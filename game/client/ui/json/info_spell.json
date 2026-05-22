@@ -51,6 +51,26 @@
         "time_reload": 0.5,
         "degat":3
     },
+    "SPELL7":{
+        "type":"projectile",
+        "name":"Caillou",
+        "description":["Lance un enorme caillou"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
+    "SPELL8":{
+        "type":"projectile",
+        "name":"Lance",
+        "description":["Nothing"],
+        "life":0.3,
+        "speed":100,
+        "rebond":0,
+        "time_reload": 0.5,
+        "degat":3
+    },
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
@@ -79,10 +99,35 @@
     "SPELL13":{
         "type":"augment",
         "name":"Degat plus",
-        "description":["Ajoute 3 degats",
+        "description":["Ajoute 2 degats",
                         "au prochain projectile."],
         "time_reload": 0,
-        "degat":3
+        "degat":2
+    },
+    "SPELL14":{
+        "type":"augment",
+        "name":"Degat plus",
+        "description":["Ajoute 5 degats",
+                        "mais les projectiles peuvent",
+                        "vous blesser."],
+        "time_reload": 0,
+        "degat":5
+    },
+    "SPELL15":{
+        "type":"augment",
+        "name":"Recharge",
+        "description":["Reduit le temps complet",
+                        "de recharge de 0.4."],
+        "time_reload": -0.2,
+        "degat":0
+    },
+    "SPELL16":{
+        "type":"augment",
+        "name":"Duree",
+        "description":["Augmente la duree",
+                        "du projectile."],
+        "time_reload": 0,
+        "degat":0
     },
     "SPELL20":{
         "type":"augment",
@@ -100,9 +145,36 @@
         "time_reload": 0,
         "degat":0
     },
+    "SPELL22":{
+        "type":"augment",
+        "name":"Infinie",
+        "description":["Permet de lancer",
+                    "tous les sorts !"],
+        "time_reload": 0,
+        "degat":0
+    },
     "SPELL30":{
         "type":"projectile",
         "name":"BDF + effet",
+        "description":["Invoque le PROJECTILE",
+                    "suivant a sa disparition."],
+        "life":2,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 1.5,
+        "degat":5
+    },
+    "SPELL31":{
+        "type":"augment",
+        "name":"Copie",
+        "description":["Copie le prochain sort",
+                        "ou projectile."],
+        "time_reload": 0,
+        "degat":0
+    },
+    "SPELL32":{
+        "type":"projectile",
+        "name":"Pompe + effet",
         "description":["Invoque le PROJECTILE",
                     "suivant a sa disparition."],
         "life":2,

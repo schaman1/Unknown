@@ -14,10 +14,17 @@ class Monster_all :
             for j in range(world.LEN_Y_CHUNK) :
                 self.dic_monster[i*100+j] = {}
 
+    def change_chunk(self,l):
+        """Change chunk for monsters"""
+        for chunk,new_chunk,id in l:
+            monster =  self.dic_monster[chunk][id]
+            del self.dic_monster[chunk][id]
+            self.dic_monster[new_chunk][id] = monster
+
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 
-        for (chunk, id, x, y, name) in lchunck_monsters :
+        for (chunk, id, x, y, name,side) in lchunck_monsters :
 
             if name == 0:
                 self.dic_monster[chunk][id] = monster.Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
@@ -33,6 +40,12 @@ class Monster_all :
             
             elif name == 4:
                 self.dic_monster[chunk][id] = monster.Escargot(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
+
+            elif name == 5:
+                self.dic_monster[chunk][id] =  monster.Limace(x, y, chunk, self.cell_size, 0) #state 0 == idle
+
+            elif name == 6:
+                self.dic_monster[chunk][id] = monster.DwarfKing(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
 
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)

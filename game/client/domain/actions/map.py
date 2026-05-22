@@ -67,8 +67,6 @@ class Map:
         delta_x = (x%self.width_chunk)/self.cell_size
         delta_y = (y%self.height_chunk)/self.cell_size
 
-        #print(chunk_y)
-
         return int(chunk_x),delta_x,int(chunk_y),delta_y 
 
     def init_images(self,pos):
@@ -91,8 +89,6 @@ class Map:
                 else :
 
                     try :
-
-                        #print(y+self.chunk_y+1,x+self.chunk_x+1)
 
                         image = self.images[y+self.chunk_y][x+self.chunk_x]
                         image = pygame.image.load(image).convert_alpha()

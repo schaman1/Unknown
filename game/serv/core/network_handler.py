@@ -55,7 +55,7 @@ class Network_handler :
                 msg_id = buffer[0]
 
                 # Exemple : ID 0 = start_game (1 byte)
-                if msg_id == 0: #Start game
+                if msg_id == 0 or msg_id ==10 or msg_id == 11: #Start game
                     msg_size = 1
 
                 elif msg_id == 1: #
@@ -194,6 +194,13 @@ class Network_handler :
 
             self.server.throw_spell(id_weapon,id_spell,sender)
 
+        elif id_msg == 10 :
+
+            self.server.try_tp_to_boss()
+
+        elif id_msg == 11:
+            self.server.player_finish_intro(sender)
+
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -246,8 +253,8 @@ class Network_handler :
         packet += struct.pack("!H", len(monsters))
 
         # données des cellules 
-        for (chunk, id, x, y, state) in monsters: 
-            packet += struct.pack("!HLLLB", chunk, id, x, y, state) 
+        for (chunk, id, x, y, state,side) in monsters: 
+            packet += struct.pack("!HLLLBB", chunk, id, x, y, state,side) 
 
         return bytes(packet)
     
@@ -296,10 +303,17 @@ class Network_handler :
             duree = int(duree*1000)
             packet+=struct.pack("!HHH",id,chunk,duree)
 
+    def pack_monster_change_chunk(self,data,packet):
+
+        packet+=struct.pack("!H",len(data))
+
+        for monster in data:
+            chunk,new_chunk,id = monster
+            packet+=struct.pack("!HHH",chunk,new_chunk,id)
+
     def pack_object(self,data,packet):
 
         packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
-
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
@@ -308,7 +322,7 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 or id==9:
+        if id == 0 or id==9 or id==19:
             pass
 
         elif id == 1 : 
@@ -362,6 +376,9 @@ class Network_handler :
         elif id==18:
             self.pack_die_update(data[1],packet)
 
+        elif id == 20 :
+            self.pack_monster_change_chunk(data[1],packet)
+
         else :
             print("Issue id not found : ",id)
 
@@ -370,7 +387,7 @@ class Network_handler :
 
         except OSError:
             # Déconnexion
-            is_host = self.lClient.get(client, {}).get("Host", False)
+            is_host = self.server.lClient[client].is_host#.get(client, {}).get("Host", False)
             if is_host:
                 print("Le host a quitté, fermeture du serveur.")
                 self.stop_server()

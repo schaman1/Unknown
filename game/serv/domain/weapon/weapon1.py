@@ -1,5 +1,6 @@
 from serv.config import weapons
 from serv.domain.weapon.base_weapon import Weapon
+from serv.config.add_objects_begin import WEAPONS_BEGIN
 from serv.domain.weapon import upgrades
 
 class WeaponBag(Weapon):
@@ -43,14 +44,13 @@ class WeaponBag(Weapon):
     
         return None
 
-
     def init_slot(self):
 
-        self.fill_slot(0,upgrades.TripleSpell())
-        self.fill_slot(1,upgrades.AddSpeed())
-        self.fill_slot(2,upgrades.AddRebond())
-        self.fill_slot(3,upgrades.CreatePompe())
-        self.fill_slot(9,upgrades.AddDamage())
+        id = 0
+        for idx in WEAPONS_BEGIN[0] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class Weapon1(Weapon) :
 
@@ -69,10 +69,11 @@ class Weapon1(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.SmallDash())
-        self.fill_slot(1,upgrades.Jump())
-        #self.fill_slot(2,upgrades.LongDash())
-        #self.fill_slot(2,upgrades.CreateFire())
+        id = 0
+        for idx in WEAPONS_BEGIN[1] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class Weapon2(Weapon) :
 
@@ -91,9 +92,11 @@ class Weapon2(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateFire())
-        self.fill_slot(1,upgrades.CreateFire_DieEffect())
+        id = 0
+        for idx in WEAPONS_BEGIN[2] :
 
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 class Weapon3(Weapon) :
 
     def __init__(self,team,player):
@@ -111,8 +114,11 @@ class Weapon3(Weapon) :
         self.init_slot()
 
     def init_slot(self):
-        self.fill_slot(0,upgrades.CreateManyLune())
-        self.fill_slot(1,upgrades.CreateStone())
+        id = 0
+        for idx in WEAPONS_BEGIN[3] :
+
+            self.fill_slot(id,upgrades.UPGRADES[idx])
+            id+=1
 
 class WeaponLaseroide(Weapon):
 
@@ -128,9 +134,29 @@ class WeaponLaseroide(Weapon):
             player=player
         )
 
+        self.min_delay = self.loading_time_spell
         self.init_slot()
 
     def init_slot(self):
 
         for i in range(self.nbr_slot) :
             self.fill_slot(i,upgrades.CreateLaser())
+
+
+class WeaponLimace(Weapon):
+    def __init__(self, team, player) :
+        super().__init__(
+            refill_time= weapons.RELOAD_LIMACE,
+            spell_time= weapons.SPELL_TIME_LIMACE,
+            nbr_slot = weapons.NBR_MUNITIONS,
+            nbr_upgrades_trigger = weapons.NBR_UPGRADES_TRIGGER_LIMACE,
+            id = -2, team = team, player = player
+        )
+        
+        self.init_slot()
+
+    def init_slot(self):
+        # return
+        for i in range(self.nbr_slot):
+            self.fill_slot(i, upgrades.CreateStone())
+

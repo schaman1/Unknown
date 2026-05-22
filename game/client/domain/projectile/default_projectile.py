@@ -13,7 +13,7 @@ class DefaultProjectile :
 
         self.height,self.width = None,None
         self.base_movement = world.RATIO
-        self.weight = 255*self.base_movement
+        self.weight = weight
 
         self.vx,self.vy = self.create_vx_vy(angle,vitesse)
 
@@ -27,7 +27,18 @@ class DefaultProjectile :
         return vx,vy
     
     def gravity(self,dt):
-        pass#self.vy+=self.weight*dt
+
+        self.vy += self.base_movement*self.weight*dt
+        #print(self.base_movement,self.weight)
+
+        gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        if self.vy < 0:
+            gravity_power_mult -=0.1
+        else :
+            gravity_power_mult += 0.1
+
+        if self.weight != 0:
+            self.vy = self.vy*(gravity_power_mult**(dt*60))
     
     def move(self,dt):
 
@@ -83,6 +94,13 @@ class DefaultProjectile :
             img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
             rotated_img = pygame.transform.rotate(img, angle)
             Imgs.append(rotated_img)
+            
+        elif id_img==8:
+            self.width,self.height = weapon.PROJECTILE_8_WIDTH,weapon.PROJECTILE_8_HEIGHT
+            img = pygame.image.load(assets.PROJECTILE_8_0).convert_alpha() #convert_alpha() pour le fond vide
+            img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
+            rotated_img = pygame.transform.rotate(img, angle)
+            Imgs.append(rotated_img)
 
         else :
             print("Unknown weapon id in client /domain/projectile/Default projectiles",id_img)
@@ -94,12 +112,13 @@ class DefaultProjectile :
         #self.pos_x,self.pos_y = 63305, 16125
 
         rect_center = self.calculate_pos_blit(xscreen,yscreen)
-        screen.blit(self.imgs[self.frame//50],rect_center)
+        #screen.blit(self.imgs[self.frame//50],rect_center)
+        screen.blit(self.imgs[0],rect_center)
 
-        self.update_frame()
+        #self.update_frame()
 
-    def update_frame(self):
-        self.frame = (self.frame+1)%1
+    #def update_frame(self):
+    #    self.frame = (self.frame+1)%1
 
     def calculate_pos_blit(self,x,y):
         xs = self.convert_from_base(self.pos_x*self.cell_size) +x

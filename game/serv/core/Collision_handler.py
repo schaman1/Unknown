@@ -23,21 +23,36 @@ class CollisionHandler:
                             touch = self.collision(projectile,player)
 
                             if touch :
-                                #print("Player touch")
+
                                 self.player_take_damage(projectile,player)
                         
                 if projectile.team!=Team.Mob:
 
-                    for mob in mobs[chunk] :
+                    if projectile.movable == False :
+                        chunks = self.return_chunk_neigborns(chunk,mobs)
 
-                        touch = self.collision(projectile,mob)
+                    else :
+                        chunks = [chunk]
 
-                        if touch :
-                            #print("Mob touch")
-                            #self.add_ent_touch(mob,projectile.damage)
-                            self.handle_touch(projectile,mob,chunk)
+                    for in_chunk in chunks :
+
+                        for mob in mobs[in_chunk] :
+
+                            touch = self.collision(projectile,mob)
+
+                            if touch :
+                                self.handle_touch(projectile,mob,in_chunk)
 
         self.trigger_ent_touch()
+
+    def return_chunk_neigborns(self,chunk,mobs):
+        neighbors = []
+        for dx in [-1, 0, 1]:
+            for dy in [-100, 0, 100]:
+                neighbor = chunk + dx + dy
+                if neighbor in mobs:
+                    neighbors.append(neighbor)
+        return neighbors
 
     def collision(self,ent1,ent2):
 
@@ -74,7 +89,9 @@ class CollisionHandler:
             print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
         
         else :
-            self.effect_send.append([player.id,delta_life,chunk])
+
+            if delta_life != 0:
+                self.effect_send.append([player.id,delta_life,chunk])
 
             if die:
                 print("PLayer is dead")
@@ -84,7 +101,7 @@ class CollisionHandler:
 
     def player_take_damage_no_projectile(self,damage,player,chunk=99):
 
-        if player.is_dead :
+        if player.dead :
             return
 
         old_pv = player.life
@@ -95,20 +112,26 @@ class CollisionHandler:
             print("Issue with delta life negatif in : serv/core/collision_handler",delta_life)
         
         else :
-            self.effect_send.append([player.id,delta_life,chunk])
 
-            if die:
-                print("PLayer is dead")
-                self.die_send.append([player.id,chunk,player.len_dead])
+            if delta_life != 0:
+
+                self.effect_send.append([player.id,delta_life,chunk])
+
+                if die :
+                    self.die_send.append([player.id,chunk,player.len_dead])
 
     
     def add_ent_touch(self,ent,projectile,chunk):
 
+        knockback = getattr(projectile,'knockback',0)
+
         if ent.id in self.ent_touch :
             self.ent_touch[ent.id][0]+=projectile.damage
+            #Keep the strongest knockback among projectiles hitting this ent this frame
+            self.ent_touch[ent.id][4] = max(self.ent_touch[ent.id][4],knockback)
 
         else :
-            self.ent_touch[ent.id] = [projectile.damage,projectile.owner,chunk,ent]
+            self.ent_touch[ent.id] = [projectile.damage,projectile.owner,chunk,ent,knockback]
 
     def handle_touch(self,projectile,ent,chunk):
 
@@ -118,11 +141,11 @@ class CollisionHandler:
 
     def trigger_ent_touch(self):
 
-        for ent_id,(damage,owner,chunk,ent) in self.ent_touch.items():
+        for ent_id,(damage,owner,chunk,ent,knockback) in self.ent_touch.items():
 
             old_pv = ent.life
 
-            die = ent.take_damage(damage,owner)
+            die = ent.take_damage(damage,owner,knockback)
 
             delta_life = old_pv-ent.life
 
