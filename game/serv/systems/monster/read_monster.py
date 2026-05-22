@@ -53,8 +53,8 @@ class Read_monster :
 
     def create_list_monster(self) :
 
-        self.create_monster(monster.Limace(3411,17300))
-        self.create_monster(monster.Defendeur(30000,25000))
+        self.create_monster(monster.Laseroide(3411,17300))
+        self.create_monster(monster.Limace(30000,25000))
         self.create_monster(monster.Foulli(12000,15400))
 
         #for y in range(self.size_chunk_all[0]):
