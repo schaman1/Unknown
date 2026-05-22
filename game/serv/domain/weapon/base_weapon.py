@@ -42,8 +42,6 @@ class Weapon :
             else :
                 spells_id.append(upgrade.id)
 
-        #print("spells_id",self.nbr_spells_max)
-
         return i,self.id,self.nbr_spells_max,spells_id
     
     def del_spell(self,id_spell):
@@ -67,7 +65,6 @@ class Weapon :
             self.idx = 0
 
     def return_info_next_time_can_shot(self):
-        #print(self.next_allowed_shot,time.perf_counter())
         
         return int((self.next_allowed_shot-time.perf_counter())*1000)
 
@@ -95,7 +92,6 @@ class Weapon :
         projectile.damage = max(0,self.add_damage+projectile.damage)
         projectile.speed = projectile.speed*self.speed_mult
         projectile.life_time += self.add_life
-        print(self.add_life)
 
         projectile.width=int(projectile.width*self.size_mult)
         projectile.height=int(projectile.height*self.size_mult)
@@ -135,9 +131,6 @@ class Weapon :
         
         self.angle = angle
         self.pos = pos
-
-        #if self.nbr_spells_max!=20 :
-        #    print(self.idx,idx,self.nbr_spells_max)
 
         while nbr_trigger>0 and self.idx < self.nbr_spells_max :
 

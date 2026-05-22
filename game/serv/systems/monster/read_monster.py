@@ -50,11 +50,10 @@ class Read_monster :
         monster.id = self.generate_id()
         chunk = self.return_chunk(monster.pos_x,monster.pos_y)
         self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
-        print(chunk)
 
     def create_list_monster(self) :
 
-        self.create_monster(monster.Laseroide(3411,17300))
+        self.create_monster(monster.Limace(3411,17300))
         self.create_monster(monster.Defendeur(30000,25000))
         self.create_monster(monster.Foulli(12000,15400))
 
