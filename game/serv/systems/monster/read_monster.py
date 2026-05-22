@@ -13,6 +13,8 @@ class Read_monster :
 
         self.base_movement = base_movement
 
+        self.direction = {"right":0,"left":1}
+
         self.id = 0
 
         #Monstres invoqués en cours de partie (ex: par le boss), à envoyer au client (msg 5)
@@ -45,7 +47,8 @@ class Read_monster :
                 for monster in self.dic_monster[chunk] :
 
                     #state_id = self.state_map.get(monster.state, 0) #Why ? Always 0 by default
-                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name))
+
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name,self.direction[monster.side]))
 
         return list_modif
     
@@ -60,7 +63,7 @@ class Read_monster :
         self.create_monster(monster)
         chunk_y,chunk_x = self.return_chunk(monster.pos_x,monster.pos_y)
         chunk = chunk_y*100+chunk_x
-        self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name))
+        self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name,self.direction[monster.side]))
 
     def create_list_monster(self) :
 
@@ -142,7 +145,8 @@ class Read_monster :
                         state_id = self.state_map.get(monster.state, 0)
 
                         for client_idx in liste_client_see :
-                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
+                            
+                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id,self.direction[monster.side]))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
                         new_chunk = self.return_chunk(monster.pos_x,monster.pos_y)

@@ -134,6 +134,7 @@ class WeaponLaseroide(Weapon):
             player=player
         )
 
+        self.min_delay = self.loading_time_spell
         self.init_slot()
 
     def init_slot(self):

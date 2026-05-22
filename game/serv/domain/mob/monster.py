@@ -14,6 +14,8 @@ class Monster(Mob):
         #Résistance au knockback : soustraite au knockback reçu. toujours entre [0,3] (0 = aucune résistance)
         self.knockback_res = max(0, min(3, knockback_res))
         self.prime = prime
+
+        self.side = "right"#0 right, 1 = left
         
         self.attack_radius = atk_rad
         self.attack_speed = atk_speed
@@ -303,11 +305,11 @@ class Laseroide(Monster) :
                 self.focus = True
                 self.angle = self.get_angle(self.target)
                 self.begin_shot = time.perf_counter()
-
-                if self.angle>90 and self.angle<270 :
-                    self.pos_x -= 100
-                else :
-                    self.pos_x += 100
+                self.vitesse_x = 0
+                if self.angle > 90 and self.angle < 270:
+                    self.side = "left"
+                else:
+                    self.side = "right"
 
             else :
                 self.attack(self.target,collision_handler,dt,projectile_manager)
@@ -348,17 +350,21 @@ class Laseroide(Monster) :
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
         if target.pos_x<self.pos_x :
+            self.side = "left"
             self.move_left(dt)
         
         else :
+            self.side = "right"
             self.move_right(dt)
     
     def leave_behavior(self,target,map,dt):
         """Se déplace à l'opposé du joueur"""
         if target.pos_x<self.pos_x :
+            self.side = "right"
             self.move_right(dt)
         
         else :
+            self.side = "left"
             self.move_left(dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
@@ -458,14 +464,13 @@ class Defendeur(Monster) :
         #self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
 
         self.begin_attack = time.perf_counter()
-        self.time_for_move_to_reach_player = 0.5
+        self.time_for_move_to_reach_player = 0.3
         self.len_attack = 2
         self.begin_time_for_attack = time.perf_counter()
         self.time_between_attacks = 0.2
 
         self.begin_relax = time.perf_counter()
         self.time_to_relax = 2
-        self.side = "left" #Côté de l'attaque
         self.hit_box_damage_width = 5
         self.resist = True
 
@@ -512,11 +517,6 @@ class Defendeur(Monster) :
                 self.resist = True
                 self.begin_attack = time.perf_counter()
 
-                if self.pos_x < self.target.pos_x : #Définit le côté de l'attaque
-                    self.side = "right"
-                else :
-                    self.side = "left"
-
                 self.state = "moving"
 
             if self.focus :
@@ -528,6 +528,15 @@ class Defendeur(Monster) :
                     self.state = "idle"
 
                 if self.begin_time_for_attack + self.time_between_attacks < time.perf_counter():
+
+                    if self.pos_x < self.target.pos_x : #Définit le côté de l'attaque
+                        if self.side != "right":
+                            self.side = "right"
+                            self.move_right(dt)
+                    else :
+                        if self.side != "left":
+                            self.side = "left"
+                            self.move_left(dt)
 
                     self.attack(self.target,collision_handler,dt,projectile_manager)
                     self.begin_time_for_attack = time.perf_counter()
@@ -578,7 +587,6 @@ class Escargot(Monster) :
         self.knockback_res = 0.5
 
         self.name = 4 #Permet d'afficher le bon monstre / Dans monster all côté client
-        self.direction = "right"
 
         #self.collision_damage = False
 
@@ -612,28 +620,28 @@ class Escargot(Monster) :
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
 
-        if self.direction == "right":
+        if self.side == "right":
             
             delta_y = self.half_height + self.base_movement
             delta_x = self.half_width+self.base_movement
             if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-                self.direction = "left"
+                self.side = "left"
 
             elif self.touch_type(delta_y,delta_x,map,map.vide):
-                self.direction = "left"
+                self.side = "left"
             
             else :
                 self.move_right(dt)
 
-        elif self.direction == "left":
+        elif self.side == "left":
             
             delta_y = self.half_height + self.base_movement
             delta_x = -(self.half_width+self.base_movement)
             if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-                self.direction = "right"
+                self.side = "right"
 
             elif self.touch_type(delta_y,delta_x,map,map.vide):
-                self.direction = "right"
+                self.side = "right"
             
             else :
                 self.move_left(dt)
@@ -654,8 +662,6 @@ class Limace(Monster) :
         super().__init__(hp=13,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
 
         self.name = 5 #Permet d'afficher le bon monstre / In monster all dans client
-        self.direction = "right"
-
 
         self.begin_attack = time.perf_counter()
         self.isMelee = False
@@ -711,14 +717,17 @@ class Limace(Monster) :
                     
                     if self.angle >= 0 and self.angle <= 50 :
                         self.angle += 35
+                        self.side = "right"
                     elif self.angle > 155 and self.angle <= 180 :
                         self.angle -= 35
+                        self.side = "left"
 
                     elif self.angle > 100 and self.angle <= 155 :
                         self.angle -= 20
+                        self.side = "left"
                     elif self.angle > 50 and self.angle <= 75 :
                         self.angle += 10
-                    
+                        self.side = "right"
 
             else :
                 if self.isMelee :
@@ -756,9 +765,11 @@ class Limace(Monster) :
         """Move to the player"""
 
         if target.pos_x<self.pos_x :
+            self.side = "left"
             self.move_left(dt)
         
         else :
+            self.side = "right"
             self.move_right(dt)
     
     def leave_behavior(self,target,map,dt):
@@ -935,13 +946,6 @@ class Skeleton(Monster):
             
     # attaque le joueur le plus proche    
     def attack(self, Player,collision_handler,dt):
-       # Inflige des dégâts au joueur en fonction de la vitesse d'attaque
-        #for _ in range(self.attack_speed):
-        #    Player.take_damage(self.damage)
-
-        #Tim : j'ai juste commente pcq dcp j'ai rajoute le collision handler qui permet de check direct si touche avec 2 rect
-        #Et aussi le collision handler envoi au client les degat pour les afficher :)
-
         damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
         collision_handler.player_take_damage_no_projectile(damage,Player)
 
@@ -1019,6 +1023,11 @@ class DwarfKing(Monster):
                 self.vitesse_x = 0
             else:
                 self.vitesse_x = self.speed_chase if dx > 0 else -self.speed_chase
+
+        if self.vitesset_x < 0: #Change direction du boss en fct de ou il bouge
+            self.side = "left"
+        else :
+            self.side = "right"
 
         self.gravity_effect(dt)
         self.collision_x(map, dt, self.vitesse_x)

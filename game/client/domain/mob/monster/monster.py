@@ -57,7 +57,11 @@ class Skeleton(Monster) :
             self.frame +=1
             self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         pass
 
@@ -75,8 +79,13 @@ class Laseroide(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
@@ -99,8 +108,12 @@ class Foulli(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
@@ -127,8 +140,12 @@ class Defendeur(Monster) :
         self.animation.animation["attacking"]["time"] = 0.1
         self.animation.animation["idle"]["time"] = 2/4
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
@@ -156,8 +173,12 @@ class Escargot(Monster) :
 
         self.animation.animation["running"]["time"] = 0.3
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
@@ -180,8 +201,13 @@ class DwarfKing(Monster) :
         self.chunk = pos_chunk
         self.state = state
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """La texture du joueur n'a que idle/running : on y ramène les états du boss."""
+
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         anim = {0:"idle", 1:"running", 2:"running", 4:"running", 5:"idle"}.get(new_state,"idle")
 
@@ -214,8 +240,12 @@ class Limace(Monster) :
         self.animation.animation["loading"]["time"] = 0.1
 
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 

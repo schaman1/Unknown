@@ -253,8 +253,8 @@ class Network_handler :
         packet += struct.pack("!H", len(monsters))
 
         # données des cellules 
-        for (chunk, id, x, y, state) in monsters: 
-            packet += struct.pack("!HLLLB", chunk, id, x, y, state) 
+        for (chunk, id, x, y, state,side) in monsters: 
+            packet += struct.pack("!HLLLBB", chunk, id, x, y, state,side) 
 
         return bytes(packet)
     

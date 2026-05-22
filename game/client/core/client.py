@@ -145,10 +145,10 @@ class Client:
             #    msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
 
             elif msg_id == 4:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*15
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*16
 
             elif msg_id==5:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*15
+                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*16
 
             elif msg_id==6:
                 msg_size = 1+9
@@ -261,14 +261,14 @@ class Client:
 
         elif id == 4 : #monsters update
             self.update_monster(
-                struct.unpack("!HLLLB", data[3+i*15 : 18+i*15])
-                for i in range((size-3)//15)
+                struct.unpack("!HLLLBB", data[3+i*16 : 19+i*16])
+                for i in range((size-3)//16)
             )
 
         elif id == 5 :#Init monsters
             cells = []
-            for i in range((size-3)//15):
-                cells.append(struct.unpack("!HLLLB", data[3+i*15 : 18+i*15]))
+            for i in range((size-3)//16):
+                cells.append(struct.unpack("!HLLLBB", data[3+i*16 : 19+i*16]))
 
             self.main.state.game.monsters.init_monster(cells)
 
