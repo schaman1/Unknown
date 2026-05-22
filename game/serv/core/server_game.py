@@ -210,7 +210,7 @@ class Server_game(Server) :
                 id_weapon = 0
                 pos_spell = self.lClient[sender].weapons.add_spell(element.id_cat,id_weapon)
 
-                self.send_data_all([16,chunk,id]) #Destroy
+                self.send_data([16,chunk,id],sender) #Destroy
 
                 self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)
 
@@ -221,24 +221,24 @@ class Server_game(Server) :
             elif action=="UpgradeWeapon":
 
                 info_weapon = self.lClient[sender].upgrade_size_weapon(element.id_cat)
-                self.send_data_all([16,chunk,id]) #Destroy
+                self.send_data_([16,chunk,id],sender) #Destroy
                 
                 self.send_data([10,info_weapon],sender)
 
             elif action=="UpgradeLife":
 
                 info_weapon = self.lClient[sender].add_life(element.power)
-                self.send_data_all([16,chunk,id]) #Destroy
+                self.send_data([16,chunk,id],sender) #Destroy
                 
             elif action == "OpenChest":
 
-                self.send_data_all([16,chunk,id]) #Destroy
+                self.send_data([16,chunk,id],sender) #Destroy
                 
                 id,ele,type = self.objects_manager.spawn_random_spell(element.id_cat,chunk,element.pos_x,element.pos_y)
                 #Spawn random object
 
                 data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
-                self.send_data_all(data)
+                self.send_data(data,sender)
 
     def throw_spell(self,id_weapon,id_spell,sender):
 

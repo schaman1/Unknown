@@ -87,8 +87,8 @@ class objects_manager:
 
             player.update_money(-element.price)
 
-            if element.unique_use :
-                self.destroy_object(chunk,id)
+            #if element.unique_use : #Not use anymore bcs Chest can be openned by everyone
+            #    self.destroy_object(chunk,id)
 
             return element.trigger_value,chunk,id,element
         
