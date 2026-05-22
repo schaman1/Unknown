@@ -24,7 +24,7 @@ class Monster_all :
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 
-        for (chunk, id, x, y, name) in lchunck_monsters :
+        for (chunk, id, x, y, name,side) in lchunck_monsters :
 
             if name == 0:
                 self.dic_monster[chunk][id] = monster.Skeleton(x,y,chunk,self.cell_size,0)#0 bcs state default = idle
