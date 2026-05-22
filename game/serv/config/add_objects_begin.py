@@ -8,3 +8,5 @@ OBJECTS.append(("Chest",3,5500,19200,0))
 OBJECTS.append(("Chest",4,7500,19200,0))
 OBJECTS.append(("UpgradeWeapon",2,5500,16000,0)) #21 bcs +2 slot for weapon
 OBJECTS.append(("UpgradeWeapon",1,5000,16000,0))
+
+WEAPONS_BEGIN = [[],[40],[2],[3]]

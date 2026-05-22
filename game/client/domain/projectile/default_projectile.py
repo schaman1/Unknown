@@ -31,7 +31,11 @@ class DefaultProjectile :
         self.vy += self.base_movement*self.weight*dt
         #print(self.base_movement,self.weight)
 
-        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        gravity_power_mult = 1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+        if self.vy < 0:
+            gravity_power_mult -=0.1
+        else :
+            gravity_power_mult += 0.1
 
         if self.weight != 0:
             self.vy = self.vy*(gravity_power_mult**(dt*60))
