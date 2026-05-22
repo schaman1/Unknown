@@ -7,6 +7,10 @@ class Weapon :
         self.loading_time_refill = refill_time
         self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
+        self.loading_time_spell_current = spell_time
+        self.min_delay = 0.05#Delay minimum de recgarge, peut pas faire moins !
+
+
         self.team=team
         self.reel_team = self.team
         self.id = id
@@ -15,7 +19,6 @@ class Weapon :
         self.spells_on_shot = [None for _ in range(nbr_slot)]
         self.nbr_slot = nbr_slot
         self.nbr_upgrades_trigger_max = nbr_upgrades_trigger
-        self.nbr_upgrades_trigger = 0
         self.nbr_spells_max = len(self.spells_on_shot)
         self.next_allowed_shot = 0
 
@@ -55,8 +58,8 @@ class Weapon :
         self.add_damage = 0
         self.add_rebond = False
         self.randomize_angle = False
-        self.nbr_upgrades_trigger = 0
         self.loading_time_refill_current = self.loading_time_refill
+        self.loading_time_spell_current = self.loading_time_spell
 
         if self.idx == self.nbr_spells_max :
             self.idx = 0
@@ -103,9 +106,25 @@ class Weapon :
             return 
 
         self.reset_values()
-        return self.create_projectile(angle,pos,now)
+        infos = self.create_projectile(angle,pos,self.nbr_upgrades_trigger_max,idx = self.idx)
 
-    def create_projectile(self,angle,pos,now=time.perf_counter()):
+        self.update_reload_time_wand(now)
+
+        return infos
+
+    def update_reload_time_wand(self,now):
+        self.loading_time_spell_current+=self.loading_time_spell
+
+        if self.test_if_last_spell_of_weapon() :
+            self.idx = 0
+            self.next_allowed_shot = max(self.next_allowed_shot,now+max(self.loading_time_spell_current,self.loading_time_refill_current))
+            
+        else :
+            self.next_allowed_shot = max(self.next_allowed_shot,now+self.loading_time_spell_current)
+
+        self.next_allowed_shot = max(self.next_allowed_shot,now+self.min_delay)
+
+    def create_projectile(self,angle,pos,nbr_trigger = 1,idx = 0):
 
         projectile_shot = []
         event_player = []
@@ -113,18 +132,21 @@ class Weapon :
         self.angle = angle
         self.pos = pos
 
-        time_spells_take = 0
+        #if self.nbr_spells_max!=20 :
+        #    print(self.idx,idx,self.nbr_spells_max)
 
-        while self.nbr_upgrades_trigger < self.nbr_upgrades_trigger_max and self.idx < self.nbr_spells_max :
+        while nbr_trigger>0 and self.idx < self.nbr_spells_max :
 
             spell = self.spells_on_shot[self.idx]
+
             self.idx+=1
+            #idx+=1
 
             if spell != None : 
 
-                space_take,projectiles,id_event_player = spell.trigger(self)
+                space_take,projectiles,id_event_player = spell.trigger(self,self.idx-1)
 
-                self.nbr_upgrades_trigger+= space_take
+                nbr_trigger-= space_take
 
                 if projectiles!=None and projectiles != [] :
                     
@@ -134,16 +156,8 @@ class Weapon :
                 if id_event_player!=None:
                     event_player.append(id_event_player)
 
-                time_spells_take+=spell.time_take
+                self.loading_time_spell_current+=spell.time_take
 
-        time_spells_take+=self.loading_time_spell
-
-        if self.test_if_last_spell_of_weapon() :
-            self.idx = 0
-            self.next_allowed_shot = max(self.next_allowed_shot,now+max(time_spells_take,self.loading_time_refill_current))
-            
-        else :
-            self.next_allowed_shot = max(self.next_allowed_shot,now+time_spells_take)
 
         self.update_pos_projectile(angle,projectile_shot)
 
@@ -167,7 +181,7 @@ class Weapon :
         while i<self.nbr_spells_max and self.spells_on_shot[i] == None:
             i+=1
 
-        return i==self.nbr_spells_max
+        return i>=self.nbr_spells_max
 
     def fill_slot(self,idx,function):
 

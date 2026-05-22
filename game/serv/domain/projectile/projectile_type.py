@@ -87,6 +87,7 @@ class Pompe(Projectile) :
                          team=team,
                          randomize_angle=randomize,
                          owner_pos=owner,
+                         weight = weapons.POMPE_WEIGHT,
                          knockback = weapons.KNOCKBACK_POMPE)
         
 class Stone(Projectile) :

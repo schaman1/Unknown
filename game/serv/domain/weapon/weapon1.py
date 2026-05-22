@@ -48,6 +48,7 @@ class WeaponBag(Weapon):
         self.fill_slot(0,upgrades.TripleSpell())
         self.fill_slot(1,upgrades.Reloader())
         self.fill_slot(2,upgrades.Copy())
+        #self.fill_slot(4,upgrades.Copy())
         self.fill_slot(3,upgrades.AllSpell())
         self.fill_slot(9,upgrades.Reloader())
 
@@ -69,8 +70,8 @@ class Weapon1(Weapon) :
 
     def init_slot(self):
         self.fill_slot(0,upgrades.LongDash())
-        self.fill_slot(1,upgrades.Jump())
-        self.fill_slot(2,upgrades.LongDash())
+        self.fill_slot(1,upgrades.Copy())
+        self.fill_slot(2,upgrades.Jump())
         #self.fill_slot(2,upgrades.CreateFire())
 
 class Weapon2(Weapon) :
@@ -91,7 +92,7 @@ class Weapon2(Weapon) :
 
     def init_slot(self):
         self.fill_slot(0,upgrades.CreateLance())
-        self.fill_slot(1,upgrades.CreateFire_DieEffect())
+        self.fill_slot(1,upgrades.CreatePompe_DieEffect())
 
 class Weapon3(Weapon) :
 
