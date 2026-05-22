@@ -11,8 +11,6 @@ class Monster(Mob):
 
         super().__init__(x,y,cell_size,size=size,name=name)
 
-        self.old_state = None
-
     def blit(self,screen,x,y,dt):
 
         self.update_interpolate_pos()
@@ -59,7 +57,11 @@ class Skeleton(Monster) :
             self.frame +=1
             self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         pass
 
@@ -67,7 +69,7 @@ class Laseroide(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(8,6),name="Laseroide")
+        super().__init__(x,y,cell_size,size=(8,8),name="Laseroide")
 
         self.name = "Laseroide"
         self.chunk = pos_chunk
@@ -77,17 +79,20 @@ class Laseroide(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
+        """Base pour mettre anim"""
+
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0]=="loading" and self.animation.state != "loading":
-            self.animation.set_state("loading")
-            self.animation.fct_to_do = self.animation.next_idle
+        if key[0] != self.animation.old_state :
+            self.animation.set_state(key[0])
 
-        elif key[0] != "loading" :
-
-            self.animation.state = "idle"
+        self.animation.old_state = key[0]
 
 class Foulli(Monster) :
 
@@ -103,16 +108,20 @@ class Foulli(Monster) :
         #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
         self.frame_multiplier = 0
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0]=="attacking" and self.old_state != "attacking":
+        if key[0]=="attacking" and self.animation.old_state != "attacking":
             self.animation.set_state("attacking")
             self.animation.fct_to_do = self.animation.next_idle
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 class Defendeur(Monster) :
 
@@ -131,15 +140,19 @@ class Defendeur(Monster) :
         self.animation.animation["attacking"]["time"] = 0.1
         self.animation.animation["idle"]["time"] = 2/4
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
 
 class Escargot(Monster) :
 
@@ -160,12 +173,85 @@ class Escargot(Monster) :
 
         self.animation.animation["running"]["time"] = 0.3
 
-    def change_state(self,new_state):
+    def change_state(self,new_state,side):
         """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0] != self.old_state :
+        if key[0] != self.animation.old_state :
             self.animation.set_state(key[0])
 
-        self.old_state = key[0]
+        self.animation.old_state = key[0]
+
+
+class DwarfKing(Monster) :
+    """Boss : Le Roi Nain. Utilise temporairement la texture du joueur
+    (les joueurs sont des nains, le boss leur ressemble)."""
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        #name="player" : réutilise la texture du joueur (provisoire), taille ~3.5x le joueur
+        super().__init__(x,y,cell_size,size=(28,28),name="player")
+
+        self.name = "DwarfKing"
+        self.chunk = pos_chunk
+        self.state = state
+
+    def change_state(self,new_state,side):
+        """La texture du joueur n'a que idle/running : on y ramène les états du boss."""
+
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
+
+        anim = {0:"idle", 1:"running", 2:"running", 4:"running", 5:"idle"}.get(new_state,"idle")
+
+        if anim != self.animation.old_state :
+            self.animation.set_state(anim)
+
+        self.animation.old_state = anim
+
+
+class Limace(Monster) :
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        super().__init__(x,y,cell_size,size=(8,8),name="Limace")
+
+        self.name = "Limace"
+        self.chunk = pos_chunk
+        self.state = state
+        self.frame_perso = []
+
+        #Inutile ----
+        self.frame = 0
+        #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
+        self.frame_multiplier = 0
+        #------
+
+        self.animation.animation["idle"]["time"] = 0.5
+        self.animation.animation["attacking"]["time"] = 0.1
+        self.animation.animation["running"]["time"] = 0.5
+        self.animation.animation["loading"]["time"] = 0.1
+
+
+    def change_state(self,new_state,side):
+        """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0] != self.animation.old_state :
+            self.animation.set_state(key[0])
+
+        self.animation.old_state = key[0]
+
+

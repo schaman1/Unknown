@@ -97,7 +97,6 @@ class Game :
         screen.blit(self.team_img,self.rect_img_team)
 
         delta_time = max(self.end_fading - time.perf_counter(),0)
-        #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
         self.alpha_fading = int(255*delta_time//self.len_fading)
 
         if delta_time<=0 :
@@ -108,11 +107,12 @@ class Game :
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
-        for (chunk, id, x, y, state) in data_monster :
+        for (chunk, id, x, y, state,side) in data_monster :
 
             self.monsters.dic_monster[chunk][id].move((x,y))
                 
-            self.monsters.dic_monster[chunk][id].change_state(state)
+            self.monsters.dic_monster[chunk][id].change_state(state,side)
+
 
     def shot(self,id_key):
         if not self.blit_info:

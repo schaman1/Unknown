@@ -80,20 +80,22 @@ class Main:
 
                     if self.state.mod == "game":
 
-                        if event.key == pygame.K_z :
-                            self.key_command.append([4,0])
-                            self.state.game.player_all.me.update_direction_stop_look(1)
+                        if self.state.game.player_all.me.life > 0:
 
-                        elif event.key == pygame.K_s :
-                            self.key_command.append([4,1])
+                            if event.key == pygame.K_z :
+                                self.key_command.append([4,0])
+                                self.state.game.player_all.me.update_direction_stop_look(1)
 
-                        elif event.key == pygame.K_d:
-                            self.key_command.append([4,3])
-                            self.state.game.player_all.me.update_direction_stop_look(0)
+                            elif event.key == pygame.K_s :
+                                self.key_command.append([4,1])
 
-                        elif event.key==pygame.K_q:
-                            self.key_command.append([4,2])
-                            self.state.game.player_all.me.update_direction_stop_look(2)
+                            elif event.key == pygame.K_d:
+                                self.key_command.append([4,3])
+                                self.state.game.player_all.me.update_direction_stop_look(0)
+
+                            elif event.key==pygame.K_q:
+                                self.key_command.append([4,2])
+                                self.state.game.player_all.me.update_direction_stop_look(2)
 
                 elif event.type == pygame.KEYDOWN:
 
@@ -122,23 +124,25 @@ class Main:
                         elif event.key == pygame.K_SPACE :
                             self.key_command.append([7])
 
-                        elif event.key == pygame.K_z :
-                            self.key_command.append([3,0])
-                            self.state.game.player_all.me.update_direction_look(1)
+                        if self.state.game.player_all.me.life > 0:
 
-                        elif event.key == pygame.K_s :
-                            self.key_command.append([3,1])
-                            self.state.game.player_all.me.update_direction_look(3)
+                            if event.key == pygame.K_z :
+                                self.key_command.append([3,0])
+                                self.state.game.player_all.me.update_direction_look(1)
 
-                        elif event.key == pygame.K_d:
+                            elif event.key == pygame.K_s :
+                                self.key_command.append([3,1])
+                                self.state.game.player_all.me.update_direction_look(3)
 
-                            self.key_command.append([3,3])
-                            self.state.game.player_all.me.update_direction_look(0)
+                            elif event.key == pygame.K_d:
 
-                        elif event.key==pygame.K_q:
-                            self.key_command.append([3,2])
-                            self.state.game.player_all.me.update_direction_look(2)
-                        
+                                self.key_command.append([3,3])
+                                self.state.game.player_all.me.update_direction_look(0)
+
+                            elif event.key==pygame.K_q:
+                                self.key_command.append([3,2])
+                                self.state.game.player_all.me.update_direction_look(2)
+                            
                         if event.key == pygame.K_ESCAPE and self.objClicked is None:
 
                             if self.state.game.stop_blit_info()==False :
@@ -264,7 +268,6 @@ class Main:
                         if self.state.start.get_rect().collidepoint(event.pos) and self.client.connected :
                             #self.Server = Server_game.from_server(self.Server)
 
-                            # print("Host\n")
                             self.start_game()
 
                         elif self.state.menu.get_rect().collidepoint(event.pos):
@@ -402,7 +405,7 @@ class Main:
     def trigger_pnj(self,pnj,is_talking):
         self.musique.update_volume(0.1)
 
-        print(pnj.text.text_id,pnj.text.start_blit_text)
+        #print(pnj.text.text_id,pnj.text.start_blit_text)
 
         if pnj.name=="pnj_tell_story":
             
@@ -413,8 +416,15 @@ class Main:
                 pnj.text.text_to_blit[1] = "Mais je t'ai deja vu !"
                 pnj.text.text_to_blit[2] = "Bon je sais que tu en meurt d'envie."
 
+                self.client.send_data(11,None)
+
             elif pnj.text.text_id == 2 and pnj.text.start_blit_text == 0:
                 self.state.game.player_all.now_can_see_others()
+
+        elif pnj.name == "pnj_tp_boss":
+
+            if pnj.text.text_id == 0 and not is_talking :
+                self.client.send_data(10,None)
             
         self.musique.update_volume(0.3)
 

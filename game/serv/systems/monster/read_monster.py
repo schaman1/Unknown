@@ -1,5 +1,6 @@
 from serv.domain.mob import monster
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
+from serv.config.position_all_monsters import MONSTER_POSITION
 
 class Read_monster :
 
@@ -12,9 +13,20 @@ class Read_monster :
 
         self.base_movement = base_movement
 
+        self.direction = {"right":0,"left":1}
+
+        self.id = 0
+
+        #Monstres invoqués en cours de partie (ex: par le boss), à envoyer au client (msg 5)
+        self.monster_to_create_send = []
+
         self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
 
         self.init_dic_monster()
+
+    def generate_id(self):
+        self.id = (self.id+1)%255
+        return self.id
 
     def init_dic_monster(self) :
 
@@ -35,15 +47,58 @@ class Read_monster :
                 for monster in self.dic_monster[chunk] :
 
                     #state_id = self.state_map.get(monster.state, 0) #Why ? Always 0 by default
-                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name))
+
+                    list_modif[i].append((chunk,monster.id, monster.pos_x, monster.pos_y, monster.name,self.direction[monster.side]))
 
         return list_modif
+    
+    def create_monster(self,monster):
+        
+        monster.id = self.generate_id()
+        chunk = self.return_chunk(monster.pos_x,monster.pos_y)
+        self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
+
+    def spawn_minion(self,monster):
+        """Crée un monstre en cours de partie (invoqué par un boss) et prépare son envoi au client."""
+        self.create_monster(monster)
+        chunk_y,chunk_x = self.return_chunk(monster.pos_x,monster.pos_y)
+        chunk = chunk_y*100+chunk_x
+        self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name,self.direction[monster.side]))
 
     def create_list_monster(self) :
 
-        self.dic_monster[200].append(monster.Escargot(3411,17300,1))
-        self.dic_monster[200].append(monster.Foulli(7900,15400,2))
-        self.dic_monster[201].append(monster.Foulli(12000,15400,3))
+        for name in MONSTER_POSITION.keys() :
+
+            for pos in MONSTER_POSITION[name] :
+
+                class_monster = None
+
+                if name == "Laseroide" :
+                    class_monster = monster.Laseroide
+
+                elif name == "Limace" :
+                    class_monster = monster.Limace
+
+                elif name == "Escargot" :
+                    class_monster = monster.Escargot
+
+                elif name == "Foulli" :
+                    class_monster = monster.Foulli
+
+                elif name == "Defendeur" :
+                    class_monster = monster.Defendeur
+
+                elif name == "Skeleton" :
+                    class_monster = monster.Skeleton
+
+                if class_monster != None :
+
+                    self.create_monster(class_monster(pos[0],pos[1]))
+
+        #print(self.dic_monster)
+
+        #Le boss : Le Roi Nain, à la position POS_BOSS (20,190 en cases)
+        self.create_monster(monster.DwarfKing(2000,19000))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
@@ -64,6 +119,8 @@ class Read_monster :
 
         list_monster_change_chunk = []
 
+        list_minion_to_spawn = []
+
         for y in range(self.size_chunk_all[0]) :
             for x in range(self.size_chunk_all[1]) :
 
@@ -79,20 +136,35 @@ class Read_monster :
 
                         monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
 
+                        #Récupère les monstres invoqués par ce monstre (ex: le boss)
+                        to_spawn = getattr(monster,"monsters_to_spawn",None)
+                        if to_spawn :
+                            list_minion_to_spawn.extend(to_spawn)
+                            to_spawn.clear()
+
                         state_id = self.state_map.get(monster.state, 0)
 
                         for client_idx in liste_client_see :
-                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
+                            
+                            list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id,self.direction[monster.side]))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
-                        if self.return_chunk(monster.pos_x,monster.pos_y) != chunk:
-                            list_monster_change_chunk.append((chunk,monster))
+                        new_chunk = self.return_chunk(monster.pos_x,monster.pos_y)
+                        new_chunk = new_chunk[0]*self.base_movement+new_chunk[1]
+                        if new_chunk != chunk:
+                            list_monster_change_chunk.append([chunk,new_chunk,monster])
                             del self.dic_monster[chunk][i]
 
-        for chunk,monster in list_monster_change_chunk :
-            self.dic_monster[chunk].append(monster)
+        for i in range(len(list_monster_change_chunk)) :
+            old_chunk,new_chunk,monster = list_monster_change_chunk[i]
+            self.dic_monster[new_chunk].append(monster)
+            list_monster_change_chunk[i][2] = monster.id
 
-        return list_modif
+        #Enregistre les monstres invoqués cette frame (les place dans un chunk + leur donne un id)
+        for minion in list_minion_to_spawn :
+            self.spawn_minion(minion)
+
+        return list_modif,list_monster_change_chunk
     
     def init_list_modif_client(self,x_chunk,y_chunk,list_modif,i) :
 

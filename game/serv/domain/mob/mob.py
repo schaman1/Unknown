@@ -61,7 +61,7 @@ class Mob(Movable):
         self.max_life+= amount
         self.send_new_life = True
 
-    #-----------------Things the player use ! so works-------------------#
+    #-----------------Choses que le joueur utilise ! donc fonctionne-------------------#
     
     def jump(self,map,force_jump = False):
 
@@ -139,6 +139,8 @@ class Mob(Movable):
             self.vitesse_x = self.vitesse_x*(self.frottement_power**(dt*60))
 
     def move_all(self,map,dt,collision_handler):
+
+        #print(self.pos_x,self.pos_y)
 
         self.smooth_jump.trigger(self.touch_ground(map),self.vitesse_y)
 

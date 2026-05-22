@@ -1,6 +1,6 @@
 import pygame, math
 from client.domain.mob.mob import Mob
-from client.config.display_text import FONT
+from client.config.display_text import FONT,FONT_SMALL
 from client.config import size_display
 from client.domain.weapon.weapon_manager import WeaponManager
 
@@ -15,6 +15,10 @@ class Player_you(Mob) :
         self.is_you = is_you
 
         self.font = FONT
+        self.text_pseudo_color = (250,250,250)
+        self.text_pseudo = FONT_SMALL.render(str(self.pseudo[:-7]),True, self.text_pseudo_color)  # True = anti-aliasing
+        size = FONT_SMALL.size(str(self.pseudo[:-7]))
+        self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
         self.text_life_color = (250,250,250)
         self.text_life = self.font.render(f"{self.life}/{self.max_life}",True, self.text_life_color)  # True = anti-aliasing
@@ -36,7 +40,7 @@ class Player_you(Mob) :
 
         self.weapons = WeaponManager(screen_size,cell_size)
 
-        self.money_image = pygame.image.load("assets/sprites/divers/money.png")
+        self.money_image = pygame.image.load("assets/sprites/ressources/money.png")
         self.money_image = self.money_image.convert_alpha()
         # self.money_image = pygame.transform.rotate(self.money_image, -30)
         self.money_image = pygame.transform.scale(self.money_image, (self.money_image.get_width() * 3, self.money_image.get_height() *3) )
@@ -71,6 +75,15 @@ class Player_you(Mob) :
 
         self.animation.draw(dt,self.pos_blit,screen)
 
+        self.draw_pseudo(screen,self.pos_blit)
+
+    def draw_pseudo(self,screen,pos_blit):
+
+        pos = [self.delta_pos_pseudo[0],self.delta_pos_pseudo[1]]
+        pos[0]+=pos_blit[0]
+        pos[1]+=pos_blit[1]
+        screen.blit(self.text_pseudo, pos)
+
     def draw_utils(self,screen,screen_size):
 
         self.draw_life(screen,screen_size)
@@ -87,7 +100,6 @@ class Player_you(Mob) :
             (50,60,50),  # couleur (blanc)
             self.rect_black_life,
         )
-        #print(self.life)
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,
@@ -134,19 +146,17 @@ class Player_you(Mob) :
 
     def calcule_new_direction(self):
         """Update l'anim si pas dans un dead state"""
-        
-        if not self.in_dead_state():
 
-            if self.key_active["left"] and not self.key_active["right"] :
-                self.animation.direction="left"
-                self.animation.update_state("running")
+        if self.key_active["left"] and not self.key_active["right"] :
+            self.animation.direction="left"
+            self.animation.update_state("running")
 
-            elif self.key_active["right"] and not self.key_active["left"]:
-                self.animation.direction="right"
-                self.animation.update_state("running")
+        elif self.key_active["right"] and not self.key_active["left"]:
+            self.animation.direction="right"
+            self.animation.update_state("running")
 
-            elif not self.key_active["right"] and not self.key_active["left"]:
-                self.animation.update_state("idle")
+        elif not self.key_active["right"] and not self.key_active["left"]:
+            self.animation.update_state("idle")
 
     def update_direction_look(self,new_direction):
         
@@ -160,7 +170,6 @@ class Player_you(Mob) :
 
             elif new_direction==2:
                 self.key_active["left"]=True
-
 
             self.calcule_new_direction()
 
@@ -180,6 +189,9 @@ class Player_you(Mob) :
 
     def kill(self,duree):
 
+        self.key_active["right"] = False
+        self.key_active["left"] = False
+
         self.animation.set_to_death(duree,"in_death")
 
 class Player_not_you(Mob) :
@@ -198,7 +210,10 @@ class Player_not_you(Mob) :
 
         self.old_state = "idle"
 
-        #self.font = FONT
+        self.text_pseudo_color = (250,250,250)
+        self.text_pseudo = FONT_SMALL.render(str(self.pseudo),True, self.text_pseudo_color)  # True = anti-aliasing
+        size = FONT_SMALL.size(str(self.pseudo))
+        self.delta_pos_pseudo = [-size[0]//2 + self.width//2*self.cell_size,0]
 
         self.cell_size=cell_size
 
@@ -216,6 +231,15 @@ class Player_not_you(Mob) :
         self.update_pos_blit(xscreen,yscreen)
 #
         self.animation.draw(dt,self.pos_blit,screen)
+
+        self.draw_pseudo(screen,self.pos_blit)
+
+    def draw_pseudo(self,screen,pos_blit):
+
+        pos = [self.delta_pos_pseudo[0],self.delta_pos_pseudo[1]]
+        pos[0]+=pos_blit[0]
+        pos[1]+=pos_blit[1]
+        screen.blit(self.text_pseudo, pos)
 
     def move(self,delta):
 
@@ -236,7 +260,6 @@ class Player_not_you(Mob) :
                 self.remaining_time_anim = self.len_anim["running"]
 
         self.move_mob(new_pos)
-
 
     def kill(self,duree):
 

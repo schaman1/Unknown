@@ -34,13 +34,24 @@ class upgrade_weapon(interactable):
 
         super().__init__(pos_x,pos_y,price)
 
-        self.found_path()
+        self.found_path(id_img)
 
-    def found_path(self):
+    def found_path(self,id_img):
 
-        self.size_img = (size.CELL_SIZE*size.SIZE_SPELL_GROUND,size.CELL_SIZE*size.SIZE_SPELL_GROUND)
-        self.delta_size_bg = size.DELTA_SIZE_BG_SPELL*size.CELL_SIZE
-        self.init_img(assets.ADD_SLOT_WEAPON,assets.ICONE_AUGMENT_WEAPON)
+        if id_img == 1 :
+
+            self.size_img = (size.CELL_SIZE*size.SIZE_SPELL_GROUND,size.CELL_SIZE*size.SIZE_SPELL_GROUND)
+            self.delta_size_bg = size.DELTA_SIZE_BG_SPELL*size.CELL_SIZE
+            self.init_img(assets.ADD_SLOT_WEAPON,assets.ICONE_AUGMENT_WEAPON)
+
+        elif id_img == 2 :
+
+            self.size_img = (size.CELL_SIZE*size.SIZE_SPELL_GROUND,size.CELL_SIZE*size.SIZE_SPELL_GROUND)
+            self.delta_size_bg = size.DELTA_SIZE_BG_SPELL*size.CELL_SIZE
+            self.init_img(assets.ADD_2_SLOT_WEAPON,assets.ICONE_AUGMENT_WEAPON)
+
+        else :
+            print("Issue in client/ui/objects/object_type, id_img unknown for upgrade weapon : ",id_img)
 
 class upgrade_life(interactable):
 
@@ -76,5 +87,12 @@ class chest(interactable):
             self.init_img(assets.CHEST_UPGRADE_CLOSE)
             self.init_use_img(assets.CHEST_UPGRADE_OPEN)
 
+        elif id_img==3:
+            self.init_img(assets.CHEST_SPELL_RARE_CLOSE)
+            self.init_use_img(assets.CHEST_SPELL_RARE_OPEN)
+
+        elif id_img == 4:
+            self.init_img(assets.CHEST_SPELL_LEGENDARY_CLOSE)
+            self.init_use_img(assets.CHEST_SPELL_LEGENDARY_OPEN)
         else :
             print("Unknown chest id in client/ui/object_type",id_img)

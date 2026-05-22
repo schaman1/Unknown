@@ -5,7 +5,7 @@ from serv.domain.weapon.weapon_manager import WeaponManager
 from serv.domain.mob.deplacement import input_handler
 from serv.domain.mob.team import Team
 from serv.config import Default_values
-from shared.constants.world import LEN_DEATH_PLAYER
+from shared.constants import world
 import time
 
 class Player(Mob) :
@@ -14,7 +14,7 @@ class Player(Mob) :
 
     def __init__(self,pos,id,host = False,damage = 25): 
 
-        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = LEN_DEATH_PLAYER)
+        super().__init__(pos=pos,hp=Default_values.PLAYER_LIFE,id=id,width=collisions.PLAYER_COLLISION_X,height=collisions.PLAYER_COLLISION_Y,team=Team.Player,len_dead = world.LEN_DEATH_PLAYER)
 
         self.money = Default_values.Player_money_start
         self.send_new_money = True #Pour initialiser
@@ -25,7 +25,7 @@ class Player(Mob) :
 
         self.is_host = host
         self.distance_cast_spells = self.half_width
-        self.is_looking = 0 #0 = right / 1 = Top / 2 left / 3 bottom
+        self.is_looking = 0 #0 = droite / 1 = haut / 2 = gauche / 3 = bas
 
         self.weapons = WeaponManager(self.team,self)
         self.upgrade_handler = UpgradeHandler()
@@ -35,15 +35,29 @@ class Player(Mob) :
         self.respawn_at = [self.pos_x,self.pos_y]
         self.time_respawn = 0
 
-    def take_damage(self, amount):
-        """Return True/False if is dead or not"""
+        self.fct_to_do = self.check_if_can_leave_intro #Here to check if can leave after intro
 
-        if amount!=0 :
+    def set_finish_intro(self):
+        self.fct_to_do = self.empty_fct
+    
+    def empty_fct(self):
+        return False
+
+    def check_if_can_leave_intro(self):
+
+        if self.pos_x <= world.POS_TOO_LEFT*self.base_movement :
+            return True
+        return False
+
+    def take_damage(self, amount):
+        """Retourne True/False selon si le joueur est mort ou non"""
+
+        if amount!=0 and self.is_dead == False:
 
             self.life -= amount
             self.send_new_life = True
 
-            if self.life <= 0:
+            if self.life <= 0 :
                 self.life = 0
                 self.die()
 
@@ -56,9 +70,10 @@ class Player(Mob) :
         self.has_respawn = False
         self.start_dead = time.perf_counter()+ self.len_dead
         self.update_money(-50)
+        self.input_handler.stop_mov()
 
     def respawn(self):
-        #print("Respown location",self.respawn_at)
+
         self.pos_x = self.respawn_at[0]
         self.pos_y = self.respawn_at[1]
         self.has_respawn = True
@@ -181,7 +196,7 @@ class Player(Mob) :
         self.weapons.lWeapons[spell_2_weapon].spells_on_shot[spell_2_idx] = spell_switch
 
     def shot(self,id_weapon):
-        """Shot but if is dead don't shot"""
+        """Tire, mais ne tire pas si le joueur est mort"""
 
         if self.is_dead :
             return
@@ -229,5 +244,9 @@ class Player(Mob) :
 
         self.respawn_at = [element.pos_x,element.pos_y]
 
-    def upgrade_size_weapon(self):
-        return  self.weapons.add_slot()
+    def upgrade_size_weapon(self,nbr):
+
+        for _ in range(nbr) :
+            infos = self.weapons.add_slot()
+
+        return infos

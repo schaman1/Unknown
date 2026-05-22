@@ -2,7 +2,7 @@ class UpgradeHandler:
 
     def __init__(self):
         
-        self.id_event_player_do = [] #Each frame player do events base on the list of id and reset  it (ex: if 1 in dahs then remove 1 from list)
+        self.id_event_player_do = [] #À chaque frame le joueur exécute les événements selon la liste d'id puis la réinitialise (ex : si 1 est dans dash, on retire 1 de la liste)
 
         self.distance_dash = [0,0]
 
@@ -26,12 +26,11 @@ class UpgradeHandler:
                 
                 res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
                 
-                self.dash_player(player)
 
             elif id == 42 :
 
                 self.trigger_jump(player,dt,map)
-                res = False #Bcs jump 1 time no more
+                res = False #Car on saute une seule fois, pas plus
 
             else :
                 print("Unknown id in upgrade handle. Event :",self.id_event_player_do[i])
@@ -40,6 +39,7 @@ class UpgradeHandler:
             if res==False :
                 self.id_event_player_do.pop(i)
 
+        self.dash_player(player)
 
     def trigger_dash(self,event,player,dt,map):
                 
@@ -50,7 +50,7 @@ class UpgradeHandler:
         distance = self.return_dist_angle(dist,angle)
         #print(distance)
 
-        if delta_time>time_base:
+        if delta_time>=time_base:
 
             #trunca_dt = time_base-delta_time
             #alpha = trunca_dt/dt
@@ -78,7 +78,7 @@ class UpgradeHandler:
             return True
                 
     def return_dist_angle(self,dist,angle):
-        """return un couple de dist a faire en fonction de l'angle choisis, x/y"""
+        """Retourne un couple de dist à faire en fonction de l'angle choisi, x/y"""
 
         if angle==0:
             return [dist,0]
@@ -100,5 +100,5 @@ class UpgradeHandler:
         self.reset_distance_dash()
 
     def trigger_jump(self,player,dt,map):
-        """Force the player to jump even if don't touch the gorund"""
+        """Force le joueur à sauter même s'il ne touche pas le sol"""
         player.jump(map = map,force_jump = True)
