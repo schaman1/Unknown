@@ -45,6 +45,9 @@ class Monster_all :
             elif name == 5:
                 self.dic_monster[chunk][id] =  monster.Limace(x, y, chunk, self.cell_size, 0) #state 0 == idle
 
+            elif name == 6:
+                self.dic_monster[chunk][id] = monster.DwarfKing(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
+
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 

@@ -940,3 +940,133 @@ class Skeleton(Monster):
 
         damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
         collision_handler.player_take_damage_no_projectile(damage,Player)
+
+
+class DwarfKing(Monster):
+    """Boss : Le Roi Nain.
+    Très gros et résistant, immunisé au knockback, il poursuit les joueurs,
+    invoque des monstres, et esquive avec un dash et un double saut comme un joueur.
+    (Les joueurs sont des nains : le boss leur ressemble beaucoup.)"""
+
+    def __init__(self, x, y, id=0):
+
+        super().__init__(
+            hp = monster_info.DWARF_KING_HP,
+            damage = monster_info.DWARF_KING_DAMAGE,
+            x = x, y = y,
+            atk_rad = monster_info.DWARF_KING_ATK_RAD,
+            rad = monster_info.DWARF_KING_RAD,
+            run_away = -1,                              #N'a jamais peur
+            atk_speed = 1,
+            id = id,
+            prime = monster_info.DWARF_KING_PRIME,
+            acceleration = monster_info.DWARF_KING_ACCELERATION,
+            width = monster_info.DWARF_KING_WIDTH,
+            height = monster_info.DWARF_KING_HEIGHT,
+            knockback_res = 3,                          #Immunisé au knockback (résistance max)
+        )
+
+        self.name = 6                                   #Texture côté client (joueur, temporaire)
+
+        #Dégâts de contact : toucher le boss fait très mal
+        self.collision_atk = monster_info.DWARF_KING_DAMAGE
+        self.collision_time_reload = 0.7
+
+        #Vitesse de poursuite du joueur
+        self.speed_chase = max(1, self.base_movement * 6)
+
+        #Esquive : alterne un dash et un double saut
+        self.dodge_cooldown = monster_info.DWARF_KING_DODGE_COOLDOWN
+        self.last_dodge = time.perf_counter()
+        self.dodge_with_dash = True
+        self.dash_until = 0                             #Tant que time < dash_until, on garde la vitesse du dash
+        self.double_jump_pending = False
+        self.double_jump_time = 0
+
+        #Invocation de monstres (squelettes et laseroïdes)
+        self.spawn_cooldown = monster_info.DWARF_KING_SPAWN_COOLDOWN
+        self.last_spawn = time.perf_counter()
+        self.minions_spawned = 0
+        self.max_minions = monster_info.DWARF_KING_MAX_MINIONS
+        self.monsters_to_spawn = []                     #Vidé par Read_monster à chaque frame
+
+    def update(self, map, lPlayer, dt, collision_handler, projectile_manager):
+
+        if self.still_dead():
+            return
+
+        #Gère la cible, la distance, les dégâts de contact et la machine à états
+        super().update(map, dt, lPlayer, collision_handler)
+
+        self.try_spawn_minions()
+        self.try_dodge(map)
+        self.resolve_double_jump(map)
+
+        self.move_boss(map, dt)
+
+    def move_boss(self, map, dt):
+        """Déplacement physique : poursuit le joueur, sauf pendant un dash où on laisse filer la vitesse."""
+
+        chasing = self.target is not None and self.state in ("moving", "attacking", "run away")
+
+        if time.perf_counter() >= self.dash_until and chasing:
+            dx = self.target.pos_x - self.pos_x
+            if abs(dx) < self.base_movement:
+                self.vitesse_x = 0
+            else:
+                self.vitesse_x = self.speed_chase if dx > 0 else -self.speed_chase
+
+        self.gravity_effect(dt)
+        self.collision_x(map, dt, self.vitesse_x)
+        self.collision_y(map, dt, self.vitesse_y)
+        self.update_vitesse(dt)
+
+    def try_dodge(self, map):
+        """Toutes les dodge_cooldown secondes, esquive : alterne un dash et un double saut."""
+
+        if self.target is None:
+            return
+
+        now = time.perf_counter()
+        if now - self.last_dodge < self.dodge_cooldown:
+            return
+        self.last_dodge = now
+
+        if self.dodge_with_dash:
+            #Dash à l'opposé du joueur pour esquiver
+            dir = 1 if self.pos_x > self.target.pos_x else -1
+            self.dash([dir * self.base_movement * 70, 0])
+            self.dash_until = now + 0.35
+        else:
+            #Double saut : un saut maintenant, le second juste après (voir resolve_double_jump)
+            self.jump(map)
+            self.double_jump_pending = True
+            self.double_jump_time = now + 0.25
+
+        self.dodge_with_dash = not self.dodge_with_dash
+
+    def resolve_double_jump(self, map):
+        """Déclenche le 2e saut du double saut une fois le court délai écoulé."""
+
+        if self.double_jump_pending and time.perf_counter() >= self.double_jump_time:
+            self.jump(map, force_jump=True)             #force_jump : saute même en l'air
+            self.double_jump_pending = False
+
+    def try_spawn_minions(self):
+        """Toutes les spawn_cooldown secondes, invoque un squelette et un laseroïde."""
+
+        if self.minions_spawned >= self.max_minions:
+            return
+
+        now = time.perf_counter()
+        if now - self.last_spawn < self.spawn_cooldown:
+            return
+        self.last_spawn = now
+
+        offset = 3 * self.base_movement
+        spawn_y = self.pos_y - 2 * self.base_movement
+
+        #Les monstres sont mis dans monsters_to_spawn, que Read_monster enregistre ensuite
+        self.monsters_to_spawn.append(Skeleton(self.pos_x + offset, spawn_y))
+        self.monsters_to_spawn.append(Laseroide(self.pos_x - offset, spawn_y))
+        self.minions_spawned += 2
