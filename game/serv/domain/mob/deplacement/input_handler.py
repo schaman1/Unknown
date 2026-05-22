@@ -22,6 +22,13 @@ class InputHandler:
         self.reset_value()
 
         return input
+    
+    def stop_mov(self):
+        self.movement[0] = False
+        self.movement[1] = False
+        self.movement[2] = False
+        self.movement[3] = False
+        self.movement[7] = False
 
     def reset_value(self):
 

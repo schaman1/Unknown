@@ -28,7 +28,6 @@ class Mob:
         self.pos_blit = self.calculate_pos_blit(x,y)
 
     def calculate_pos_blit(self,x,y):
-        #print(self.pos_y)
         xs = self.pos_x - self.width//2*self.cell_size +x
         ys = self.pos_y - self.height//2*self.cell_size +y #Regle un petit soucis
         return (xs,ys)
@@ -112,8 +111,6 @@ class Mob:
 #
         ##alpha = 1
 #
-        ##print(alpha,time_now-self.interpolate_mov["old time"],self.interpolate_mov["new time"]-self.interpolate_mov["old time"])
-        ##print(self.interpolate_mov,time_now)
 #
         #self.pos_x = round((1-alpha)*self.interpolate_mov[0][0] + (alpha*self.interpolate_mov[1][0]))
         #self.pos_y = round((1-alpha)*self.interpolate_mov[0][1] + (alpha*self.interpolate_mov[1][1]))

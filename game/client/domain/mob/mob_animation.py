@@ -37,6 +37,9 @@ class Animation:
                                        }
 
         self.state = "idle"
+        self.old_state = "idle"
+
+        self.state_to_do_when_respawn = "idle"
         self.direction = "right"
 
         self.damage = False
@@ -233,7 +236,6 @@ class Animation:
             img_idle_loading = pygame.image.load(assets.LIMACE_RUNNING)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["loading"],size)
-            #print("anim loading limace :",self.animation["loading"])
 
             self.add_tombe(cell_size)
 
@@ -292,7 +294,6 @@ class Animation:
             if self.frame == 0:
                 self.fct_to_do()
 
-        #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
         img = self.animation[self.state][self.direction][self.frame]
 
 
@@ -334,22 +335,27 @@ class Animation:
 
     def next_idle(self):
         """Respawn anim"""
-        self.state = "idle"
+
+        self.state = self.state_to_do_when_respawn
+        self.old_state = self.state
         self.fct_to_do = self.do_nothing
 
     def next_running(self):
         """Respawn anim"""
         self.state = "running"
+        self.old_state = "running"
         self.fct_to_do = self.do_nothing
 
     def end_death(self):
         """When is dead, do it"""
         self.state = "respawn"
+        self.old_state = "respawn"
         self.fct_to_do = self.next_idle
 
     def end_in_death(self):
         """When died, anim"""
         self.state = "death"
+        self.old_state = "death"
         self.fct_to_do = self.end_death
 
     def set_to_death(self,duree,state_beginning):
@@ -381,3 +387,5 @@ class Animation:
         if not self.dead_state():
             self.state = state_name
             self.frame = 0
+        else :
+            self.state_to_do_when_respawn = state_name
