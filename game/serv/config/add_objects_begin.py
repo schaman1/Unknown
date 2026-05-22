@@ -1,13 +1,15 @@
 OBJECTS = []
 
-OBJECTS.append(("Chest",1,18500,12500,20))
+OBJECTS.append(("HEALER",1,8500,15250,0))
+
+OBJECTS.append(("Chest",1,18500,12300,20))
 OBJECTS.append(("Chest",1,19100,16000,10))
-OBJECTS.append(("Chest",1,10500,19500,20))
+OBJECTS.append(("Chest",1,10500,19300,20))
 
-OBJECTS.append(("Chest",3,27100,19500,50))
+OBJECTS.append(("Chest",3,27100,19300,50))
 
-OBJECTS.append(("Chest",4,29700,23500,80))
-OBJECTS.append(("Chest",4,41200,18500,80))
+OBJECTS.append(("Chest",4,29700,23300,80))
+OBJECTS.append(("Chest",4,41200,18300,80))
 
 OBJECTS.append(("SPELL",42,15000,24800,10)) #Double jump
 
