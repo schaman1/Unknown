@@ -1,4 +1,4 @@
-import time
+import time,math
 
 class Weapon :
 
@@ -145,7 +145,20 @@ class Weapon :
         else :
             self.next_allowed_shot = max(self.next_allowed_shot,now+time_spells_take)
 
+        self.update_pos_projectile(angle,projectile_shot)
+
         return [projectile_shot,event_player]
+    
+    def update_pos_projectile(self,angle,projectiles):
+        """All projectiles are created in front of the player BUT ! We need to had the size of the projectile to the pos !"""
+
+        vx = math.cos(math.radians(angle))
+        vy = math.sin(math.radians(angle))
+
+        for projectile in projectiles :
+
+            projectile.pos_x += vx*(projectile.half_width+100)
+            projectile.pos_y -= vy*(projectile.half_width+100)
     
     def test_if_last_spell_of_weapon(self):
         

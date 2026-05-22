@@ -35,6 +35,7 @@ class Projectile :
         self.rebond = rebond
         self.damage = damage
         self.knockback = knockback #Knockback strength applied to mobs on hit (0 = none)
+        self.movable = speed!=0 #If move or not = si a vx et vy. Utilise dans collision hander car si bouge pas alors test trigger avec plus de chunk
 
         self.is_dead = False
         self.to_update = False
@@ -82,6 +83,14 @@ class Projectile :
         return vx,vy
     
     def gravity(self,dt):
+
+    # je t'aime
+        self.vy += self.base_movement*self.weight*dt
+
+        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
+
+        if self.weight != 0 :
+            self.vy = self.vy*(gravity_power_mult**(dt*60))
         pass#self.vy+=self.weight*dt
 
     def check_if_projectile_spawn_when_die(self):
@@ -91,19 +100,10 @@ class Projectile :
 
     def move(self,dt,map):
 
-        #self.gravity(dt)
+        self.gravity(dt)
 
         if (self.pos_x+self.vx*dt<0 or self.pos_y+self.vy < 0):
             self.is_dead = True
-
-    # je t'aime
-    #--------------Gravity
-        self.vy += self.base_movement*self.weight*dt
-
-        gravity_power_mult = 1.1#Diff car dans les game grav plus forte quand tu tombe pour meilleur feeling
-
-        self.vy = self.vy*(gravity_power_mult**(dt*60))
-    #----End gravity
 
         if self.is_dead is False:
             self.move_x(map,dt)

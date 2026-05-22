@@ -8,7 +8,8 @@ class objects_manager:
 
         self.chunk_objects = {}
         self.upgrades = {"UpgradeWeapon":upgrade_size_weapon,
-                         "UpgradeLife":upgrade_life}
+                         "UpgradeLife":upgrade_life,
+                         "UpgradeWeapon2":upgrade_size_weapon}
         self.id_curr = 0
 
         self.init_dico_dic_objects()
@@ -97,23 +98,46 @@ class objects_manager:
 
             return
         
-        elif cat == 1: #Means spell
+        elif cat == 1: #Means spell_low_quality
 
             id = self.generate_id()
-            spell = spell_on_ground(None,x,y,0,randomize=True)
+            spell = spell_on_ground(None,x,y,0,randomize=True,rarity="common")
 
             self.chunk_objects[chunk][id] = spell
 
             return id,spell,"SPELL"
         
-        elif cat == 2: #Mea ns special = Upgade weapon
+        elif cat == 2: #Means special = Upgade weapon
 
             id = self.generate_id()
 
             name = random.choice(list(self.upgrades.keys()))
 
-            upgrade = self.upgrades[name](0,x,y,0)
+            id_cat = 1
+            if name == "UpgradeWeapon2":
+                id_cat = 2
+                name = "UpgradeWeapon"
+
+            upgrade = self.upgrades[name](id_cat,x,y,0)
 
             self.chunk_objects[chunk][id] = upgrade
 
             return id,upgrade,name
+        
+        elif cat == 3: #Means Rare spell
+
+            id = self.generate_id()
+            spell = spell_on_ground(None,x,y,0,randomize=True,rarity="rare")
+
+            self.chunk_objects[chunk][id] = spell
+
+            return id,spell,"SPELL"
+        
+        elif cat == 4:
+
+            id = self.generate_id()
+            spell = spell_on_ground(None,x,y,0,randomize=True,rarity="legendary")
+
+            self.chunk_objects[chunk][id] = spell
+
+            return id,spell,"SPELL"

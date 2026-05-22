@@ -36,7 +36,7 @@ class Monster(Mob):
 
     def is_alive(self):
         return self.hp > 0
-        
+
     def has_line_of_sight(self, map, target):
         x0, y0 = self.pos_x, self.pos_y
         x1, y1 = target.pos_x, target.pos_y
@@ -70,8 +70,8 @@ class Monster(Mob):
         target = None
         best = None
         for p in lPlayer.values():
-            if not self.has_line_of_sight(map, p):
-                continue
+            #if not self.has_line_of_sight(map, p): #Issue come from here ?
+            #    continue
             dx = p.pos_x - self.pos_x
             dy = p.pos_y - self.pos_y
             d = math.hypot(dx, dy)
@@ -79,7 +79,9 @@ class Monster(Mob):
                 best = d
                 target = p
         if target is None:
+            #print("None ! why ",lPlayer.values())
             return None, float("inf")
+        
         return target, best / self.base_movement
     
     def dist_to_target_player(self,player):
@@ -103,7 +105,7 @@ class Monster(Mob):
         if self.state == "stunned":
             if time.perf_counter() > getattr(self, 'stun_timer', 0):
                 self.state = "idle"
-                self.target = None
+                #self.target = None #Fis issue
             else:
                 return
 
@@ -146,7 +148,13 @@ class Monster(Mob):
                 self.target = None #Reset de l'aggro
 
         elif self.state == "run away":
-            if self.dist >= self.attack_radius +0 or self.dist < (self.width/2)/self.base_movement : #0 = delta
+
+            #if self.dist > self.run_away_rad :
+
+            if self.dist > self.radius :
+                self.state = "moving"
+
+            if self.dist >= self.run_away_rad +15 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
 
@@ -251,18 +259,16 @@ class Monster(Mob):
 
     # Essayer de monter d'une cellule si possible lors d'un déplacement horizontal
 
-
-
 #Creation specifique de chaque monstre
 
 class Laseroide(Monster) :
 
     def __init__(self,x,y,id):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 6)
+        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
 
         self.acceleration_y = 20* self.acceleration
-        self.knockback_res = 2
+        self.knockback_res = 0 #Resist pas
 
         self.name = 1 #Permet d'affihcer le bon monstre
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -271,6 +277,8 @@ class Laseroide(Monster) :
         self.begin_shot = time.perf_counter()
         self.time_before_shot = 1
         self.angle = 0
+        self.begin_relax = time.perf_counter()
+        self.time_relax = 0.7
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 
@@ -329,6 +337,12 @@ class Laseroide(Monster) :
 
     def idle_behavior(self,map,dt):
         """Reste sur place"""
+        if self.focus :
+            if self.time_relax + self.begin_relax <= time.perf_counter():
+                self.focus = False
+                self.state = "run away"
+                self.last_time_jump = time.perf_counter()#Prevent jump
+
         return
     
     def moving_behavior(self,target,map,dt):
@@ -360,7 +374,9 @@ class Laseroide(Monster) :
                 projectile_manager.add_projectile_create(proj)
 
         if self.weapon.idx == 0:
-            self.focus = False
+            #self.focus = True
+            self.state = "idle"
+            self.begin_relax = time.perf_counter()
 
 class Foulli(Monster) :
 
@@ -368,7 +384,7 @@ class Foulli(Monster) :
 
         super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
 
-        self.knockback_res = 3
+        self.knockback_res = 10
 
         self.name = 2 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.weapon = weapon1.WeaponLaseroide(team = self.team,player = self)
@@ -674,7 +690,7 @@ class Limace(Monster) :
                 self.focus = True #ne change plus d'état
                 self.begin_attack = time.perf_counter() #début de l'attaque
 
-                self.norme = self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
+                self.norme = self.dist#self.dist_to_target_player(self.target)#math.sqrt( (self.target.pos_x - (self.pos_x + self.melee_radius)) **2 )
 
 
                 if self.norme <= self.melee_radius : #melee attack

@@ -147,19 +147,17 @@ class Player_you(Mob) :
 
     def calcule_new_direction(self):
         """Update l'anim si pas dans un dead state"""
-        
-        if not self.in_dead_state():
 
-            if self.key_active["left"] and not self.key_active["right"] :
-                self.animation.direction="left"
-                self.animation.update_state("running")
+        if self.key_active["left"] and not self.key_active["right"] :
+            self.animation.direction="left"
+            self.animation.update_state("running")
 
-            elif self.key_active["right"] and not self.key_active["left"]:
-                self.animation.direction="right"
-                self.animation.update_state("running")
+        elif self.key_active["right"] and not self.key_active["left"]:
+            self.animation.direction="right"
+            self.animation.update_state("running")
 
-            elif not self.key_active["right"] and not self.key_active["left"]:
-                self.animation.update_state("idle")
+        elif not self.key_active["right"] and not self.key_active["left"]:
+            self.animation.update_state("idle")
 
     def update_direction_look(self,new_direction):
         
