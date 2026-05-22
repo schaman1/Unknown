@@ -70,7 +70,6 @@ class Weapon1(Weapon) :
 
     def init_slot(self):
         id = 0
-        print(WEAPONS_BEGIN[1],WEAPONS_BEGIN)
         for idx in WEAPONS_BEGIN[1] :
 
             self.fill_slot(id,upgrades.UPGRADES[idx])

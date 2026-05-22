@@ -48,8 +48,6 @@ class Projectile :
 
     def update_angle_pos(self,new_angle,new_pos,owner_pos):
 
-        print(self.life_time)
-
         if self.force_pos :
             self.pos_x = new_pos[0]+self.delta_pos[0]
             self.pos_y = new_pos[1]+self.delta_pos[1]
