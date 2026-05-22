@@ -3,7 +3,7 @@
 #FOR pnj tp to boss
 DIST_TO_TP_BOSS = 400
 POS_BOSS = [20,190]
-POS_PNJ = (20,190)
+POS_PNJ = (220,190)
 POS_RESET = (40,120)
 POS_TOO_LEFT = 20
 
