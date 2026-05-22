@@ -38,9 +38,10 @@ class Pnj_all :
         self.add_pnj(pos,'pnj_tell_story')
         self.container_pnj[-1].animation.direction = "left"
     
-
-        pos = (38,173)
+        pos = (77,157)
         self.add_pnj(pos,'pnj_tell_healer')
+        self.container_pnj[-1].animation.direction = "left"
+        
 
         pos = world.POS_PNJ
         self.add_pnj(pos,'pnj_tp_boss')
