@@ -14,6 +14,14 @@ class Monster_all :
             for j in range(world.LEN_Y_CHUNK) :
                 self.dic_monster[i*100+j] = {}
 
+    def change_chunk(self,l):
+        """Change chunk for monsters"""
+        for chunk,new_chunk,id in l:
+            #print("Succesfully change chunk, from : ",chunk,"to ",new_chunk," with id : ",id)
+            monster =  self.dic_monster[chunk][id]
+            del self.dic_monster[chunk][id]
+            self.dic_monster[new_chunk][id] = monster
+
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
 

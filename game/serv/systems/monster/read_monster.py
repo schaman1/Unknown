@@ -42,8 +42,8 @@ class Read_monster :
     def create_list_monster(self) :
 
         self.dic_monster[200].append(monster.Laseroide(3411,17300,1))
-        self.dic_monster[200].append(monster.Limace(7900,15400,2))
-        self.dic_monster[201].append(monster.Foulli(12000,15400,3))
+        #self.dic_monster[200].append(monster.Limace(7900,15400,2))
+        self.dic_monster[201].append(monster.Laseroide(12000,15400,3))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
@@ -85,14 +85,18 @@ class Read_monster :
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
 
-                        if self.return_chunk(monster.pos_x,monster.pos_y) != chunk:
-                            list_monster_change_chunk.append((chunk,monster))
+                        new_chunk = self.return_chunk(monster.pos_x,monster.pos_y)
+                        new_chunk = new_chunk[0]*self.base_movement+new_chunk[1]
+                        if new_chunk != chunk:
+                            list_monster_change_chunk.append([chunk,new_chunk,monster])
                             del self.dic_monster[chunk][i]
 
-        for chunk,monster in list_monster_change_chunk :
-            self.dic_monster[chunk].append(monster)
+        for i in range(len(list_monster_change_chunk)) :
+            old_chunk,new_chunk,monster = list_monster_change_chunk[i]
+            self.dic_monster[new_chunk].append(monster)
+            list_monster_change_chunk[i][2] = monster.id
 
-        return list_modif
+        return list_modif,list_monster_change_chunk
     
     def init_list_modif_client(self,x_chunk,y_chunk,list_modif,i) :
 

@@ -35,13 +35,18 @@ SPELLS[4] = resource_path("assets/sprites/projectile/projectile_4_0.png")
 SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
 SPELLS[6] = resource_path("assets/sprites/projectile/projectile_6_0.png") #En attendant
 SPELLS[7] = resource_path("assets/sprites/projectile/projectile_2_0.png") #zizi jvais te faire un fist fuck
+SPELLS[8] = resource_path("assets/sprites/projectile/projectile_8_0.png") 
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
 SPELLS[13] = resource_path("assets/sprites/projectile/projectile_13_0.png")
+SPELLS[14] = resource_path("assets/sprites/projectile/projectile_14_0.png")
+SPELLS[15] = resource_path("assets/sprites/projectile/projectile_15_0.png")
 SPELLS[20] = resource_path("assets/sprites/projectile/projectile_20_0.png")
 SPELLS[21] = resource_path("assets/sprites/projectile/projectile_21_0.png")
+SPELLS[22] = resource_path("assets/sprites/projectile/projectile_22_0.png")
 SPELLS[30] = resource_path("assets/sprites/projectile/projectile_30_0.png")
+SPELLS[31] = resource_path("assets/sprites/projectile/projectile_31_0.png")
 SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
 SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
 SPELLS[42] = resource_path("assets/sprites/projectile/projectile_42_0.png")
@@ -49,9 +54,14 @@ SPELLS[42] = resource_path("assets/sprites/projectile/projectile_42_0.png")
 HEALER = resource_path("assets/objects/healer.png")
 HEALER_TRIGGER = resource_path("assets/objects/healer_trigger.png")
 ADD_SLOT_WEAPON = resource_path("assets/objects/add_slot.png")
+ADD_2_SLOT_WEAPON = resource_path("assets/objects/add_2_slot.png")
 ADD_LIFE = resource_path("assets/objects/add_life.png")
 CHEST_SPELL_CLOSE = resource_path("assets/objects/chest_close.png")
 CHEST_SPELL_OPEN = resource_path("assets/objects/chest_open.png")
+CHEST_SPELL_RARE_CLOSE = resource_path("assets/objects/chest_rare_close.png")
+CHEST_SPELL_RARE_OPEN = resource_path("assets/objects/chest_rare_open.png")
+CHEST_SPELL_LEGENDARY_CLOSE = resource_path("assets/objects/chest_legendary_close.png")
+CHEST_SPELL_LEGENDARY_OPEN = resource_path("assets/objects/chest_legendary_open.png")
 CHEST_UPGRADE_CLOSE = resource_path("assets/objects/chest_upgrade_close.png")
 CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 
@@ -61,8 +71,8 @@ PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 
-MONSTER_2 = resource_path("assets/sprites/monster/idle/lasertoide.png")
-MONSTER_2_LOADING = resource_path("assets/sprites/monster/lasertoide_loading.png")
+MONSTER_2 = resource_path("assets/sprites/monster/laseroide/laseroide_running.png")
+MONSTER_2_LOADING = resource_path("assets/sprites/monster/laseroide/laseroide_loading.png")
 
 DEFENDEUR_IDLE = resource_path("assets/sprites/monster/Defendeur/Defendeur.png")
 DEFENDEUR_ATTACK = resource_path("assets/sprites/monster/Defendeur/Defendeur_attack.png")
@@ -111,6 +121,8 @@ PROJECTILE_2_2 = resource_path("assets/sprites/projectile/projectile_2_0.png")
 PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_2_0.png") 
 
 PROJECTILE_2 = [PROJECTILE_2_0,PROJECTILE_2_1,PROJECTILE_2_2,PROJECTILE_2_3]
+
+PROJECTILE_8_0 = resource_path("assets/sprites/projectile/projectile_8_1.png") 
 
 intro_images = []
 for i in range(5):

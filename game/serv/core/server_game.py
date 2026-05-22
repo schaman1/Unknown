@@ -1,5 +1,5 @@
 from shared.constants import fps,world
-import pygame,time
+import pygame,time,math
 from serv.core.server import Server
 from serv.config.add_objects_begin import OBJECTS
 
@@ -21,7 +21,7 @@ class Server_game(Server) :
         self.next_send_time = time.perf_counter()
         self.send_interval = 1 / fps.FPS_SEND_POS_CLIENT  # 0.05s
 
-        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements   
+        self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
     def loop_server_game(self):
         """Loop qui est effectué sur le serv pour update les cells"""
@@ -38,7 +38,7 @@ class Server_game(Server) :
                 while self.next_send_time <= time.perf_counter():
                     self.next_send_time += self.send_interval
 
-            return_monster = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
+            return_monster,monster_change_chunk = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
@@ -50,9 +50,11 @@ class Server_game(Server) :
                 self.collision_handler.die_send.clear()
 
             if len(return_monster)!=0 :
-                
                 if should_send :
                     self.send_data_update(return_monster,4)
+
+            if len(monster_change_chunk)!=0:
+                self.send_data_all((20,monster_change_chunk))
 
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
@@ -73,6 +75,8 @@ class Server_game(Server) :
 
         for socket in self.lClient.keys():
 
+            self.check_intro_stop(socket)
+
             delta = self.lClient[socket].update_pos(self.map_cell,dt,self.collision_handler)
             
             if should_send :
@@ -85,7 +89,14 @@ class Server_game(Server) :
             if self.lClient[socket].send_new_money == True :
                 money = self.lClient[socket].send_money()
                 self.send_data((13,money), socket)
-            
+
+    def check_intro_stop(self,sender):
+
+        if self.lClient[sender].fct_to_do() == True :
+
+            self.lClient[sender].pos_x,self.lClient[sender].pos_y = world.POS_RESET[0]*self.base_movement,world.POS_RESET[1]*self.base_movement
+            self.send_data([19,None],sender)
+
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner
     
@@ -203,7 +214,7 @@ class Server_game(Server) :
 
             elif action=="UpgradeWeapon":
 
-                info_weapon = self.lClient[sender].upgrade_size_weapon()
+                info_weapon = self.lClient[sender].upgrade_size_weapon(element.id_cat)
                 self.send_data_all([16,chunk,id]) #Destroy
                 
                 self.send_data([10,info_weapon],sender)
@@ -230,3 +241,37 @@ class Server_game(Server) :
         pos = self.lClient[sender].return_pos()
 
         self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))
+
+    def distance(self,posa,posb):
+
+        dist = (posa[0]-posb[0])**2 + (posa[1]-posb[1])**2
+        return math.sqrt(dist)
+
+    def try_tp_to_boss(self):
+
+        for client in self.lClient.values() :
+
+            pnj_pos = world.POS_PNJ[0]*self.base_movement,world.POS_PNJ[1]*self.base_movement
+
+            dist = self.distance((client.pos_x,client.pos_y),world.POS_PNJ)
+
+            print(dist,world.DIST_TO_TP_BOSS*self.base_movement,client.pos_x,pnj_pos[0])
+
+            if dist > world.DIST_TO_TP_BOSS*self.base_movement :
+
+                return
+        
+        self.tp_to_boss()
+
+    def tp_to_boss(self):
+
+        for client in self.lClient.values() :
+
+            boss_pos = world.POS_BOSS[0]*self.base_movement,world.POS_BOSS[1]*self.base_movement
+
+            client.pos_x = boss_pos[0]
+            client.pos_y = boss_pos[1]
+
+    def player_finish_intro(self,sender):
+        
+        self.lClient[sender].set_finish_intro()

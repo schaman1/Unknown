@@ -30,7 +30,11 @@ class Animation:
                                        "time":1/4,},
                             "respawn":{"right":[],
                                        "left":[],
-                                       "time":0}}
+                                       "time":0},
+                            "run away":{"right":[],
+                                       "left":[],
+                                       "time":0.1},
+                                       }
 
         self.state = "idle"
         self.direction = "right"
@@ -118,9 +122,30 @@ class Animation:
 
             #size_img = 50*cell_size
             size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.MONSTER_2)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.MONSTER_2)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["run away"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
             img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["loading"],size)
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            for i in range(4):
+                self.animation["attacking"]["right"].append(self.animation["loading"]["right"][3])
+                self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
+            #img_idle_loading = pygame.image.load(assets.MONSTER_2_LOADING)
+            #img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            #self.decoupe_img(img_idle,self.animation["attacking"],size)
 
             self.add_tombe(cell_size)
 
@@ -135,9 +160,17 @@ class Animation:
             img_idle = pygame.transform.scale(img_attack,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["attacking"],size)
 
+            img_attack = pygame.image.load(assets.DEFENDEUR_ATTACK)
+            img_idle = pygame.transform.scale(img_attack,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["loading"],size)
+
             img_running = pygame.image.load(assets.DEFENDEUR_RUNNING)
             img_idle = pygame.transform.scale(img_running,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["running"],size)
+
+            img_running = pygame.image.load(assets.DEFENDEUR_RUNNING)
+            img_idle = pygame.transform.scale(img_running,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["run away"],size)
 
             self.add_tombe(cell_size)
 
@@ -195,35 +228,14 @@ class Animation:
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["running"],size)
 
-            self.add_tombe(cell_size)
-        
-        elif entity_name == "Limace" :
-
-            #size_img = 50*cell_size
-            size = (self.width,self.height)
-            img_idle = pygame.image.load(assets.LIMACE_IDLE) #LIMACE_IDLE
-            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
-            self.decoupe_img(img_idle,self.animation["idle"],size)
-
-            img_attack = pygame.image.load(assets.LIMACE_ATTACK) #LIMACE_ATTACK
-            img_idle = pygame.transform.scale(img_attack,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
-            self.decoupe_img(img_idle,self.animation["attacking"],size)
-
-            #size_img = 50*cell_size
-            size = (self.width,self.height)
-            img_idle_loading = pygame.image.load(assets.LIMACE_RUNNING)
-            img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
-            self.decoupe_img(img_idle,self.animation["running"],size)
-
             #size_img = 50*cell_size
             size = (self.width,self.height)
             img_idle_loading = pygame.image.load(assets.LIMACE_RUNNING)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["loading"],size)
+            #print("anim loading limace :",self.animation["loading"])
 
             self.add_tombe(cell_size)
-
-
 
         elif entity_name == "Skeleton":
 
@@ -275,13 +287,19 @@ class Animation:
 
             self.time_start_frame-=self.animation[self.state]["time"]
 
-            self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
+            try :
+                self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
+            except :
+                print(self.state)
             
             if self.frame == 0:
                 self.fct_to_do()
 
         #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
-        img = self.animation[self.state][self.direction][self.frame]
+        try :
+            img = self.animation[self.state][self.direction][self.frame]
+        except :
+            print(self.state)
 
         img = self.check_draw_red_if_damage(img,dt)
 

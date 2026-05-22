@@ -67,7 +67,7 @@ class Laseroide(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(8,6),name="Laseroide")
+        super().__init__(x,y,cell_size,size=(8,8),name="Laseroide")
 
         self.name = "Laseroide"
         self.chunk = pos_chunk
@@ -78,16 +78,14 @@ class Laseroide(Monster) :
         self.frame_multiplier = 0
 
     def change_state(self,new_state):
+        """Base pour mettre anim"""
 
         key = [key for key,val in STATES.items() if val == new_state]
 
-        if key[0]=="loading" and self.animation.state != "loading":
-            self.animation.set_state("loading")
-            self.animation.fct_to_do = self.animation.next_idle
+        if key[0] != self.old_state :
+            self.animation.set_state(key[0])
 
-        elif key[0] != "loading" :
-
-            self.animation.state = "idle"
+        self.old_state = key[0]
 
 class Foulli(Monster) :
 

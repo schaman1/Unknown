@@ -4,10 +4,16 @@ import random
 
 class spell_on_ground(interactable_object):
 
-    def __init__(self,id_categorie,pos_x,pos_y,price=0,randomize = False):
+    def __init__(self,id_categorie,pos_x,pos_y,price=0,randomize = False,rarity = "common"):
 
         if randomize : 
-            id_categorie = random.choice(list(upgrades.UPGRADES.keys()))
+
+            if rarity == "common" :
+                id_categorie = random.choice(upgrades.common_upgrades)
+            elif rarity == "rare":
+                id_categorie = random.choice(upgrades.rare_upgrades)
+            elif rarity == "legendary":
+                id_categorie = random.choice(upgrades.legendary_upgrades)
 
         super().__init__(id_categorie,pos_x,pos_y,price)
 
@@ -26,6 +32,7 @@ class upgrade_size_weapon(interactable_object):
     def __init__(self,id_categorie,pos_x,pos_y,price=0):
 
         super().__init__(id_categorie,pos_x,pos_y,price)
+        #Id categorie = 1 or 2. 2 means +2 slot ! 1 = +1 slot !
 
         self.trigger_value = "UpgradeWeapon"
 
