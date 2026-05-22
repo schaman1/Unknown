@@ -387,7 +387,7 @@ class Network_handler :
 
         except OSError:
             # Déconnexion
-            is_host = self.lClient.get(client, {}).get("Host", False)
+            is_host = self.server.lClient[client].is_host#.get(client, {}).get("Host", False)
             if is_host:
                 print("Le host a quitté, fermeture du serveur.")
                 self.stop_server()
