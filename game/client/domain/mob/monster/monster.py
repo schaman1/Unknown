@@ -167,6 +167,30 @@ class Escargot(Monster) :
         self.animation.old_state = key[0]
 
 
+class DwarfKing(Monster) :
+    """Boss : Le Roi Nain. Utilise temporairement la texture du joueur
+    (les joueurs sont des nains, le boss leur ressemble)."""
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        #name="player" : réutilise la texture du joueur (provisoire), taille ~3.5x le joueur
+        super().__init__(x,y,cell_size,size=(28,28),name="player")
+
+        self.name = "DwarfKing"
+        self.chunk = pos_chunk
+        self.state = state
+
+    def change_state(self,new_state):
+        """La texture du joueur n'a que idle/running : on y ramène les états du boss."""
+
+        anim = {0:"idle", 1:"running", 2:"running", 4:"running", 5:"idle"}.get(new_state,"idle")
+
+        if anim != self.old_state :
+            self.animation.set_state(anim)
+
+        self.old_state = anim
+
+
 class Limace(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):

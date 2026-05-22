@@ -49,6 +49,12 @@ class Server_game(Server) :
                 self.send_data_all([18,self.collision_handler.die_send])
                 self.collision_handler.die_send.clear()
 
+            #Monstres invoqués en cours de partie (ex: par le boss) : on les crée côté client (msg 5)
+            if len(self.map_monster.monster_to_create_send)!=0 :
+                new_monsters = self.map_monster.monster_to_create_send
+                self.send_data_update([list(new_monsters) for _ in self.lClient],5)
+                self.map_monster.monster_to_create_send = []
+
             if len(return_monster)!=0 :
                 if should_send :
                     self.send_data_update(return_monster,4)
