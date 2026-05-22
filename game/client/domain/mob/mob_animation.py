@@ -287,19 +287,14 @@ class Animation:
 
             self.time_start_frame-=self.animation[self.state]["time"]
 
-            try :
-                self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
-            except :
-                print(self.state)
+            self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
             
             if self.frame == 0:
                 self.fct_to_do()
 
         #print(self.frame,self.state,self.direction,"frame",self.animation[self.state][self.direction])
-        try :
-            img = self.animation[self.state][self.direction][self.frame]
-        except :
-            print(self.state)
+        img = self.animation[self.state][self.direction][self.frame]
+
 
         img = self.check_draw_red_if_damage(img,dt)
 

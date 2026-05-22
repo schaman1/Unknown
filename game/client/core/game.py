@@ -97,7 +97,6 @@ class Game :
         screen.blit(self.team_img,self.rect_img_team)
 
         delta_time = max(self.end_fading - time.perf_counter(),0)
-        #print(delta_time,self.len_fading,int(255*delta_time//self.len_fading))
         self.alpha_fading = int(255*delta_time//self.len_fading)
 
         if delta_time<=0 :

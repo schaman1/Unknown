@@ -100,7 +100,6 @@ class Player_you(Mob) :
             (50,60,50),  # couleur (blanc)
             self.rect_black_life,
         )
-        #print(self.life)
 
         pygame.draw.rect( #Pour voir où le perso est en temps reel
             screen,

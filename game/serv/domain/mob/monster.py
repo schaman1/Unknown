@@ -703,7 +703,7 @@ class Limace(Monster) :
                 else : #range attack
                     self.angle = self.get_angle(self.target)
 
-                    print("Focus angle : " + str(self.angle))
+                    #print("Focus angle : " + str(self.angle))
                     
                     if self.angle >= 0 and self.angle <= 50 :
                         self.angle += 35
