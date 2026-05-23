@@ -275,7 +275,7 @@ class Server_game(Server) :
 
             pnj_pos = world.POS_PNJ[0]*self.base_movement,world.POS_PNJ[1]*self.base_movement
 
-            dist = self.distance((client.pos_x,client.pos_y),world.POS_PNJ)
+            dist = self.distance((client.pos_x,client.pos_y),pnj_pos)
 
             print("Try tp to boss :",dist,world.DIST_TO_TP_BOSS*self.base_movement,client.pos_x,pnj_pos[0])
 

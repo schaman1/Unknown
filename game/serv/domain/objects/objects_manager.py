@@ -120,8 +120,6 @@ class objects_manager:
 
             name = random.choice(list(self.upgrades.keys()))
 
-            name = "UpgradeTime"
-
             id_cat = 1
             if name == "UpgradeWeapon2":
                 id_cat = 2
