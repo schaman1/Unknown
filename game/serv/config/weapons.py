@@ -1,6 +1,6 @@
 from shared.constants.world import RATIO
 
-LIFE_FIRE = 2
+LIFE_FIRE = 1
 V_FIRE = 50 * RATIO #Bouge de 20 cellules par secondes
 WIDTH_FIRE = 1*RATIO
 HEIGHT_FIRE = 1*RATIO
@@ -71,7 +71,7 @@ STONE_LIFE = 2
 STONE_V = 80*RATIO
 STONE_WIDTH = 1*RATIO
 STONE_HEIGHT = 1*RATIO
-STONE_DAMAGE = 3
+STONE_DAMAGE = 2
 STONE_RELOAD_TIME = 0.1
 STONE_WEIGHT = 65
 KNOCKBACK_STONE = 2     #Knockback multiplier (0 = no knockback)

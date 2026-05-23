@@ -199,11 +199,6 @@ class CreateStone(Upgrade):
         proj.delta_angle =10
         projectile.append(weapon.add_projectile(proj))
 
-        angle = angle - 15
-        proj = projectile_type.Stone(angle, weapon.pos, weapon.team, weapon.randomize_angle, weapon.owner.return_pos())
-        proj.delta_angle = -5
-        projectile.append(weapon.add_projectile(proj))
-
         return 1,projectile,None
     
 class CreateLance(Upgrade):
