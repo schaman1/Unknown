@@ -425,6 +425,11 @@ class Main:
 
             if pnj.text.text_id == 0 and not is_talking :
                 self.client.send_data(10,None)
+
+        elif pnj.name == "pnj_double_jump":
+
+            if pnj.text.text_id == 0 and not is_talking :
+                self.client.send_data(12,None)
             
         self.musique.update_volume(0.3)
 

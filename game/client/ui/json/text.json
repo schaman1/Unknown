@@ -10,6 +10,12 @@
         "Ce qui se trouve a ma droite est un 'Halo'.",
         "Il permet de te guerir et ton esprit reapparaitra ici !"
     ],
+    "pnj_double_jump":[
+        "Oy ? Mais je n'en crois pas mes pupillles !",
+        "Un nain ! Comme moi ! Cela fais si longtemps que je n'en avais pas vu !",
+        "Pour te remercier de ta visite voici un cadeau.",
+        "C'est un pierre qui te permet de sauter une fois de plus !"
+    ],
     "pnj_tp_boss":[
         "Oy, bienvenue a toi.",
         "Fait attention ! Ici se trouve notre roi !",

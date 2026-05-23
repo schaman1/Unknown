@@ -11,7 +11,7 @@ OBJECTS.append(("Chest",3,27100,19300,50))
 OBJECTS.append(("Chest",4,29700,23300,80))
 OBJECTS.append(("Chest",4,41200,18300,80))
 
-OBJECTS.append(("SPELL",42,15000,24800,10)) #Double jump
+#OBJECTS.append(("SPELL",42,15000,24800,10)) #Put a pnj instead
 
 #OBJECTS.append(("HEALER",1,1400,5300,0))
 #OBJECTS.append(("Chest",2,3500,19200,0))
@@ -20,4 +20,4 @@ OBJECTS.append(("SPELL",42,15000,24800,10)) #Double jump
 #OBJECTS.append(("UpgradeWeapon",2,5500,16000,0)) #21 bcs +2 slot for weapon
 #OBJECTS.append(("UpgradeWeapon",1,5000,16000,0))
 
-WEAPONS_BEGIN = [[],[40],[2],[3]]
+WEAPONS_BEGIN = [[],[],[2],[3]]

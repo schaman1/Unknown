@@ -65,11 +65,15 @@ class Mob(Movable):
     
     def jump(self,map,force_jump = False):
 
-        if force_jump or self.can_jump():
+        if self.can_jump():
         #if self.touch_ground(map) and self.vitesse_y > -10*self.base_movement:
             self.vitesse_y=-self.jump_strenght
-
             return True
+        
+        elif self.smooth_jump.can_double_jump():
+            self.vitesse_y=-self.jump_strenght
+            return True
+        
         return False
 
             

@@ -13,4 +13,4 @@ for id,el in UPGRADES.items():
 for i in range(5):
     OBJECTS_ADDING.append(("UpgradeWeapon",2,30000+i*add,25100,0)) #21 bcs +2 slot for weapon
 
-WEAPONS_ADDING = [[2,3,4,5,6],[41],[32],[41]]
+WEAPONS_ADDING = [[2,3,4,5,6],[],[32],[]]

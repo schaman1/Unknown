@@ -55,7 +55,7 @@ class Network_handler :
                 msg_id = buffer[0]
 
                 # Exemple : ID 0 = start_game (1 byte)
-                if msg_id == 0 or msg_id ==10 or msg_id == 11: #Start game
+                if msg_id == 0 or msg_id ==10 or msg_id == 11 or msg_id == 12: #Start game
                     msg_size = 1
 
                 elif msg_id == 1: #
@@ -200,6 +200,9 @@ class Network_handler :
 
         elif id_msg == 11:
             self.server.player_finish_intro(sender)
+
+        elif id_msg == 12:
+            self.server.lClient[sender].unlock_double_jump()
 
 
         else :
