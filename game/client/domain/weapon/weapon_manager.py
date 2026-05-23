@@ -19,7 +19,7 @@ class WeaponManager:
 
         self.init_lWeapons()
 
-        self.text_name = ["Bag","J","K","L"]
+        self.text_name = ["Sac","J","K","L"]
 
         self.complete_info = CompleteInfo(screen_size,cell_size)
 

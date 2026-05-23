@@ -283,7 +283,7 @@ class Laseroide(Monster) :
         self.time_before_shot = 1
         self.angle = 0
         self.begin_relax = time.perf_counter()
-        self.time_relax = 0.7
+        self.time_relax = 1.5
 
     def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
 

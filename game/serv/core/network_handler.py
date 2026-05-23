@@ -325,7 +325,7 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 or id==9 or id==19:
+        if id == 0 or id==9 or id==19 or id == 21 or id==22:
             pass
 
         elif id == 1 : 

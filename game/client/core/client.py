@@ -132,7 +132,7 @@ class Client:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0 or msg_id == 9 or msg_id==19:          # start_game / load fini
+            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22:          # start_game / load fini
                 msg_size = 1
 
             elif msg_id == 1:        # new player
@@ -377,6 +377,12 @@ class Client:
                 l.append((chunk,new_chunk,id))
                 
             self.main.state.game.monsters.change_chunk(l)
+
+        elif id==21:
+            self.main.state.add_alert("Votre sac est plein !")
+
+        elif id==22:
+            self.main.state.add_alert("Vous n'avez pas assez de nifly !")
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

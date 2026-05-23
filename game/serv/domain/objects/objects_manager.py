@@ -77,7 +77,7 @@ class objects_manager:
 
         element = self.chunk_objects[chunk][id]
 
-        if player.money>=element.price and player.can_pick_spell():
+        if player.money>=element.price and (element.trigger_value != "AddToInventaire" or player.can_pick_spell()):
 
             player.update_money(-element.price)
 
@@ -85,6 +85,12 @@ class objects_manager:
             #    self.destroy_object(chunk,id)
 
             return element.trigger_value,chunk,id,element
+        
+        elif not player.can_pick_spell() :
+            return "BagFull",None,None,None
+        
+        elif player.money<element.price :
+            return "NotEnoughMoney",None,None,None
         
     def spawn_random_spell(self,cat,chunk,x,y):
 
