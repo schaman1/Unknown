@@ -209,7 +209,13 @@ class Server_game(Server) :
 
             action,chunk,id,element = res
 
-            if action=="AddToInventaire" :
+            if action == "BagFull":
+                self.send_data([21],sender)
+
+            elif action == "NotEnoughMoney" :
+                self.send_data([22],sender)
+
+            elif action=="AddToInventaire" :
 
                 id_weapon = 0
                 pos_spell = self.lClient[sender].weapons.add_spell(element.id_cat,id_weapon)

@@ -89,7 +89,7 @@ class Weapon :
         if self.add_rebond :
             projectile.rebond = True
 
-        projectile.damage = max(0,self.add_damage+projectile.damage)
+        projectile.damage = max(1,self.add_damage+projectile.damage) #Min 1 degat
         projectile.speed = projectile.speed*self.speed_mult
         projectile.life_time += self.add_life
 
