@@ -169,6 +169,9 @@ class Monster(Mob):
 
         if amount!=0 :
 
+            if self.resist :
+                amount = 0 #Le met a 0 comme ca envoie quand mm cote client le 0 => dessine "bloque"
+
             self.life -= amount
             self.send_new_life = True
 
@@ -532,11 +535,9 @@ class Defendeur(Monster) :
                     if self.pos_x < self.target.pos_x : #Définit le côté de l'attaque
                         if self.side != "right":
                             self.side = "right"
-                            self.move_right(dt)
                     else :
                         if self.side != "left":
                             self.side = "left"
-                            self.move_left(dt)
 
                     self.attack(self.target,collision_handler,dt,projectile_manager)
                     self.begin_time_for_attack = time.perf_counter()
