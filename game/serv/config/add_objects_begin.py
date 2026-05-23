@@ -20,5 +20,5 @@ OBJECTS.append(("Chest",4,41200,18300,80))
 #OBJECTS.append(("UpgradeWeapon",2,5500,16000,0)) #21 bcs +2 slot for weapon
 #OBJECTS.append(("UpgradeWeapon",1,5000,16000,0))
 
-WEAPONS_BEGIN = [[],[30,7],[2],[3]]
+WEAPONS_BEGIN = [[],[30,7],[2,41],[3]]
 MAGASIN_BEGIN = [(28500,12100),(39000,23600)]

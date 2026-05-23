@@ -99,7 +99,7 @@ class Read_monster :
         #print(self.dic_monster)
 
         #Le boss : Le Roi Nain, à la position POS_BOSS (20,190 en cases)
-        self.create_monster(monster.DwarfKing(2000,19000))
+        self.create_monster(monster.DwarfKing(2000,17000))
 
         #for y in range(self.size_chunk_all[0]):
         #        for x in range(self.size_chunk_all[1]):
