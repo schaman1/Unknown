@@ -116,7 +116,11 @@ class CreateLaser(Upgrade):
 
         super().__init__(id=5,time_take = weapons.LASER_RELOAD_TIME)
 
+        self.minus_refill_time = weapons.LASER_REFILL_TIME
+
     def trigger(self,weapon,idx=0):
+
+        weapon.loading_time_refill_current += self.minus_refill_time
 
         projectile = weapon.add_projectile(projectile_type.Laser(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
