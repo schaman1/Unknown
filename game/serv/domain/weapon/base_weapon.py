@@ -106,13 +106,18 @@ class Weapon :
             return 
 
         self.reset_values()
-        infos = self.create_projectile(angle,pos,self.nbr_upgrades_trigger_max,idx = self.idx)
+        infos,cast_min_1_spell = self.create_projectile(angle,pos,self.nbr_upgrades_trigger_max,idx = self.idx)
 
-        self.update_reload_time_wand(now)
+        self.update_reload_time_wand(now,cast_min_1_spell)
 
         return infos
 
-    def update_reload_time_wand(self,now):
+    def update_reload_time_wand(self,now,has_cast_1_spell):
+
+        if not has_cast_1_spell :
+            self.next_allowed_shot = now
+            return
+        
         self.loading_time_spell_current+=self.loading_time_spell
 
         if self.test_if_last_spell_of_weapon() :
@@ -128,6 +133,8 @@ class Weapon :
 
         projectile_shot = []
         event_player = []
+
+        has_cast_1_spell = False
         
         self.angle = angle
         self.pos = pos
@@ -140,6 +147,8 @@ class Weapon :
             #idx+=1
 
             if spell != None : 
+
+                has_cast_1_spell = True
 
                 space_take,projectiles,id_event_player = spell.trigger(self,self.idx-1)
 
@@ -158,7 +167,7 @@ class Weapon :
 
         self.update_pos_projectile(angle,projectile_shot)
 
-        return [projectile_shot,event_player]
+        return [projectile_shot,event_player],has_cast_1_spell
     
     def update_pos_projectile(self,angle,projectiles):
         """All projectiles are created in front of the player BUT ! We need to had the size of the projectile to the pos !"""
