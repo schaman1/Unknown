@@ -1024,7 +1024,7 @@ class DwarfKing(Monster):
             else:
                 self.vitesse_x = self.speed_chase if dx > 0 else -self.speed_chase
 
-        if self.vitesset_x < 0: #Change direction du boss en fct de ou il bouge
+        if self.vitesse_x < 0: #Change direction du boss en fct de ou il bouge
             self.side = "left"
         else :
             self.side = "right"
