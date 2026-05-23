@@ -56,9 +56,13 @@ class WeaponManager :
         angle=angle*90
 
         res = self.lWeapons[id_weapon].trigger_shot(angle,pos)
-        
-        projectiles,events = res[0],res[1]
 
+        if res == None :
+            projectiles,events = None,None
+        
+        else :
+            projectiles,events = res[0],res[1]
+            
         if projectiles == [] and events == []:
             projectiles,events = None,None
         

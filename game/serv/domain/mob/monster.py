@@ -715,18 +715,9 @@ class Limace(Monster) :
 
                     #print("Focus angle : " + str(self.angle))
                     
-                    if self.angle >= 0 and self.angle <= 50 :
-                        self.angle += 35
-                        self.side = "right"
-                    elif self.angle > 155 and self.angle <= 180 :
-                        self.angle -= 35
+                    if self.angle > 90 and self.angle < 270:
                         self.side = "left"
-
-                    elif self.angle > 100 and self.angle <= 155 :
-                        self.angle -= 20
-                        self.side = "left"
-                    elif self.angle > 50 and self.angle <= 75 :
-                        self.angle += 10
+                    else:
                         self.side = "right"
 
             else :
