@@ -8,7 +8,7 @@ class Weapon :
         self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
         self.loading_time_spell_current = spell_time
-        self.min_delay = 0.05#Delay minimum de recgarge, peut pas faire moins !
+        self.min_delay = 0.015#Delay minimum de recgarge, peut pas faire moins !
 
 
         self.team=team
