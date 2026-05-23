@@ -116,7 +116,7 @@ class Player(Mob) :
 
     def update_pos(self,map,dt,collision_handler):
 
-        #print("pos :",self.pos_x,self.pos_y)
+        #print("pos :",self.pos_x,self.pos_y-self.half_height)
 
         self.check_respawn()
 
@@ -206,6 +206,7 @@ class Player(Mob) :
         pos = self.return_pos_for_shot(angle)
 
         projectiles,player_event = self.weapons.create_shot(id_weapon,pos,angle)
+
 
         if player_event!=None :
 

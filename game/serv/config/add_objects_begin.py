@@ -21,3 +21,4 @@ OBJECTS.append(("Chest",4,41200,18300,80))
 #OBJECTS.append(("UpgradeWeapon",1,5000,16000,0))
 
 WEAPONS_BEGIN = [[],[],[2],[3]]
+MAGASIN_BEGIN = [(28500,12100),(39000,23600)]

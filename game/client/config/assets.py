@@ -85,7 +85,7 @@ ESCARGOT_ATTACK = resource_path("assets/sprites/monster/Escargot/Escargot_runnin
 ESCARGOT_RUNNING = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
 
 LIMACE_IDLE = resource_path("assets/sprites/monster/Limace/Limace_running.png") #limace idle à ajouter
-LIMACE_ATTACK = resource_path("assets/sprites/monster/Limace/Limace_running.png") #add limace attack 
+LIMACE_ATTACK = resource_path("assets/sprites/monster/Limace/Limace_attacking.png") #add limace attack 
 LIMACE_RUNNING = resource_path("assets/sprites/monster/Limace/Limace_running.png")
 
 FOULLI = resource_path("assets/sprites/monster/Foulli/Foulli_idle.png")

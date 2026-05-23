@@ -671,7 +671,6 @@ class Limace(Monster) :
         self.melee_radius = 12 #self.attack_radius/3
         self.time_before_melee_attack = 0.3 #0.2
 
-
         self.weapon = weapon1.WeaponLimace(team = self.team,player = self)
         self.time_before_range_attack = 1 #0.7
         self.angle = 0
@@ -741,7 +740,6 @@ class Limace(Monster) :
 
                 self.state = "moving" 
                 self.focus = False      
-
         
         elif self.state == "loading" :
 

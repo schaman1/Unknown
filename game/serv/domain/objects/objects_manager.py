@@ -36,32 +36,24 @@ class objects_manager:
             ele = spell_on_ground(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
-
-            return id,ele
         
         elif ele_idx=="HEALER":
 
             ele = healer_respawn(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
-
-            return id,ele
         
         elif ele_idx=="UpgradeWeapon":
 
             ele = upgrade_size_weapon(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
-
-            return id,ele
         
         elif ele_idx=="UpgradeLife":
 
             ele = upgrade_life(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
-
-            return id,ele
         
         elif ele_idx=="Chest":
 
@@ -69,11 +61,13 @@ class objects_manager:
 
             self.chunk_objects[chunk][id] = ele
 
-            return id,ele
         
         else :
             print("Unknown type in add_object")
-            return None
+            id = None
+            ele = None
+
+        return id,ele
         
     def destroy_object(self,chunk,id):
 
@@ -141,3 +135,13 @@ class objects_manager:
             self.chunk_objects[chunk][id] = spell
 
             return id,spell,"SPELL"
+        
+    def create_shop(self,pos,chunk):
+
+        infos = []
+
+        delta_pos_x = 100*2
+
+        for i in range(6) :
+
+            infos.append(self.spawn_random_spell(1,chunk,pos[0]+delta_pos_x*i,pos[1]))
