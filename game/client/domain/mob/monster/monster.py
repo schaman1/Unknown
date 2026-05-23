@@ -236,7 +236,7 @@ class Limace(Monster) :
 
         self.animation.animation["idle"]["time"] = 0.5
         self.animation.animation["attacking"]["time"] = 0.1
-        self.animation.animation["running"]["time"] = 0.5
+        self.animation.animation["running"]["time"] = 0.2
         self.animation.animation["loading"]["time"] = 0.1
 
 
