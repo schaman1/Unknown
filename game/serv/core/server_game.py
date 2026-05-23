@@ -225,7 +225,7 @@ class Server_game(Server) :
             elif action=="UpgradeWeapon":
 
                 info_weapon = self.lClient[sender].upgrade_size_weapon(element.id_cat)
-                self.send_data_([16,chunk,id],sender) #Destroy
+                self.send_data([16,chunk,id],sender) #Destroy
                 
                 self.send_data([10,info_weapon],sender)
 

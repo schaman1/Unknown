@@ -17,7 +17,8 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
 
     if not weapon.test_if_last_spell_of_weapon() :
     
-        next_projectiles,next_id_event_player = weapon.create_projectile(weapon.angle,weapon.pos,idx = weapon.idx)
+        infos,_ = weapon.create_projectile(weapon.angle,weapon.pos,idx = weapon.idx)
+        next_projectiles,_ = infos
 
     else :
         next_projectiles = []
@@ -173,19 +174,30 @@ class CreateStone(Upgrade):
     def trigger(self,weapon,idx=0):
         # projectile = weapon.add_projectile(projectile_type.Stone(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
         projectile = []
+        angle = weapon.angle
 
-        angle = weapon.angle % 360
+        if angle >= 0 and angle <= 50 :
+            angle += 35
+        elif angle > 155 and angle <= 180 :
+            angle -= 35
+
+        elif angle > 100 and angle <= 155 :
+            angle -= 20
+        elif angle > 50 and angle <= 75 :
+            angle += 10
+
         proj = projectile_type.Stone(angle, weapon.pos, weapon.team, weapon.randomize_angle, weapon.owner.return_pos())
+        proj.delta_angle = 0
         projectile.append(weapon.add_projectile(proj))
 
-        angle = (angle + 10) % 360
+        angle +=10
         proj = projectile_type.Stone(angle, weapon.pos, weapon.team, weapon.randomize_angle, weapon.owner.return_pos())
-        proj.delta_angle = 50
+        proj.delta_angle =10
         projectile.append(weapon.add_projectile(proj))
 
-        angle = (angle - 5) % 360
+        angle = angle - 15
         proj = projectile_type.Stone(angle, weapon.pos, weapon.team, weapon.randomize_angle, weapon.owner.return_pos())
-        proj.delta_angle = 50
+        proj.delta_angle = -5
         projectile.append(weapon.add_projectile(proj))
 
         return 1,projectile,None
