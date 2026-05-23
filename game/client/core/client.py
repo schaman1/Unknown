@@ -189,6 +189,9 @@ class Client:
             elif msg_id==20:
                 msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
 
+            elif msg_id == 23:
+                msg_size = 1+1
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -383,6 +386,13 @@ class Client:
 
         elif id==22:
             self.main.state.add_alert("Vous n'avez pas assez de nifly !")
+
+        elif id==23:
+
+            id_weapon = data[1]
+            name = {0:"Sac",1:"J",2:"K",3:"L"}
+            self.main.state.add_alert(f"Reduction du temps de l'arme : {name[id_weapon]}") #Maybe change to put J/K/L
+            self.main.state.game.player_all.me.reduce_time(id_weapon)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""

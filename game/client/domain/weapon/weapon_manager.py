@@ -166,3 +166,7 @@ class WeaponManager:
         for weapon in self.lWeapons :
 
             weapon.draw_timer(screen,time.perf_counter())
+
+    def reduce_time(self,id_weapon):
+
+        self.complete_info.reduce_time(id_weapon)

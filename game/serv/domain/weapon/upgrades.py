@@ -379,6 +379,7 @@ class Copy(Upgrade):
 
         if idx < weapon.nbr_spells_max :
             spell = weapon.spells_on_shot[idx]
+            self.time_take = spell.time_take
             #weapon.idx +=1
             return spell.trigger(weapon,idx = idx)
         

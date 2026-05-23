@@ -1,5 +1,5 @@
 from shared.constants import world
-from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest,upgrade_life
+from serv.domain.objects.object_type import spell_on_ground,healer_respawn,upgrade_size_weapon,Chest,upgrade_life,upgrade_time
 import random
 
 class objects_manager:
@@ -9,7 +9,8 @@ class objects_manager:
         self.chunk_objects = {}
         self.upgrades = {"UpgradeWeapon":upgrade_size_weapon,
                          "UpgradeLife":upgrade_life,
-                         "UpgradeWeapon2":upgrade_size_weapon}
+                         "UpgradeWeapon2":upgrade_size_weapon,
+                         "UpgradeTime":upgrade_time}
         self.id_curr = 0
 
         self.init_dico_dic_objects()
@@ -52,6 +53,12 @@ class objects_manager:
         elif ele_idx=="UpgradeLife":
 
             ele = upgrade_life(id_categorie,pos_x,pos_y,price)
+
+            self.chunk_objects[chunk][id] = ele
+        
+        elif ele_idx=="UpgradeTime":
+
+            ele = upgrade_time(id_categorie,pos_x,pos_y,price)
 
             self.chunk_objects[chunk][id] = ele
         
@@ -112,6 +119,8 @@ class objects_manager:
             id = self.generate_id()
 
             name = random.choice(list(self.upgrades.keys()))
+
+            name = "UpgradeTime"
 
             id_cat = 1
             if name == "UpgradeWeapon2":

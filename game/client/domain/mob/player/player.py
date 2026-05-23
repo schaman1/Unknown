@@ -140,9 +140,9 @@ class Player_you(Mob) :
         else :
             return
 
-    #def move(self,delta):
-    #    self.pos_x = self.convert_from_base(delta[0]*self.cell_size)
-    #    self.pos_y = self.convert_from_base(delta[1]*self.cell_size)
+    def reduce_time(self,id_weapon):
+
+        self.weapons.reduce_time(id_weapon)
 
     def calcule_new_direction(self):
         """Update l'anim si pas dans un dead state"""

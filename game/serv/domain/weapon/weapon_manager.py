@@ -1,4 +1,4 @@
-from shared.constants.world import NBRWEAPONSTOCK
+from shared.constants import world
 from serv.domain.weapon.weapon1 import WeaponBag,Weapon1,Weapon2,Weapon3
 
 class WeaponManager :
@@ -20,7 +20,7 @@ class WeaponManager :
 
     def init_lWeapons(self,team,player):
 
-        for i in range(NBRWEAPONSTOCK):
+        for i in range(world.NBRWEAPONSTOCK):
 
             if i==0:
 
@@ -73,3 +73,10 @@ class WeaponManager :
     
     def add_slot(self):
         return self.lWeapons[self.weapon_select].add_slot(self.weapon_select) #10 car id envoie ? 
+    
+    def reduce_time(self):
+
+        self.lWeapons[self.weapon_select].loading_time_refill -= world.UPGRADE_MINUS_REFILL_TIME
+        self.lWeapons[self.weapon_select].loading_time_spell -= world.UPGRADE_MINUS_RELOAD_TIME
+
+        return self.weapon_select

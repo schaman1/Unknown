@@ -231,8 +231,8 @@
         "description":["En appyant sur j,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":0.5,
-        "spell_time":0.2
+        "time_reload":2,
+        "spell_time":1
     },
     "WEAPON2":{
         "type":"weapon",
@@ -240,8 +240,8 @@
         "description":["En appyant sur k,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":0.5,
-        "spell_time":0.2
+        "time_reload":2,
+        "spell_time":1
     },
     "WEAPON3":{
         "type":"weapon",
@@ -249,8 +249,8 @@
         "description":["En appyant sur i,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
-        "time_reload":0.5,
-        "spell_time":0.2
+        "time_reload":2,
+        "spell_time":1
     }
 
 }
