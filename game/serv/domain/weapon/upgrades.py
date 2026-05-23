@@ -406,39 +406,39 @@ class CreatePompe_DieEffect(Upgrade):
 
         return 1,projectiles,None
     
-class SmallDash(Upgrade):
-
-    def __init__(self):
-
-        super().__init__(id=40,time_take=weapons.SMALL_DASH_RELOAD_TIME)
-        self.time_dash_take = 0.1
-        self.distance_dash = 5*self.ratio
-
-    def trigger(self,weapon,idx=0):
-
-        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
-    
-class LongDash(Upgrade):
-
-    def __init__(self):
-
-        super().__init__(id=41,time_take=weapons.LONG_DASH_RELOAD_TIME)
-        self.time_dash_take = 0.1
-        self.distance_dash = 10*self.ratio
-
-    def trigger(self,weapon,idx=0):
-
-        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
-    
-class Jump(Upgrade):
-
-    def __init__(self):
-
-        super().__init__(id=42,time_take=weapons.JUMP_RELOAD)
-
-    def trigger(self,weapon,idx=0):
-
-        return 1,None,[self.id]
+#class SmallDash(Upgrade):
+#
+#    def __init__(self):
+#
+#        super().__init__(id=40,time_take=weapons.SMALL_DASH_RELOAD_TIME)
+#        self.time_dash_take = 0.1
+#        self.distance_dash = 5*self.ratio
+#
+#    def trigger(self,weapon,idx=0):
+#
+#        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
+#    
+#class LongDash(Upgrade):
+#
+#    def __init__(self):
+#
+#        super().__init__(id=41,time_take=weapons.LONG_DASH_RELOAD_TIME)
+#        self.time_dash_take = 0.1
+#        self.distance_dash = 10*self.ratio
+#
+#    def trigger(self,weapon,idx=0):
+#
+#        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
+#    
+#class Jump(Upgrade):
+#
+#    def __init__(self):
+#
+#        super().__init__(id=42,time_take=weapons.JUMP_RELOAD)
+#
+#    def trigger(self,weapon,idx=0):
+#
+#        return 1,None,[self.id]
     
 #Remove too difficult and useless
 #class AddSize(Upgrade):
@@ -474,10 +474,10 @@ UPGRADES[22] = AllSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[31] = Copy()
 UPGRADES[32] = CreatePompe_DieEffect()
-UPGRADES[40] = SmallDash()
-UPGRADES[41] = LongDash()
-UPGRADES[42] = Jump()
+#UPGRADES[40] = SmallDash()
+#UPGRADES[41] = LongDash()
+#UPGRADES[42] = Jump()
 
-common_upgrades = [2,3,7,8,10,11,12,13,20,40]
-rare_upgrades = [4,5,6,14,21,41,42]
+common_upgrades = [2,3,7,8,10,11,12,13,20]
+rare_upgrades = [4,5,6,14,21]
 legendary_upgrades = [15,22,31,32]

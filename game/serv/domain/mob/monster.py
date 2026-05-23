@@ -460,7 +460,7 @@ class Defendeur(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 6)
+        super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 8)
 
         self.name = 3 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.knockback_res = 3
@@ -468,12 +468,12 @@ class Defendeur(Monster) :
 
         self.begin_attack = time.perf_counter()
         self.time_for_move_to_reach_player = 0.3
-        self.len_attack = 2
+        self.len_attack = 1
         self.begin_time_for_attack = time.perf_counter()
         self.time_between_attacks = 0.2
 
         self.begin_relax = time.perf_counter()
-        self.time_to_relax = 2
+        self.time_to_relax = 1.5
         self.hit_box_damage_width = 5
         self.resist = True
 

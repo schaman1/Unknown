@@ -3,7 +3,7 @@ import pygame
 
 class AnimatedText:
 
-    def __init__(self,text_to_blit,cell_size,speed = 0.1,color = (255,255,255)):
+    def __init__(self,text_to_blit,cell_size,speed = 0.02,color = (255,255,255)):
 
         self.text_id = 0
         self.text_to_blit = text_to_blit

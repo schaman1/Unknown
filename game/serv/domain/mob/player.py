@@ -250,3 +250,6 @@ class Player(Mob) :
             infos = self.weapons.add_slot()
 
         return infos
+    
+    def unlock_double_jump(self):
+        self.smooth_jump.double_jump = True #Now can double jump !

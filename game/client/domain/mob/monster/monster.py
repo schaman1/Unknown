@@ -127,7 +127,7 @@ class Defendeur(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(8,8),name="Defendeur")
+        super().__init__(x,y,cell_size,size=(10,10),name="Defendeur")
 
         self.name = "Defendeur"
         self.chunk = pos_chunk

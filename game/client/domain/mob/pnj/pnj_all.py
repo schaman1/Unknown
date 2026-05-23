@@ -41,6 +41,10 @@ class Pnj_all :
         pos = (77,157)
         self.add_pnj(pos,'pnj_tell_healer')
         self.container_pnj[-1].animation.direction = "left"
+    
+        pos = (425,261)
+        self.add_pnj(pos,'pnj_double_jump')
+        #self.container_pnj[-1].animation.direction = "left"
         
 
         pos = world.POS_PNJ

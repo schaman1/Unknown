@@ -55,6 +55,7 @@ class Read_monster :
     def create_monster(self,monster):
         
         monster.id = self.generate_id()
+        monster.pos_y -= monster.half_height
         chunk = self.return_chunk(monster.pos_x,monster.pos_y)
         self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
 
