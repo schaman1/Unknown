@@ -239,6 +239,12 @@ class Server_game(Server) :
 
                 info_weapon = self.lClient[sender].add_life(element.power)
                 self.send_data([16,chunk,id],sender) #Destroy
+
+            elif action=="UpgradeTime":
+
+                id_weapon = self.lClient[sender].reduce_time()
+                self.send_data([16,chunk,id],sender) #Destroy
+                self.send_data([23,id_weapon],sender)
                 
             elif action == "OpenChest":
 
@@ -305,13 +311,13 @@ class Server_game(Server) :
                 ele.price = 20
             elif i <5 :
                 id,ele,type = self.objects_manager.spawn_random_spell(3,chunk,pos_x,pos_y)
-                ele.price = 30
+                ele.price = 80
             elif i == 5 :
                 id,ele,type = self.objects_manager.spawn_random_spell(4,chunk,pos_x,pos_y)
-                ele.price = 60
+                ele.price = 200
             elif i == 6 :
                 id,ele,type = self.objects_manager.spawn_random_spell(2,chunk,pos_x,pos_y)
-                ele.price = 50
+                ele.price = 100
             #Spawn random object
             pos_x+=delta_pos_x
 

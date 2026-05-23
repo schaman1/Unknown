@@ -26,6 +26,8 @@ LEN_Y_CHUNK = 6
 
 #Weapon :
 NBRWEAPONSTOCK = 4
+UPGRADE_MINUS_REFILL_TIME = 0.2
+UPGRADE_MINUS_RELOAD_TIME = 0.1
 
 TYPE_OBJECT = {
     "SPELL":0,
@@ -33,4 +35,5 @@ TYPE_OBJECT = {
     "UpgradeWeapon":2,
     "Chest":3,
     "UpgradeLife":4,
+    "UpgradeTime":5
 }

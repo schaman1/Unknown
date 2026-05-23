@@ -67,6 +67,20 @@ class upgrade_life(interactable):
         self.delta_size_bg = size.DELTA_SIZE_BG_SPELL*size.CELL_SIZE
         self.init_img(assets.ADD_LIFE,assets.ICONE_AUGMENT_WEAPON)
 
+class upgrade_time(interactable):
+
+    def __init__(self,id_img,pos_x,pos_y,price = 0):
+
+        super().__init__(pos_x,pos_y,price)
+
+        self.found_path()
+
+    def found_path(self):
+
+        self.size_img = (size.CELL_SIZE*size.SIZE_SPELL_GROUND,size.CELL_SIZE*size.SIZE_SPELL_GROUND)
+        self.delta_size_bg = size.DELTA_SIZE_BG_SPELL*size.CELL_SIZE
+        self.init_img(assets.REDUCE_TIME,assets.ICONE_AUGMENT_WEAPON)
+
 class chest(interactable):
 
     def __init__(self,id_img,pos_x,pos_y,price = 0):

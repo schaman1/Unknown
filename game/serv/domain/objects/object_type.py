@@ -44,6 +44,14 @@ class upgrade_life(interactable_object):
 
         self.trigger_value = "UpgradeLife"
 
+class upgrade_time(interactable_object):
+
+    def __init__(self,id_categorie,pos_x,pos_y,price=0):
+
+        super().__init__(id_categorie,pos_x,pos_y,price,power = 50)
+
+        self.trigger_value = "UpgradeTime"
+
 class Chest(interactable_object):
 
     def __init__(self,id_categorie,pos_x,pos_y,price=0):

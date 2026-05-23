@@ -58,6 +58,7 @@ class Weapon :
         self.add_life = 0
         self.add_rebond = False
         self.randomize_angle = False
+        self.next_allowed_shot_time = 0
         self.loading_time_refill_current = self.loading_time_refill
         self.loading_time_spell_current = self.loading_time_spell
 
@@ -66,7 +67,7 @@ class Weapon :
 
     def return_info_next_time_can_shot(self):
         
-        return int((self.next_allowed_shot-time.perf_counter())*1000)
+        return int(self.next_allowed_shot_time*1000)
 
     def check_can_shot(self,now):
         
@@ -116,10 +117,9 @@ class Weapon :
 
         if not has_cast_1_spell :
             self.next_allowed_shot = now
+            self.next_allowed_shot_time = 0
             return
         
-        self.loading_time_spell_current+=self.loading_time_spell
-
         if self.test_if_last_spell_of_weapon() :
             self.idx = 0
             self.next_allowed_shot = max(self.next_allowed_shot,now+max(self.loading_time_spell_current,self.loading_time_refill_current))
@@ -128,6 +128,12 @@ class Weapon :
             self.next_allowed_shot = max(self.next_allowed_shot,now+self.loading_time_spell_current)
 
         self.next_allowed_shot = max(self.next_allowed_shot,now+self.min_delay)
+        self.next_allowed_shot_time = self.next_allowed_shot - now
+
+        #if self.team ==0:
+        #    print(self.next_allowed_shot-now,"Time loading :",self.loading_time_spell_current,self.loading_time_spell)
+        #    print("TIme refill :",self.loading_time_refill_current,self.loading_time_refill)
+        #    print("Send client : ",self.next_allowed_shot_time)
 
     def create_projectile(self,angle,pos,nbr_trigger = 1,idx = 0):
 

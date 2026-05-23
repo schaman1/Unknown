@@ -103,7 +103,6 @@ class Player(Mob) :
     
     def update_next_allowed_shot(self,id_weapon):
         self.weapon_shot_update=id_weapon
-
         self.time_shot_update = True
 
     def return_next_allowed_shot(self):
@@ -207,7 +206,6 @@ class Player(Mob) :
 
         projectiles,player_event = self.weapons.create_shot(id_weapon,pos,angle)
 
-
         if player_event!=None :
 
             self.upgrade_handler.add_event(player_event,self)
@@ -254,3 +252,6 @@ class Player(Mob) :
     
     def unlock_double_jump(self):
         self.smooth_jump.double_jump = True #Now can double jump !
+
+    def reduce_time(self):
+        return self.weapons.reduce_time()

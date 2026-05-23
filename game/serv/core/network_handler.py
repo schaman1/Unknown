@@ -382,6 +382,9 @@ class Network_handler :
         elif id == 20 :
             self.pack_monster_change_chunk(data[1],packet)
 
+        elif id == 23 :
+            packet+=struct.pack("!B",data[1])
+
         else :
             print("Issue id not found : ",id)
 

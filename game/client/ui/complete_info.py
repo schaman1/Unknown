@@ -1,5 +1,6 @@
 from client.config.assets import COMPLETE_INFO_BG,SPELLS
 from client.config.display_text import FONT,FONT_SMALL
+from shared.constants.world import UPGRADE_MINUS_REFILL_TIME,UPGRADE_MINUS_RELOAD_TIME
 import pygame,json
 
 class CompleteInfo:
@@ -27,7 +28,7 @@ class CompleteInfo:
         self.font_big = FONT
         self.font_small = FONT_SMALL
         self.pos_name = [self.size[0]//4,self.size[1]//6]
-        self.pos_x_other_info = self.size[0]//4
+        self.pos_x_other_info = self.size[0]//8
         self.pos_y_other_info = self.size[1]//3
         self.delta_y_other_info = self.size[1]//9
 
@@ -175,3 +176,8 @@ class CompleteInfo:
             self.start_draw_weapon(weapon_hold)
 
         screen.blit(self.surface_text,self.pos_blit)
+
+    def reduce_time(self,id_weapon):
+        
+        self.infos[f"WEAPON{id_weapon}"]["spell_time"]-=UPGRADE_MINUS_RELOAD_TIME
+        self.infos[f"WEAPON{id_weapon}"]["time_reload"]-=UPGRADE_MINUS_REFILL_TIME
