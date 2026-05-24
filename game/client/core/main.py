@@ -180,6 +180,10 @@ class Main:
                             if len(txt) < 30: #max char
                                 self.objClicked.dicRect_input[self.objClicked.id+"_input"]["text"] = txt[:-1] + str(event.unicode) + txt[-1]
 
+                    elif event.key == pygame.K_RETURN and self.state.mod == "host" and self.client.connected:
+                        self.start_game()
+
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.state.mod=="game":
