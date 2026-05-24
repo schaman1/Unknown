@@ -719,6 +719,44 @@ class Wall(Monster) :
     def idle_behavior(self,map,dt):
         """est épuisé"""
 
+class WallBig(Monster) :
+
+    def __init__(self,x,y,id=0):
+
+        super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = 0,rad = 0,run_away = 0,atk_speed = 1,id=id,prime = 0,acceleration = 1,width = 8,height = 8,len_life = 5)
+
+        self.knockback_res = 10
+        self.team = Team.Player
+
+        self.name = 8 #Permet d'afficher le bon monstre / Dans monster all côté client
+
+        self.collision_damage = False
+
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
+
+        if self.still_dead():
+            return
+        
+        #print(self.state)
+        
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+            pass
+            
+        elif self.state == "attacking":
+            pass
+
+        self.move_all(map,dt,collision_handler)
+        #print(s)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+
 class Limace(Monster) :
     """Se déplace, tire un projectile de loin, sinon attaque au corps à corps"""
 
