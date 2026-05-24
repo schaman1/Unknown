@@ -7,6 +7,7 @@ class Projectile :
     def __init__(self,pos,life_time,angle,speed,id_img,width,height,rebond = False,damage = 0,weight = 0,team = Team.Mob,randomize_angle = False,owner_pos = None,knockback = 0):
         self.pos_x,self.pos_y = pos
         self.owner_pos = owner_pos #Use to set default pos
+        self.can_damage = True
 
         self.projectile_spawn_when_die = []
         self.life_time = life_time
@@ -80,6 +81,11 @@ class Projectile :
         vy = -int(math.sin(rad)*speed)
         return vx,vy
     
+    def return_angle(self):
+        hyp = math.sqrt(self.vx**2+self.vy**2)
+        angle = (math.acos(self.vx/hyp)*90)%360
+        return int(angle)
+    
     def gravity(self,dt):
 
     # je t'aime -> pas moi
@@ -146,6 +152,7 @@ class Projectile :
                         else :
                             self.is_dead = True
 
+                        self.angle = self.return_angle()
                         self.angle = (-self.angle)%360
                         self.speed = int(self.speed * 0.9)
                         self.load()
@@ -195,6 +202,7 @@ class Projectile :
                         else :
                             self.is_dead = True
 
+                        self.angle = self.return_angle()
                         self.angle = (180-self.angle)%360
                         self.speed = int(self.speed * 0.9)
                         self.load()

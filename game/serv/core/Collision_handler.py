@@ -14,6 +14,9 @@ class CollisionHandler:
 
             for projectile in l_projectile:
 
+                if not projectile.can_damage :
+                    continue
+
                 if projectile.team!=Team.Player:
 
                     if projectile.movable == False :

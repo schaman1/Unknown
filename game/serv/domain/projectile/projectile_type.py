@@ -140,3 +140,22 @@ class Death(Projectile) :
                          team=team,
                          randomize_angle=randomize,
                          owner_pos=owner,)
+        
+class Lanterne(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.LANTERNE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.LANTERNE_V,
+                         id_img = 44,
+                         width = weapons.LANTERNE_WIDTH,
+                         height = weapons.LANTERNE_HEIGHT,
+                         damage = weapons.LANTERNE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         weight = weapons.LANTERNE_WEIGHT,
+                         rebond = True,
+                         owner_pos=owner,)
+        self.can_damage = False

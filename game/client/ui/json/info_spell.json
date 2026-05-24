@@ -227,6 +227,29 @@
         "time_reload": 5,
         "degat":0
     },
+    "SPELL43":{
+        "type":"projectile",
+        "name":"Mur",
+        "description":["Il vous permettra de bloquer",
+                        "et distraires les monstres."],
+        "time_reload": 5,
+        "degat":0
+    },
+    "SPELL44":{
+        "type":"projectile",
+        "name":"Grand mur",
+        "description":["Il vous permettra de bloquer",
+                        "et distraires les monstres."],
+        "time_reload":10,
+        "degat":0
+    },
+    "SPELL45":{
+        "type":"projectile",
+        "name":"Lanterne",
+        "description":["Elle vous permet de voir au loin."],
+        "time_reload":5,
+        "degat":0
+    },
     "UNKNOWN_SPELL":{
         "type":"projectile",
         "name":"Unknown",
@@ -258,7 +281,7 @@
     "WEAPON2":{
         "type":"weapon",
         "name":"Arme K",
-        "description":["En appyant sur k,",
+        "description":["En appuyant sur k,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
         "time_reload":2,
@@ -266,8 +289,8 @@
     },
     "WEAPON3":{
         "type":"weapon",
-        "name":"Arme I",
-        "description":["En appyant sur i,",
+        "name":"Arme L",
+        "description":["En appuyant sur L,",
                         "il lancera vos sorts !"],
         "nbr_slot":3,
         "time_reload":2,

@@ -479,7 +479,8 @@ class Foulli(Monster) :
     def attack(self,target,collision_handler,dt,projectile_manager,chunk):
         
         if not self.target.auto_destruction :
-            self.chunk = 99
+            chunk = 99
+
         collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
 
 class Defendeur(Monster) :
