@@ -306,15 +306,20 @@ class Game :
 
             if not touch_pnj and res[1]!=None:
 
-                chunk,id = res[1]
-                self.objects_manager.chunk_objects[chunk][id].start_anim_trigger()
-                self.player_command.append([8,chunk,id])
+                if res[2] == 1  and self.player_all.me.money< 1: #Element.price quoi
+                    #=> dans l'intro
+                    return False,"Tue un monstre pour avoir assez de Nifly"
 
-            return touch_pnj
+                else :
+                    chunk,id = res[1]
+                    self.objects_manager.chunk_objects[chunk][id].start_anim_trigger()
+                    self.player_command.append([8,chunk,id])
+
+            return touch_pnj,None
 
         else :
         
-            return False
+            return False,None
         
     def kill_ent(self,id,chunk,duree):
         """Put the death animation on target ent"""

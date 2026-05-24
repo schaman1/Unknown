@@ -114,7 +114,7 @@ class objects_manager:
     
     def test_trigger(self,pos_player): #To opti
 
-        nearest_el = [self.distance_max_trigger,None]
+        nearest_el = [self.distance_max_trigger,None,None]
 
         for chunk in self.chunk_objects.keys() :
 
@@ -124,6 +124,6 @@ class objects_manager:
 
                 if dist<nearest_el[0] and element.can_trigger:
 
-                    nearest_el = [dist,[chunk,id]]
+                    nearest_el = [dist,[chunk,id],element.price]
                 
         return nearest_el
