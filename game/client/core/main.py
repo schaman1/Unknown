@@ -103,9 +103,11 @@ class Main:
 
                         if event.key == pygame.K_e:
                             if not self.in_interaction :
-                                self.in_interaction = self.state.game.interact()
+                                self.in_interaction,alert = self.state.game.interact()
                                 if self.in_interaction:
                                     self.send_stop_move()
+                                if alert != None:
+                                    self.state.add_alert(alert,time = 4)
 
                         if event.key == pygame.K_RETURN :
                             new_interaction,pnj = self.state.game.pnj_all.press_enter()
