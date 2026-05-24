@@ -1,5 +1,6 @@
 from client.domain.mob.pnj.pnj import Pnj
 from shared.constants import world
+from client.config import display_text
 import json
 import math
 import pygame
@@ -14,16 +15,17 @@ class Pnj_all :
         self.distance_max_blit = screenSize[1]
         self.distance_max_trigger = world.NBR_CELL_CAN_SEE*cell_size
 
+        self.text_entrer = display_text.FONT.render("Appuyer sur entrer",True, (255,255,255))  # True = anti-aliasing
+        size = display_text.FONT.size("Appuyer sur entrer")
+        self.pos_text_entrer = (screenSize[0] - size[0],screenSize[1]-size[1])
 
         self.pos_blit_text = screenSize[1]-10*self.cell_size
 
-        self.interact_img = pygame.image.load("assets/ui/infos/interact.png")
-        self.interact_img = pygame.transform.scale(self.interact_img,(10*cell_size,1*cell_size))
+        self.interact_img = display_text.FONT_SMALL.render("E : interragir",True, (180,180,180))  # True = anti-aliasing
         self.white_surf = pygame.Surface((screenSize[0],cell_size*10),pygame.SRCALPHA)
 
         self.is_talking = False
         self.talks_to = None
-
 
         with open("client/ui/json/text.json") as f:
 
@@ -85,6 +87,7 @@ class Pnj_all :
             self.white_surf.fill((50,50,55))
             self.talks_to.blit_dialogue(self.white_surf,dt)
             screen.blit(self.white_surf,(0,self.pos_blit_text))
+            screen.blit(self.text_entrer,self.pos_text_entrer)
 
     def blit_interact_info(self,screen,element):
         
@@ -92,7 +95,6 @@ class Pnj_all :
         pos_y = element.pos_blit[1] - self.cell_size*1
 
         screen.blit(self.interact_img,(pos_x,pos_y))
-
 
     def test_trigger(self,pos_player,min_dist_other_ele):
 
