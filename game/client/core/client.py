@@ -132,7 +132,7 @@ class Client:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22 or msg_id==24 or msg_id==25:          # start_game / load fini
+            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22 or msg_id==25:          # start_game / load fini
                 msg_size = 1
 
             elif msg_id == 1:        # new player
@@ -190,6 +190,9 @@ class Client:
                 msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
 
             elif msg_id == 23:
+                msg_size = 1+1
+
+            elif msg_id == 24:
                 msg_size = 1+1
 
             elif msg_id == 26 :

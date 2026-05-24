@@ -220,37 +220,32 @@
         "degat":0
     },
     "SPELL42":{
-        "type":"augment",
-        "name":"Jump",
-        "description":["Il vous permettra d'aller",
-                        "dans de nouvelles zones."],
+        "type":"projectile",
+        "name":"Mur",
+        "description":["Il vous permettra de bloquer",
+                        "et distraire les monstres."],
         "time_reload": 5,
+        "life":5,
+        "speed":0,
         "degat":0
     },
     "SPELL43":{
         "type":"projectile",
-        "name":"Mur",
+        "name":"Grand mur",
         "description":["Il vous permettra de bloquer",
-                        "et distraires les monstres."],
-        "time_reload": 5,
+                        "et distraire les monstres."],
+        "time_reload":10,
         "life":5,
+        "speed":0,
         "degat":0
     },
     "SPELL44":{
-        "type":"projectile",
-        "name":"Grand mur",
-        "description":["Il vous permettra de bloquer",
-                        "et distraires les monstres."],
-        "time_reload":10,
-        "life":5,
-        "degat":0
-    },
-    "SPELL45":{
         "type":"projectile",
         "name":"Lanterne",
         "description":["Elle vous permet de voir au loin."],
         "time_reload":5,
         "life":1.5,
+        "speed":0,
         "degat":0
     },
     "UNKNOWN_SPELL":{
