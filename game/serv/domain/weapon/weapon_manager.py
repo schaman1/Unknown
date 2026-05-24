@@ -58,18 +58,18 @@ class WeaponManager :
         res = self.lWeapons[id_weapon].trigger_shot(angle,pos)
 
         if res == None :
-            projectiles,events = None,None
+            projectiles,events,monsters = None,None,None
         
         else :
-            projectiles,events = res[0],res[1]
+            projectiles,events,monsters = res[0],res[1],res[2]
             
-        if projectiles == [] and events == []:
-            projectiles,events = None,None
+        if projectiles == [] and events == [] and monsters == []:
+            projectiles,events,monsters = None,None,None
         
         else :
             self.weapon_select = id_weapon
 
-        return projectiles,events
+        return projectiles,events,monsters
     
     def add_slot(self):
         return self.lWeapons[self.weapon_select].add_slot(self.weapon_select) #10 car id envoie ? 

@@ -18,7 +18,7 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
     if not weapon.test_if_last_spell_of_weapon() :
     
         infos,_ = weapon.create_projectile(weapon.angle,weapon.pos,idx = weapon.idx)
-        next_projectiles,_ = infos
+        next_projectiles,_,_ = infos
 
     else :
         next_projectiles = []
@@ -70,7 +70,7 @@ class CreateFire(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Fire(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class CreateLune(Upgrade):
 
@@ -82,7 +82,7 @@ class CreateLune(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class CreatePompe(Upgrade):
 
@@ -110,7 +110,7 @@ class CreatePompe(Upgrade):
         proj.delta_angle = weapons.POMPE_DISPERSION
         projectiles.append(weapon.add_projectile(proj))
 
-        return 1,projectiles,None
+        return 1,projectiles,None,None
     
 class CreateLaser(Upgrade):
 
@@ -126,7 +126,7 @@ class CreateLaser(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Laser(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class CreateManyLune(Upgrade):
 
@@ -169,7 +169,7 @@ class CreateManyLune(Upgrade):
             projectile.delta_pos = [delta_pos_force[i][0],delta_pos_force[i][1]]
             l.append(projectile)
 
-        return 1,l,None
+        return 1,l,None,None
 
 class CreateStone(Upgrade):
 
@@ -201,7 +201,7 @@ class CreateStone(Upgrade):
         proj.delta_angle =10
         projectile.append(weapon.add_projectile(proj))
 
-        return 1,projectile,None
+        return 1,projectile,None,None
     
 class CreateLance(Upgrade):
 
@@ -213,7 +213,7 @@ class CreateLance(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Lance(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class CreateDeath(Upgrade):
 
@@ -225,7 +225,7 @@ class CreateDeath(Upgrade):
 
         projectile = weapon.add_projectile(projectile_type.Death(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class AddSpeed(Upgrade):
 
@@ -237,7 +237,7 @@ class AddSpeed(Upgrade):
 
         weapon.speed_mult+=1
 
-        return 0,None,None
+        return 0,None,None,None
     
 class AddRebond(Upgrade):
     #Ajoute rebond a tout les prohcains tir mais leur enleve 2 dégat
@@ -252,7 +252,7 @@ class AddRebond(Upgrade):
 
         weapon.add_damage -=2
 
-        return 0,None,None
+        return 0,None,None,None
     
 class Randomizer(Upgrade):
     #Randomize la direction mais reduit le temps de rechargement de l'arme
@@ -268,7 +268,7 @@ class Randomizer(Upgrade):
         weapon.randomize_angle = True
         weapon.loading_time_refill_current += self.minus_refill_time
 
-        return 0,None,None
+        return 0,None,None,None
     
 class AddDamage(Upgrade):
     #Randomize la direction mais reduit le temps de rechargement de l'arme
@@ -282,7 +282,7 @@ class AddDamage(Upgrade):
         weapon.add_damage +=2
         #weapon.team = Team.All
 
-        return 0,None,None
+        return 0,None,None,None
     
 class AddManyDamage(Upgrade):
     #Randomize la direction mais reduit le temps de rechargement de l'arme
@@ -296,7 +296,7 @@ class AddManyDamage(Upgrade):
         weapon.add_damage +=5
         weapon.team = Team.All
 
-        return 0,None,None
+        return 0,None,None,None
     
 class Reloader(Upgrade):
     #Randomize la direction mais reduit le temps de rechargement de l'arme
@@ -312,7 +312,7 @@ class Reloader(Upgrade):
         #weapon.randomize_angle = True
         weapon.loading_time_refill_current += self.minus_refill_time
 
-        return 0,None,None
+        return 0,None,None,None
     
 class AddLife(Upgrade):
     #Randomize la direction mais reduit le temps de rechargement de l'arme
@@ -328,7 +328,7 @@ class AddLife(Upgrade):
         #weapon.randomize_angle = True
         weapon.add_life += weapons.ADD_LIFE_AMOUNT
 
-        return 0,None,None
+        return 0,None,None,None
     
 class DoubleSpell(Upgrade):
 
@@ -338,7 +338,7 @@ class DoubleSpell(Upgrade):
 
     def trigger(self,weapon,idx=0):
 
-        return -1,None,None #Done un slot de plus de disponible
+        return -1,None,None,None #Done un slot de plus de disponible
     
 class TripleSpell(Upgrade):
 
@@ -348,7 +348,7 @@ class TripleSpell(Upgrade):
 
     def trigger(self,weapon,idx=0):
 
-        return -1,None,None #Done un slot de plus de disponible
+        return -2,None,None,None #Done 2 slots de plus de disponible
     
 class AllSpell(Upgrade):
 
@@ -358,7 +358,7 @@ class AllSpell(Upgrade):
 
     def trigger(self,weapon,idx=0):
 
-        return -weapon.nbr_spells_max,None,None #Done un slot de plus de disponible
+        return -weapon.nbr_spells_max,None,None,None #Done un slot de plus de disponible
     
 class CreateFire_DieEffect(Upgrade):
     """DieEffect = create projectile when die"""
@@ -375,7 +375,7 @@ class CreateFire_DieEffect(Upgrade):
 
         AddProjectileWhenDie([projectile],weapon,idx)
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 class Copy(Upgrade):
     """DieEffect = create projectile when die"""
@@ -399,7 +399,7 @@ class Copy(Upgrade):
         
         else : #Don't trigger
 
-            return 0,None,None
+            return 0,None,None,None
     
 class CreatePompe_DieEffect(Upgrade):
     """DieEffect = create projectile when die"""
@@ -430,7 +430,7 @@ class CreatePompe_DieEffect(Upgrade):
 
         AddProjectileWhenDie(projectiles,weapon,idx)
 
-        return 1,projectiles,None
+        return 1,projectiles,None,None
     
 class CreateLune_DieEffect(Upgrade):
     """DieEffect = create projectile when die"""
@@ -448,7 +448,7 @@ class CreateLune_DieEffect(Upgrade):
         AddProjectileWhenDie([projectile],weapon,idx)
         AddProjectileWhenDie([projectile],weapon,idx)
 
-        return 1,[projectile],None
+        return 1,[projectile],None,None
     
 #class SmallDash(Upgrade):
 #
@@ -472,7 +472,19 @@ class LongDash(Upgrade):
 
     def trigger(self,weapon,idx=0):
 
-        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]]
+        return 1,None,[self.id,[0,self.time_dash_take,self.distance_dash,weapon.angle]],None
+    
+class CreateWall(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=42,time_take=weapons.WALL_RELOAD_TIME)
+
+        self.wall_hp = weapons.WALL_HP
+
+    def trigger(self,weapon,idx=0):
+
+        return 1,None,None,[self.id,self.wall_hp,weapon.pos]
     
 #class Jump(Upgrade):
 #
@@ -522,8 +534,9 @@ UPGRADES[32] = CreatePompe_DieEffect()
 UPGRADES[33] = CreateLune_DieEffect()
 #UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
+UPGRADES[42] = CreateWall()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20]
-rare_upgrades = [4,5,6,14,21,33,41]
+rare_upgrades = [4,5,6,14,21,33,41,42]
 legendary_upgrades = [9,15,22,31,32]

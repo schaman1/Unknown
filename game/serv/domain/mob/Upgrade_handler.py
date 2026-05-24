@@ -25,12 +25,6 @@ class UpgradeHandler:
             if id==40 or id==41:
                 
                 res = self.trigger_dash(self.id_event_player_do[i],player,dt,map)
-                
-
-            elif id == 42 :
-
-                self.trigger_jump(player,dt,map)
-                res = False #Car on saute une seule fois, pas plus
 
             else :
                 print("Unknown id in upgrade handle. Event :",self.id_event_player_do[i])

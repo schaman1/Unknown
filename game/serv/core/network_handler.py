@@ -314,6 +314,14 @@ class Network_handler :
             chunk,new_chunk,id = monster
             packet+=struct.pack("!HHH",chunk,new_chunk,id)
 
+    def pack_monster_die(self,data,packet):
+
+        packet+=struct.pack("!H",len(data))
+
+        for monster in data:
+            chunk,id = monster
+            packet+=struct.pack("!HH",chunk,id)
+
     def pack_object(self,data,packet):
 
         packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
@@ -387,6 +395,9 @@ class Network_handler :
 
         elif id == 24 :
             packet+=struct.pack("!B",data[1])
+
+        elif id == 26:
+            self.pack_monster_die(data[1],packet)
 
         else :
             print("Issue id not found : ",id)

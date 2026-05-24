@@ -212,6 +212,18 @@ class Animation:
             self.decoupe_img(img_idle,self.animation["idle"],size)
 
             self.add_tombe(cell_size)
+
+        elif entity_name == "Wall" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle_loading = pygame.image.load(assets.WALL_IDLE)
+            img_idle = pygame.transform.scale(img_idle_loading,(self.width,self.height)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+            self.animation["idle"] = self.animation["running"]
+            self.animation["attacking"] = self.animation["running"]
+
+            self.add_tombe(cell_size)
         
         elif entity_name == "Limace" :
 

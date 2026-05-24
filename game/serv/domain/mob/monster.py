@@ -4,9 +4,15 @@ from serv.domain.weapon import weapon1
 import math,time
 
 class Monster(Mob):
-    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10,knockback_res = 0):
+    def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10,knockback_res = 0,len_life = 0):
 
         super().__init__((x,y),hp,id,acceleration=acceleration,height = height,width = width)
+
+
+        self.time_destroy = time.perf_counter()+len_life
+        self.auto_destruction = False
+        if len_life != 0:
+            self.auto_destruction = True
 
         self.hp = hp
         self.damage = damage
@@ -37,7 +43,12 @@ class Monster(Mob):
         self.state = "idle"  # états possibles : idle, moving, attacking, dead
 
     def is_alive(self):
-        return self.hp > 0
+        return self.hp>0
+    
+    def has_to_destroy(self):
+        if self.auto_destruction :
+            return time.perf_counter()>=self.time_destroy
+        return False
 
     def has_line_of_sight(self, map, target):
         x0, y0 = self.pos_x, self.pos_y
@@ -376,7 +387,7 @@ class Laseroide(Monster) :
 
         if infos != None :
 
-            projectiles,events = infos
+            projectiles,_,_ = infos
 
             for proj in projectiles :
 
@@ -654,6 +665,41 @@ class Escargot(Monster) :
         """Retourne True si le joueur est bien touché"""
         #self.state = "moving"
 
+class Wall(Monster) :
+
+    def __init__(self,x,y,id=0):
+
+        super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = 0,rad = 0,run_away = 0,atk_speed = 1,id=id,prime = 0,acceleration = 1,width = 8,height = 8,len_life = 5)
+
+        self.knockback_res = 10
+
+        self.name = 7 #Permet d'afficher le bon monstre / Dans monster all côté client
+
+        self.collision_damage = False
+
+    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+
+        if self.still_dead():
+            return
+        
+        #print(self.state)
+        
+        super().update(map,dt,lPlayer,collision_handler)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+            pass
+            
+        elif self.state == "attacking":
+            pass
+
+        self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
 
 class Limace(Monster) :
     """Se déplace, tire un projectile de loin, sinon attaque au corps à corps"""
@@ -777,7 +823,7 @@ class Limace(Monster) :
 
         if trigger != None :
 
-            (projectiles, events) = trigger
+            (projectiles, _,_) = trigger
 
             for proj in projectiles :
                 projectile_manager.add_projectile_create(proj)

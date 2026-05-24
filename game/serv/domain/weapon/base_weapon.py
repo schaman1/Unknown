@@ -139,6 +139,7 @@ class Weapon :
 
         projectile_shot = []
         event_player = []
+        event_monsters = []
 
         has_cast_1_spell = False
         
@@ -156,7 +157,7 @@ class Weapon :
 
                 has_cast_1_spell = True
 
-                space_take,projectiles,id_event_player = spell.trigger(self,self.idx-1)
+                space_take,projectiles,id_event_player,id_monsters = spell.trigger(self,self.idx-1)
 
                 nbr_trigger-= space_take
 
@@ -168,12 +169,14 @@ class Weapon :
                 if id_event_player!=None:
                     event_player.append(id_event_player)
 
-                self.loading_time_spell_current+=spell.time_take
+                if id_monsters != None:
+                    event_monsters.append(id_monsters)
 
+                self.loading_time_spell_current+=spell.time_take
 
         self.update_pos_projectile(angle,projectile_shot)
 
-        return [projectile_shot,event_player],has_cast_1_spell
+        return [projectile_shot,event_player,event_monsters],has_cast_1_spell
     
     def update_pos_projectile(self,angle,projectiles):
         """All projectiles are created in front of the player BUT ! We need to had the size of the projectile to the pos !"""
