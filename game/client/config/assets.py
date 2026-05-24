@@ -36,6 +36,7 @@ SPELLS[5] = resource_path("assets/sprites/projectile/projectile_5_0.png")
 SPELLS[6] = resource_path("assets/sprites/projectile/projectile_6_0.png") #En attendant
 SPELLS[7] = resource_path("assets/sprites/projectile/projectile_7_0.png") #zizi jvais te faire un fist fuck
 SPELLS[8] = resource_path("assets/sprites/projectile/projectile_8_0.png") 
+SPELLS[9] = resource_path("assets/sprites/projectile/projectile_9_0.png") 
 SPELLS[10] = resource_path("assets/sprites/projectile/projectile_10_0.png")
 SPELLS[11] = resource_path("assets/sprites/projectile/projectile_11_0.png")
 SPELLS[12] = resource_path("assets/sprites/projectile/projectile_12_0.png")
@@ -49,6 +50,7 @@ SPELLS[22] = resource_path("assets/sprites/projectile/projectile_22_0.png")
 SPELLS[30] = resource_path("assets/sprites/projectile/projectile_30_0.png")
 SPELLS[31] = resource_path("assets/sprites/projectile/projectile_31_0.png")
 SPELLS[32] = resource_path("assets/sprites/projectile/projectile_32_0.png")
+SPELLS[33] = resource_path("assets/sprites/projectile/projectile_33_0.png")
 SPELLS[40] = resource_path("assets/sprites/projectile/projectile_40_0.png")
 SPELLS[41] = resource_path("assets/sprites/projectile/projectile_41_0.png")
 SPELLS[42] = resource_path("assets/sprites/projectile/projectile_42_0.png")
@@ -126,6 +128,7 @@ PROJECTILE_2_3 = resource_path("assets/sprites/projectile/projectile_2_0.png")
 PROJECTILE_2 = [PROJECTILE_2_0,PROJECTILE_2_1,PROJECTILE_2_2,PROJECTILE_2_3]
 
 PROJECTILE_8_0 = resource_path("assets/sprites/projectile/projectile_8_1.png") 
+PROJECTILE_9_0 = resource_path("assets/sprites/projectile/projectile_9_0_anim.png") 
 
 intro_images = []
 for i in range(5):

@@ -27,11 +27,13 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
     for i in range(len(projectiles)):
 
         if i == 0: #Don't copy the first One
-            projectiles[i].projectile_spawn_when_die = next_projectiles
+            for proj in next_projectiles :
+                projectiles[i].projectile_spawn_when_die.append(proj)
 
         else :
             l = copy_projectiles(next_projectiles)
-            projectiles[i].projectile_spawn_when_die=l
+            for proj in l:
+                projectiles[i].projectile_spawn_when_die.append(proj)
     
 def copy_projectiles(source):
         copy = []
@@ -210,6 +212,18 @@ class CreateLance(Upgrade):
     def trigger(self,weapon,idx=0):
 
         projectile = weapon.add_projectile(projectile_type.Lance(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+
+        return 1,[projectile],None
+    
+class CreateDeath(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=9,time_take = weapons.DEATH_RELOAD_TIME)
+
+    def trigger(self,weapon,idx=0):
+
+        projectile = weapon.add_projectile(projectile_type.Death(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
         return 1,[projectile],None
     
@@ -418,6 +432,24 @@ class CreatePompe_DieEffect(Upgrade):
 
         return 1,projectiles,None
     
+class CreateLune_DieEffect(Upgrade):
+    """DieEffect = create projectile when die"""
+
+    def __init__(self):
+
+        super().__init__(id = 33,time_take = weapons.LUNE_RELOAD_TIME_DIE_EFFECT)
+
+    def trigger(self,weapon,idx=0):
+
+        projectile = projectile_type.Lune(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
+
+        projectile = weapon.add_projectile(projectile)
+
+        AddProjectileWhenDie([projectile],weapon,idx)
+        AddProjectileWhenDie([projectile],weapon,idx)
+
+        return 1,[projectile],None
+    
 #class SmallDash(Upgrade):
 #
 #    def __init__(self):
@@ -473,6 +505,7 @@ UPGRADES[5] = CreateLaser()
 UPGRADES[6] = CreateManyLune()
 UPGRADES[7] = CreateStone()
 UPGRADES[8] = CreateLance()
+UPGRADES[9] = CreateDeath()
 UPGRADES[10] = AddSpeed()
 UPGRADES[11] = AddRebond()
 UPGRADES[12] = Randomizer()
@@ -486,10 +519,11 @@ UPGRADES[22] = AllSpell()
 UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[31] = Copy()
 UPGRADES[32] = CreatePompe_DieEffect()
+UPGRADES[33] = CreateLune_DieEffect()
 #UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20]
-rare_upgrades = [4,5,6,14,21,41]
-legendary_upgrades = [15,22,31,32]
+rare_upgrades = [4,5,6,14,21,33,41]
+legendary_upgrades = [9,15,22,31,32]

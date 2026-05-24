@@ -71,6 +71,16 @@
         "time_reload": 0.5,
         "degat":3
     },
+    "SPELL9":{
+        "type":"projectile",
+        "name":"Death",
+        "description":["Nothing"],
+        "life":2,
+        "speed":5,
+        "rebond":0,
+        "time_reload": 2.5,
+        "degat":50
+    },
     "SPELL10":{
         "type":"augment",
         "name":"Vitesse",
@@ -182,6 +192,17 @@
         "rebond":0,
         "time_reload": 1.5,
         "degat":5
+    },
+    "SPELL33":{
+        "type":"projectile",
+        "name":"Taillade + effet",
+        "description":["Invoque les 2 PROJECTILES",
+                    "suivant a sa disparition."],
+        "life":0.1,
+        "speed":0,
+        "rebond":0,
+        "time_reload": 0.2,
+        "degat":6
     },
     "SPELL40":{
         "type":"augment",

@@ -44,7 +44,7 @@ class ProjectileManager :
             if sould_move :
                 projectile.move(FPS_UPDATE_POS_PROJ)
 
-            projectile.blit(screen,x,y)
+            projectile.blit(screen,x,y,dt)
 
         for i in range(len(self.explosion)-1,-1,-1):
 
