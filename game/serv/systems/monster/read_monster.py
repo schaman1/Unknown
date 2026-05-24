@@ -58,12 +58,11 @@ class Read_monster :
         monster.pos_y -= monster.half_height
         chunk = self.return_chunk(monster.pos_x,monster.pos_y)
         self.dic_monster[chunk[0]*100+chunk[1]].append(monster)
+        return chunk[0]*100+chunk[1]
 
     def spawn_minion(self,monster):
         """Crée un monstre en cours de partie (invoqué par un boss) et prépare son envoi au client."""
-        self.create_monster(monster)
-        chunk_y,chunk_x = self.return_chunk(monster.pos_x,monster.pos_y)
-        chunk = chunk_y*100+chunk_x
+        chunk = self.create_monster(monster)
         self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name,self.direction[monster.side]))
 
     def create_list_monster(self) :
@@ -96,21 +95,6 @@ class Read_monster :
 
                     self.create_monster(class_monster(pos[0],pos[1]))
 
-        #print(self.dic_monster)
-
-        #Le boss : Le Roi Nain, à la position POS_BOSS (20,190 en cases)
-        #self.create_monster(monster.DwarfKing(2000,17000))
-
-        #for y in range(self.size_chunk_all[0]):
-        #        for x in range(self.size_chunk_all[1]):
-                    #color = self.map_monster.get_at((x, y))[:3]  # (r,g,b)
-
-                    #if color == (0, 0, 0):      # pixel noir = skeleton
-                        #print(f"Création d'un Skeleton en ({x}, {y})")
-                    #if y==10 and x == 10 :
-                        
-        #            self.dic_monster[y//self.size_chunk_all[0]*100+x//self.size_chunk_all[1]].append(Skeleton(x*self.base_movement,y*self.base_movement,x*1000+y))
-
     def return_chg(self, lInfoClient, map,dt,collision_handler,projectile_manager) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""
 
@@ -121,6 +105,8 @@ class Read_monster :
         list_monster_change_chunk = []
 
         list_minion_to_spawn = []
+
+        list_monster_destroy = []
 
         for y in range(self.size_chunk_all[0]) :
             for x in range(self.size_chunk_all[1]) :
@@ -149,12 +135,18 @@ class Read_monster :
                             
                             list_modif[client_idx].append((chunk,monster.id, monster.pos_x, monster.pos_y, state_id,self.direction[monster.side]))
                             #list_modif[client][chunk].append((monster.id, monster.pos_x, monster.pos_y))
-
-                        new_chunk = self.return_chunk(monster.pos_x,monster.pos_y)
-                        new_chunk = new_chunk[0]*self.base_movement+new_chunk[1]
-                        if new_chunk != chunk:
-                            list_monster_change_chunk.append([chunk,new_chunk,monster])
+                        
+                        if monster.has_to_destroy() :
+                            list_monster_destroy.append((chunk,monster.id))
                             del self.dic_monster[chunk][i]
+
+                        else :
+
+                            new_chunk = self.return_chunk(monster.pos_x,monster.pos_y)
+                            new_chunk = new_chunk[0]*self.base_movement+new_chunk[1]
+                            if new_chunk != chunk:
+                                list_monster_change_chunk.append([chunk,new_chunk,monster])
+                                del self.dic_monster[chunk][i]
 
         for i in range(len(list_monster_change_chunk)) :
             old_chunk,new_chunk,monster = list_monster_change_chunk[i]
@@ -165,7 +157,7 @@ class Read_monster :
         for minion in list_minion_to_spawn :
             self.spawn_minion(minion)
 
-        return list_modif,list_monster_change_chunk
+        return list_modif,list_monster_change_chunk,list_monster_destroy
     
     def init_list_modif_client(self,x_chunk,y_chunk,list_modif,i) :
 
@@ -212,3 +204,13 @@ class Read_monster :
 
         return liste_client_see
 
+    def spawn_monsters_from_l(self,monsters):
+
+        for info_monster in monsters :
+
+            id,hp,pos = info_monster
+
+            if id == 42:
+                monster_create = monster.Wall(pos[0],pos[1])
+                monster_create.hp = hp
+                self.spawn_minion(monster_create)

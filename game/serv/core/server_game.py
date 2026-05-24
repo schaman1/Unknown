@@ -38,7 +38,7 @@ class Server_game(Server) :
                 while self.next_send_time <= time.perf_counter():
                     self.next_send_time += self.send_interval
 
-            return_monster,monster_change_chunk = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
+            return_monster,monster_change_chunk,monster_destroy = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.lClient,self.projectile_manager.dic_projectiles)
@@ -58,9 +58,10 @@ class Server_game(Server) :
             if len(return_monster)!=0 :
                 if should_send :
                     self.send_data_update(return_monster,4)
-
             if len(monster_change_chunk)!=0:
                 self.send_data_all((20,monster_change_chunk))
+            if len(monster_destroy)!=0:
+                self.send_data_all([26,monster_destroy])
 
             if len(result_projectile)!= 0 :
                 self.send_data_update(result_projectile[0],7)
@@ -152,21 +153,20 @@ class Server_game(Server) :
 
     def handle_shot(self,id_weapon,sender):
 
-        infos = self.lClient[sender].shot(id_weapon)
+        projectiles,monsters = self.lClient[sender].shot(id_weapon)
 
-        if infos == None :
+        if projectiles == None :
             return
         
         else :
-            projectiles = infos
 
             self.lClient[sender].update_next_allowed_shot(id_weapon)
             #print("Next allowed shot = ",next_allowed_shot)
 
             for projectile in projectiles :
-
-
                 self.projectile_manager.add_projectile_create(projectile)
+
+            self.map_monster.spawn_monsters_from_l(monsters)
 
     def add_object(self,object_info):
         

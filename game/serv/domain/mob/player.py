@@ -204,13 +204,13 @@ class Player(Mob) :
 
         pos = self.return_pos_for_shot(angle)
 
-        projectiles,player_event = self.weapons.create_shot(id_weapon,pos,angle)
+        projectiles,player_event,monsters_create = self.weapons.create_shot(id_weapon,pos,angle)
 
         if player_event!=None :
 
             self.upgrade_handler.add_event(player_event,self)
 
-        return projectiles
+        return projectiles,monsters_create
     
     def return_pos_for_shot(self,angle):
         pos = self.return_pos()

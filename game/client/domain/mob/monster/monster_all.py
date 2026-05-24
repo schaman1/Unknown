@@ -47,6 +47,9 @@ class Monster_all :
             elif name == 6:
                 self.dic_monster[chunk][id] = monster.DwarfKing(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
 
+            elif name == 7:
+                self.dic_monster[chunk][id] = monster.Wall(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
+
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 
@@ -61,3 +64,10 @@ class Monster_all :
         for pos in self.dic_monster :
             for id_monster in self.dic_monster[pos] :
                 self.blit_monster(self.dic_monster[pos][id_monster],screen,x,y,dt)
+
+    def destroy_monster(self,l):
+
+        for monster in l:
+
+            chunk,id = monster
+            del self.dic_monster[chunk][id]

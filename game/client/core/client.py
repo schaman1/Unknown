@@ -128,7 +128,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18 or msg_id == 20):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18 or msg_id == 20 or msg_id == 26):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -192,6 +192,9 @@ class Client:
             elif msg_id == 23:
                 msg_size = 1+1
 
+            elif msg_id == 26 :
+                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*4
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -227,15 +230,6 @@ class Client:
         id = data[0]
 
         # Réception de la réponse
-
-        #if id == 3 :
-        #    #cells = struct.iter_unpack("!hhBBBB", data[3:])
-#
-        #        #struct.unpack("!hhBBBB", data[3+i*8 : 11+i*8])
-        #        #for i in range((size-3)//8)
-        #    self.update_canva(
-        #        data
-        #    )
 
         if id == 0:
             self.main.launch_game()
@@ -402,6 +396,18 @@ class Client:
 
         elif id == 25:
             self.main.state.add_alert("Vous avez gagne 50PV.")
+
+        elif id==26:
+
+            len = struct.unpack("!H", data[1:3])[0]
+            l = []
+
+            for i in range(len):
+
+                chunk,id = struct.unpack("!HH",data[4*i+3:4*i+7])
+                l.append((chunk,id))
+                
+            self.main.state.game.monsters.destroy_monster(l)
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
