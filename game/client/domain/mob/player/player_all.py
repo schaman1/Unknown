@@ -15,7 +15,7 @@ class Player_all :
         self.me = None
         self.screen_size = screenSize
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
-        self.vision = world.NBR_CELL_CAN_SEE//2
+        self.vision = world.NBR_CELL_CAN_SEE//1.2
         self.can_see_others = world.START_SEE
 
     def create_light(self,screen,projectiles_lumiere,x,y):
@@ -45,7 +45,7 @@ class Player_all :
     def now_can_see_others(self):
 
         if not self.can_see_others :
-            self.vision = self.vision*2
+            self.vision = world.NBR_CELL_CAN_SEE
             self.can_see_others = True
 
     def draw_circle(self,screen,color,pos,r,width=0):
