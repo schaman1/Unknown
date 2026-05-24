@@ -8,13 +8,28 @@ class CollisionHandler:
 
         self.ent_touch = {}
 
-    def trigger_collision(self,mobs,players,projectiles):
+    def trigger_collision(self,mobs,friendly_mobs,players,projectiles):
 
         for chunk,l_projectile in projectiles.items() : 
 
             for projectile in l_projectile:
 
                 if projectile.team!=Team.Player:
+
+                    if projectile.movable == False :
+                        chunks = self.return_chunk_neigborns(chunk,mobs)
+
+                    else :
+                        chunks = [chunk]
+
+                    for in_chunk in chunks :
+
+                        for mob in friendly_mobs[in_chunk] :
+
+                            touch = self.collision(projectile,mob)
+
+                            if touch :
+                                self.handle_touch(projectile,mob,in_chunk)
 
                     for player in players.values() :
 
@@ -152,9 +167,12 @@ class CollisionHandler:
             if not ent.dead or delta_life != 0:
 
                 self.effect_send.append([ent.id,delta_life,chunk])
-            
+             
             if die:
-                self.die_send.append([ent.id,chunk,ent.len_dead])
+                if ent.auto_destruction :
+                    ent.time_destroy = 0 #Means destroy
+                else :
+                    self.die_send.append([ent.id,chunk,ent.len_dead])
 
         self.ent_touch.clear()
 
