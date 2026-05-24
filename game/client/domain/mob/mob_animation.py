@@ -213,11 +213,14 @@ class Animation:
 
             self.add_tombe(cell_size)
 
-        elif entity_name == "Wall" :
+        elif entity_name == "Wall" or entity_name == "WallBig":
 
             #size_img = 50*cell_size
             size = (self.width,self.height)
-            img_idle_loading = pygame.image.load(assets.WALL_IDLE)
+            if entity_name == "Wall" :
+                img_idle_loading = pygame.image.load(assets.WALL_IDLE)
+            else :
+                img_idle_loading = pygame.image.load(assets.WALLBig_IDLE)
             img_idle = pygame.transform.scale(img_idle_loading,(self.width,self.height)) #*2 car en a 2 par ligne
             self.decoupe_img(img_idle,self.animation["running"],size)
             self.animation["idle"] = self.animation["running"]

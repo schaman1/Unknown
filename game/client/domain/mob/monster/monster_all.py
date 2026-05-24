@@ -50,6 +50,9 @@ class Monster_all :
             elif name == 7:
                 self.dic_monster[chunk][id] = monster.Wall(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
 
+            elif name == 8:
+                self.dic_monster[chunk][id] = monster.WallBig(x, y, chunk, self.cell_size, 0) #Boss : Le Roi Nain
+
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 

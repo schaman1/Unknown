@@ -234,7 +234,12 @@ class Read_monster :
 
             id,hp,pos = info_monster
 
-            if id == 42:
+            if id == 42 :
                 monster_create = monster.Wall(pos[0],pos[1])
                 monster_create.hp = hp
-                self.spawn_minion(monster_create,self.friendly_monsters)
+
+            if id == 43 :
+                monster_create = monster.WallBig(pos[0],pos[1])
+                monster_create.life = hp
+
+            self.spawn_minion(monster_create,self.friendly_monsters)

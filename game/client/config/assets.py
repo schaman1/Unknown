@@ -93,6 +93,7 @@ LIMACE_ATTACK = resource_path("assets/sprites/monster/Limace/Limace_attacking.pn
 LIMACE_RUNNING = resource_path("assets/sprites/monster/Limace/Limace_running.png")
 
 WALL_IDLE = resource_path("assets/sprites/monster/Wall/Wall_idle.png")
+WALLBig_IDLE = resource_path("assets/sprites/monster/Wall/WallBig_idle.png")
 
 FOULLI = resource_path("assets/sprites/monster/Foulli/Foulli_idle.png")
 FOULLI_ATTACK = resource_path("assets/sprites/monster/Foulli/Foulli_attack.png")
