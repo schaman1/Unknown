@@ -222,6 +222,8 @@ class Animation:
             self.decoupe_img(img_idle,self.animation["running"],size)
             self.animation["idle"] = self.animation["running"]
             self.animation["attacking"] = self.animation["running"]
+            self.animation["loading"] = self.animation["running"]
+            self.animation["run away"] = self.animation["running"]
 
             self.add_tombe(cell_size)
         

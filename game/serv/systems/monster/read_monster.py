@@ -124,7 +124,7 @@ class Read_monster :
                     for i in range(len(self.dic_monster[chunk])-1,-1,-1):
 
                         monster = self.dic_monster[chunk][i]
-                        monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
+                        monster.update(map,lInfoClient,self.friendly_monsters,dt,collision_handler,projectile_manager,chunk)
 
                         #Récupère les monstres invoqués par ce monstre (ex: le boss)
                         to_spawn = getattr(monster,"monsters_to_spawn",None)
@@ -148,7 +148,7 @@ class Read_monster :
                     for i in range(len(self.friendly_monsters[chunk])-1,-1,-1):
                         
                         monster = self.friendly_monsters[chunk][i]
-                        monster.update(map,lInfoClient,dt,collision_handler,projectile_manager)
+                        monster.update(map,lInfoClient,self.friendly_monsters,dt,collision_handler,projectile_manager,chunk)
                         #print("Has update")
                         state_id = self.state_map.get(monster.state, 0)
 
@@ -168,15 +168,14 @@ class Read_monster :
                                 list_monster_change_chunk.append([chunk,new_chunk,monster,True])
                                 del self.friendly_monsters[chunk][i]
 
-
         for i in range(len(list_monster_change_chunk)) :
             old_chunk,new_chunk,monster,friendly = list_monster_change_chunk[i]
-            
+
             if friendly :
                 self.friendly_monsters[new_chunk].append(monster)
             else :
                 self.dic_monster[new_chunk].append(monster)
-            list_monster_change_chunk[i][2] = monster.id
+            list_monster_change_chunk[i] = [old_chunk,new_chunk,monster.id]
 
         #Enregistre les monstres invoqués cette frame (les place dans un chunk + leur donne un id)
         for minion in list_minion_to_spawn :

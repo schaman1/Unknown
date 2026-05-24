@@ -9,9 +9,7 @@ class Monster(Mob):
 
         super().__init__((x,y),hp,id,acceleration=acceleration,height = height,width = width)
 
-
         self.time_destroy = time.perf_counter()+len_life
-        self.auto_destruction = False
         if len_life != 0:
             self.auto_destruction = True
 
@@ -79,7 +77,7 @@ class Monster(Mob):
             curr_y += step_y
         return True
 
-    def distance_to_nearest_player(self, lPlayer, map):
+    def distance_to_nearest_player(self, lPlayer,friendly_monsters = [],map = None,chunk = None):
         """Distance euclidienne en cases entre le monstre et le joueur."""
         target = None
         best = None
@@ -92,6 +90,16 @@ class Monster(Mob):
             if best is None or d < best:
                 best = d
                 target = p
+        for m in friendly_monsters[chunk]:
+            #if not self.has_line_of_sight(map, p): #Issue come from here ?
+            #    continue
+            dx = m.pos_x - self.pos_x
+            dy = m.pos_y - self.pos_y
+            d = math.hypot(dx, dy)
+            if best is None or d < best:
+                best = d
+                target = m
+
         if target is None:
             #print("None ! why ",lPlayer.values())
             return None, float("inf")
@@ -108,9 +116,9 @@ class Monster(Mob):
         return d/self.base_movement
     # --- Boucle de comportement basique pour tous les monstres ---
 
-    def update(self,map,dt,lPlayer,collision_handler):
+    def update(self,map,dt,lPlayer,friendly_monsters,collision_handler,chunk):
         
-        self.target, self.dist = self.distance_to_nearest_player(lPlayer, map)
+        self.target, self.dist = self.distance_to_nearest_player(lPlayer,friendly_monsters,map,chunk)
 
         if not self.is_alive():
             self.state = "dead"
@@ -133,7 +141,9 @@ class Monster(Mob):
             if self.collision_start + self.collision_time_reload <= time.perf_counter():
                 self.collision_start=time.perf_counter()
 
-                collision_handler.player_take_damage_no_projectile(self.collision_atk,self.target)
+                if not self.target.auto_destruction :
+                    chunk = 99
+                collision_handler.player_take_damage_no_projectile(self.collision_atk,self.target,chunk)
             #FIn
 
         if self.focus :
@@ -172,7 +182,7 @@ class Monster(Mob):
                 self.state = "attacking"
 
 
-    def take_damage(self, amount,player_did_damage,knockback=0):
+    def take_damage(self, amount,player_did_damage=None,knockback=0):
         """Retourne True/False selon si le monstre est mort ou non.
         knockback : force du recul (0 = aucun), définie par l'arme ou le sort."""
 
@@ -189,7 +199,8 @@ class Monster(Mob):
 
             #Knockback seulement si l'arme ou le sort en a un, réduit par la résistance du monstre
             effective_kb = max(0, knockback - self.knockback_res)
-            if effective_kb and hasattr(player_did_damage, 'pos_x'):
+
+            if player_did_damage!=None and effective_kb and hasattr(player_did_damage, 'pos_x'):
                 dx = self.pos_x - player_did_damage.pos_x
                 dir = 1 if dx > 0 else -1
                 self.vitesse_x = dir * self.base_movement * 15 * effective_kb
@@ -212,7 +223,7 @@ class Monster(Mob):
     
     def die(self,player_did_damage):
 
-        if player_did_damage.team == Team.Player :
+        if player_did_damage!=None and player_did_damage.team == Team.Player :
 
             player_did_damage.update_money(self.prime)
 
@@ -299,12 +310,12 @@ class Laseroide(Monster) :
         self.begin_relax = time.perf_counter()
         self.time_relax = 1.5
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -418,12 +429,12 @@ class Foulli(Monster) :
 
         self.collision_damage = False
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -449,7 +460,7 @@ class Foulli(Monster) :
                 self.state = "attacking"
                 self.begin_shot = time.perf_counter()
                 if self.dist <=self.attack_radius :
-                    self.attack(self.target,collision_handler,dt,projectile_manager)
+                    self.attack(self.target,collision_handler,dt,projectile_manager,chunk)
 
         delta = self.move_all(map,dt,collision_handler)
 
@@ -465,10 +476,11 @@ class Foulli(Monster) :
         """Se déplace vers le joueur"""
         return
 
-    def attack(self,target,collision_handler,dt,projectile_manager):
+    def attack(self,target,collision_handler,dt,projectile_manager,chunk):
         
-        damage = self.damage
-        collision_handler.player_take_damage_no_projectile(damage,self.target)
+        if not self.target.auto_destruction :
+            self.chunk = 99
+        collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
 
 class Defendeur(Monster) :
 
@@ -493,12 +505,12 @@ class Defendeur(Monster) :
 
         #self.collision_damage = False
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -553,7 +565,7 @@ class Defendeur(Monster) :
                         if self.side != "left":
                             self.side = "left"
 
-                    self.attack(self.target,collision_handler,dt,projectile_manager)
+                    self.attack(self.target,collision_handler,dt,projectile_manager,chunk)
                     self.begin_time_for_attack = time.perf_counter()
 
         delta = self.move_all(map,dt,collision_handler)
@@ -583,12 +595,13 @@ class Defendeur(Monster) :
         else :
             self.move_left(dt)
 
-    def attack(self,target,collision_handler,dt,projectile_manager):
+    def attack(self,target,collision_handler,dt,projectile_manager,chunk):
         """Retourne True si le joueur est bien touché"""
         
         if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
-            damage = self.damage
-            collision_handler.player_take_damage_no_projectile(damage,self.target)
+            if not self.target.auto_destruction :
+                chunk = 99
+            collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
             return True
         
         return False
@@ -605,14 +618,14 @@ class Escargot(Monster) :
 
         #self.collision_damage = False
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
         #print(self.state)
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -681,14 +694,14 @@ class Wall(Monster) :
 
         self.collision_damage = False
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
         #print(self.state)
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
        # --- Deplacement selon l'état ---
         if self.state == "idle":
@@ -730,12 +743,12 @@ class Limace(Monster) :
         self.cooldown = 1.5
         #self.collision_damage = False
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
         if self.start_cooldown + self.cooldown > time.perf_counter() : #cooldown state after ranged atk (marche)
             self.state = "moving"
@@ -773,7 +786,7 @@ class Limace(Monster) :
 
             else :
                 if self.isMelee :
-                    self.melee_attack(self.target,collision_handler,dt,projectile_manager)
+                    self.melee_attack(self.target,collision_handler,dt,projectile_manager,chunk)
                     self.isMelee = False
 
                 else :
@@ -816,10 +829,11 @@ class Limace(Monster) :
     def leave_behavior(self,target,map,dt):
         return
     
-    def melee_attack(self,target,collision_handler,dt,projectile_manager):
+    def melee_attack(self,target,collision_handler,dt,projectile_manager,chunk):
         """moves"""
-        damage = self.damage
-        collision_handler.player_take_damage_no_projectile(damage,self.target)
+        if not self.target.auto_destruction : 
+            chunk = 99
+        collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
     
     
     def range_attack(self,target,collision_handler,dt,projectile_manager):
@@ -862,12 +876,12 @@ class Skeleton(Monster):
         self.no_turn = 0
         self.idle_stuck = 0
 
-    def update(self, map, lPlayer,dt,collision_handler,projectile_manager):
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
         
-        super().update(map,dt,lPlayer,collision_handler)
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
        # --- Deplacement selon l'état ---
         if self.state == "idle":
             self.idle_behavior(map,dt)
@@ -876,7 +890,7 @@ class Skeleton(Monster):
             self.moving_behavior(lPlayer, map,dt)
             
         elif self.state == "attacking":
-            self.attack(self.target,collision_handler,dt)
+            self.attack(self.target,collision_handler,dt,chunk)
         elif self.state == "stunned":
             self.gravity_effect(dt)
             self.collision_x(map, dt, self.vitesse_x)
@@ -986,9 +1000,11 @@ class Skeleton(Monster):
             self.direction = 1 if intended_vx > 0 else -1
             
     # attaque le joueur le plus proche    
-    def attack(self, Player,collision_handler,dt):
+    def attack(self, Player,collision_handler,dt,chunk):
         damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
-        collision_handler.player_take_damage_no_projectile(damage,Player)
+        if not self.target.auto_destruction :
+            chunk = 99
+        collision_handler.player_take_damage_no_projectile(damage,Player,chunk)
 
 
 class DwarfKing(Monster):
@@ -1039,13 +1055,13 @@ class DwarfKing(Monster):
         self.max_minions = monster_info.DWARF_KING_MAX_MINIONS
         self.monsters_to_spawn = []                     #Vidé par Read_monster à chaque frame
 
-    def update(self, map, lPlayer, dt, collision_handler, projectile_manager):
+    def update(self, map, lPlayer, friendly_monsters,dt, collision_handler, projectile_manager,chunk):
 
         if self.still_dead():
             return
 
         #Gère la cible, la distance, les dégâts de contact et la machine à états
-        super().update(map, dt, lPlayer, collision_handler)
+        super().update(map, dt, lPlayer,friendly_monsters,collision_handler,chunk)
 
         self.try_spawn_minions()
         self.try_dodge(map)

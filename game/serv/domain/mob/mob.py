@@ -8,6 +8,8 @@ class Mob(Movable):
     def __init__(self,pos,hp = 100,id=None,width=10,height=10,team = Team.Mob,len_dead = 5,acceleration = 1):
         self.pos_x = pos[0]
         self.pos_y = pos[1]
+
+        self.auto_destruction = False
         
         self.smooth_jump = smooth_jump.SmoothJump()
 
