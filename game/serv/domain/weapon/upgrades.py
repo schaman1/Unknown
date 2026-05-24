@@ -498,6 +498,29 @@ class CreateBigWall(Upgrade):
 
         return 1,None,None,[self.id,self.wall_hp,weapon.pos]
     
+class CreateLanterne(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=44,time_take=weapons.LANTERNE_RELOAD_TIME)
+
+    def trigger(self,weapon,idx=0):
+
+        angle = weapon.angle%360
+        if angle > 270 or angle < 90 :
+            angle +=30
+        else :
+            angle -=30
+
+        angle = angle%360
+
+        pos = weapon.pos
+        pos[1]-= 200 #plus haut
+
+        projectile = weapon.add_projectile(projectile_type.Lanterne(angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+
+        return 1,[projectile],None,None
+
 #class Jump(Upgrade):
 #
 #    def __init__(self):
@@ -548,8 +571,9 @@ UPGRADES[33] = CreateLune_DieEffect()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = CreateWall()
 UPGRADES[43] = CreateBigWall()
+UPGRADES[44] = CreateLanterne()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,42]
-rare_upgrades = [4,5,6,14,21,33,41]
+rare_upgrades = [4,5,6,14,21,33,41,44]
 legendary_upgrades = [9,15,22,31,32,43]

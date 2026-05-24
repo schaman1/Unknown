@@ -7,6 +7,7 @@ class DefaultProjectile :
     def __init__(self,pos_x,pos_y,angle,vitesse,weight,id_img,cell_size):
 
         self.pos_x,self.pos_y = pos_x,pos_y
+        self.pos_blit_x,self.pos_blit_y = 0,0
         self.cell_size = cell_size
         self.angle = angle
         self.id_img = id_img
@@ -110,6 +111,13 @@ class DefaultProjectile :
             #rotated_img = pygame.transform.rotate(img, angle)
             Imgs = self.decoupe_img(img,(self.width*cell_size,self.height*cell_size))
 
+        elif id_img==44:
+            self.width,self.height = weapon.PROJECTILE_44_WIDTH,weapon.PROJECTILE_44_HEIGHT
+            img = pygame.image.load(assets.SPELLS[id_img]).convert_alpha() #convert_alpha() pour le fond vide
+            img = pygame.transform.scale(img,(self.width*cell_size,self.height*cell_size)) 
+            rotated_img = pygame.transform.rotate(img, angle)
+            Imgs.append(rotated_img)
+
         else :
             print("Unknown weapon id in client /domain/projectile/Default projectiles",id_img)
 
@@ -133,9 +141,9 @@ class DefaultProjectile :
             self.frame = (self.frame+1)%len(self.imgs)
 
     def calculate_pos_blit(self,x,y):
-        xs = self.convert_from_base(self.pos_x*self.cell_size) +x
-        ys = self.convert_from_base((self.pos_y) * self.cell_size) +y #Regle un petit soucis
-        rect = self.imgs[self.frame].get_rect(center=(xs, ys))
+        self.pos_blit_x = self.convert_from_base(self.pos_x*self.cell_size) +x
+        self.pos_blit_y = self.convert_from_base((self.pos_y) * self.cell_size) +y #Regle un petit soucis
+        rect = self.imgs[self.frame].get_rect(center=(self.pos_blit_x, self.pos_blit_y))
         return rect
     
     def convert_from_base(self,nbr):

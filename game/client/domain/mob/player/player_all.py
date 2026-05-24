@@ -18,7 +18,7 @@ class Player_all :
         self.vision = world.NBR_CELL_CAN_SEE//2
         self.can_see_others = world.START_SEE
 
-    def create_light(self,screen):
+    def create_light(self,screen,projectiles_lumiere,x,y):
         """Permet de faire genre que le personnage voit à une certaine portée"""
         self.light.fill((0,0,0))
 
@@ -28,9 +28,17 @@ class Player_all :
 
                 if player == self.me or self.can_see_others :
                 
-                    x,y = player.pos_blit[0] + player.animation.height//2,player.pos_blit[1]+player.animation.width//2
+                    dx,dy = player.pos_blit[0] + player.animation.height//2,player.pos_blit[1]+player.animation.width//2
 
-                    self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(x,y),(self.vision-i/2)*self.cell_size)
+                    self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(dx,dy),(self.vision-i/2)*self.cell_size)
+
+            for proj in projectiles_lumiere.values() :
+                    dx,dy = proj.pos_blit_x + proj.height//2*self.cell_size ,proj.pos_blit_y+proj.width//2*self.cell_size 
+                    #print(x,y,dx,dy)
+                    #print("Player",self.me.pos_blit[0] + player.animation.height//2,self.me.pos_blit[1]+player.animation.width//2)
+                    self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(dx,dy),(self.vision-i/4)*self.cell_size)
+
+
 
         screen.blit(self.light,(0,0))
 
@@ -76,9 +84,9 @@ class Player_all :
 
         self.me.draw(screen_global,dt,xscreen,yscreen)
 
-    def draw_light(self,screen_global):
+    def draw_light(self,screen_global,projectiles_lumiere,x,y):
 
-        self.create_light(screen_global)
+        self.create_light(screen_global,projectiles_lumiere,x,y)
 
     def mouse_button_down(self,mouse_pos):
 

@@ -7,6 +7,7 @@ class ProjectileManager :
     def __init__(self,cell_size):
 
         self.d_Projectile = {}
+        self.projectiles_lumiere = {}
         self.explosion = []
         self.cell_size = cell_size
 
@@ -15,6 +16,8 @@ class ProjectileManager :
     def create_projectile(self,id,pos_x,pos_y,angle,vitesse,weight,id_img):
 
         self.d_Projectile[id] = DefaultProjectile(pos_x,pos_y,angle,vitesse,weight,id_img,self.cell_size)
+        if id_img == 44 :
+            self.projectiles_lumiere[id] = self.d_Projectile[id]
 
     def add_explosion(self,pos,projectile,cell_size):
 
@@ -24,6 +27,8 @@ class ProjectileManager :
     def remove_projectile(self,id,pos_x,pos_y):
 
         projectile = self.d_Projectile[id]
+        if projectile.id_img == 44:
+            del self.projectiles_lumiere[id]
 
         self.add_explosion([pos_x,pos_y],projectile,self.cell_size)
 

@@ -168,7 +168,7 @@ class Game :
         self.blit_projectiles_explosions(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
-        self.player_all.draw_light(screen)
+        self.player_all.draw_light(screen,self.projectiles.projectiles_lumiere,x,y)
 
         self.floating_values.draw_floating_values_fix(screen,x,y,dt)
 
