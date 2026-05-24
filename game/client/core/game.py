@@ -306,14 +306,19 @@ class Game :
 
             if not touch_pnj and res[1]!=None:
 
-                if res[2] == 1  and self.player_all.me.money< 1: #Element.price quoi
+                if res[2] == 5  and self.player_all.me.money< 1: #Element.price quoi
                     #=> dans l'intro
+                    touch_pnj = self.pnj_all.test_trigger(pos_player,None) #Pour parler avec le pnj
                     return False,"Tue un monstre pour avoir assez de Nifly"
 
                 else :
                     chunk,id = res[1]
                     self.objects_manager.chunk_objects[chunk][id].start_anim_trigger()
                     self.player_command.append([8,chunk,id])
+
+                    if res[2]==5 :#Means take the spell begin
+                        self.pnj_all.change_text_pnj("pnj_learn_attack","pnj_learn_spell")
+                        touch_pnj = self.pnj_all.test_trigger(pos_player,None)
 
             return touch_pnj,None
 

@@ -25,7 +25,6 @@ class AnimatedText:
 
     def draw_text(self,screen,dt):
 
-
         if self.lenght_text_blit<self.lenght_current_text :
             self.start_blit_text+=dt
             self.lenght_text_blit = int(self.start_blit_text//self.speed)

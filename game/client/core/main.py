@@ -365,9 +365,6 @@ class Main:
 
         events = self.state.game.player_command + self.key_command
 
-        if self.in_interaction :
-            events = []
-
         for input in events :
 
             if input == None:
@@ -376,7 +373,9 @@ class Main:
 
             id = input[0]
 
-            self.client.send_data(id=id,data=input[1:])
+            if not self.in_interaction or id == 8:
+
+                self.client.send_data(id=id,data=input[1:])
 
         self.state.game.player_command.clear()
         self.key_command.clear()

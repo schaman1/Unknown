@@ -36,17 +36,16 @@ class Pnj_all :
         
         pos = (70,125)
         self.add_pnj(pos,'pnj_tell_story')
-        self.container_pnj[-1].animation.direction = "left"
+        
+        pos = (20,185)
+        self.add_pnj(pos,'pnj_learn_attack')
     
         pos = (77,157)
         self.add_pnj(pos,'pnj_tell_healer')
-        self.container_pnj[-1].animation.direction = "left"
     
         pos = (425,261)
         self.add_pnj(pos,'pnj_double_jump')
-        #self.container_pnj[-1].animation.direction = "left"
         
-
         pos = world.POS_PNJ
         self.add_pnj(pos,'pnj_tp_boss')
 
@@ -69,6 +68,11 @@ class Pnj_all :
             dist = self.distance(pos_player,pnj)
 
             if dist<self.distance_max_blit :
+
+                if pnj.pos_x < pos_player[0]:
+                    pnj.animation.direction = "right"
+                else :
+                    pnj.animation.direction = "left"
 
                 pnj.blit(screen,x,y,dt)
 
@@ -93,6 +97,8 @@ class Pnj_all :
     def test_trigger(self,pos_player,min_dist_other_ele):
 
         dist_min_pnj = [self.distance_max_blit,None]
+        if min_dist_other_ele == None:
+            min_dist_other_ele = self.distance_max_blit
         
         for pnj in self.container_pnj :
 
@@ -136,3 +142,12 @@ class Pnj_all :
     def stop_talk(self):
         self.is_talking = False
         self.talks_to = None
+
+    def change_text_pnj(self,pnj_name,new_name):
+        for pnj in self.container_pnj :
+
+            if pnj.name == pnj_name:
+                pnj.name = new_name
+                pnj.text.text_to_blit = self.dialogues[new_name]
+                pnj.text.set_lenght_text()
+                pnj.text.lenght_all_texts = len(pnj.text.text_to_blit)
