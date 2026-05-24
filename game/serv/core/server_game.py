@@ -232,13 +232,14 @@ class Server_game(Server) :
 
                 info_weapon = self.lClient[sender].upgrade_size_weapon(element.id_cat)
                 self.send_data([16,chunk,id],sender) #Destroy
-                
                 self.send_data([10,info_weapon],sender)
+                self.send_data([24,info_weapon[1]],sender)
 
             elif action=="UpgradeLife":
 
                 info_weapon = self.lClient[sender].add_life(element.power)
                 self.send_data([16,chunk,id],sender) #Destroy
+                self.send_data([25],sender)
 
             elif action=="UpgradeTime":
 

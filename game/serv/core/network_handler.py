@@ -325,7 +325,7 @@ class Network_handler :
         id = data[0]
         packet += struct.pack("!B", id)   # envoie l’ID du message (1 octet)
 
-        if id == 0 or id==9 or id==19 or id == 21 or id==22:
+        if id == 0 or id==9 or id==19 or id == 21 or id==22 or id==25:
             pass
 
         elif id == 1 : 
@@ -383,6 +383,9 @@ class Network_handler :
             self.pack_monster_change_chunk(data[1],packet)
 
         elif id == 23 :
+            packet+=struct.pack("!B",data[1])
+
+        elif id == 24 :
             packet+=struct.pack("!B",data[1])
 
         else :

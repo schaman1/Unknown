@@ -132,7 +132,7 @@ class Client:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22:          # start_game / load fini
+            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22 or msg_id==24 or msg_id==25:          # start_game / load fini
                 msg_size = 1
 
             elif msg_id == 1:        # new player
@@ -393,6 +393,15 @@ class Client:
             name = {0:"Sac",1:"J",2:"K",3:"L"}
             self.main.state.add_alert(f"Reduction du temps de l'arme : {name[id_weapon]}") #Maybe change to put J/K/L
             self.main.state.game.player_all.me.reduce_time(id_weapon)
+
+        elif id==24:
+
+            id_weapon = data[1]
+            name = {0:"Sac",1:"J",2:"K",3:"L"}
+            self.main.state.add_alert(f"Votre arme {name[id_weapon]} a plus de place !")
+
+        elif id == 25:
+            self.main.state.add_alert("Vous avez gagne 50PV.")
 
     def display_clients_name(self):
         """Affiche le nom des clients"""
