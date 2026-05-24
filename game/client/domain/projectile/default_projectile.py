@@ -41,13 +41,23 @@ class DefaultProjectile :
 
         if self.weight != 0:
             self.vy = self.vy*(gravity_power_mult**(dt*60))
+        if self.vy > 100*self.base_movement :
+            self.vy = 100*self.base_movement
     
     def move(self,dt):
 
         self.gravity(dt)
 
         self.pos_x+=self.vx*dt#int(1000*dt)#
+        if self.pos_x >20000000 :
+            self.pos_x = 20000000
+        elif self.pos_x < -20000000:
+            self.pos_x = -20000000
         self.pos_y+=self.vy*dt#1000*dt#
+        if self.pos_y >20000000 :
+            self.pos_y = 20000000
+        elif self.pos_y < -20000000:
+            self.pos_y = -20000000
 
     def create_img(self,id_img,cell_size,angle):
 

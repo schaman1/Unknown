@@ -21,5 +21,5 @@ OBJECTS.append(("SPELL",2,1300,18500,5)) #Put a pnj instead
 #OBJECTS.append(("UpgradeWeapon",2,5500,16000,0)) #21 bcs +2 slot for weapon
 #OBJECTS.append(("UpgradeWeapon",1,5000,16000,0))
 
-WEAPONS_BEGIN = [[],[3],[7],[]]
+WEAPONS_BEGIN = [[],[3],[7],[44]]
 MAGASIN_BEGIN = [(28500,12500),(39000,23600),(19500,18900)]
