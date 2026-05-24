@@ -486,6 +486,18 @@ class CreateWall(Upgrade):
 
         return 1,None,None,[self.id,self.wall_hp,weapon.pos]
     
+class CreateBigWall(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=43,time_take=weapons.WALL_BIG_RELOAD_TIME)
+
+        self.wall_hp = weapons.WALL_BIG_HP
+
+    def trigger(self,weapon,idx=0):
+
+        return 1,None,None,[self.id,self.wall_hp,weapon.pos]
+    
 #class Jump(Upgrade):
 #
 #    def __init__(self):
@@ -535,8 +547,9 @@ UPGRADES[33] = CreateLune_DieEffect()
 #UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = CreateWall()
+UPGRADES[43] = CreateBigWall()
 #UPGRADES[42] = Jump()
 
-common_upgrades = [2,3,7,8,10,11,12,13,20]
-rare_upgrades = [4,5,6,14,21,33,41,42]
-legendary_upgrades = [9,15,22,31,32]
+common_upgrades = [2,3,7,8,10,11,12,13,20,42]
+rare_upgrades = [4,5,6,14,21,33,41]
+legendary_upgrades = [9,15,22,31,32,43]
