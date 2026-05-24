@@ -1,6 +1,7 @@
 from serv.domain.mob.mob import Mob
 from serv.config import monster_info
 from serv.domain.weapon import weapon1
+from serv.domain.mob.team import Team
 import math,time
 
 class Monster(Mob):
@@ -211,7 +212,9 @@ class Monster(Mob):
     
     def die(self,player_did_damage):
 
-        player_did_damage.update_money(self.prime)
+        if player_did_damage.team == Team.Player :
+
+            player_did_damage.update_money(self.prime)
 
         self.dead = True
         self.target = None
@@ -672,6 +675,7 @@ class Wall(Monster) :
         super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = 0,rad = 0,run_away = 0,atk_speed = 1,id=id,prime = 0,acceleration = 1,width = 8,height = 8,len_life = 5)
 
         self.knockback_res = 10
+        self.team = Team.Player
 
         self.name = 7 #Permet d'afficher le bon monstre / Dans monster all côté client
 
@@ -697,6 +701,7 @@ class Wall(Monster) :
             pass
 
         self.move_all(map,dt,collision_handler)
+        #print(s)
 
     def idle_behavior(self,map,dt):
         """est épuisé"""
