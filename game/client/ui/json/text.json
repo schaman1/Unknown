@@ -1,8 +1,8 @@
 {
     "pnj_tell_story":[
-        "Oy l'ami ! Oh t'es un p'tit nouveau toi ca se voit!",
+        "Oy l'ami ! Oh t'es un p'tit nouveau toi ca se voit !",
         "Laisse moi te donner ca pour mieux voir !",
-        "Je suppose que tu ne te rappele pas comment tu es arrive ici ?",
+        "Je suppose que tu ne te rappelles pas comment tu es arrive ici ?",
         "Tiens, voici des dessins qui t'aideront a comprendre !"
     ],
     "pnj_tell_healer":[
@@ -11,15 +11,26 @@
         "Il permet de te guerir et ton esprit reapparaitra ici !"
     ],
     "pnj_double_jump":[
-        "Oy ? Mais je n'en crois pas mes pupillles !",
-        "Un nain ! Comme moi ! Cela fais si longtemps que je n'en avais pas vu !",
+        "Oy ? Mais je n'en crois pas mes pupilles !",
+        "Un nain ! Comme moi ! Cela fait si longtemps que je n'en avais pas vu !",
         "Pour te remercier de ta visite voici un cadeau.",
-        "C'est un pierre qui te permet de sauter une fois de plus !"
+        "C'est une pierre qui te permet de sauter une fois de plus !"
+    ],
+    "pnj_learn_attack":[
+        "Oy ! Comment va mon aventurier ?",
+        "Tu veux ce sort ? Pour cela il faut attaquer des ennemis.",
+        "Rien de plus simple, appuie juste sur 'J' ou 'K'."
+    ],
+    "pnj_learn_spell":[
+        "Oy ! Je suis aussi un grand maitre des combats.",
+        "Mais dis moi, tu ne sais pas ou est parti ton sort ?",
+        "Appuie sur 'i', et tu verras apparaitre tes sorts.",
+        "Tu peux ensuite les deplacer avec ta souris !"
     ],
     "pnj_tp_boss":[
         "Oy, bienvenue a toi.",
-        "Fait attention ! Ici se trouve notre roi !",
+        "Fais attention ! Ici se trouve notre roi !",
         "Tu veux vraiment le voir ?",
-        "Seulement si tout tes amis se trouvent a cote de moi, je vous ouvre"
+        "Seulement si tous tes amis se trouvent a cote de moi, je vous ouvre."
     ]
 }
