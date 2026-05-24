@@ -133,7 +133,10 @@ class CollisionHandler:
                 self.effect_send.append([player.id,delta_life,chunk])
 
                 if die :
-                    self.die_send.append([player.id,chunk,player.len_dead])
+                    if player.auto_destruction :
+                        player.time_destroy = 0 #Means destroy
+                    else :
+                        self.die_send.append([player.id,chunk,player.len_dead])
 
     
     def add_ent_touch(self,ent,projectile,chunk):
