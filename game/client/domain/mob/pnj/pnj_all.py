@@ -1,9 +1,7 @@
 from client.domain.mob.pnj.pnj import Pnj
 from shared.constants import world
 from client.config import display_text
-import json
-import math
-import pygame
+import json,math,pygame
 
 class Pnj_all :
 
@@ -13,7 +11,7 @@ class Pnj_all :
         self.color_compteur = 0
         self.cell_size = cell_size
         self.distance_max_blit = screenSize[1]
-        self.distance_max_trigger = world.NBR_CELL_CAN_SEE*cell_size
+        self.distance_max_trigger = world.DISTANC_MAX_TRIGGER
 
         self.text_entrer = display_text.FONT.render("Appuyer sur entrer",True, (255,255,255))  # True = anti-aliasing
         size = display_text.FONT.size("Appuyer sur entrer")

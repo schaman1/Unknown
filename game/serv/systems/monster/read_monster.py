@@ -39,7 +39,6 @@ class Read_monster :
         self.create_list_monster()
 
     def return_all_monster(self,lInfoClient) :
-
         list_modif = []
         for i in range(len(lInfoClient)):
             #list_modif.append({})
@@ -69,6 +68,7 @@ class Read_monster :
         chunk = self.create_monster(monster,dest)
         self.monster_to_create_send.append((chunk,monster.id,int(monster.pos_x),int(monster.pos_y),monster.name,self.direction[monster.side]))
 
+
     def create_list_monster(self) :
 
         for name in MONSTER_POSITION.keys() :
@@ -94,6 +94,9 @@ class Read_monster :
 
                 elif name == "Skeleton" :
                     class_monster = monster.Skeleton
+
+                elif name == "DwarfKing" :
+                    class_monster = monster.DwarfKing
 
                 if class_monster != None :
 

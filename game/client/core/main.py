@@ -446,4 +446,8 @@ class Main:
         self.musique.update_music_walktrough()
         self.musique.update_volume(0.3)
 
-
+    def start_end_game(self):
+        print("Start end game")
+        i=0
+        while True :
+            i+=1

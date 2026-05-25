@@ -22,7 +22,7 @@ LIMACE_TOO_CLOSE = -1 #So never
 FOULLI_ATTAQUE_RAD = 5
 
 # --- The Dwarf King (boss) ---
-DWARF_KING_HP = 250
+DWARF_KING_HP = 1#250
 DWARF_KING_DAMAGE = 40             #Dégâts de contact (le joueur meurt en quelques coups)
 DWARF_KING_RAD = 200               #Rayon de détection : toujours agressif
 DWARF_KING_ATK_RAD = 16            #Rayon d'attaque

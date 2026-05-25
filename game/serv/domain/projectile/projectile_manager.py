@@ -58,6 +58,8 @@ class ProjectileManager :
         l = len(lClient)
 
         projectiles_create = [[] for _ in range(l)]
+        event_player_create = []
+        friendly_monster_create = []
 
         for projectile in self.projectile_create :
 
@@ -83,6 +85,12 @@ class ProjectileManager :
 
                     lProjectiles = l_projectile[i].check_if_projectile_spawn_when_die()
                     self.add_projectile_when_die(lProjectiles,lClient,projectiles_create)
+                    for event in l_projectile[i].event_player_when_die:
+                        event_player_create.append((l_projectile[i].owner,event))
+                    for monster in l_projectile[i].monster_when_die :
+                        monster[2][0] = int(l_projectile[i].pos_x)
+                        monster[2][1] = int(l_projectile[i].pos_y)
+                        friendly_monster_create.append(monster)
                     
                     self.add_on_client_see_die(lClient,l_projectile[i],projectiles_die)
 
@@ -108,7 +116,7 @@ class ProjectileManager :
         for client in lClient.values() :
             infos_shot.append(client.return_next_allowed_shot())
                 
-        return [projectiles_create,projectiles_die,infos_shot]
+        return [projectiles_create,projectiles_die,infos_shot],event_player_create,friendly_monster_create
     
     def add_on_client_see_create(self,lClient,projectile,projectiles):
 
