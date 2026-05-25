@@ -272,6 +272,36 @@ class Animation:
                 self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
 
             self.add_tombe(cell_size)
+        
+        elif entity_name == "Mma" :
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.MMA_RUNNING) #LIMACE_IDLE
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size,invert = True)
+
+            self.animation["running"] = self.animation["idle"]
+            self.animation["loading"] = self.animation["idle"]
+
+            #size_img = 50*cell_size
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.MMA_JUMP) #LIMACE_IDLE
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["jump"],size,invert = True)
+            for i in range(4): #Have to seperate it !
+                self.animation["fall"]["right"].append(self.animation["jump"]["right"][1])
+                self.animation["fall"]["left"].append(self.animation["jump"]["left"][1])
+            for i in range(4): #Bcs want only
+                self.animation["jump"]["right"][i] = self.animation["jump"]["right"][3]
+                self.animation["jump"]["left"][i] = self.animation["jump"]["left"][3]
+
+            #size_img = 50*cell_size
+            for i in range(4):
+                self.animation["attacking"]["right"].append(self.animation["loading"]["right"][3])
+                self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
+
+            self.add_tombe(cell_size)
 
         elif entity_name == "Skeleton":
 
@@ -296,7 +326,7 @@ class Animation:
 
             self.add_tombe(cell_size)
 
-    def decoupe_img(self,img,dest,size):
+    def decoupe_img(self,img,dest,size,invert = False):
         for i in range(0,img.get_height(),size[1]):
             for j in range(0,img.get_width(),size[0]):
 
@@ -304,8 +334,13 @@ class Animation:
                 sub_img = img.subsurface(rect).copy()
                 #sub_img = p
                 sub_img_flip = pygame.transform.flip(sub_img,True,False)
-                dest["left"].append(sub_img)
-                dest["right"].append(sub_img_flip)
+
+                if not invert :
+                    dest["left"].append(sub_img)
+                    dest["right"].append(sub_img_flip)
+                else :
+                    dest["right"].append(sub_img)
+                    dest["left"].append(sub_img_flip)
 
     def update_state(self,new_state):
 

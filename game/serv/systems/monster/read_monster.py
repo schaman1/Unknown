@@ -95,7 +95,10 @@ class Read_monster :
 
                 elif name == "DwarfKing" :
                     class_monster = monster.DwarfKing
-
+                    
+                elif name =="Mma":
+                    class_monster = monster.Mma
+                    
                 if class_monster != None :
 
                     self.create_monster(class_monster(pos[0],pos[1]))

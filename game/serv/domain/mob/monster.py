@@ -698,6 +698,63 @@ class Escargot(Monster) :
         """Retourne True si le joueur est bien touché"""
         #self.state = "moving"
 
+class Mma(Monster) :
+
+    def __init__(self,x,y,id=0):
+
+        super().__init__(hp=5+20*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 8,height = 8)
+
+        self.knockback_res = 0.5
+
+        self.name = 9 #Permet d'afficher le bon monstre / Dans monster all côté client
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
+
+        if self.still_dead():
+            return
+        
+        #print(self.state)
+        
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            self.attack(self.target,collision_handler,dt,projectile_manager)
+
+        delta = self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+        self.state = "moving"
+    
+    def moving_behavior(self,target,map,dt):
+        """Se déplace vers le joueur"""
+
+        if self.side == "right":
+            
+            self.move_right(map,dt)
+
+        elif self.side == "left":
+
+            self.move_left(map,dt)
+    
+    def leave_behavior(self,target,map,dt):
+        """Se déplace vers le joueur"""
+
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        """Retourne True si le joueur est bien touché"""
+        #self.state = "moving"
+
 class Wall(Monster) :
 
     def __init__(self,x,y,id=0):
@@ -1058,7 +1115,6 @@ class Skeleton(Monster):
         if not self.target.auto_destruction :
             chunk = 99
         collision_handler.player_take_damage_no_projectile(damage,Player,chunk)
-
 
 class DwarfKing(Monster):
     """Boss : Le Roi Nain.

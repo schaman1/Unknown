@@ -304,4 +304,40 @@ class Limace(Monster) :
 
         self.animation.old_state = key[0]
 
+class Mma(Monster) :
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        super().__init__(x,y,cell_size,size=(10,10),name="Mma")
+
+        self.name = "Mma"
+        self.chunk = pos_chunk
+        self.state = state
+        self.frame_perso = []
+
+        #Inutile ----
+        self.frame = 0
+        #self.width ,self.height = self.Img.get_size() #Get la taille de l'img
+        self.frame_multiplier = 0
+        #------
+
+        self.animation.animation["idle"]["time"] = 0.5
+        self.animation.animation["attacking"]["time"] = 1
+        self.animation.animation["running"]["time"] = 0.2
+        self.animation.animation["loading"]["time"] = 1/4
+
+    def change_state(self,new_state,side):
+        """Base pour mettre anim"""
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0] != self.animation.old_state :
+            self.animation.set_state(key[0])
+
+        self.animation.old_state = key[0]
+
 
