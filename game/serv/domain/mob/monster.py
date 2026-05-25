@@ -1004,12 +1004,11 @@ class Skeleton(Monster):
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
-        target, _ = self.distance_to_nearest_player(lPlayer, map)
 
-        if target is None:
+        if self.target is None:
             return
 
-        dx = target.pos_x - self.pos_x
+        dx = self.target.pos_x - self.pos_x
         if abs(dx) < self.base_movement // 10:
             intended_vx = 0
         else:
