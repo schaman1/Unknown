@@ -1,4 +1,4 @@
-import pygame, time
+import pygame, time, json
 
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
@@ -11,7 +11,7 @@ from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
 from client.domain.intro.intro_story import Intro_story
 from client.ui.add_fading import Fading
-
+from client.ui.text import AnimatedText
 from client.config import assets
 from shared.constants import world
 
@@ -26,6 +26,14 @@ class Game :
         size = self.end_img.get_size()
         scale = (screenSize[0])*size[1]//size[0]
         self.end_img = pygame.transform.scale(self.end_img,(screenSize[0],scale))
+        self.last_time_add_text_end = time.perf_counter()
+        self.nbr_text_end = 0
+        self.end_text = []
+        with open("client/ui/json/text.json") as f:
+
+            dialogues = json.load(f)
+            f.close()
+        self.text_to_blit_end = dialogues["End"]
 
         self.cell_size = cell_size
         self.screen_size = screenSize
@@ -110,17 +118,36 @@ class Game :
     
         return False #True If end animation else return False
     
-    def draw_end(self,screen):
+    def draw_end(self,screen,dt):
 
-        self.fading_layer.fill((0,0,0,self.alpha_fading))
-        screen.blit(self.fading_layer,(0,0))
+        if self.alpha_fading != 255 :
 
-        self.end_img.set_alpha(self.alpha_fading)
+            self.fading_layer.fill((0,0,0,self.alpha_fading))
+            screen.blit(self.fading_layer,(0,0))
 
-        screen.blit(self.end_img,(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+            self.end_img.set_alpha(self.alpha_fading)
 
-        delta_time = max(self.end_alpha_fading - time.perf_counter(),0)
-        self.alpha_fading = int(255*(1-(delta_time)/self.end_alpha_len))
+            screen.blit(self.end_img,(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+
+            delta_time = max(self.end_alpha_fading - time.perf_counter(),0)
+            self.alpha_fading = int(255*(1-(delta_time)/self.end_alpha_len))
+
+        else :
+            screen.blit(self.end_img,(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+
+            if self.last_time_add_text_end < time.perf_counter() and self.nbr_text_end < 11:
+                self.last_time_add_text_end += 1
+                text = AnimatedText(self.text_to_blit_end,self.cell_size,text_id = self.nbr_text_end)
+                text.padding_y = self.screen_size[1]
+                text.padding_x = self.cell_size*10
+                text.lenght_text_blit = text.lenght_current_text
+                self.end_text.append(text)
+                self.nbr_text_end +=1
+
+            for text in self.end_text :
+
+                text.draw_text(screen,dt)
+                text.padding_y-=dt*(self.screen_size[1]//10)
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -204,7 +231,7 @@ class Game :
         in_interaction = self.intro_story.draw_intro(screen)
 
         if self.end:
-            self.draw_end(screen)
+            self.draw_end(screen,dt)
 
         return in_interaction
 
@@ -366,3 +393,4 @@ class Game :
         self.end = True
         self.end_alpha_fading = time.perf_counter()+self.end_alpha_len
         self.alpha_fading = 0
+        self.last_time_add_text_end = time.perf_counter()+self.end_alpha_len
