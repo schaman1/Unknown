@@ -192,6 +192,7 @@ class Server_game(Server) :
         data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,pos_x,pos_y,chunk,ele.price]]
 
         self.send_data_all(data)
+        return ele
 
     def convert_to_chunk(self,pos_x,pos_y):
 
@@ -274,7 +275,8 @@ class Server_game(Server) :
 
         pos = self.lClient[sender].return_pos()
 
-        self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))
+        ele = self.add_object(("SPELL",spell_id_type,pos[0],pos[1],0))
+        ele.for_everyone = False
 
     def distance(self,posa,posb):
 
