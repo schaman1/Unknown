@@ -82,7 +82,7 @@ class objects_manager:
 
         element.blit(screen,x,y,dt)
     
-    def blit_all_objects(self,screen,x,y,pos_player,dt):
+    def blit_all_objects(self,screen,x,y,pos_player,dist_max,dt):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.chunk_objects :
@@ -90,11 +90,13 @@ class objects_manager:
 
                 dist = self.distance(pos_player,self.chunk_objects[pos][id_objects])
 
-                self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y,dt)
+                if dist < dist_max:
 
-                if self.chunk_objects[pos][id_objects].can_trigger and dist<self.distance_max_trigger:
+                    self.blit_object(self.chunk_objects[pos][id_objects],screen,x,y,dt)
 
-                    self.blit_interact_info(screen,self.chunk_objects[pos][id_objects],x,y)
+                    if self.chunk_objects[pos][id_objects].can_trigger and dist<self.distance_max_trigger:
+
+                        self.blit_interact_info(screen,self.chunk_objects[pos][id_objects],x,y)
 
     def blit_interact_info(self,screen,element,x,y):
         

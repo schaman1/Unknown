@@ -1,5 +1,6 @@
 from shared.constants import world
 from client.domain.mob.monster import monster
+import math
 
 class Monster_all :
 
@@ -61,12 +62,15 @@ class Monster_all :
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
         monster.blit(screen,x,y,dt)
     
-    def blit_all_monsters(self,screen,x,y,dt):
+    def blit_all_monsters(self,screen,x,y,pos_player,max_blit,dt):
         """Blit tout les monstres sur le canva des monstres"""
 
         for pos in self.dic_monster :
-            for id_monster in self.dic_monster[pos] :
-                self.blit_monster(self.dic_monster[pos][id_monster],screen,x,y,dt)
+            for monster in self.dic_monster[pos].values() :
+
+                if self.distance(pos_player,monster) < max_blit:
+
+                    self.blit_monster(monster,screen,x,y,dt)
 
     def destroy_monster(self,l):
 
@@ -74,3 +78,8 @@ class Monster_all :
             chunk,id = monster
   
             del self.dic_monster[chunk][id]
+
+    def distance(self,pos_player,element):
+
+        dist = (pos_player[0]-element.pos_x)**2 + (pos_player[1]-element.pos_y)**2
+        return math.sqrt(dist)

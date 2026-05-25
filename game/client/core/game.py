@@ -41,6 +41,7 @@ class Game :
         
         #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         self.canva = Map(screenSize,cell_size)
+        self.len_can_blit = self.screen_size[0]//2
         
         self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
         self.grey_layer.fill((10,10,10,150))
@@ -158,19 +159,18 @@ class Game :
                 
             self.monsters.dic_monster[chunk][id].change_state(state,side)
 
-
     def shot(self,id_key):
         if not self.blit_info:
             self.player_command.append(self.player_all.me.shot(id_key))
 
-    def blit_monsters(self,screen,x,y,dt):
-        self.monsters.blit_all_monsters(screen,x,y,dt)
+    def blit_monsters(self,screen,x,y,pos_player,max_blit,dt):
+        self.monsters.blit_all_monsters(screen,x,y,pos_player,max_blit,dt)
 
-    def blit_players(self,screen,x,y,dt):
-        self.player_all.blit_players(screen,x,y,dt)
+    def blit_players(self,screen,x,y,pos_player,max_blit,dt):
+        self.player_all.blit_players(screen,x,y,pos_player,max_blit,dt)
 
-    def blit_pnj(self,screen,x,y,dt):
-        self.pnj_all.blit_pnj(screen,x,y,dt,self.player_all.return_pos())
+    def blit_pnj(self,screen,x,y,pos_player,max_blit,dt):
+        self.pnj_all.blit_pnj(screen,x,y,dt,pos_player,max_blit)
 
     def blit_projectiles_explosions(self,screen,x,y,dt):
 
@@ -198,29 +198,32 @@ class Game :
     def draw(self,screen,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y + return weither is in interaction or not"""
 
+        if 1/dt < 100 :
+            print("Fps : ",1/dt)
+
         x,y = self.camera.return_camera_pos(self.player_all.me)
+        pos_player = self.player_all.return_pos()
 
         #screen.blit((0,0,0))
         #screen.fill((0,0,0))
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
 
-        self.objects_manager.blit_all_objects(screen,x,y,self.player_all.return_pos(),dt)
-        self.blit_pnj(screen,x,y,dt)
-        self.blit_monsters(screen,x,y,dt)
-        self.blit_players(screen,x,y,dt)
+        self.objects_manager.blit_all_objects(screen,x,y,pos_player,self.len_can_blit,dt)
+        self.blit_pnj(screen,x,y,pos_player,self.len_can_blit,dt)
+        self.blit_monsters(screen,x,y,pos_player,self.len_can_blit,dt)
+        self.blit_players(screen,x,y,pos_player,self.len_can_blit,dt)
 
         self.blit_projectiles_explosions(screen,x,y,dt)
         self.floating_values.draw_floating_values(screen,x,y,dt)
 
-        self.player_all.draw_light(screen,self.projectiles.projectiles_lumiere,x,y)
+        self.player_all.draw_light(screen,self.projectiles.projectiles_lumiere,x,y,pos_player,self.len_can_blit)
 
-        self.floating_values.draw_floating_values_fix(screen,x,y,dt)
+        self.floating_values.draw_floating_values_fix(screen,x,y,pos_player,self.len_can_blit,dt)
 
         self.blit_utils(screen,self.screen_size)
 
-        pos = self.player_all.return_pos()
-        pos = (self.convert_from_base(pos[0]),self.convert_from_base(pos[1]))
+        pos = (self.convert_from_base(pos_player[0]),self.convert_from_base(pos_player[1]))
 
         self.pnj_all.blit_dialogue(screen,dt)
         self.mini_map.draw_map(screen,pos)
