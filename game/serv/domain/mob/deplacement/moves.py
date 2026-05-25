@@ -57,6 +57,8 @@ class Movable:
 
     def collision_y(self,map,dt,vy):
 
+        pos_before = self.pos_y
+
         if self.is_climbing and self.vitesse_y > 0:
 
             type = map.dur_and_can_climb
@@ -103,9 +105,11 @@ class Movable:
     #    while self.touch_type(-(self.half_height+self.base_movement),0,map,map.cannot_be_inside) :
     #        self.pos_y-=self.base_movement
 
-        #return self.pos_y - pos_before
+        return self.pos_y - pos_before
 
     def collision_x(self,map,dt,vx):
+
+        pos_before = self.pos_x
 
         type = map.dur
 
@@ -138,7 +142,7 @@ class Movable:
 
             remaining -= self.base_movement
 
-        #return self.pos_x-pos_before
+        return self.pos_x - pos_before
 
     def touch_type(self,i,j,map,type):
         #print(self.pos_y,i,self.half_height,self.pos_x,j)
