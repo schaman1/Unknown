@@ -156,12 +156,14 @@ class Server_game(Server) :
 
     def handle_shot(self,id_weapon,sender):
 
-        projectiles,monsters = self.lClient[sender].shot(id_weapon)
+        infos = self.lClient[sender].shot(id_weapon)
 
-        if projectiles == None :
+        if infos == None :
             return
         
         else :
+
+            projectiles,monsters = infos
 
             self.lClient[sender].update_next_allowed_shot(id_weapon)
             #print("Next allowed shot = ",next_allowed_shot)
