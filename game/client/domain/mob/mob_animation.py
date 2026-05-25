@@ -19,6 +19,12 @@ class Animation:
                                         "left":[],
                                         "time":0
                                         },
+                            "fall":{"right":[],
+                                     "left":[],
+                                     "time":0.2},
+                            "jump":{"right":[],
+                                     "left":[],
+                                     "time":0.2},
                             "death":{"right":[],
                                      "left":[],
                                      "time":0},
@@ -93,6 +99,16 @@ class Animation:
             img_death = pygame.image.load(assets.PLAYER_DEATH)
             img_death = pygame.transform.scale(img_death,(self.width*2,self.height*2))
             self.decoupe_img(img_death,self.animation["in_death"],size)
+
+            img_death = pygame.image.load(assets.PLAYER_JUMP)
+            img_death = pygame.transform.scale(img_death,(self.width*2,self.height*2))
+            self.decoupe_img(img_death,self.animation["jump"],size)
+            for i in range(4): #Have to seperate it !
+                self.animation["fall"]["right"].append(self.animation["jump"]["right"][3])
+                self.animation["fall"]["left"].append(self.animation["jump"]["left"][3])
+            for i in range(4): #Bcs want only
+                self.animation["jump"]["right"][i] = self.animation["jump"]["right"][1]
+                self.animation["jump"]["left"][i] = self.animation["jump"]["left"][1]
 
             l = len(self.animation["in_death"]["right"])
 
