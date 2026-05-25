@@ -198,8 +198,8 @@ class Game :
     def draw(self,screen,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y + return weither is in interaction or not"""
 
-        if 1/dt < 100 :
-            print("Fps : ",1/dt)
+        #if 1/dt < 100 :
+        #    print("Fps : ",1/dt)
 
         x,y = self.camera.return_camera_pos(self.player_all.me)
         pos_player = self.player_all.return_pos()

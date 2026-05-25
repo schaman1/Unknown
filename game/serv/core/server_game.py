@@ -168,9 +168,11 @@ class Server_game(Server) :
             self.lClient[sender].update_next_allowed_shot(id_weapon)
             #print("Next allowed shot = ",next_allowed_shot)
 
+            #if projectiles != None:
             for projectile in projectiles :
                 self.projectile_manager.add_projectile_create(projectile)
 
+            #if monsters != None :
             self.map_monster.spawn_monsters_from_l(monsters)
 
     def add_object(self,object_info):
