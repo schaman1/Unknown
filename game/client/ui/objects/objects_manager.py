@@ -10,7 +10,7 @@ class objects_manager:
 
         self.cell_size = cell_size
 
-        self.distance_max_trigger = world.NBR_CELL_CAN_SEE*cell_size
+        self.distance_max_trigger = world.NBR_CELL_CAN_SEE*3//4
 
         self.interact_img = display_text.FONT_SMALL.render("E : interragir",True, (180,180,180))  # True = anti-aliasing
 

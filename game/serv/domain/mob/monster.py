@@ -165,6 +165,8 @@ class Monster(Mob):
                 self.state = "run away"
 
         elif self.state == "moving":
+            if self.dist <= self.run_away_rad :
+                self.state = "run away"
             if self.dist <= self.attack_radius:
                 self.state = "attacking"
             elif self.dist > self.radius * 1.2:
@@ -364,13 +366,12 @@ class Laseroide(Monster) :
         elif delta[0]!=0:
             self.last_time_jump = time.perf_counter()
 
-
     def idle_behavior(self,map,dt):
         """Reste sur place"""
         if self.focus :
             if self.time_relax + self.begin_relax <= time.perf_counter():
                 self.focus = False
-                self.state = "run away"
+                self.state = "moving"
                 self.last_time_jump = time.perf_counter()#Prevent jump
 
         return

@@ -388,17 +388,17 @@ class Client:
 
             id_weapon = data[1]
             name = {0:"Sac",1:"J",2:"K",3:"L"}
-            self.main.state.add_alert(f"Reduction du temps de l'arme : {name[id_weapon]}") #Maybe change to put J/K/L
+            self.main.state.add_alert(f"Reduction du temps de l'arme : {name[id_weapon]}",color = (0,255,0)) #Maybe change to put J/K/L
             self.main.state.game.player_all.me.reduce_time(id_weapon)
 
         elif id==24:
 
             id_weapon = data[1]
             name = {0:"Sac",1:"J",2:"K",3:"L"}
-            self.main.state.add_alert(f"Votre arme {name[id_weapon]} a plus de place !")
+            self.main.state.add_alert(f"Votre arme {name[id_weapon]} a plus de place !",color = (0,255,0))
 
         elif id == 25:
-            self.main.state.add_alert("Vous avez gagne 50PV.")
+            self.main.state.add_alert("Vous avez gagne 50PV.",color = (0,255,0))
 
         elif id==26:
 
