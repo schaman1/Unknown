@@ -228,7 +228,10 @@ class Server_game(Server) :
                 id_weapon = 0
                 pos_spell = self.lClient[sender].weapons.add_spell(element.id_cat,id_weapon)
 
-                self.send_data([16,chunk,id],sender) #Destroy
+                if element.for_everyone :
+                    self.send_data([16,chunk,id],sender) #Destroy
+                else :
+                    self.send_data_all([16,chunk,id]) #Destroy
 
                 self.send_data([17,id_weapon,element.id_cat,pos_spell],sender)
 

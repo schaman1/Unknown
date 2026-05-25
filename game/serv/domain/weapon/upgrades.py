@@ -624,5 +624,5 @@ UPGRADES[47] = CreateFire_B()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,42]
-rare_upgrades = [4,5,6,14,21,33,41,44,45,47]
-legendary_upgrades = [9,15,22,31,32,43,46]
+rare_upgrades = [4,5,6,14,21,41,44,45,47]
+legendary_upgrades = [9,15,22,31,32,33,43,46]
