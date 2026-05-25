@@ -18,7 +18,7 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
     if not weapon.test_if_last_spell_of_weapon() :
     
         infos,_ = weapon.create_projectile(weapon.angle,weapon.pos,idx = weapon.idx)
-        next_projectiles,_,_ = infos
+        next_projectiles,event_player,friendly_monster = infos
 
     else :
         next_projectiles = []
@@ -27,6 +27,10 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
     for i in range(len(projectiles)):
 
         if i == 0: #Don't copy the first One
+            for event in event_player :
+                projectiles[0].event_player_when_die.append(event)
+            for monster in friendly_monster :
+                projectiles[0].monster_when_die.append(monster)
             for proj in next_projectiles :
                 projectiles[i].projectile_spawn_when_die.append(proj)
 
