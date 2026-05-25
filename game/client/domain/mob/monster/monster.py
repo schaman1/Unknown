@@ -11,10 +11,12 @@ class Monster(Mob):
 
         super().__init__(x,y,cell_size,size=size,name=name)
 
-    def blit(self,screen,x,y,dt):
+    def blit(self,screen,x,y,dt,has_to_draw):
 
         self.update_interpolate_pos()
-        self.animation.draw(dt,self.calculate_pos_blit(x,y),screen)
+        
+        if has_to_draw :
+            self.animation.draw(dt,self.calculate_pos_blit(x,y),screen)
 
         return
     
