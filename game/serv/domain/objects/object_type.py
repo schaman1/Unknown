@@ -18,6 +18,7 @@ class spell_on_ground(interactable_object):
         super().__init__(id_categorie,pos_x,pos_y,price)
 
         self.trigger_value = "AddToInventaire"
+        self.for_everyone = True
 
 class healer_respawn(interactable_object):
 
