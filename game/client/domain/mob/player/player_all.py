@@ -14,7 +14,7 @@ class Player_all :
         self.me = None
         self.screen_size = screenSize
         self.light = pygame.Surface((screenSize[0],screenSize[1]), pygame.SRCALPHA)
-        self.vision = world.NBR_CELL_CAN_SEE//1.2
+        self.vision = world.NBR_CELL_CAN_SEE*cell_size
         self.can_see_others = world.START_SEE
 
         # Dans __init__ ou à la création de la lanterne :
