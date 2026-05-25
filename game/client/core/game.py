@@ -338,9 +338,10 @@ class Game :
             if chunk==99: #Magic number je sais mais nsm
                 ent = self.player_all.dic_players[id]
             else :
-                ent = self.monsters.dic_monster[chunk][id]
+                ent = self.monsters.dic_monster[chunk].get(id)
+                if ent is not None:
 
-            self.add_popup(ent,delta_life)
+                    self.add_popup(ent,delta_life)
 
     def interact(self):
         """Look around player if can interact with an object + interact with the closest one """
