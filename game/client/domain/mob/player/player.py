@@ -14,6 +14,7 @@ class Player_you(Mob) :
         self.money = money
         self.pseudo = pseudo
         self.is_you = is_you
+        self.old_state = "idle"
 
         self.font = FONT
         self.text_pseudo_color = (250,250,250)
@@ -150,14 +151,17 @@ class Player_you(Mob) :
 
         if self.key_active["left"] and not self.key_active["right"] :
             self.animation.direction="left"
+            self.old_state = "running"
             self.animation.update_state("running")
 
         elif self.key_active["right"] and not self.key_active["left"]:
             self.animation.direction="right"
+            self.old_state = "running"
             self.animation.update_state("running")
 
         elif not self.key_active["right"] and not self.key_active["left"]:
             self.animation.update_state("idle")
+            self.old_state = "idle"
 
     def update_direction_look(self,new_direction):
         
@@ -187,6 +191,21 @@ class Player_you(Mob) :
     def move(self,delta):
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
+
+        if new_pos[1]-self.pos_y>0:
+            if self.old_state != "fall" :
+                self.old_state = "fall"
+                self.animation.set_state("fall")
+
+        elif new_pos[1]-self.pos_y<0 :
+            if self.old_state != "jump" :
+                self.old_state = "jump"
+                self.animation.set_state("jump")
+        
+        else :
+            if self.old_state != "idle" and self.old_state!="running":
+                self.old_state = "idle"
+                self.animation.set_state("idle")
 
     def kill(self,duree):
 
@@ -260,7 +279,21 @@ class Player_not_you(Mob) :
                 self.old_state = "running"
                 self.animation.set_state("running")
                 self.remaining_time_anim = self.len_anim["running"]
+        
+        if new_pos[1]-self.pos_y>0:
+            if self.old_state != "fall" :
+                self.old_state = "fall"
+                self.animation.set_state("fall")
 
+        elif new_pos[1]-self.pos_y<0 :
+            if self.old_state != "jump" :
+                self.old_state = "jump"
+                self.animation.set_state("jump")
+
+        elif self.old_state != "idle" and self.old_state!="running":
+            self.animation.set_state("idle")
+            self.old_state = "idle"
+ 
         self.move_mob(new_pos)
 
     def kill(self,duree):
