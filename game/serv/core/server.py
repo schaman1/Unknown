@@ -1,7 +1,6 @@
 import socket, threading, sys
 from serv.core.network_handler import Network_handler
 from serv.systems.map.read_map import Read_map
-from serv.systems.monster.read_monster import Read_monster
 from serv.domain.projectile.projectile_manager import ProjectileManager
 from serv.domain.objects.objects_manager import objects_manager
 from serv.core.Collision_handler import CollisionHandler
@@ -18,7 +17,6 @@ class Server:
         
         self.network_handler = Network_handler(self)
         self.map_cell = Read_map()
-        self.map_monster = Read_monster(self.map_cell.width_chunk,self.map_cell.height_chunk,world.RATIO)
         self.projectile_manager = ProjectileManager(self.map_cell.width_chunk,self.map_cell.height_chunk)
         self.collision_handler = CollisionHandler()
         self.objects_manager = objects_manager()

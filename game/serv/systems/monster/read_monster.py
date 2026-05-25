@@ -23,8 +23,6 @@ class Read_monster :
 
         self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
 
-        self.init_dic_monster()
-
     def generate_id(self):
         self.id = (self.id+1)%255
         return self.id

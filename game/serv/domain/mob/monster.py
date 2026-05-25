@@ -2,6 +2,7 @@ from serv.domain.mob.mob import Mob
 from serv.config import monster_info
 from serv.domain.weapon import weapon1
 from serv.domain.mob.team import Team
+from shared.constants.world import NBR_OF_PLAYER
 import math,time
 
 class Monster(Mob):
@@ -536,6 +537,8 @@ class Defendeur(Monster) :
         self.time_to_relax = 1.5
         self.hit_box_damage_width = 5
         self.resist = True
+
+        print("Nbr of player :",NBR_OF_PLAYER)
 
         #self.collision_damage = False
 
