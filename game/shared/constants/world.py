@@ -16,6 +16,8 @@ LEN_DEATH = 10
 LEN_DEATH_PLAYER = 5
 START_SEE = False
 
+NBR_OF_PLAYER = 0
+
 NBR_CELL_CAN_SEE = 20 #Normally, 20 !
 DISTANC_MAX_TRIGGER = 100
 PADDING_CANVA = 2  #Combien de cellule en plus on charge autour de l'ecran du client
