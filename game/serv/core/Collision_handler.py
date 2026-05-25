@@ -56,10 +56,12 @@ class CollisionHandler:
 
                         for mob in mobs[in_chunk] :
 
-                            touch = self.collision(projectile,mob)
+                            if not mob.dead :
 
-                            if touch :
-                                self.handle_touch(projectile,mob,in_chunk)
+                                touch = self.collision(projectile,mob)
+
+                                if touch :
+                                    self.handle_touch(projectile,mob,in_chunk)
 
         self.trigger_ent_touch()
 

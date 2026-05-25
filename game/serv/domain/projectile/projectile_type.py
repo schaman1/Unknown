@@ -1,5 +1,6 @@
 from serv.domain.projectile.default_projectile import Projectile
 from serv.config import weapons
+import random
 
 class Fire(Projectile) :
 
@@ -159,3 +160,25 @@ class Lanterne(Projectile) :
                          rebond = True,
                          owner_pos=owner,)
         self.can_damage = False
+        
+class Fluff(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.LANTERNE_LIFE
+        delta_angle = random.randint(-weapons.FLUFF_RANDOM_ANGLE,weapons.FLUFF_RANDOM_ANGLE)
+
+        super().__init__(pos,self.life_time,(angle+delta_angle)%360,
+                         id_img = 45,
+                         speed = weapons.FLUFF_V,
+                         width = weapons.FLUFF_WIDTH,
+                         height = weapons.FLUFF_HEIGHT,
+                         damage = weapons.FLUFF_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         weight = weapons.FLUFF_WEIGHT,
+                         rebond = True,
+                         owner_pos=owner,)
+        
+        self.delta_angle = delta_angle%360
+        
