@@ -6,7 +6,7 @@
         "life":1,
         "speed":50,
         "rebond":0,
-        "time_reload": 1.5,
+        "time_reload": 0.4,
         "degat":4
     },
     "SPELL3":{
@@ -16,60 +16,60 @@
         "life":0.1,
         "speed":0,
         "rebond":0,
-        "time_reload": 0.2,
-        "degat":7
+        "time_reload": 0.1,
+        "degat":6
     },
     "SPELL4":{
         "type":"projectile",
         "name":"Pompe",
         "description":["Tir 3 puissants",
                         "projectiles."],
-        "life":0.3,
-        "speed":100,
+        "life":0.2,
+        "speed":70,
         "rebond":0,
-        "time_reload": 0.5,
-        "degat":3
+        "time_reload": 0.3,
+        "degat":2
     },
     "SPELL5":{
         "type":"projectile",
         "name":"Laser",
         "description":["Nothing"],
-        "life":0.3,
-        "speed":100,
+        "life":2,
+        "speed":50,
         "rebond":0,
-        "time_reload": 0.5,
-        "degat":3
+        "time_reload": -0.1,
+        "degat":1
     },
     "SPELL6":{
         "type":"projectile",
         "name":"Bouclier",
         "description":["Attaque de",
                         "tout part"],
-        "life":0.3,
-        "speed":100,
+        "life":0.1,
+        "speed":0,
         "rebond":0,
-        "time_reload": 0.5,
-        "degat":3
+        "time_reload": 0.15,
+        "degat":1
     },
     "SPELL7":{
         "type":"projectile",
         "name":"Caillou",
         "description":["Lance un enorme caillou"],
-        "life":0.3,
-        "speed":100,
+        "life":2,
+        "speed":80,
         "rebond":0,
-        "time_reload": 0.5,
-        "degat":3
+        "time_reload": 0.25,
+        "degat":2
     },
     "SPELL8":{
         "type":"projectile",
         "name":"Lance",
         "description":["Nothing"],
-        "life":0.3,
-        "speed":100,
+        "life":0.1,
+        "speed":0,
         "rebond":0,
-        "time_reload": 0.5,
-        "degat":3
+        "time_reload": 0.1,
+        "degat":6
     },
     "SPELL9":{
         "type":"projectile",
@@ -78,7 +78,7 @@
         "life":2,
         "speed":5,
         "rebond":0,
-        "time_reload": 2.5,
+        "time_reload": 1,
         "degat":50
     },
     "SPELL10":{
@@ -116,7 +116,7 @@
     },
     "SPELL14":{
         "type":"augment",
-        "name":"Degat plus",
+        "name":"Degat plus +",
         "description":["Ajoute 5 degats",
                         "mais les projectiles peuvent",
                         "vous blesser."],
@@ -168,11 +168,11 @@
         "name":"BDF + effet",
         "description":["Invoque le PROJECTILE",
                     "suivant a sa disparition."],
-        "life":2,
+        "life":1,
         "speed":50,
         "rebond":0,
-        "time_reload": 1.5,
-        "degat":5
+        "time_reload": 0.6,
+        "degat":4
     },
     "SPELL31":{
         "type":"augment",
@@ -187,11 +187,11 @@
         "name":"Pompe + effet",
         "description":["Invoque le PROJECTILE",
                     "suivant a sa disparition."],
-        "life":2,
-        "speed":50,
+        "life":0.2,
+        "speed":70,
         "rebond":0,
-        "time_reload": 1.5,
-        "degat":5
+        "time_reload": 1,
+        "degat":2
     },
     "SPELL33":{
         "type":"projectile",
@@ -225,7 +225,7 @@
         "description":["Il vous permettra de bloquer",
                         "et distraire les monstres."],
         "time_reload": 5,
-        "life":5,
+        "life":15,
         "speed":0,
         "degat":0
     },
@@ -235,7 +235,7 @@
         "description":["Il vous permettra de bloquer",
                         "et distraire les monstres."],
         "time_reload":10,
-        "life":5,
+        "life":50,
         "speed":0,
         "degat":0
     },
@@ -245,7 +245,7 @@
         "description":["Elle vous permet de voir au loin."],
         "time_reload":5,
         "life":1.5,
-        "speed":0,
+        "speed":30,
         "degat":0
     },
     "UNKNOWN_SPELL":{
