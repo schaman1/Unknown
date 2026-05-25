@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+from utils.resource_path import resource_path
 
 pygame.mixer.init()
 
@@ -33,7 +34,7 @@ class Musique :
 
 
     def load_music(self, name):
-        self.music = pygame.mixer.music.load(name)
+        self.music = pygame.mixer.music.load(resource_path(name))
         self.play_music()
 
     def play_music(self): #volume entre 0 et 1
