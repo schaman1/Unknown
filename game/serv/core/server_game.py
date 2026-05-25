@@ -31,6 +31,8 @@ class Server_game(Server) :
         while self.is_running_game :
             dt = min(self.fpsClock.tick(self.fps)/1000,0.05)
 
+            print("Fps serv : ",1/dt)
+
             should_send = False
             if self.next_send_time <= time.perf_counter():
 
@@ -162,7 +164,6 @@ class Server_game(Server) :
             return
         
         else :
-
             projectiles,monsters = infos
 
             self.lClient[sender].update_next_allowed_shot(id_weapon)
