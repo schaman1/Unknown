@@ -58,9 +58,9 @@ class Monster_all :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 
 
-    def blit_monster(self,monster,screen,x,y,dt):
+    def blit_monster(self,monster,screen,x,y,dt,has_to_draw):
         """Blit le monstre avec l'id id_monster sur le canva des monstres"""
-        monster.blit(screen,x,y,dt)
+        monster.blit(screen,x,y,dt,has_to_draw)
     
     def blit_all_monsters(self,screen,x,y,pos_player,max_blit,dt):
         """Blit tout les monstres sur le canva des monstres"""
@@ -68,9 +68,11 @@ class Monster_all :
         for pos in self.dic_monster :
             for monster in self.dic_monster[pos].values() :
 
+                has_to_draw = False
                 if self.distance(pos_player,monster) < max_blit:
+                    has_to_draw = True
 
-                    self.blit_monster(monster,screen,x,y,dt)
+                self.blit_monster(monster,screen,x,y,dt,has_to_draw)
 
     def destroy_monster(self,l):
 

@@ -81,9 +81,11 @@ class Player_all :
         surface = pygame.Surface((size, size), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 0))  # transparent par défaut
 
-        for i in range(radius, 0, -20):
+        core = int(radius * 0.6)  #  zone toujours bien éclairée
+
+        for i in range(radius, core, -8):
             # Centre = alpha 0 (transparent = lumière), bord = alpha 255 (noir = obscurité)
-            alpha = int(255 * (1 - i / radius))
+            alpha = int(255 * (1 - (i-core) / (radius-core)))
             pygame.draw.circle(surface, (0, 0, 0, alpha), (radius, radius), i)
 
         return surface
@@ -126,11 +128,13 @@ class Player_all :
 
             if not player.is_you :
 
+                has_to_draw = False
                 if self.distance(pos_player,player) < max_blit :
+                    has_to_draw = True
 
-                    player.draw(screen_global,dt,xscreen,yscreen)
+                player.draw(screen_global,dt,xscreen,yscreen,has_to_draw)
 
-        self.me.draw(screen_global,dt,xscreen,yscreen)
+        self.me.draw(screen_global,dt,xscreen,yscreen,True)
 
     def draw_light(self,screen_global,projectiles_lumiere,x,y,pos_player,max_blit):
 
