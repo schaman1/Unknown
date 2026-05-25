@@ -11,7 +11,6 @@ class Pnj_all :
         self.id_compteur = 0
         self.color_compteur = 0
         self.cell_size = cell_size
-        self.distance_max_blit = screenSize[1]
         self.distance_max_trigger = world.DISTANC_MAX_TRIGGER
 
         self.text_entrer = display_text.FONT.render("Appuyer sur entrer",True, (255,255,255))  # True = anti-aliasing
@@ -62,13 +61,13 @@ class Pnj_all :
         self.id_compteur+=1
         self.color_compteur = (self.color_compteur+1)%4
 
-    def blit_pnj(self,screen,x,y,dt,pos_player):
+    def blit_pnj(self,screen,x,y,dt,pos_player,max_blit):
         
         for pnj in self.container_pnj :
 
             dist = self.distance(pos_player,pnj)
 
-            if dist<self.distance_max_blit :
+            if dist<max_blit :
 
                 if pnj.pos_x < pos_player[0]:
                     pnj.animation.direction = "right"

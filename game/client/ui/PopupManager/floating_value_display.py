@@ -71,13 +71,20 @@ class FloatingValueDisplay:
             if destroy :
                 self.lFloatingValue.pop(i)
 
-    def draw_floating_values_fix(self,screen,x,y,dt):
+    def draw_floating_values_fix(self,screen,x,y,pos_player,max_blit,dt):
         for i in range(len(self.lFloatingValueFix)-1,-1,-1) :
 
-            destroy = self.lFloatingValueFix[i].draw(screen,x,y,dt)
+            if self.distance(pos_player,self.lFloatingValueFix[i]) < max_blit :
 
-            if destroy :
-                self.lFloatingValueFix.pop(i)
+                destroy = self.lFloatingValueFix[i].draw(screen,x,y,dt)
+
+                if destroy :
+                    self.lFloatingValueFix.pop(i)
+    
+    def distance(self,pos_player,pnj):
+
+        dist = (pos_player[0]-pnj.pos[0])**2 + (pos_player[1]-pnj.pos[1])**2
+        return math.sqrt(dist)
 
 class FloatingValue:
 

@@ -57,7 +57,6 @@ class Main:
 
             self.dt = self.fpsClock.tick(self.fps) / 1000 #à utiliser plus tard pour faire que si la personne tourne à moins de fps ou plus = va plus ou moins vite
 
-                
             if not pygame.mixer.music.get_busy():
 
                 if self.state.mod == "game" :
