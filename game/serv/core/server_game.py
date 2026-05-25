@@ -39,7 +39,7 @@ class Server_game(Server) :
                     self.next_send_time += self.send_interval
 
             return_monster,monster_change_chunk,monster_destroy = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
-            result_projectile = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
+            result_projectile,event_player,friendly_monster = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.map_monster.friendly_monsters,self.lClient,self.projectile_manager.dic_projectiles)
             if len(self.collision_handler.effect_send)!=0:
@@ -48,6 +48,9 @@ class Server_game(Server) :
             if len(self.collision_handler.die_send)!=0:
                 self.send_data_all([18,self.collision_handler.die_send])
                 self.collision_handler.die_send.clear()
+            if len(event_player)!=0:
+                self.add_event_player(event_player)
+            self.map_monster.spawn_monsters_from_l(friendly_monster)
 
             #Monstres invoqués en cours de partie (ex: par le boss) : on les crée côté client (msg 5)
             if len(self.map_monster.monster_to_create_send)!=0 :
@@ -233,7 +236,7 @@ class Server_game(Server) :
                 info_weapon = self.lClient[sender].upgrade_size_weapon(element.id_cat)
                 self.send_data([16,chunk,id],sender) #Destroy
                 self.send_data([10,info_weapon],sender)
-                self.send_data([24,info_weapon[1]],sender)
+                self.send_data([24,info_weapon[0]],sender)
 
             elif action=="UpgradeLife":
 
@@ -324,3 +327,9 @@ class Server_game(Server) :
 
             data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
             self.send_data_all(data)
+
+    def add_event_player(self,event):
+
+        for player,event_info in event :
+
+            player.upgrade_handler.add_event([event_info],player)

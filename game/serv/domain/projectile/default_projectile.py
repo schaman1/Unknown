@@ -10,6 +10,8 @@ class Projectile :
         self.can_damage = True
 
         self.projectile_spawn_when_die = []
+        self.event_player_when_die = []
+        self.monster_when_die = []
         self.life_time = life_time
         self.id=None
         self.spawn_time = time.time()

@@ -165,6 +165,8 @@ class Monster(Mob):
                 self.state = "run away"
 
         elif self.state == "moving":
+            if self.dist <= self.run_away_rad :
+                self.state = "run away"
             if self.dist <= self.attack_radius:
                 self.state = "attacking"
             elif self.dist > self.radius * 1.2:
@@ -364,13 +366,12 @@ class Laseroide(Monster) :
         elif delta[0]!=0:
             self.last_time_jump = time.perf_counter()
 
-
     def idle_behavior(self,map,dt):
         """Reste sur place"""
         if self.focus :
             if self.time_relax + self.begin_relax <= time.perf_counter():
                 self.focus = False
-                self.state = "run away"
+                self.state = "moving"
                 self.last_time_jump = time.perf_counter()#Prevent jump
 
         return
@@ -1003,12 +1004,11 @@ class Skeleton(Monster):
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
-        target, _ = self.distance_to_nearest_player(lPlayer, map)
 
-        if target is None:
+        if self.target is None:
             return
 
-        dx = target.pos_x - self.pos_x
+        dx = self.target.pos_x - self.pos_x
         if abs(dx) < self.base_movement // 10:
             intended_vx = 0
         else:
@@ -1071,6 +1071,7 @@ class DwarfKing(Monster):
         )
 
         self.name = 6                                   #Texture côté client (joueur, temporaire)
+        #self.auto_destruction = True
 
         #Dégâts de contact : toucher le boss fait très mal
         self.collision_atk = monster_info.DWARF_KING_DAMAGE

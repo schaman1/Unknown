@@ -22,7 +22,7 @@ class Player_all :
         """Permet de faire genre que le personnage voit à une certaine portée"""
         self.light.fill((0,0,0))
 
-        for i in range(10):
+        for i in range(0,10,2):
 
             for player in self.dic_players.values() :
 
@@ -32,13 +32,11 @@ class Player_all :
 
                     self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(dx,dy),(self.vision-i/2)*self.cell_size)
 
-            for proj in projectiles_lumiere.values() :
-                    dx,dy = proj.pos_blit_x + proj.height//2*self.cell_size ,proj.pos_blit_y+proj.width//2*self.cell_size 
-                    #print(x,y,dx,dy)
-                    #print("Player",self.me.pos_blit[0] + player.animation.height//2,self.me.pos_blit[1]+player.animation.width//2)
-                    self.draw_circle(self.light,(0,0,0,200 - (i+1)*20),(dx,dy),(self.vision-i/4)*self.cell_size)
-
-
+        for proj in projectiles_lumiere.values() :
+                dx,dy = proj.pos_blit_x + proj.height//2*self.cell_size ,proj.pos_blit_y+proj.width//2*self.cell_size 
+                #print(x,y,dx,dy)
+                #print("Player",self.me.pos_blit[0] + player.animation.height//2,self.me.pos_blit[1]+player.animation.width//2)
+                self.draw_circle(self.light,(0,0,0,200 - (10)*20),(dx,dy),(self.vision-10/4)*self.cell_size)
 
         screen.blit(self.light,(0,0))
 

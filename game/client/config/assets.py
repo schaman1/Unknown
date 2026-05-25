@@ -2,6 +2,7 @@ from utils.resource_path import resource_path
 from shared.constants.world import LEN_X_CHUNK,LEN_Y_CHUNK
 
 BG_GLOBAL = resource_path("assets/background/global/back.png")
+BG_END = resource_path("assets/background/bg_end.png")
 MAP_SEEN = resource_path("assets/background/entities/cell.png")
 MAP_UNSEEN = resource_path("assets/background/entities/monster.png")
 BG_WAITING = resource_path("assets/ui/infos/niflheim.png")

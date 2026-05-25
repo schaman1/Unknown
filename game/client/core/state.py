@@ -66,6 +66,7 @@ class State:
 
         if self.mod == "game":
 
+            self.screen.fill(color["BLACK"])
             interaction =  self.game.draw(self.screen,dt,mouse_pos)
             self.draw_alert()
             return interaction
@@ -171,9 +172,9 @@ class State:
             warning.update_pos(idx)
             warning.draw()
 
-    def add_alert(self,err_message,time=5):
+    def add_alert(self,err_message,time=5,color = (255,0,0)):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
-        self.alert.insert(0,Alert(self.screen,err_message,time))
+        self.alert.insert(0,Alert(self.screen,err_message,time,color))
 
     def draw_btn(self,dic:dict,mouse_pos):
 

@@ -11,7 +11,7 @@ class Monster_all :
 
     def init_dico_dic_monsters(self):
         for i in range(world.LEN_Y_CHUNK) :
-            for j in range(world.LEN_Y_CHUNK) :
+            for j in range(world.LEN_X_CHUNK) :
                 self.dic_monster[i*100+j] = {}
 
     def change_chunk(self,l):
@@ -71,6 +71,6 @@ class Monster_all :
     def destroy_monster(self,l):
 
         for monster in l:
-
             chunk,id = monster
+  
             del self.dic_monster[chunk][id]

@@ -20,6 +20,12 @@ class Game :
     def __init__(self, cell_size, screenSize):
         self.canva_size = world.BG_SIZE_SERVER
         self.base_movement = world.RATIO
+        self.end = False
+        self.end_alpha_len = 6
+        self.end_img = pygame.image.load(assets.BG_END).convert()
+        size = self.end_img.get_size()
+        scale = (screenSize[0])*size[1]//size[0]
+        self.end_img = pygame.transform.scale(self.end_img,(screenSize[0],scale))
 
         self.cell_size = cell_size
         self.screen_size = screenSize
@@ -49,8 +55,8 @@ class Game :
         self.len_fading = 2
         self.end_fading = None
 
-        self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
-        self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
+        #self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
+        #self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
         self.monsters = Monster_all(cell_size)
 
@@ -97,12 +103,24 @@ class Game :
         screen.blit(self.team_img,self.rect_img_team)
 
         delta_time = max(self.end_fading - time.perf_counter(),0)
-        self.alpha_fading = int(255*delta_time//self.len_fading)
+        self.alpha_fading = int(255*delta_time/self.len_fading)
 
         if delta_time<=0 :
             return True
     
         return False #True If end animation else return False
+    
+    def draw_end(self,screen):
+
+        self.fading_layer.fill((0,0,0,self.alpha_fading))
+        screen.blit(self.fading_layer,(0,0))
+
+        self.end_img.set_alpha(self.alpha_fading)
+
+        screen.blit(self.end_img,(0,0)) #Faire un decrescendo ou un truc stylé d'animation
+
+        delta_time = max(self.end_alpha_fading - time.perf_counter(),0)
+        self.alpha_fading = int(255*(1-(delta_time)/self.end_alpha_len))
 
     def update_monster(self,data_monster):
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
@@ -155,7 +173,7 @@ class Game :
 
         x,y = self.camera.return_camera_pos(self.player_all.me)
 
-        screen.blit(self.bg,(0,0))
+        #screen.blit((0,0,0))
         #screen.fill((0,0,0))
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)
@@ -184,6 +202,9 @@ class Game :
         self.fade.trigger(screen,dt)
 
         in_interaction = self.intro_story.draw_intro(screen)
+
+        if self.end:
+            self.draw_end(screen)
 
         return in_interaction
 
@@ -338,3 +359,10 @@ class Game :
 
         else :
             self.monsters.dic_monster[chunk][id].kill(duree)
+            if self.monsters.dic_monster[chunk][id].name == "DwarfKing" :
+                self.start_end()
+
+    def start_end(self):
+        self.end = True
+        self.end_alpha_fading = time.perf_counter()+self.end_alpha_len
+        self.alpha_fading = 0

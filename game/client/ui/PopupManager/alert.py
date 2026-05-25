@@ -2,13 +2,13 @@ import pygame
 
 class Alert : 
     """Permet de draw une alert on top of the screen - Voir dans state : self.draw_alert() = draw alert"""
-    def __init__(self,screen,text,duration=2):
+    def __init__(self,screen,text,duration=2,color = (255,0,0)):
         self.screen = screen
         self.Size = (self.screen.get_width(),self.screen.get_height())
         
         self.text = text
         self.font = pygame.font.SysFont(None, 48)
-        self.alert_text = self.font.render(self.text,True,(255,0,0))
+        self.alert_text = self.font.render(self.text,True,color)
 
         self.height = self.alert_text.get_height()
 
