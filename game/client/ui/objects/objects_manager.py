@@ -64,11 +64,14 @@ class objects_manager:
     def destroy_object(self,chunk,id):
 
         #print("Delete : ",chunk,id)
-        if self.chunk_objects[chunk][id].stay_after_use :
-            self.chunk_objects[chunk][id].use()
 
-        else :
-            del self.chunk_objects[chunk][id]
+        el = self.chunk_objects[chunk].get(id)
+        if el is not None:
+            if self.chunk_objects[chunk][id].stay_after_use :
+                self.chunk_objects[chunk][id].use()
+
+            else :
+                del self.chunk_objects[chunk][id]
 
     def convert_pos(self,x,y):
 
