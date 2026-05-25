@@ -49,8 +49,8 @@ class Game :
         self.len_fading = 2
         self.end_fading = None
 
-        self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
-        self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
+        #self.bg = pygame.image.load(assets.BG_GLOBAL).convert()
+        #self.bg = pygame.transform.scale(self.bg, (self.canva_size[0],self.canva_size[1]))
 
         self.monsters = Monster_all(cell_size)
 
@@ -155,7 +155,7 @@ class Game :
 
         x,y = self.camera.return_camera_pos(self.player_all.me)
 
-        screen.blit(self.bg,(0,0))
+        #screen.blit((0,0,0))
         #screen.fill((0,0,0))
 
         self.canva.draw_map(x,y,self.player_all.return_pos(),screen)

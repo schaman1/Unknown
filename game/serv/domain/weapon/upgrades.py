@@ -21,7 +21,7 @@ def AddProjectileWhenDie(projectiles,weapon,idx = 0):
         next_projectiles,event_player,friendly_monster = infos
 
     else :
-        next_projectiles = []
+        next_projectiles,events_player,friendly_monster = [],[],[]
 
     #for projectile in projectiles :
     for i in range(len(projectiles)):
