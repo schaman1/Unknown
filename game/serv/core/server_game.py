@@ -310,7 +310,7 @@ class Server_game(Server) :
 
         for i in range(7):
 
-            if i < 3 :
+            if i < 2 :
                 id,ele,type = self.objects_manager.spawn_random_spell(1,chunk,pos_x,pos_y)
                 ele.price = 20
             elif i <5 :

@@ -8,6 +8,7 @@ class Weapon :
         self.loading_time_refill_current = refill_time
         self.loading_time_spell = spell_time
         self.loading_time_spell_current = spell_time
+        self.loading_time_only_spell = 0
         self.min_delay = 0.015#Delay minimum de recgarge, peut pas faire moins !
 
 
@@ -61,6 +62,7 @@ class Weapon :
         self.next_allowed_shot_time = 0
         self.loading_time_refill_current = self.loading_time_refill
         self.loading_time_spell_current = self.loading_time_spell
+        self.loading_time_only_spell = 0
 
         if self.idx == self.nbr_spells_max :
             self.idx = 0
@@ -127,6 +129,7 @@ class Weapon :
         else :
             self.next_allowed_shot = max(self.next_allowed_shot,now+self.loading_time_spell_current)
 
+        self.next_allowed_shot += self.loading_time_only_spell
         self.next_allowed_shot = max(self.next_allowed_shot,now+self.min_delay)
         self.next_allowed_shot_time = self.next_allowed_shot - now
 
@@ -172,7 +175,7 @@ class Weapon :
                 if id_monsters != None:
                     event_monsters.append(id_monsters)
 
-                self.loading_time_spell_current+=spell.time_take
+                self.loading_time_only_spell+=spell.time_take
 
         self.update_pos_projectile(angle,projectile_shot)
 
