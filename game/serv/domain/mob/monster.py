@@ -1125,7 +1125,7 @@ class DwarfKing(Monster):
     def __init__(self, x, y, id=0):
 
         super().__init__(
-            hp = monster_info.DWARF_KING_HP,
+            hp = 500 + 400 * world.NBR_OF_PLAYER,
             damage = monster_info.DWARF_KING_DAMAGE,
             x = x, y = y,
             atk_rad = monster_info.DWARF_KING_ATK_RAD,
@@ -1142,6 +1142,9 @@ class DwarfKing(Monster):
 
         self.name = 6                                   #Texture côté client (joueur, temporaire)
         #self.auto_destruction = True
+
+        # Habiliter le double saut pour la classe SmoothJump du boss
+        self.smooth_jump.double_jump = True
 
         #Dégâts de contact : toucher le boss fait très mal
         self.collision_atk = monster_info.DWARF_KING_DAMAGE
@@ -1164,6 +1167,7 @@ class DwarfKing(Monster):
         self.minions_spawned = 0
         self.max_minions = monster_info.DWARF_KING_MAX_MINIONS
         self.monsters_to_spawn = []                     #Vidé par Read_monster à chaque frame
+        self.active_minions = []                        #Liste locale pour limiter les invocations actives
 
     def update(self, map, lPlayer, friendly_monsters,dt, collision_handler, projectile_manager,chunk):
 
@@ -1183,8 +1187,9 @@ class DwarfKing(Monster):
         """Déplacement physique : poursuit le joueur, sauf pendant un dash où on laisse filer la vitesse."""
 
         chasing = self.target is not None and self.state in ("moving", "attacking", "run away")
+        now = time.perf_counter()
 
-        if time.perf_counter() >= self.dash_until and chasing:
+        if now >= self.dash_until and chasing:
             dx = self.target.pos_x - self.pos_x
             if abs(dx) < self.base_movement:
                 self.vitesse_x = 0
@@ -1197,9 +1202,27 @@ class DwarfKing(Monster):
             self.side = "right"
 
         self.gravity_effect(dt)
+
+        pos_before_x = self.pos_x
         self.collision_x(map, dt, self.vitesse_x)
+        moved_x = self.pos_x - pos_before_x
+
         self.collision_y(map, dt, self.vitesse_y)
         self.update_vitesse(dt)
+
+        # Intelligence de saut/escalade : saute si bloqué contre un mur ou si le joueur est plus haut
+        if chasing and now >= self.dash_until:
+            is_stuck = abs(self.vitesse_x) > 0 and abs(moved_x) < 1.0
+            player_above = self.target.pos_y < self.pos_y - 1.5 * self.base_movement
+
+            if (is_stuck or player_above) and self.touch_ground(map):
+                if now - getattr(self, "last_ai_jump_time", 0) > 0.8:
+                    self.jump(map)
+                    self.last_ai_jump_time = now
+                    # Si la cible est très haute, on prépare un double saut
+                    if self.target.pos_y < self.pos_y - 4.5 * self.base_movement:
+                        self.double_jump_pending = True
+                        self.double_jump_time = now + 0.25
 
     def try_dodge(self, map):
         """Toutes les dodge_cooldown secondes, esquive : alterne un dash et un double saut."""
@@ -1233,9 +1256,14 @@ class DwarfKing(Monster):
             self.double_jump_pending = False
 
     def try_spawn_minions(self):
-        """Toutes les spawn_cooldown secondes, invoque un squelette et un laseroïde."""
+        """Toutes les spawn_cooldown secondes, invoque un squelette et un laseroïde si la limite active n'est pas atteinte."""
 
-        if self.minions_spawned >= self.max_minions:
+        # Filtrer et nettoyer les sbires morts de la liste locale
+        self.active_minions = [m for m in self.active_minions if m.is_alive() and not m.dead]
+
+        # Limite dynamique des sbires actifs (2 sbires par joueur, max 8)
+        active_limit = min(8, 2 * world.NBR_OF_PLAYER)
+        if len(self.active_minions) >= active_limit:
             return
 
         now = time.perf_counter()
@@ -1246,7 +1274,14 @@ class DwarfKing(Monster):
         offset = 3 * self.base_movement
         spawn_y = self.pos_y - 2 * self.base_movement
 
-        #Les monstres sont mis dans monsters_to_spawn, que Read_monster enregistre ensuite
-        self.monsters_to_spawn.append(Skeleton(self.pos_x + offset, spawn_y))
-        self.monsters_to_spawn.append(Laseroide(self.pos_x - offset, spawn_y))
+        # Les monstres sont mis dans monsters_to_spawn, que Read_monster enregistre ensuite
+        skeleton = Skeleton(self.pos_x + offset, spawn_y)
+        laseroide = Laseroide(self.pos_x - offset, spawn_y)
+
+        self.monsters_to_spawn.append(skeleton)
+        self.monsters_to_spawn.append(laseroide)
+
+        # Ajouter à notre liste de sbires actifs
+        self.active_minions.append(skeleton)
+        self.active_minions.append(laseroide)
         self.minions_spawned += 2

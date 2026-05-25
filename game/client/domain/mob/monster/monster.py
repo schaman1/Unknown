@@ -253,14 +253,23 @@ class DwarfKing(Monster) :
         self.state = state
 
     def change_state(self,new_state,side):
-        """La texture du joueur n'a que idle/running : on y ramène les états du boss."""
+        """La texture du joueur n'a que idle/running/death : on y ramène les états du boss."""
 
         if side == 0:
             self.animation.direction = "right"
         else :
             self.animation.direction = "left"
 
-        anim = {"idle": 0, "running": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}.get(new_state,"idle")
+        # new_state est l'entier d'état envoyé par le serveur (0=idle, 1=moving, 2=attacking, 3=dead, etc.)
+        anim = "idle"
+        if new_state == 1 or new_state == 4:  # moving / run away
+            anim = "running"
+        elif new_state == 2:  # attacking
+            anim = "running"
+        elif new_state == 3:  # dead
+            anim = "death"
+        elif new_state == 5:  # loading
+            anim = "idle"
 
         if anim != self.animation.old_state :
 

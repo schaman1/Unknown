@@ -138,6 +138,7 @@ class Server_game(Server) :
         self.send_data_all([0]) #0 pour start game
 
         #result_cell = self.init_canva()
+        world.NBR_OF_PLAYER = len(self.lClient)
         self.map_monster.init_dic_monster()
         result_monster = self.init_mobs()
         self.init_weapon()
