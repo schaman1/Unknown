@@ -3,9 +3,9 @@ import pygame
 
 class AnimatedText:
 
-    def __init__(self,text_to_blit,cell_size,speed = 0.02,color = (255,255,255)):
+    def __init__(self,text_to_blit,cell_size,speed = 0.02,color = (255,255,255),text_id = 0):
 
-        self.text_id = 0
+        self.text_id = text_id
         self.text_to_blit = text_to_blit
         self.lenght_all_texts = len(text_to_blit)
 
@@ -13,7 +13,8 @@ class AnimatedText:
         self.start_blit_text = 0
 
         self.speed = speed
-        self.padding = 1*cell_size
+        self.padding_x = 1*cell_size
+        self.padding_y = self.padding_x
         self.font = pygame.font.SysFont(None, cell_size*5)
         self.text_color = color
 
@@ -35,7 +36,7 @@ class AnimatedText:
         current_text = self.return_current_text()
 
         text = self.font.render(current_text,True, self.text_color)  # True = anti-aliasing
-        pos = (self.padding,self.padding)
+        pos = (self.padding_x,self.padding_y)
         screen.blit(text, pos)
 
     def return_current_text(self):
