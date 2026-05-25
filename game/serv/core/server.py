@@ -154,6 +154,7 @@ class Server:
             try:
                 client_socket, addr = self.server.accept() #Accept les clients qui veulent rejoindres #Peut faire un system de mdp ici
                 self.set_param_on_client_arriving(client_socket)
+                world.NBR_OF_PLAYER +=1
             except socket.timeout:
                 continue
             except OSError:
