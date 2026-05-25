@@ -58,13 +58,13 @@ class WeaponManager :
         res = self.lWeapons[id_weapon].trigger_shot(angle,pos)
 
         if res == None :
-            projectiles,events,monsters = None,None,None
+            projectiles,events,monsters = [],[],[]
         
         else :
             projectiles,events,monsters = res[0],res[1],res[2]
             
         if projectiles == [] and events == [] and monsters == []:
-            projectiles,events,monsters = None,None,None
+            projectiles,events,monsters = [],[],[]
         
         else :
             self.weapon_select = id_weapon
