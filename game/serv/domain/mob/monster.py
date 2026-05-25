@@ -330,7 +330,7 @@ class Laseroide(Monster) :
 
     def __init__(self,x,y,id = 0):
 
-        super().__init__(hp=50,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
+        super().__init__(hp=40+5*world.NBR_OF_PLAYER,damage = 5,x=x,y=y,atk_rad = monster_info.LASEROIDE_ATK_RAD,rad = monster_info.LASEROIDE_RAD,run_away = monster_info.LASEROIDE_TOO_CLOSE,atk_speed = 1,id=id,prime =30,acceleration = monster_info.LASEROIDE_ACCELERATION,height = 8)
 
         self.acceleration_y = 20* self.acceleration
         self.knockback_res = 0 #Resist pas
@@ -450,7 +450,7 @@ class Foulli(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 10,acceleration = 0,width = 6,height = 6)
+        super().__init__(hp=10,damage=10,x=x,y=y,atk_rad = monster_info.FOULLI_ATTAQUE_RAD,atk_speed = 1,id=id,prime = 5,acceleration = 0,width = 6,height = 6)
 
         self.knockback_res = 10
 
@@ -521,7 +521,7 @@ class Defendeur(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=30,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 8)
+        super().__init__(hp=10+10*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.DEFENDEUR_ATK_RAD,rad = monster_info.DEFENDEUR_RAD,run_away = monster_info.DEFENDEUR_TOO_CLOSE,atk_speed = 1,id=id,prime = 30,acceleration = monster_info.DEFENDEUR_ACCELERATION,width = 5,height = 8)
 
         self.name = 3 #Permet d'afficher le bon monstre / Dans monster all côté client
         self.knockback_res = 3
@@ -645,7 +645,7 @@ class Escargot(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=20,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
+        super().__init__(hp=10+5*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 6,height = 6)
 
         self.knockback_res = 0.5
 
@@ -779,7 +779,7 @@ class Limace(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=13,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 10,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
+        super().__init__(hp=5+5*world.NBR_OF_PLAYER,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
 
         self.name = 5 #Permet d'afficher le bon monstre / In monster all dans client
 
@@ -906,11 +906,10 @@ class Limace(Monster) :
             self.focus = False
             self.state = "moving"
 
-
 class Skeleton(Monster):
 
     def __init__(self, x, y, id=0):
-        super().__init__(hp=20, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
+        super().__init__(hp=20+5*world.NBR_OF_PLAYER, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
         
         self.knockback_res = 1
 
