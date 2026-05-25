@@ -76,6 +76,7 @@ CHEST_UPGRADE_OPEN = resource_path("assets/objects/chest_upgrade_open.png")
 PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
 PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
+PLAYER_JUMP = resource_path("assets/sprites/player/jump/player_jump.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 
