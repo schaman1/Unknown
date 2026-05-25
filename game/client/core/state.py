@@ -66,6 +66,7 @@ class State:
 
         if self.mod == "game":
 
+            self.screen.fill(color["BLACK"])
             interaction =  self.game.draw(self.screen,dt,mouse_pos)
             self.draw_alert()
             return interaction
