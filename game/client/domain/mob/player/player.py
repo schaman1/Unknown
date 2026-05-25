@@ -218,7 +218,7 @@ class Player_not_you(Mob) :
 
         self.cell_size=cell_size
 
-    def draw(self,screen,dt,xscreen,yscreen):
+    def draw(self,screen,dt,xscreen,yscreen,has_to_draw):
         
         #self.update_angle()
 
@@ -231,8 +231,9 @@ class Player_not_you(Mob) :
 
         self.update_pos_blit(xscreen,yscreen)
 #
-        self.animation.draw(dt,self.pos_blit,screen)
-
+        if has_to_draw :
+            self.animation.draw(dt,self.pos_blit,screen)
+            
         self.draw_pseudo(screen,self.pos_blit)
 
     def draw_pseudo(self,screen,pos_blit):
