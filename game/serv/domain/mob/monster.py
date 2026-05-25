@@ -13,6 +13,8 @@ class Monster(Mob):
         if len_life != 0:
             self.auto_destruction = True
 
+        self.player_did_dammage = {}
+
         self.hp = hp
         self.damage = damage
         self.resist = False #Resist = ne peut pas subir de dégâts
@@ -199,6 +201,8 @@ class Monster(Mob):
             self.life -= amount
             self.send_new_life = True
 
+            self.player_did_dammage[player_did_damage] = time.perf_counter()
+
             #Knockback seulement si l'arme ou le sort en a un, réduit par la résistance du monstre
             effective_kb = max(0, knockback - self.knockback_res)
 
@@ -217,17 +221,18 @@ class Monster(Mob):
 
             if self.life <= 0:
                 self.life = 0
-                self.die(player_did_damage)
+                self.die()
 
                 return True
 
         return False
     
-    def die(self,player_did_damage):
+    def die(self):
 
-        if player_did_damage!=None and player_did_damage.team == Team.Player :
+        for player,time_damage in self.player_did_dammage.items() :
 
-            player_did_damage.update_money(self.prime)
+            if player!=None and player.team == Team.Player and time_damage+5 > time.perf_counter():
+                player.update_money(self.prime)
 
         self.dead = True
         self.target = None
