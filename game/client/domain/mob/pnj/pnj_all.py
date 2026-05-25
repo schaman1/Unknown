@@ -18,6 +18,7 @@ class Pnj_all :
         self.pos_text_entrer = (screenSize[0] - size[0],screenSize[1]-size[1])
 
         self.pos_blit_text = screenSize[1]-10*self.cell_size
+        self.distance_max_blit = screenSize[0]
 
         self.interact_img = display_text.FONT_SMALL.render("E : interragir",True, (180,180,180))  # True = anti-aliasing
         self.white_surf = pygame.Surface((screenSize[0],cell_size*10),pygame.SRCALPHA)

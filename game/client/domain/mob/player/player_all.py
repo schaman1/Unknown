@@ -91,7 +91,7 @@ class Player_all :
     def now_can_see_others(self):
 
         if not self.can_see_others :
-            self.vision = world.NBR_CELL_CAN_SEE
+            self.vision = world.NBR_CELL_CAN_SEE*self.cell_size
             self.can_see_others = True
 
     def draw_circle(self,screen,color,pos,r,width=0):
