@@ -43,6 +43,32 @@ class Monster(Mob):
 
         self.state = "idle"  # états possibles : idle, moving, attacking, dead
 
+    def move_left(self,map,dt):
+
+        delta_y = self.half_height + self.base_movement
+        delta_x = -(self.half_width+self.base_movement)
+        if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+            self.side = "right"
+
+        elif self.touch_type(delta_y,delta_x,map,map.vide):
+            self.side = "right"
+        
+        else :
+            super().move_left(dt)
+
+    def move_right(self,map,dt):
+
+        delta_y = self.half_height + self.base_movement
+        delta_x = self.half_width+self.base_movement
+        if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+            self.side = "left"
+
+        elif self.touch_type(delta_y,delta_x,map,map.vide):
+            self.side = "left"
+        
+        else :
+            super().move_right(dt)
+
     def is_alive(self):
         return self.hp>0
     
@@ -386,21 +412,21 @@ class Laseroide(Monster) :
         """Se déplace vers le joueur"""
         if target.pos_x<self.pos_x :
             self.side = "left"
-            self.move_left(dt)
+            self.move_left(map,dt)
         
         else :
             self.side = "right"
-            self.move_right(dt)
+            self.move_right(map,dt)
     
     def leave_behavior(self,target,map,dt):
         """Se déplace à l'opposé du joueur"""
         if target.pos_x<self.pos_x :
             self.side = "right"
-            self.move_right(dt)
+            self.move_right(map,dt)
         
         else :
             self.side = "left"
-            self.move_left(dt)
+            self.move_left(map,dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager):
         
@@ -535,9 +561,9 @@ class Defendeur(Monster) :
                         self.begin_attack = time.perf_counter()-self.time_for_move_to_reach_player
 
                     if self.side == "right":
-                        self.move_right(dt)
+                        self.move_right(map,dt)
                     else :
-                        self.move_left(dt)
+                        self.move_left(map,dt)
 
                 else :
                     self.state = "attacking"
@@ -590,18 +616,18 @@ class Defendeur(Monster) :
         """Se déplace vers le joueur"""
 
         if target.pos_x<self.pos_x :
-            self.move_left(dt)
+            self.move_left(map,dt)
         
         else :
-            self.move_right(dt)
+            self.move_right(map,dt)
     
     def leave_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
         if target.pos_x<self.pos_x :
-            self.move_right(dt)
+            self.move_right(map,dt)
         
         else :
-            self.move_left(dt)
+            self.move_left(map,dt)
 
     def attack(self,target,collision_handler,dt,projectile_manager,chunk):
         """Retourne True si le joueur est bien touché"""
@@ -658,29 +684,11 @@ class Escargot(Monster) :
 
         if self.side == "right":
             
-            delta_y = self.half_height + self.base_movement
-            delta_x = self.half_width+self.base_movement
-            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-                self.side = "left"
-
-            elif self.touch_type(delta_y,delta_x,map,map.vide):
-                self.side = "left"
-            
-            else :
-                self.move_right(dt)
+            self.move_right(map,dt)
 
         elif self.side == "left":
-            
-            delta_y = self.half_height + self.base_movement
-            delta_x = -(self.half_width+self.base_movement)
-            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-                self.side = "right"
 
-            elif self.touch_type(delta_y,delta_x,map,map.vide):
-                self.side = "right"
-            
-            else :
-                self.move_left(dt)
+            self.move_left(map,dt)
     
     def leave_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
@@ -866,11 +874,11 @@ class Limace(Monster) :
 
         if target.pos_x<self.pos_x :
             self.side = "left"
-            self.move_left(dt)
+            self.move_left(map,dt)
         
         else :
             self.side = "right"
-            self.move_right(dt)
+            self.move_right(map,dt)
     
     def leave_behavior(self,target,map,dt):
         return
