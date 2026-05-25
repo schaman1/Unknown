@@ -337,6 +337,7 @@ class Game :
 
             if chunk==99: #Magic number je sais mais nsm
                 ent = self.player_all.dic_players[id]
+                self.add_popup(ent,delta_life)
             else :
                 ent = self.monsters.dic_monster[chunk].get(id)
                 if ent is not None:
