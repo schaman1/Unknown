@@ -204,8 +204,17 @@ class Player_you(Mob) :
         
         else :
             if self.old_state != "idle" and self.old_state!="running":
-                self.old_state = "idle"
-                self.animation.set_state("idle")
+                if self.key_active["right"] :
+                    self.animation.direction = "right"
+                    self.animation.set_state("running")
+                    self.old_state = "running"
+                elif self.key_active["left"] :
+                    self.animation.direction = "left"
+                    self.animation.set_state("running")
+                    self.old_state = "running"
+                else :
+                    self.old_state = "idle"
+                    self.animation.set_state("idle")
 
     def kill(self,duree):
 
