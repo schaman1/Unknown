@@ -172,7 +172,7 @@ class State:
             warning.update_pos(idx)
             warning.draw()
 
-    def add_alert(self,err_message,time=5,color = (255,0,0)):
+    def add_alert(self,err_message,time=3,color = (255,0,0)):
         """prend en param le message et le temps de l'alert et l'insert dans les alert à dessiner à chaque iterations"""
         self.alert.insert(0,Alert(self.screen,err_message,time,color))
 

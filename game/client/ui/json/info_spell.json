@@ -3,7 +3,7 @@
         "type":"projectile",
         "name":"Boule de feu",
         "description":["Nothing"],
-        "life":2,
+        "life":1,
         "speed":50,
         "rebond":0,
         "time_reload": 1.5,

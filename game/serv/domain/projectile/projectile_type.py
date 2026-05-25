@@ -20,6 +20,24 @@ class Fire(Projectile) :
                          owner_pos=owner,
                          knockback = weapons.KNOCKBACK_FIRE)
         
+class Fire_B(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.LIFE_FIRE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.V_FIRE_B,
+                         id_img = 47,
+                         width = weapons.WIDTH_FIRE_B,
+                         height = weapons.HEIGHT_FIRE_B,
+                         rebond = weapons.REBOND_FIRE_B,
+                         damage = weapons.DAMAGE_FIRE_B,
+                         team=team,
+                         randomize_angle=randomize,
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_FIRE_B)
+        
 class Magic(Projectile) :
 
     def __init__(self,angle,pos,team,randomize,owner):
