@@ -1,6 +1,8 @@
 from shared.constants import fps,world
 import pygame,time,math
 from serv.core.server import Server
+from serv.systems.monster.read_monster import Read_monster
+
 from serv.config.add_objects_begin import OBJECTS,MAGASIN_BEGIN
 
 class Server_game(Server) :
@@ -20,6 +22,7 @@ class Server_game(Server) :
         # Pour eviter le lag
         self.next_send_time = time.perf_counter()
         self.send_interval = 1 / fps.FPS_SEND_POS_CLIENT  # 0.05s
+        self.map_monster = Read_monster(self.map_cell.width_chunk,self.map_cell.height_chunk,world.RATIO)
 
         self.dt = 0 # Delta time between frames = devra faire *dt pour les mouvements
 
@@ -135,6 +138,7 @@ class Server_game(Server) :
         self.send_data_all([0]) #0 pour start game
 
         #result_cell = self.init_canva()
+        self.map_monster.init_dic_monster()
         result_monster = self.init_mobs()
         self.init_weapon()
 
@@ -142,7 +146,6 @@ class Server_game(Server) :
 
         #self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
-
 
         pygame.time.wait(int(1.5*1000))
         self.send_data_all([9]) #9 : a fini de load
