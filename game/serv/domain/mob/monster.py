@@ -234,6 +234,7 @@ class Monster(Mob):
             if player!=None and player.team == Team.Player and time_damage+5 > time.perf_counter():
                 player.update_money(self.prime)
 
+        self.player_did_dammage.clear()
         self.dead = True
         self.target = None
         self.start_dead = time.perf_counter()
