@@ -1,6 +1,7 @@
 from client.config.assets import COMPLETE_INFO_BG,SPELLS
 from client.config.display_text import FONT,FONT_SMALL
 from shared.constants.world import UPGRADE_MINUS_REFILL_TIME,UPGRADE_MINUS_RELOAD_TIME
+from utils.resource_path import resource_path
 import pygame,json
 
 class CompleteInfo:
@@ -32,7 +33,7 @@ class CompleteInfo:
         self.pos_y_other_info = self.size[1]//3
         self.delta_y_other_info = self.size[1]//9
 
-        with open('client/ui/json/info_spell.json','r') as info :
+        with open(resource_path("client/ui/json/info_spell.json"),"r") as info :
             self.infos = json.load(info)
 
         #self.dist_interactable_max = cell_size*

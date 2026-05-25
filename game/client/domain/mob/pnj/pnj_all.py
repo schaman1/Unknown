@@ -1,6 +1,7 @@
 from client.domain.mob.pnj.pnj import Pnj
 from shared.constants import world
 from client.config import display_text
+from utils.resource_path import resource_path
 import json,math,pygame
 
 class Pnj_all :
@@ -25,7 +26,7 @@ class Pnj_all :
         self.is_talking = False
         self.talks_to = None
 
-        with open("client/ui/json/text.json") as f:
+        with open(resource_path("client/ui/json/text.json")) as f:
 
             self.dialogues = json.load(f)
             f.close()

@@ -1,5 +1,5 @@
 import pygame, time, json
-
+from utils.resource_path import resource_path
 from client.domain.mob.player.player_all import Player_all
 from client.domain.mob.monster.monster_all import Monster_all
 from client.domain.mob.pnj.pnj_all import Pnj_all
@@ -29,7 +29,7 @@ class Game :
         self.last_time_add_text_end = time.perf_counter()
         self.nbr_text_end = 0
         self.end_text = []
-        with open("client/ui/json/text.json") as f:
+        with open(resource_path("client/ui/json/text.json")) as f:
 
             dialogues = json.load(f)
             f.close()
