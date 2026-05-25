@@ -258,9 +258,10 @@ class DwarfKing(Monster) :
         else :
             self.animation.direction = "left"
 
-        anim = {0:"idle", 1:"running", 2:"running", 4:"running", 5:"idle"}.get(new_state,"idle")
+        anim = {"idle": 0, "running": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}.get(new_state,"idle")
 
         if anim != self.animation.old_state :
+
             self.animation.set_state(anim)
 
         self.animation.old_state = anim

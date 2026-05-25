@@ -1071,6 +1071,7 @@ class DwarfKing(Monster):
         )
 
         self.name = 6                                   #Texture côté client (joueur, temporaire)
+        #self.auto_destruction = True
 
         #Dégâts de contact : toucher le boss fait très mal
         self.collision_atk = monster_info.DWARF_KING_DAMAGE

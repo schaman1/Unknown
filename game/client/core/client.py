@@ -412,6 +412,7 @@ class Client:
                 
             self.main.state.game.monsters.destroy_monster(l)
 
+
     def display_clients_name(self):
         """Affiche le nom des clients"""
         for idx,client in enumerate(self.main.state.game.player_all.dic_players.values()):

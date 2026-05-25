@@ -71,6 +71,6 @@ class Monster_all :
     def destroy_monster(self,l):
 
         for monster in l:
-
             chunk,id = monster
+  
             del self.dic_monster[chunk][id]
