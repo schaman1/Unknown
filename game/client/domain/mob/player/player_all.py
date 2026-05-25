@@ -81,9 +81,9 @@ class Player_all :
         surface = pygame.Surface((size, size), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 0))  # transparent par défaut
 
-        core = int(radius * 0.6)  #  zone toujours bien éclairée
+        core = int(radius * 0.5)  #  zone toujours bien éclairée
 
-        for i in range(radius, core, -8):
+        for i in range(radius, core, -10):
             # Centre = alpha 0 (transparent = lumière), bord = alpha 255 (noir = obscurité)
             alpha = int(255 * (1 - (i-core) / (radius-core)))
             pygame.draw.circle(surface, (0, 0, 0, alpha), (radius, radius), i)
