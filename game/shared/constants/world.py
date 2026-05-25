@@ -17,12 +17,13 @@ LEN_DEATH_PLAYER = 5
 START_SEE = False
 
 NBR_CELL_CAN_SEE = 20 #Normally, 20 !
+DISTANC_MAX_TRIGGER = 40
 PADDING_CANVA = 2  #Combien de cellule en plus on charge autour de l'ecran du client
 
 BG_SIZE_SERVER = (1920,1080)
 
-LEN_X_CHUNK = 6
-LEN_Y_CHUNK = 6
+LEN_X_CHUNK = 13
+LEN_Y_CHUNK = 8
 
 #Weapon :
 NBRWEAPONSTOCK = 4
