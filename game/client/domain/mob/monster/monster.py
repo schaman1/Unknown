@@ -237,7 +237,6 @@ class WallBig(Monster) :
 
         self.animation.old_state = key[0]
 
-
 class DwarfKing(Monster) :
     """Boss : Le Roi Nain. Utilise temporairement la texture du joueur
     (les joueurs sont des nains, le boss leur ressemble)."""
