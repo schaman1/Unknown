@@ -538,6 +538,22 @@ class CreateFluff(Upgrade):
         projectile = weapon.add_projectile(projectile_type.Fluff(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
 
         return 1,[projectile],None,None
+    
+class CreateFluff_DieEffect(Upgrade):
+
+    def __init__(self):
+
+        super().__init__(id=46,time_take=weapons.FLUFF_DIE_RELOAD_TIME)
+        self.minus_refill_time = weapons.FLUFF_DIE_REFILL_TIME
+
+    def trigger(self,weapon,idx=0):
+
+        weapon.loading_time_refill_current += self.minus_refill_time
+        projectile = weapon.add_projectile(projectile_type.Fluff(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos()))
+
+        AddProjectileWhenDie([projectile],weapon,idx)
+
+        return 1,[projectile],None,None
 
 #class Jump(Upgrade):
 #
@@ -591,8 +607,9 @@ UPGRADES[42] = CreateWall()
 UPGRADES[43] = CreateBigWall()
 UPGRADES[44] = CreateLanterne()
 UPGRADES[45] = CreateFluff()
+UPGRADES[46] = CreateFluff_DieEffect()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,42]
 rare_upgrades = [4,5,6,14,21,33,41,44,45]
-legendary_upgrades = [9,15,22,31,32,43]
+legendary_upgrades = [9,15,22,31,32,43,46]
