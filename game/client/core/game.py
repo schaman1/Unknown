@@ -14,6 +14,7 @@ from client.ui.add_fading import Fading
 from client.ui.text import AnimatedText
 from client.config import assets,display_text
 from shared.constants import world
+from client.config.display_text import FONT, FONT_SMALL
 
 class Game :
     """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
@@ -458,12 +459,12 @@ class Game :
         
         title_text = font_title.render("The Dwarf King", True, (255, 255, 255))
         title_text.set_alpha(int(self.boss_bar_alpha))
-        title_rect = title_text.get_rect(center=(screen_w // 2, bar_y - 15))
+        title_rect = title_text.get_rect(center=(screen_w // 2, bar_y - 20))
         bar_surface.blit(title_text, title_rect)
         
         # Values centered inside the bar
         hp_str = f"{self.boss_hp}/{self.boss_max_hp}"
-        hp_text = font_values.render(hp_str, True, (255, 255, 255))
+        hp_text = FONT_SMALL.render(hp_str, True, (255, 255, 255))
         hp_text.set_alpha(int(self.boss_bar_alpha))
         hp_rect = hp_text.get_rect(center=(screen_w // 2, bar_y + bar_h // 2))
         bar_surface.blit(hp_text, hp_rect)
