@@ -10,7 +10,7 @@ class Read_map:
 
         self.type = {"EMPTY": 0, "LAVE":1,"STONE": 2, "WOOD": 3, "SAND": 4, "POUTRE":5, "LADDER":6, "WATER" : 7, "EXPLO": 8}
         self.dur = [self.type["STONE"],self.type["SAND"]] #Peut pas le passer du tout
-        self.vide = [self.type["EMPTY"],self.type["EMPTY"]] #Le min et le max
+        self.vide = [self.type["EMPTY"],self.type["LAVE"]] #Le min et le max
         self.liquid = [self.type["EXPLO"],self.type["WATER"]] #Le min et le max
         self.can_climb = [self.type["LADDER"],self.type["LADDER"]]
         self.dur_and_can_climb = [self.type["STONE"],self.type["LADDER"]]
