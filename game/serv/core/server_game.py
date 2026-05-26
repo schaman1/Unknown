@@ -46,7 +46,7 @@ class Server_game(Server) :
             return_monster,monster_change_chunk,monster_destroy = self.map_monster.return_chg(self.lClient,self.map_cell,dt,self.collision_handler,self.projectile_manager) #Mettre dt plus tard pour les monstres
             result_projectile,event_player,friendly_monster = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
-            self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.map_monster.friendly_monsters,self.lClient,self.projectile_manager.dic_projectiles)
+            send_new_data = self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.map_monster.friendly_monsters,self.lClient,self.projectile_manager.dic_projectiles)
             if len(self.collision_handler.effect_send)!=0:
                 self.send_data_all([14,self.collision_handler.effect_send])
                 self.collision_handler.effect_send.clear()
@@ -55,6 +55,12 @@ class Server_game(Server) :
                 self.collision_handler.die_send.clear()
             if len(event_player)!=0:
                 self.add_event_player(event_player)
+
+            if send_new_data[0] :
+                print("send_data")
+                
+                self.send_data_all([27,send_new_data[1],send_new_data[2]])
+
             self.map_monster.spawn_monsters_from_l(friendly_monster)
 
             #Monstres invoqués en cours de partie (ex: par le boss) : on les crée côté client (msg 5)
