@@ -407,7 +407,6 @@ class Animation:
 
         img = self.animation[self.state][self.direction][self.frame]
 
-
         img = self.check_draw_red_if_damage(img,dt)
 
         screen.blit(img,pos_blit)

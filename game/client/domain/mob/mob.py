@@ -73,8 +73,9 @@ class Mob:
             alpha = 0
 
         if alpha <= 1.0:
-            self.pos_x = round((1 - alpha) * x0 + alpha * x1)
-            self.pos_y = round((1 - alpha) * y0 + alpha * y1)
+            pass #No issue more with the camera
+            #self.pos_x = round((1 - alpha) * x0 + alpha * x1)
+            #self.pos_y = round((1 - alpha) * y0 + alpha * y1)
 
         else:
             # Extrapolation limitée
