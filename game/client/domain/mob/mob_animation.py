@@ -1,4 +1,4 @@
-import pygame,os
+import pygame,os,time
 from client.config import assets,size_display
 from utils.aseprite_reader import AsepriteReader
 
@@ -56,7 +56,7 @@ class Animation:
         self.width = width*cell_size
         self.height = height*cell_size
 
-        self.time_start_frame=0
+        self.time_start_frame=time.perf_counter()
         self.frame = 0
 
         self.fct_to_do = self.do_nothing
@@ -373,11 +373,9 @@ class Animation:
 
     def draw(self,dt,pos_blit,screen):
 
-        self.time_start_frame+=dt
+        if self.animation[self.state]["time"]+self.time_start_frame < time.perf_counter():
 
-        if self.animation[self.state]["time"]<=self.time_start_frame:
-
-            self.time_start_frame-=self.animation[self.state]["time"]
+            self.time_start_frame+=self.animation[self.state]["time"]
 
             self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
             
@@ -464,7 +462,7 @@ class Animation:
 
         self.state = state_beginning
         self.frame = 0
-        self.time_start_frame = 0
+        self.time_start_frame = time.perf_counter()
 
     def dead_state(self):
         if self.state == "in_death" or self.state == "death" or self.state == "respawn" :
@@ -476,6 +474,7 @@ class Animation:
         """Set a specific state of anim if ! not death"""
         if not self.dead_state():
             self.state = state_name
+            self.time_start_frame = time.perf_counter()
             self.frame = 0
         else :
             self.state_to_do_when_respawn = state_name
