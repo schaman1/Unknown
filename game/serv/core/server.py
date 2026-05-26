@@ -18,7 +18,7 @@ class Server:
         self.network_handler = Network_handler(self)
         self.map_cell = Read_map()
         self.projectile_manager = ProjectileManager(self.map_cell.width_chunk,self.map_cell.height_chunk)
-        self.collision_handler = CollisionHandler()
+        self.collision_handler = CollisionHandler(self)
         self.objects_manager = objects_manager()
 
         self.host = host

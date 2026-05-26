@@ -399,6 +399,9 @@ class Network_handler :
         elif id == 26:
             self.pack_monster_die(data[1],packet)
 
+        elif id == 27:
+            packet += struct.pack("!HH", data[1], data[2])
+
         else :
             print("Issue id not found : ",id)
 
