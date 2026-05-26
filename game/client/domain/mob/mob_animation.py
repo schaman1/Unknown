@@ -284,6 +284,11 @@ class Animation:
             self.animation["running"] = self.animation["idle"]
             self.animation["loading"] = self.animation["idle"]
 
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.MMA_ATTACKING) #LIMACE_IDLE
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["attacking"],size,invert = True)
+
             #size_img = 50*cell_size
             size = (self.width,self.height)
             img_idle = pygame.image.load(assets.MMA_JUMP) #LIMACE_IDLE

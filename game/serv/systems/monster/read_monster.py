@@ -21,7 +21,7 @@ class Read_monster :
         #Monstres invoqués en cours de partie (ex: par le boss), à envoyer au client (msg 5)
         self.monster_to_create_send = []
 
-        self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5}
+        self.state_map = {"idle": 0, "moving": 1, "attacking": 2, "dead": 3,"run away":4,"loading":5,"jump":6,"fall":7}
 
     def generate_id(self):
         self.id = (self.id+1)%255
