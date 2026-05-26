@@ -864,8 +864,164 @@ class Mma(Monster) :
                         chunk = 99
                     collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
 
-                #else :
-                #    self.state = "idle"
+class Shaman(Monster) :
+
+    def __init__(self,x,y,id=0):
+
+        super().__init__(hp=10+15*world.NBR_OF_PLAYER,damage =6,x=x,y=y,atk_rad = monster_info.SHAMAN_ATK_RAD,rad = monster_info.SHAMAN_RAD,run_away = monster_info.SHAMAN_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.SHAMAN_ACCELERATION,width = 8,height = 8)
+
+        self.knockback_res = 0.5
+
+        self.name = 10 #Permet d'afficher le bon monstre / Dans monster all côté client
+
+        self.last_attack = time.perf_counter()
+        self.len_for_1_attack = 0.1
+        self.min_time_move = 1
+        self.begin_min_time_move = time.perf_counter()
+
+        self.hit_box_damage_width = 8
+        self.collision_atk = 5
+
+        self.begin_attack = time.perf_counter()
+        self.len_attack = 1.5
+        self.begin_relax = time.perf_counter()
+        self.time_relax = 0.8
+
+        #self.collision_damage = False
+
+    def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
+
+        if self.still_dead():
+            return
+        
+        #print(self.state)
+        
+        super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
+
+       # --- Deplacement selon l'état ---
+        if self.state == "idle":
+            self.idle_behavior(map,dt)
+            
+        elif self.state == "moving":
+
+            self.moving_behavior(self.target, map,dt)
+            
+        elif self.state == "attacking":
+
+            self.attack(collision_handler,map,dt)
+
+        elif self.state =="jump" :
+            self.jump_behavior(self.target,map,dt)
+
+        elif self.state =="fall" :
+            self.fall_behavior(self.target,map,dt)
+
+        self.move_all(map,dt,collision_handler)
+
+    def idle_behavior(self,map,dt):
+        """est épuisé"""
+
+        if not self.focus :
+            if self.side == "right":
+                
+                self.move_right(map,dt)
+
+            elif self.side == "left":
+
+                self.move_left(map,dt)
+
+        else :
+            if self.begin_relax + self.time_relax < time.perf_counter():
+                self.begin_min_time_move = time.perf_counter()
+                self.state = "moving"
+    
+    def moving_behavior(self,target,map,dt):
+        """Se déplace vers le joueur"""
+
+        if self.focus :
+            if self.min_time_move + self.begin_min_time_move < time.perf_counter():
+                self.focus = False
+
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
+
+        if self.target.pos_y > self.pos_y +self.half_height:
+            self.is_climbing = False
+            self.move_down(dt)
+
+        elif self.target.pos_y < self.pos_y - self.half_height:
+            self.jump(dt)
+
+        else :
+            self.is_climbing=True
+
+    def jump_behavior(self,target,map,dt):
+
+        if self.vitesse_y>0:
+            self.state = "fall"
+
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
+
+    def fall_behavior(self,target,map,dt):
+
+        if self.vitesse_y==0:
+            self.state = "attacking"
+            self.begin_attack = time.perf_counter()
+
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
+    
+    def leave_behavior(self,target,map,dt):
+        """Se déplace vers le joueur"""
+
+    def attack(self,collision_handler,map,dt):
+        """Retourne True si le joueur est bien touché"""
+        if not self.focus : 
+            self.focus = True
+            self.state = "jump"
+            self.jump(map)
+
+        else :
+
+            if self.target.pos_y > self.pos_y +self.half_height:
+                self.is_climbing = False
+                self.move_down(dt)
+
+            elif self.target.pos_y < self.pos_y - self.half_height:
+                self.jump(dt)
+
+            else :
+                self.is_climbing=True
+
+            if self.begin_attack+self.len_attack<time.perf_counter():
+                self.state = "idle"
+                self.begin_relax = time.perf_counter()
+            
+            elif self.last_attack + self.len_for_1_attack <= time.perf_counter():
+                self.last_attack = time.perf_counter()
+                if self.target.pos_x<self.pos_x:
+                    self.side = "left"
+                else :
+                    self.side = "right"
+
+                if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+                    if not self.target.auto_destruction :
+                        chunk = 99
+                    collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
+
 
 class Wall(Monster) :
 

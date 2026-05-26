@@ -99,6 +99,9 @@ class Read_monster :
                 elif name =="Mma":
                     class_monster = monster.Mma
                     
+                elif name =="Shaman":
+                    class_monster = monster.Shaman
+                    
                 if class_monster != None :
 
                     self.create_monster(class_monster(pos[0],pos[1]))
