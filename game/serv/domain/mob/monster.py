@@ -1191,7 +1191,7 @@ class Limace(Monster) :
 class Skeleton(Monster):
 
     def __init__(self, x, y, id=0):
-        super().__init__(hp=20+5*world.NBR_OF_PLAYER, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20)
+        super().__init__(hp=20+5*world.NBR_OF_PLAYER, damage=10, x=x, y=y, rad=30, atk_rad=5, atk_speed=1, id=id,prime = 20, width=10, height=14)
         
         self.knockback_res = 1
 
@@ -1297,6 +1297,11 @@ class Skeleton(Monster):
                 self.step_lock = 0
             elif self.no_turn == 0 and self.step_lock == 0:
                 self.direction *= -1
+
+        if self.direction > 0:
+            self.side = "right"
+        else:
+            self.side = "left"
                 
     # comportement en mode moving : poursuite du joueur le plus proche      
     def moving_behavior(self, lPlayer, map,dt):
@@ -1333,9 +1338,15 @@ class Skeleton(Monster):
             
         if intended_vx != 0:
             self.direction = 1 if intended_vx > 0 else -1
+            self.side = "right" if intended_vx > 0 else "left"
             
     # attaque le joueur le plus proche    
     def attack(self, Player,collision_handler,dt,chunk):
+        if Player.pos_x < self.pos_x:
+            self.side = "left"
+        else:
+            self.side = "right"
+
         damage = int(self.damage*10 * dt) #= inflige self.damage en 1 seconde
         if not self.target.auto_destruction :
             chunk = 99
@@ -1350,7 +1361,7 @@ class DwarfKing(Monster):
     def __init__(self, x, y, id=0):
 
         super().__init__(
-            hp = 500 + 400 * world.NBR_OF_PLAYER,
+            hp = 200 + 200 * world.NBR_OF_PLAYER,
             damage = monster_info.DWARF_KING_DAMAGE,
             x = x, y = y,
             atk_rad = monster_info.DWARF_KING_ATK_RAD,

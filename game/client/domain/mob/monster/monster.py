@@ -41,7 +41,7 @@ class Skeleton(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        super().__init__(x,y,cell_size,size=(10,10),name="Skeleton")
+        super().__init__(x,y,cell_size,size=(10,14),name="Skeleton")
 
         self.name = "Skeleton"
         self.chunk = pos_chunk
@@ -65,7 +65,16 @@ class Skeleton(Monster) :
         else :
             self.animation.direction = "left"
 
-        pass
+        key = [key for key,val in STATES.items() if val == new_state]
+        if key:
+            state_name = key[0]
+            if state_name in self.animation.animation and not self.animation.animation[state_name]["right"]:
+                state_name = "idle"
+
+            if state_name != self.animation.old_state :
+                self.animation.set_state(state_name)
+
+            self.animation.old_state = state_name
 
 class Laseroide(Monster) :
 

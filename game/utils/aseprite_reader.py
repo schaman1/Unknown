@@ -12,6 +12,7 @@ class AsepriteReader:
         self.height = 0
         self.color_depth = 0
         self.palette = [] # List of (r,g,b,a)
+        self.tags = {} # Dict of tag_name -> (from_frame, to_frame)
         
         if not os.path.exists(filename):
             print(f"Error: File {filename} not found.")
@@ -108,6 +109,8 @@ class AsepriteReader:
             self.process_cel(data, surface)
         elif chunk_type == 0x2019: # Palette
             self.process_palette(data)
+        elif chunk_type == 0x2018: # Tags
+            self.process_tags(data)
 
     def process_palette(self, data):
         
@@ -137,6 +140,24 @@ class AsepriteReader:
             
             self.palette[current] = (r, g, b, a)
             current += 1
+
+    def process_tags(self, data):
+        try:
+            num_tags = struct.unpack('<H', data[0:2])[0]
+            tag_offset = 10
+            for _ in range(num_tags):
+                if tag_offset + 19 > len(data):
+                    break
+                from_frame = struct.unpack('<H', data[tag_offset:tag_offset+2])[0]
+                to_frame = struct.unpack('<H', data[tag_offset+2:tag_offset+4])[0]
+                name_len = struct.unpack('<H', data[tag_offset+17:tag_offset+19])[0]
+                if tag_offset + 19 + name_len > len(data):
+                    break
+                name = data[tag_offset+19 : tag_offset+19+name_len].decode('utf-8')
+                self.tags[name] = (from_frame, to_frame)
+                tag_offset += 19 + name_len
+        except Exception as e:
+            print(f"Error processing tags chunk: {e}")
 
     def process_cel(self, data, surface):
         layer_index = struct.unpack('<H', data[0:2])[0]
