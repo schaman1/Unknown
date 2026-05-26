@@ -12,7 +12,7 @@ from client.domain.actions.camera import Camera
 from client.domain.intro.intro_story import Intro_story
 from client.ui.add_fading import Fading
 from client.ui.text import AnimatedText
-from client.config import assets
+from client.config import assets,display_text
 from shared.constants import world
 
 class Game :
@@ -453,8 +453,8 @@ class Game :
             pygame.draw.rect(bar_surface, (230, 0, 0, int(self.boss_bar_alpha)), fill_rect)
 
         # Title centered above the bar
-        font_title = pygame.font.SysFont(None, 28)
-        font_values = pygame.font.SysFont(None, 20)
+        font_title = display_text.FONT
+        font_values = display_text.FONT_SMALL
         
         title_text = font_title.render("The Dwarf King", True, (255, 255, 255))
         title_text.set_alpha(int(self.boss_bar_alpha))
