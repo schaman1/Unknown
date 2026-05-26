@@ -722,7 +722,7 @@ class Mma(Monster) :
         self.hit_box_damage_width = 8
 
         self.begin_attack = time.perf_counter()
-        self.len_attack = 1
+        self.len_attack = 1.5
         self.begin_relax = time.perf_counter()
         self.time_relax = 0.3
 

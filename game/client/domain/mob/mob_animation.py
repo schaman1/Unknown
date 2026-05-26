@@ -301,11 +301,6 @@ class Animation:
                 self.animation["jump"]["right"][i] = self.animation["jump"]["right"][3]
                 self.animation["jump"]["left"][i] = self.animation["jump"]["left"][3]
 
-            #size_img = 50*cell_size
-            for i in range(4):
-                self.animation["attacking"]["right"].append(self.animation["loading"]["right"][3])
-                self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
-
             self.add_tombe(cell_size)
 
         elif entity_name == "Skeleton":
