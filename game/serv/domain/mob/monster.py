@@ -218,7 +218,7 @@ class Monster(Mob):
             if self.dist > self.radius :
                 self.state = "moving"
 
-            if self.dist >= self.run_away_rad +15 or self.dist < (self.width/2)/self.base_movement : #0 = delta
+            elif self.dist >= self.run_away_rad +15 or self.dist < (self.width/2)/self.base_movement : #0 = delta
                 self.state = "attacking"
 
 
@@ -413,7 +413,7 @@ class Laseroide(Monster) :
         if self.focus :
             if self.time_relax + self.begin_relax <= time.perf_counter():
                 self.focus = False
-                self.state = "moving"
+                self.state = "run away"
                 self.last_time_jump = time.perf_counter()#Prevent jump
 
         return

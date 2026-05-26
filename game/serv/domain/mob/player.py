@@ -35,6 +35,9 @@ class Player(Mob) :
         self.respawn_at = [self.pos_x,self.pos_y]
         self.time_respawn = 0
 
+        self.last_time_touch_lave = time.perf_counter()
+        self.len_lave_touch = 0.2
+
         self.fct_to_do = self.check_if_can_leave_intro #Here to check if can leave after intro
 
     def set_finish_intro(self):
@@ -127,7 +130,9 @@ class Player(Mob) :
 
         self.move_all(map,dt,collision_handler)
 
-        collision_handler.check_if_touch_damage_obj(map,dt,self)
+        if self.last_time_touch_lave + self.len_lave_touch < time.perf_counter():
+            if collision_handler.check_if_touch_damage_obj(map,dt,self) :
+                self.last_time_touch_lave = time.perf_counter()
     
     def handle_input(self,map,dt):
 
