@@ -2,8 +2,7 @@ from serv.domain.mob.team import Team
 
 class CollisionHandler:
 
-    def __init__(self, server=None):
-        self.server = server
+    def __init__(self):
         self.effect_send = []
         self.die_send = []
 
@@ -64,7 +63,7 @@ class CollisionHandler:
                                 if touch :
                                     self.handle_touch(projectile,mob,in_chunk)
 
-        self.trigger_ent_touch()
+        return self.trigger_ent_touch()
 
     def return_chunk_neigborns(self,chunk,mobs):
         neighbors = []
@@ -165,6 +164,8 @@ class CollisionHandler:
 
     def trigger_ent_touch(self):
 
+        touch_warf = False,None
+
         for ent_id,(damage,owner,chunk,ent,knockback) in self.ent_touch.items():
 
             old_pv = ent.life
@@ -178,8 +179,7 @@ class CollisionHandler:
                 self.effect_send.append([ent.id,delta_life,chunk])
                 
             if getattr(ent, "name", None) == 6: # DwarfKing name = 6 on server
-                if self.server:
-                    self.server.send_data_all([27, ent.life, ent.max_life])
+                touch_warf = True,ent.life,ent.max_life
              
             if die:
                 if ent.auto_destruction :
@@ -188,12 +188,16 @@ class CollisionHandler:
                     self.die_send.append([ent.id,chunk,ent.len_dead])
 
         self.ent_touch.clear()
+        return touch_warf
 
     def check_if_touch_damage_obj(self,map,dt,player):
         """Take damage. If stay 0.5 sec, die"""
 
         if player.touch_element(map,map.kill):
 
-            damage = int(250*dt)
+            damage = 10
 
             self.player_take_damage_no_projectile(damage,player,chunk=99)
+
+            return True
+        return False
