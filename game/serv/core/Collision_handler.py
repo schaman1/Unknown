@@ -194,6 +194,9 @@ class CollisionHandler:
 
         if player.touch_element(map,map.kill):
 
-            damage = int(250*dt)
+            damage = 10
 
             self.player_take_damage_no_projectile(damage,player,chunk=99)
+
+            return True
+        return False
