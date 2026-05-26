@@ -131,6 +131,27 @@ class Animation:
             #img_running = pygame.transform.scale(img_running,(self.width,self.height))
             #self.decoupe_img(img_running,self.animation["running"],size)
 
+        elif entity_name == "Shaman" :
+
+            size = (self.width,self.height)
+            img_idle = pygame.image.load(assets.SHAMAN_IDLE)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["idle"],size)
+
+            img_idle = pygame.image.load(assets.SHAMAN_RUNNING)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["running"],size)
+
+            img_idle = pygame.image.load(assets.SHAMAN_ATTACK)
+            img_idle = pygame.transform.scale(img_idle,(self.width*2,self.height*2)) #*2 car en a 2 par ligne
+            self.decoupe_img(img_idle,self.animation["loading"],size)
+
+            for i in range(4):
+                self.animation["attacking"]["left"].append(self.animation["loading"]["left"][3])
+                self.animation["attacking"]["right"].append(self.animation["loading"]["right"][3])
+
+            self.add_tombe(cell_size)
+
         elif entity_name == "Laseroide" :
 
             #size_img = 50*cell_size
