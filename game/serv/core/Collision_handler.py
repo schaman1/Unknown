@@ -1,4 +1,5 @@
 from serv.domain.mob.team import Team
+import time
 
 class CollisionHandler:
 
@@ -168,6 +169,10 @@ class CollisionHandler:
 
         for ent_id,(damage,owner,chunk,ent,knockback) in self.ent_touch.items():
 
+            if ent.last_time_take_dammage + 10 < time.perf_counter():
+                #self.life = self.max_life
+                ent.life = ent.max_life
+
             old_pv = ent.life
 
             die = ent.take_damage(damage,owner,knockback)
@@ -195,7 +200,7 @@ class CollisionHandler:
 
         if player.touch_element(map,map.kill):
 
-            damage = 10
+            damage = 15
 
             self.player_take_damage_no_projectile(damage,player,chunk=99)
 

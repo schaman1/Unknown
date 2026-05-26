@@ -36,7 +36,7 @@ class Player(Mob) :
         self.time_respawn = 0
 
         self.last_time_touch_lave = time.perf_counter()
-        self.len_lave_touch = 0.2
+        self.len_lave_touch = 0.15
 
         self.fct_to_do = self.check_if_can_leave_intro #Here to check if can leave after intro
 
