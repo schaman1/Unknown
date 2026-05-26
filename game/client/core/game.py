@@ -90,6 +90,9 @@ class Game :
         self.player_command = []
         self.blit_info=False
         self.spell_blit_mouse=None
+        self.boss_hp = None
+        self.boss_max_hp = None
+        self.boss_bar_alpha = 0.0
 
     def draw_story(self):
         self.intro_story.start_intro()
@@ -228,6 +231,8 @@ class Game :
         self.pnj_all.blit_dialogue(screen,dt)
         #self.mini_map.draw_map(screen,pos)
         self.blit_infos(screen,self.screen_size,mouse_pos)
+
+        self.draw_boss_health_bar(screen, dt)
 
         self.fade.trigger(screen,dt)
 
@@ -399,3 +404,68 @@ class Game :
         self.end_alpha_fading = time.perf_counter()+self.end_alpha_len
         self.alpha_fading = 0
         self.last_time_add_text_end = time.perf_counter()+self.end_alpha_len
+
+    def update_boss_health(self, current_hp, max_hp):
+        self.boss_hp = current_hp
+        self.boss_max_hp = max_hp
+
+    def draw_boss_health_bar(self, screen, dt):
+        in_boss_zone = False
+        if hasattr(self, 'canva') and self.canva.chunk_x is not None and self.canva.chunk_y is not None:
+            # Chunks for x11y7 - x12y7: chunk_y == 7, chunk_x in (11, 12)
+            in_boss_zone = (self.canva.chunk_y == 7 and self.canva.chunk_x in (11, 12))
+
+        fade_duration = 1.0
+        alpha_change = (255.0 * dt) / fade_duration
+        
+        boss_alive = self.boss_hp is not None and self.boss_hp > 0
+        
+        if in_boss_zone and boss_alive:
+            self.boss_bar_alpha = min(255.0, self.boss_bar_alpha + alpha_change)
+        else:
+            self.boss_bar_alpha = max(0.0, self.boss_bar_alpha - alpha_change)
+
+        if self.boss_bar_alpha <= 0 or self.boss_hp is None or self.boss_max_hp is None:
+            return
+
+        screen_w, screen_h = self.screen_size
+        
+        bar_w = int(screen_w * 0.5)
+        bar_h = 24
+        bar_x = (screen_w - bar_w) // 2
+        bar_y = 40
+        
+        bar_surface = pygame.Surface((screen_w, bar_y + bar_h + 30), pygame.SRCALPHA)
+        
+        border_rect = pygame.Rect(bar_x, bar_y, bar_w, bar_h)
+        bg_rect = pygame.Rect(bar_x + 2, bar_y + 2, bar_w - 4, bar_h - 4)
+        
+        # Black border
+        pygame.draw.rect(bar_surface, (0, 0, 0, int(self.boss_bar_alpha)), border_rect, 2)
+        # Charcoal background
+        pygame.draw.rect(bar_surface, (40, 40, 40, int(self.boss_bar_alpha)), bg_rect)
+        
+        # Solid Red bar
+        health_ratio = max(0.0, min(1.0, self.boss_hp / self.boss_max_hp))
+        if health_ratio > 0:
+            fill_w = int((bar_w - 4) * health_ratio)
+            fill_rect = pygame.Rect(bar_x + 2, bar_y + 2, fill_w, bar_h - 4)
+            pygame.draw.rect(bar_surface, (230, 0, 0, int(self.boss_bar_alpha)), fill_rect)
+
+        # Title centered above the bar
+        font_title = pygame.font.SysFont(None, 28)
+        font_values = pygame.font.SysFont(None, 20)
+        
+        title_text = font_title.render("The Dwarf King", True, (255, 255, 255))
+        title_text.set_alpha(int(self.boss_bar_alpha))
+        title_rect = title_text.get_rect(center=(screen_w // 2, bar_y - 15))
+        bar_surface.blit(title_text, title_rect)
+        
+        # Values centered inside the bar
+        hp_str = f"{self.boss_hp}/{self.boss_max_hp}"
+        hp_text = font_values.render(hp_str, True, (255, 255, 255))
+        hp_text.set_alpha(int(self.boss_bar_alpha))
+        hp_rect = hp_text.get_rect(center=(screen_w // 2, bar_y + bar_h // 2))
+        bar_surface.blit(hp_text, hp_rect)
+        
+        screen.blit(bar_surface, (0, 0))

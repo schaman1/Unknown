@@ -131,6 +131,13 @@ class Server_game(Server) :
         self.is_running_game = not self.is_running_game
         self.is_running_menu = not self.is_running_menu
 
+    def get_dwarf_king(self):
+        for chunk in self.map_monster.dic_monster.values():
+            for m in chunk:
+                if getattr(m, "name", None) == 6: # DwarfKing name = 6 on server
+                    return m
+        return None
+
     def start_game(self):
         print("start intro")
         self.change_state()
@@ -147,6 +154,11 @@ class Server_game(Server) :
 
         #self.send_data_update(result_cell,3) #Envoie à tt le monde tout les nouveau pixels à draw
         self.send_data_update(result_monster,5) #Envoie à tt le monde tout les nouveau monstres à draw
+
+        # Broadcast initial boss HP to all players
+        dk = self.get_dwarf_king()
+        if dk:
+            self.send_data_all([27, dk.life, dk.max_life])
 
         pygame.time.wait(int(1.5*1000))
         self.send_data_all([9]) #9 : a fini de load
