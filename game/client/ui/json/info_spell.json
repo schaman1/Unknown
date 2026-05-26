@@ -78,7 +78,7 @@
         "life":2,
         "speed":5,
         "rebond":0,
-        "time_reload": 1,
+        "time_reload": 0.8,
         "degat":50
     },
     "SPELL10":{
@@ -101,7 +101,7 @@
         "type":"augment",
         "name":"Recharge",
         "description":["Reduit le temps de",
-                        "recharge totale de 0.4",
+                        "recharge totale de 0.15",
                         "+ tir aleatoire."],
         "time_reload": -0.2,
         "degat":0
@@ -127,8 +127,8 @@
         "type":"augment",
         "name":"Recharge",
         "description":["Reduit le temps complet",
-                        "de recharge de 0.4."],
-        "time_reload": -0.2,
+                        "de recharge de 0.2."],
+        "time_reload": -0.3,
         "degat":0
     },
     "SPELL16":{
@@ -171,7 +171,7 @@
         "life":1,
         "speed":50,
         "rebond":0,
-        "time_reload": 0.6,
+        "time_reload": 0.4,
         "degat":4
     },
     "SPELL31":{
@@ -204,6 +204,17 @@
         "time_reload": 0.2,
         "degat":6
     },
+    "SPELL34":{
+        "type":"projectile",
+        "name":"Boule bleu + effet",
+        "description":["Invoque les 2 PROJECTILES",
+                    "suivant a sa disparition."],
+        "life":1,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.3,
+        "degat":8
+    },
     "SPELL40":{
         "type":"augment",
         "name":"Dash court",
@@ -223,7 +234,7 @@
         "type":"projectile",
         "name":"Mur",
         "description":["Il vous permettra de bloquer",
-                        "et distraire les monstres."],
+        "et distraire les monstres."],
         "time_reload": 5,
         "life":15,
         "speed":0,
@@ -233,7 +244,7 @@
         "type":"projectile",
         "name":"Grand mur",
         "description":["Il vous permettra de bloquer",
-                        "et distraire les monstres."],
+        "et distraire les monstres."],
         "time_reload":10,
         "life":50,
         "speed":0,
@@ -247,6 +258,36 @@
         "life":1.5,
         "speed":30,
         "degat":0
+    },
+    "SPELL45":{
+        "type":"projectile",
+        "name":"Fluff",
+        "description":["Enleve 0.15s au temps de",
+        "rechargement complet."],
+        "time_reload":-0.15,
+        "life":2,
+        "speed":5,
+        "degat":1
+    },
+    "SPELL46":{
+        "type":"projectile",
+        "name":"Fluff + effet",
+        "description":["Enleve 0.1s au temps de",
+        "rechargement complet."],
+        "time_reload":-0.1,
+        "life":2,
+        "speed":5,
+        "degat":1
+    },
+    "SPELL47":{
+        "type":"projectile",
+        "name":"Boule bleu",
+        "description":["Nothing"],
+        "life":1,
+        "speed":50,
+        "rebond":0,
+        "time_reload": 0.3,
+        "degat":8
     },
     "UNKNOWN_SPELL":{
         "type":"projectile",

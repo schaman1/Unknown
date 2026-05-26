@@ -454,6 +454,24 @@ class CreateLune_DieEffect(Upgrade):
 
         return 1,[projectile],None,None
     
+class CreateFire_B_DieEffect(Upgrade):
+    """DieEffect = create projectile when die"""
+
+    def __init__(self):
+
+        super().__init__(id = 34,time_take = weapons.FIRE_B_RELOAD_TIME_DIE_EFFECT)
+
+    def trigger(self,weapon,idx=0):
+
+        projectile = projectile_type.Fire_B(weapon.angle,weapon.pos,weapon.team,weapon.randomize_angle,weapon.owner.return_pos())
+
+        projectile = weapon.add_projectile(projectile)
+
+        AddProjectileWhenDie([projectile],weapon,idx)
+        AddProjectileWhenDie([projectile],weapon,idx)
+
+        return 1,[projectile],None,None
+    
 #class SmallDash(Upgrade):
 #
 #    def __init__(self):
@@ -613,6 +631,7 @@ UPGRADES[30] = CreateFire_DieEffect()
 UPGRADES[31] = Copy()
 UPGRADES[32] = CreatePompe_DieEffect()
 UPGRADES[33] = CreateLune_DieEffect()
+UPGRADES[34] = CreateFire_B_DieEffect()
 #UPGRADES[40] = SmallDash()
 UPGRADES[41] = LongDash()
 UPGRADES[42] = CreateWall()
@@ -624,5 +643,5 @@ UPGRADES[47] = CreateFire_B()
 #UPGRADES[42] = Jump()
 
 common_upgrades = [2,3,7,8,10,11,12,13,20,42]
-rare_upgrades = [4,5,6,14,21,41,44,45,47]
-legendary_upgrades = [9,15,22,31,32,33,43,46]
+rare_upgrades = [4,5,6,14,21,33,41,44,45,47]
+legendary_upgrades = [9,15,22,31,32,34,43,46]
