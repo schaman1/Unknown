@@ -55,7 +55,7 @@ class Network_handler :
                 msg_id = buffer[0]
 
                 # Exemple : ID 0 = start_game (1 byte)
-                if msg_id == 0 or msg_id ==10 or msg_id == 11 or msg_id == 12: #Start game
+                if msg_id == 0 or msg_id ==10 or msg_id == 11 or msg_id == 12 or msg_id==13: #Start game
                     msg_size = 1
 
                 elif msg_id == 1: #
@@ -204,6 +204,9 @@ class Network_handler :
         elif id_msg == 12:
             self.server.lClient[sender].unlock_double_jump()
 
+        elif id_msg == 13 :
+            id_client = self.server.lClient[sender].id
+            self.server.send_data_all([28,id_client])
 
         else :
             print("What to do with this id send ? ",id_msg)
@@ -401,6 +404,9 @@ class Network_handler :
 
         elif id == 27:
             packet += struct.pack("!HH", data[1], data[2])
+
+        elif id == 28 :
+            packet+= struct.pack("!B",data[1])
 
         else :
             print("Issue id not found : ",id)

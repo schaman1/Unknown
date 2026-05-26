@@ -26,7 +26,7 @@ class Pnj_all :
         self.is_talking = False
         self.talks_to = None
 
-        with open(resource_path("client/ui/json/text.json")) as f:
+        with open(resource_path("client/ui/json/text.json"),'r', encoding="utf-8") as f:
 
             self.dialogues = json.load(f)
             f.close()

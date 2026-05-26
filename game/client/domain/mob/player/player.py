@@ -215,8 +215,9 @@ class Player_you(Mob) :
                 self.animation.set_state("running")
                 self.old_state = "running"
         elif delta==0 :
-            self.old_state = "idle"
-            self.animation.set_state("idle")
+            if self.animation.state != "surprise":
+                self.old_state = "idle"
+                self.animation.set_state("idle")
 
     def kill(self,duree):
 
@@ -224,6 +225,11 @@ class Player_you(Mob) :
         self.key_active["left"] = False
 
         self.animation.set_to_death(duree,"in_death")
+
+    def set_surprise(self):
+        self.animation.state = "surprise"
+        self.animation.frame = 0
+        self.animation.fct_to_do = self.animation.next_idle
 
 class Player_not_you(Mob) :
 
@@ -320,3 +326,8 @@ class Player_not_you(Mob) :
             if self.old_state != "idle" :
                 self.old_state = "idle"
                 self.animation.set_state("idle")
+
+    def set_surprise(self):
+        self.animation.state = "surprise"
+        self.animation.frame = 0
+        self.remaining_time_anim = self.animation.animation["surprise"]["time"]*4

@@ -143,6 +143,9 @@ class Main:
                             elif event.key==pygame.K_q:
                                 self.key_command.append([3,2])
                                 self.state.game.player_all.me.update_direction_look(2)
+
+                            elif event.key==pygame.K_t:
+                                self.client.send_data(13,None)
                             
                         if event.key == pygame.K_ESCAPE and self.objClicked is None:
 

@@ -1,49 +1,49 @@
 {
-    "pnj_tell_story":[
-        "Oy l'ami ! Oh t'es un p'tit nouveau toi ca se voit !",
-        "Laisse moi te donner ca pour mieux voir !",
-        "Je suppose que tu ne te rappelles pas comment tu es arrive ici ?",
-        "Tiens, voici des dessins qui t'aideront a comprendre !"
+    "pnj_tell_story": [
+        "Oy l'ami ! Oh t'es un p'tit nouveau toi ça se voit !",
+        "Laisse-moi te donner ça pour mieux voir !",
+        "Je suppose que tu ne te rappelles pas comment tu es arrivé ici ?",
+        "Tiens, voici des dessins qui t'aideront à comprendre !"
     ],
-    "pnj_tell_healer":[
-        "Oy, bienvenue a toi.",
-        "Ce qui se trouve a ma droite est un 'Halo'.",
-        "Il permet de te guerir et ton esprit reapparaitra ici !"
+    "pnj_tell_healer": [
+        "Oy, bienvenue à toi.",
+        "Ce qui se trouve à ma droite est un 'Halo'.",
+        "Il permet de te guérir et ton esprit réapparaîtra ici !"
     ],
-    "pnj_double_jump":[
+    "pnj_double_jump": [
         "Oy ? Mais je n'en crois pas mes pupilles !",
         "Un nain ! Comme moi ! Cela fait si longtemps que je n'en avais pas vu !",
         "Pour te remercier de ta visite voici un cadeau.",
         "C'est une pierre qui te permet de sauter une fois de plus !"
     ],
-    "pnj_learn_attack":[
+    "pnj_learn_attack": [
         "Oy ! Comment va mon aventurier ?",
         "Tu veux ce sort ? Pour cela il faut attaquer des ennemis.",
         "Rien de plus simple, appuie juste sur 'J' ou 'K'."
     ],
-    "pnj_learn_spell":[
-        "Oy ! Je suis aussi un grand maitre des combats.",
-        "Mais dis moi, tu ne sais pas ou est parti ton sort ?",
-        "Appuie sur 'i', et tu verras apparaitre tes sorts.",
-        "Tu peux ensuite les deplacer avec ta souris !"
+    "pnj_learn_spell": [
+        "Oy ! Je suis aussi un grand maître des combats.",
+        "Mais dis-moi, tu ne sais pas où est parti ton sort ?",
+        "Appuie sur 'i', et tu verras apparaître tes sorts.",
+        "Tu peux ensuite les déplacer avec ta souris !"
     ],
-    "pnj_tp_boss":[
-        "Oy, bienvenue a toi.",
+    "pnj_tp_boss": [
+        "Oy, bienvenue à toi.",
         "Fais attention ! Ici se trouve notre roi !",
         "Tu veux vraiment le voir ?",
-        "Seulement si tous tes amis se trouvent a cote de moi, je vous ouvre."
+        "Seulement si tous tes amis se trouvent à côté de moi, je vous ouvre."
     ],
-    "End":[
-        "Vous avez reussi à vaincre le Roi de NIFHLHEIM !",
+    "End": [
+        "Vous avez réussi à vaincre le Roi de NIFHLHEIM !",
         "",
-        "Il regnait en maître depuis plus de 20 ans.",
-        "Mais grace à vous, les nains vont retrouver",
-        "leur liberte et leurs droits !",
+        "Il régnait en maître depuis plus de 20 ans.",
+        "Mais grâce à vous, les nains vont retrouver",
+        "leur liberté et leurs droits !",
         "",
-        "Vous avez aussi libere tous les Hommes perdus",
-        "dans ces grottes en les reconduisant a la surface !",
+        "Vous avez aussi libéré tous les Hommes perdus",
+        "dans ces grottes en les reconduisant à la surface !",
         "",
         "",
-        "Vous etes les HEROS DU SIECLE !"
+        "Vous êtes les HÉROS DU SIÈCLE !"
     ]
 }

@@ -33,7 +33,7 @@ class CompleteInfo:
         self.pos_y_other_info = self.size[1]//3
         self.delta_y_other_info = self.size[1]//9
 
-        with open(resource_path("client/ui/json/info_spell.json"),"r") as info :
+        with open(resource_path("client/ui/json/info_spell.json"),"r", encoding="utf-8") as info :
             self.infos = json.load(info)
 
         #self.dist_interactable_max = cell_size*

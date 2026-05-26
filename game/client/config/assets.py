@@ -83,6 +83,7 @@ PLAYER_IDLE = resource_path("assets/sprites/player/idle/player_idle.png")
 PLAYER_RUNNING = resource_path("assets/sprites/player/running/player_running.png")
 PLAYER_DEATH = resource_path("assets/sprites/player/death/player_death.png")
 PLAYER_JUMP = resource_path("assets/sprites/player/jump/player_jump.png")
+PLAYER_SURPRISE = resource_path("assets/sprites/player/special/player_fuck.png")
 
 PNJ_IDLE = resource_path("assets/sprites/pnj/pnj_idle.png")
 

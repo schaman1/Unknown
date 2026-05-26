@@ -1,339 +1,302 @@
 {
-    "SPELL2":{
-        "type":"projectile",
-        "name":"Boule de feu",
-        "description":["Nothing"],
-        "life":1,
-        "speed":50,
-        "rebond":0,
+    "SPELL2": {
+        "type": "projectile",
+        "name": "Boule de feu",
+        "description": ["Nothing"],
+        "life": 1,
+        "speed": 50,
+        "rebond": 0,
         "time_reload": 0.4,
-        "degat":4
+        "degat": 4
     },
-    "SPELL3":{
-        "type":"projectile",
-        "name":"Taillade",
-        "description":["Nothing"],
-        "life":0.1,
-        "speed":0,
-        "rebond":0,
+    "SPELL3": {
+        "type": "projectile",
+        "name": "Taillade",
+        "description": ["Nothing"],
+        "life": 0.1,
+        "speed": 0,
+        "rebond": 0,
         "time_reload": 0.1,
-        "degat":6
+        "degat": 6
     },
-    "SPELL4":{
-        "type":"projectile",
-        "name":"Pompe",
-        "description":["Tir 3 puissants",
+    "SPELL4": {
+        "type": "projectile",
+        "name": "Pompe",
+        "description": ["Tire 3 puissants",
                         "projectiles."],
-        "life":0.2,
-        "speed":70,
-        "rebond":0,
+        "life": 0.2,
+        "speed": 70,
+        "rebond": 0,
         "time_reload": 0.3,
-        "degat":2
+        "degat": 2
     },
-    "SPELL5":{
-        "type":"projectile",
-        "name":"Laser",
-        "description":["Nothing"],
-        "life":2,
-        "speed":50,
-        "rebond":0,
+    "SPELL5": {
+        "type": "projectile",
+        "name": "Laser",
+        "description": ["Nothing"],
+        "life": 2,
+        "speed": 50,
+        "rebond": 0,
         "time_reload": -0.1,
-        "degat":1
+        "degat": 1
     },
-    "SPELL6":{
-        "type":"projectile",
-        "name":"Bouclier",
-        "description":["Attaque de",
+    "SPELL6": {
+        "type": "projectile",
+        "name": "Bouclier",
+        "description": ["Attaque de",
                         "tout part"],
-        "life":0.1,
-        "speed":0,
-        "rebond":0,
+        "life": 0.1,
+        "speed": 0,
+        "rebond": 0,
         "time_reload": 0.15,
-        "degat":1
+        "degat": 1
     },
-    "SPELL7":{
-        "type":"projectile",
-        "name":"Caillou",
-        "description":["Lance un enorme caillou"],
-        "life":2,
-        "speed":80,
-        "rebond":0,
+    "SPELL7": {
+        "type": "projectile",
+        "name": "Caillou",
+        "description": ["Lance un énorme caillou"],
+        "life": 2,
+        "speed": 80,
+        "rebond": 0,
         "time_reload": 0.25,
-        "degat":2
+        "degat": 2
     },
-    "SPELL8":{
-        "type":"projectile",
-        "name":"Lance",
-        "description":["Nothing"],
-        "life":0.1,
-        "speed":0,
-        "rebond":0,
+    "SPELL8": {
+        "type": "projectile",
+        "name": "Lance",
+        "description": ["Nothing"],
+        "life": 0.1,
+        "speed": 0,
+        "rebond": 0,
         "time_reload": 0.1,
-        "degat":6
+        "degat": 6
     },
-    "SPELL9":{
-        "type":"projectile",
-        "name":"Death",
-        "description":["Nothing"],
-        "life":2,
-        "speed":5,
-        "rebond":0,
+    "SPELL9": {
+        "type": "projectile",
+        "name": "Death",
+        "description": ["Nothing"],
+        "life": 2,
+        "speed": 5,
+        "rebond": 0,
         "time_reload": 0.8,
-        "degat":50
+        "degat": 50
     },
-    "SPELL10":{
-        "type":"augment",
-        "name":"Vitesse",
-        "description":["Multiplie la vitesse",
+    "SPELL10": {
+        "type": "augment",
+        "name": "Vitesse",
+        "description": ["Multiplie la vitesse",
                         "du projectile par 2."],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL11":{
-        "type":"augment",
-        "name":"Rebond",
-        "description":["Ajoute 'rebond' au",
-                    "prochain projectile."],
+    "SPELL11": {
+        "type": "augment",
+        "name": "Rebond",
+        "description": ["Ajoute « rebond » au",
+                        "prochain projectile."],
         "time_reload": 0,
-        "degat":-2
+        "degat": -2
     },
-    "SPELL12":{
-        "type":"augment",
-        "name":"Recharge",
-        "description":["Reduit le temps de",
+    "SPELL12": {
+        "type": "augment",
+        "name": "Recharge",
+        "description": ["Réduit le temps de",
                         "recharge totale de 0.15",
-                        "+ tir aleatoire."],
+                        "+ tir aléatoire."],
         "time_reload": -0.2,
-        "degat":0
+        "degat": 0
     },
-    "SPELL13":{
-        "type":"augment",
-        "name":"Degat plus",
-        "description":["Ajoute 2 degats",
+    "SPELL13": {
+        "type": "augment",
+        "name": "Dégâts +",
+        "description": ["Ajoute 2 dégâts",
                         "au prochain projectile."],
         "time_reload": 0,
-        "degat":2
+        "degat": 2
     },
-    "SPELL14":{
-        "type":"augment",
-        "name":"Degat plus +",
-        "description":["Ajoute 5 degats",
+    "SPELL14": {
+        "type": "augment",
+        "name": "Dégâts ++",
+        "description": ["Ajoute 5 dégâts",
                         "mais les projectiles peuvent",
                         "vous blesser."],
         "time_reload": 0,
-        "degat":5
+        "degat": 5
     },
-    "SPELL15":{
-        "type":"augment",
-        "name":"Recharge",
-        "description":["Reduit le temps complet",
+    "SPELL15": {
+        "type": "augment",
+        "name": "Recharge",
+        "description": ["Réduit le temps complet",
                         "de recharge de 0.2."],
         "time_reload": -0.3,
-        "degat":0
+        "degat": 0
     },
-    "SPELL16":{
-        "type":"augment",
-        "name":"Duree",
-        "description":["Augmente la duree",
+    "SPELL16": {
+        "type": "augment",
+        "name": "Durée",
+        "description": ["Augmente la durée",
                         "du projectile."],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL20":{
-        "type":"augment",
-        "name":"Simple",
-        "description":["Permet de lancer",
-                    "1 sort de plus."],
+    "SPELL20": {
+        "type": "augment",
+        "name": "Simple",
+        "description": ["Permet de lancer",
+                        "1 sort de plus."],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL21":{
-        "type":"augment",
-        "name":"Double",
-        "description":["Permet de lancer",
-                    "2 sorts de plus."],
+    "SPELL21": {
+        "type": "augment",
+        "name": "Double",
+        "description": ["Permet de lancer",
+                        "2 sorts de plus."],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL22":{
-        "type":"augment",
-        "name":"Infinie",
-        "description":["Permet de lancer",
-                    "tous les sorts !"],
+    "SPELL22": {
+        "type": "augment",
+        "name": "Infini",
+        "description": ["Permet de lancer",
+                        "tous les sorts !"],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL30":{
-        "type":"projectile",
-        "name":"BDF + effet",
-        "description":["Invoque le PROJECTILE",
-                    "suivant a sa disparition."],
-        "life":1,
-        "speed":50,
-        "rebond":0,
+    "SPELL30": {
+        "type": "projectile",
+        "name": "BDF + effet",
+        "description": ["Invoque le PROJECTILE",
+                        "suivant à sa disparition."],
+        "life": 1,
+        "speed": 50,
+        "rebond": 0,
         "time_reload": 0.4,
-        "degat":4
+        "degat": 4
     },
-    "SPELL31":{
-        "type":"augment",
-        "name":"Copie",
-        "description":["Copie le prochain sort",
+    "SPELL31": {
+        "type": "augment",
+        "name": "Copie",
+        "description": ["Copie le prochain sort",
                         "ou projectile."],
         "time_reload": 0,
-        "degat":0
+        "degat": 0
     },
-    "SPELL32":{
-        "type":"projectile",
-        "name":"Pompe + effet",
-        "description":["Invoque le PROJECTILE",
-                    "suivant a sa disparition."],
-        "life":0.2,
-        "speed":70,
-        "rebond":0,
+    "SPELL32": {
+        "type": "projectile",
+        "name": "Pompe + effet",
+        "description": ["Invoque le PROJECTILE",
+                        "suivant à sa disparition."],
+        "life": 0.2,
+        "speed": 70,
+        "rebond": 0,
         "time_reload": 2,
-        "degat":2
+        "degat": 2
     },
-    "SPELL33":{
-        "type":"projectile",
-        "name":"Taillade + effet",
-        "description":["Invoque les 2 PROJECTILES",
-                    "suivant a sa disparition."],
-        "life":0.1,
-        "speed":0,
-        "rebond":0,
+    "SPELL33": {
+        "type": "projectile",
+        "name": "Taillade + effet",
+        "description": ["Invoque les 2 PROJECTILES",
+                        "suivant à sa disparition."],
+        "life": 0.1,
+        "speed": 0,
+        "rebond": 0,
         "time_reload": 0.2,
-        "degat":6
+        "degat": 6
     },
-    "SPELL34":{
-        "type":"projectile",
-        "name":"Boule bleu + effet",
-        "description":["Invoque les 2 PROJECTILES",
-                    "suivant a sa disparition."],
-        "life":1,
-        "speed":50,
-        "rebond":0,
+    "SPELL34": {
+        "type": "projectile",
+        "name": "Boule bleue + effet",
+        "description": ["Invoque les 2 PROJECTILES",
+                        "suivant à sa disparition."],
+        "life": 1,
+        "speed": 50,
+        "rebond": 0,
         "time_reload": 0.3,
-        "degat":8
+        "degat": 8
     },
-    "SPELL40":{
-        "type":"augment",
-        "name":"Dash court",
-        "description":["D'ou vient ce pouvoir ?"],
+    "SPELL40": {
+        "type": "augment",
+        "name": "Dash court",
+        "description": ["D’où vient ce pouvoir ?"],
         "time_reload": 1,
-        "degat":0
+        "degat": 0
     },
-    "SPELL41":{
-        "type":"augment",
-        "name":"Dash long",
-        "description":["Il vous permettra d'aller",
+    "SPELL41": {
+        "type": "augment",
+        "name": "Dash long",
+        "description": ["Il vous permettra d'aller",
                         "dans de nouvelles zones."],
         "time_reload": 1,
-        "degat":0
+        "degat": 0
     },
-    "SPELL42":{
-        "type":"projectile",
-        "name":"Mur",
-        "description":["Il vous permettra de bloquer",
-        "et distraire les monstres."],
+    "SPELL42": {
+        "type": "projectile",
+        "name": "Mur",
+        "description": ["Il vous permettra de bloquer",
+                        "et distraire les monstres."],
         "time_reload": 5,
-        "life":15,
-        "speed":0,
-        "degat":0
+        "life": 15,
+        "speed": 0,
+        "degat": 0
     },
-    "SPELL43":{
-        "type":"projectile",
-        "name":"Grand mur",
-        "description":["Il vous permettra de bloquer",
-        "et distraire les monstres."],
-        "time_reload":10,
-        "life":50,
-        "speed":0,
-        "degat":0
+    "SPELL43": {
+        "type": "projectile",
+        "name": "Grand mur",
+        "description": ["Il vous permettra de bloquer",
+                        "et distraire les monstres."],
+        "time_reload": 10,
+        "life": 50,
+        "speed": 0,
+        "degat": 0
     },
-    "SPELL44":{
-        "type":"projectile",
-        "name":"Lanterne",
-        "description":["Elle vous permet de voir au loin."],
-        "time_reload":5,
-        "life":1.5,
-        "speed":30,
-        "degat":0
+    "SPELL44": {
+        "type": "projectile",
+        "name": "Lanterne",
+        "description": ["Elle vous permet de voir au loin."],
+        "time_reload": 5,
+        "life": 1.5,
+        "speed": 30,
+        "degat": 0
     },
-    "SPELL45":{
-        "type":"projectile",
-        "name":"Fluff",
-        "description":["Enleve 0.15s au temps de",
-        "rechargement complet."],
-        "time_reload":-0.15,
-        "life":2,
-        "speed":5,
-        "degat":1
+    "SPELL45": {
+        "type": "projectile",
+        "name": "Fluff",
+        "description": ["Enlève 0.15s au temps de",
+                        "rechargement complet."],
+        "time_reload": -0.15,
+        "life": 2,
+        "speed": 5,
+        "degat": 1
     },
-    "SPELL46":{
-        "type":"projectile",
-        "name":"Fluff + effet",
-        "description":["Enleve 0.1s au temps de",
-        "rechargement complet."],
-        "time_reload":-0.1,
-        "life":2,
-        "speed":5,
-        "degat":1
+    "SPELL46": {
+        "type": "projectile",
+        "name": "Fluff + effet",
+        "description": ["Enlève 0.1s au temps de",
+                        "rechargement complet."],
+        "time_reload": -0.1,
+        "life": 2,
+        "speed": 5,
+        "degat": 1
     },
-    "SPELL47":{
-        "type":"projectile",
-        "name":"Boule bleu",
-        "description":["Nothing"],
-        "life":1,
-        "speed":50,
-        "rebond":0,
+    "SPELL47": {
+        "type": "projectile",
+        "name": "Boule bleue",
+        "description": ["Nothing"],
+        "life": 1,
+        "speed": 50,
+        "rebond": 0,
         "time_reload": 0.3,
-        "degat":8
+        "degat": 8
     },
-    "UNKNOWN_SPELL":{
-        "type":"projectile",
-        "name":"Unknown",
-        "description":["Doit implementer ses infos."],
-        "life":"Not decided yet",
-        "speed":99999,
-        "rebond":0,
-        "time_reload":1,
-        "degat":0
-    },
-    "WEAPON0":{
-        "type":"weapon",
-        "name":"Sac à dos",
-        "description":["Il vous sert à transporter",
-                        "vos objets."],
-        "nbr_slot":10,
-        "time_reload":0,
-        "spell_time":0
-    },
-    "WEAPON1":{
-        "type":"weapon",
-        "name":"Arme J",
-        "description":["En appyant sur j,",
-                        "il lancera vos sorts !"],
-        "nbr_slot":3,
-        "time_reload":2,
-        "spell_time":1
-    },
-    "WEAPON2":{
-        "type":"weapon",
-        "name":"Arme K",
-        "description":["En appuyant sur k,",
-                        "il lancera vos sorts !"],
-        "nbr_slot":3,
-        "time_reload":2,
-        "spell_time":1
-    },
-    "WEAPON3":{
-        "type":"weapon",
-        "name":"Arme L",
-        "description":["En appuyant sur L,",
-                        "il lancera vos sorts !"],
-        "nbr_slot":3,
-        "time_reload":2,
-        "spell_time":1
+    "UNKNOWN_SPELL": {
+        "type": "projectile",
+        "name": "Inconnu",
+        "description": ["Doit implémenter ses infos."],
+        "life": "Non défini",
+        "speed": 99999,
+        "rebond": 0,
+        "time_reload": 1,
+        "degat": 0
     }
-
 }

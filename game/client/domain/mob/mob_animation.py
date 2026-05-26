@@ -28,6 +28,9 @@ class Animation:
                             "death":{"right":[],
                                      "left":[],
                                      "time":0},
+                            "surprise":{"right":[],
+                                     "left":[],
+                                     "time":0.4},
                             "loading":{"right":[],
                                        "left":[],
                                        "time":1/4,},
@@ -95,6 +98,10 @@ class Animation:
             img_running = pygame.image.load(assets.PLAYER_RUNNING)
             img_running = pygame.transform.scale(img_running,(self.width*2,self.height*2))
             self.decoupe_img(img_running,self.animation["running"],size)
+
+            img_running = pygame.image.load(assets.PLAYER_SURPRISE)
+            img_running = pygame.transform.scale(img_running,(self.width*2,self.height*2))
+            self.decoupe_img(img_running,self.animation["surprise"],size)
 
             img_death = pygame.image.load(assets.PLAYER_DEATH)
             img_death = pygame.transform.scale(img_death,(self.width*2,self.height*2))

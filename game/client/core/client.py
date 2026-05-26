@@ -201,6 +201,9 @@ class Client:
             elif msg_id == 27 :
                 msg_size = 1+2+2
 
+            elif msg_id == 28:
+                msg_size = 1+1
+
             else:
                 print("UNKNOWN MSG ID", msg_id)
                 self.buffer.pop(0)
@@ -418,6 +421,10 @@ class Client:
         elif id==27:
             current_hp, max_hp = struct.unpack("!HH", data[1:5])
             self.main.state.game.update_boss_health(current_hp, max_hp)
+
+        elif id == 28:
+            id_player = data[1]
+            self.main.state.game.player_all.dic_players[id_player].set_surprise()
 
 
     def display_clients_name(self):
