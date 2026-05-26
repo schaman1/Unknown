@@ -97,7 +97,7 @@ ESCARGOT_IDLE = resource_path("assets/sprites/monster/Escargot/Escargot_running.
 ESCARGOT_ATTACK = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
 ESCARGOT_RUNNING = resource_path("assets/sprites/monster/Escargot/Escargot_running.png")
 
-SHAMAN_IDLE = resource_path("assets/sprites/monster/Shaman/Shaman_idle.png")
+SHAMAN_IDLE = resource_path("assets/sprites/monster/Shaman/Shaman_running.png")
 SHAMAN_ATTACK = resource_path("assets/sprites/monster/Shaman/Shaman_attacking.png")
 SHAMAN_RUNNING = resource_path("assets/sprites/monster/Shaman/Shaman_running.png")
 
