@@ -11,6 +11,7 @@ class Monster(Mob):
 
         super().__init__((x,y),hp,id,acceleration=acceleration,height = height,width = width)
 
+        self.last_time_take_dammage = time.perf_counter()
         self.time_destroy = time.perf_counter()+len_life
         if len_life != 0:
             self.auto_destruction = True
@@ -239,6 +240,7 @@ class Monster(Mob):
                 amount = 0 #Le met a 0 comme ca envoie quand mm cote client le 0 => dessine "bloque"
 
             self.life -= amount
+            self.last_time_take_dammage = time.perf_counter()
             self.send_new_life = True
 
             self.player_did_dammage[player_did_damage] = time.perf_counter()
@@ -277,6 +279,7 @@ class Monster(Mob):
         self.player_did_dammage.clear()
         self.dead = True
         self.target = None
+        self.state = "idle" #To prevent damage when respawn
         self.start_dead = time.perf_counter()
 
     def still_dead(self):
@@ -734,6 +737,9 @@ class Mma(Monster) :
         self.begin_relax = time.perf_counter()
         self.time_relax = 0.8
 
+        self.last_time_jump = time.perf_counter()
+        self.delta_time_before_jump = 0.7
+
         #self.collision_damage = False
 
     def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
@@ -801,7 +807,9 @@ class Mma(Monster) :
             self.move_down(dt)
 
         elif self.target.pos_y < self.pos_y - self.half_height:
-            self.jump(dt)
+            if self.last_time_jump + self.delta_time_before_jump < time.perf_counter():
+                self.jump(dt)
+                self.last_time_jump = time.perf_counter()
 
         else :
             self.is_climbing=True
@@ -1159,13 +1167,14 @@ class Limace(Monster) :
     def moving_behavior(self,target,map,dt):
         """Move to the player"""
 
-        if target.pos_x<self.pos_x :
-            self.side = "left"
-            self.move_left(map,dt)
-        
-        else :
-            self.side = "right"
-            self.move_right(map,dt)
+        if target : 
+            if target.pos_x<self.pos_x :
+                self.side = "left"
+                self.move_left(map,dt)
+            
+            else :
+                self.side = "right"
+                self.move_right(map,dt)
     
     def leave_behavior(self,target,map,dt):
         return

@@ -41,7 +41,7 @@ class Game :
         
         #self.canva = pygame.Surface((self.canva_size[0]*cell_size,self.canva_size[1]*cell_size), pygame.SRCALPHA)
         self.canva = Map(screenSize,cell_size)
-        self.len_can_blit = self.screen_size[0]//2
+        self.len_can_blit = self.screen_size[0]//2*1.2
         
         self.grey_layer = pygame.Surface(screenSize,pygame.SRCALPHA)
         self.grey_layer.fill((10,10,10,150))
