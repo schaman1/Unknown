@@ -275,21 +275,17 @@ class WallBig(Monster) :
         self.animation.old_state = key[0]
 
 class DwarfKing(Monster) :
-    """Boss : Le Roi Nain. Utilise temporairement la texture du joueur
-    (les joueurs sont des nains, le boss leur ressemble)."""
+    """Boss : Le Roi Nain. Utilise la texture du boss."""
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
 
-        #name="player" : réutilise la texture du joueur (provisoire), taille ~3.5x le joueur
-        super().__init__(x,y,cell_size,size=(28,28),name="player")
+        super().__init__(x,y,cell_size,size=(28,28),name="DwarfKing")
 
         self.name = "DwarfKing"
         self.chunk = pos_chunk
         self.state = state
 
     def change_state(self,new_state,side):
-        """La texture du joueur n'a que idle/running/death : on y ramène les états du boss."""
-
         if side == 0:
             self.animation.direction = "right"
         else :
@@ -297,17 +293,19 @@ class DwarfKing(Monster) :
 
         # new_state est l'entier d'état envoyé par le serveur (0=idle, 1=moving, 2=attacking, 3=dead, etc.)
         anim = "idle"
-        if new_state == 1 or new_state == 4:  # moving / run away
+        if new_state == 1 or new_state == 4 or new_state == 6 or new_state == 7:  # moving / run away / jump / fall
             anim = "running"
-        elif new_state == 2:  # attacking
-            anim = "running"
-        elif new_state == 3:  # dead
+        elif new_state == 2:  # attacking (melee_attack)
+            anim = "attacking"
+        elif new_state == 3:  # dead (death)
             anim = "death"
-        elif new_state == 5:  # loading
+        elif new_state == 5:  # loading (spawn_monsters)
+            anim = "loading"
+
+        if anim in self.animation.animation and not self.animation.animation[anim]["right"]:
             anim = "idle"
 
         if anim != self.animation.old_state :
-
             self.animation.set_state(anim)
 
         self.animation.old_state = anim
