@@ -9,7 +9,7 @@ OBJECTS.append(("Chest",1,13400,18600,10))
 
 OBJECTS.append(("Chest",3,27100,19300,50))
 
-OBJECTS.append(("Chest",4,29700,23300,80))
+OBJECTS.append(("Chest",4,29700,23300,80)) #1: commun / 2 = upgrade weapon / 3 : Rare / 4 : legendaire
 OBJECTS.append(("Chest",4,41200,18300,80))
 
 OBJECTS.append(("SPELL",2,1300,18500,5)) #Put a pnj instead

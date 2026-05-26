@@ -96,6 +96,32 @@ class Laseroide(Monster) :
 
         self.animation.old_state = key[0]
 
+class Shaman(Monster) :
+
+    def __init__(self, x,y,pos_chunk,cell_size,state):
+
+        super().__init__(x,y,cell_size,size=(8,8),name="Shaman")
+
+        self.name = "Shaman"
+        self.chunk = pos_chunk
+        self.state = state
+        self.animation.animation["loading"]["time"] = 0.26
+
+    def change_state(self,new_state,side):
+        """Base pour mettre anim"""
+
+        if side == 0:
+            self.animation.direction = "right"
+        else :
+            self.animation.direction = "left"
+
+        key = [key for key,val in STATES.items() if val == new_state]
+
+        if key[0] != self.animation.old_state :
+            self.animation.set_state(key[0])
+
+        self.animation.old_state = key[0]
+
 class Foulli(Monster) :
 
     def __init__(self, x,y,pos_chunk,cell_size,state):
