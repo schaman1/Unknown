@@ -126,6 +126,7 @@ MONSTER_DIE = resource_path("assets/sprites/monster/death/tombe.png")
 TOMBE_DESTROY = resource_path("assets/sprites/monster/death/tombe_destroy.png") 
 
 MONSTER_SKELETON = resource_path("assets/sprites/monster/skeleton.aseprite")
+MONSTER_DWARF_KING = resource_path("assets/sprites/monster/BossKingDwarf.aseprite")
 
 PROJECTILE_0_0 = resource_path("assets/sprites/projectile/projectile_0_0.png") 
 PROJECTILE_0_1 = resource_path("assets/sprites/projectile/projectile_0_1.png") 

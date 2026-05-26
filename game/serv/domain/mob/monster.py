@@ -1364,7 +1364,7 @@ class DwarfKing(Monster):
             hp = 200 + 200 * world.NBR_OF_PLAYER,
             damage = monster_info.DWARF_KING_DAMAGE,
             x = x, y = y,
-            atk_rad = monster_info.DWARF_KING_ATK_RAD,
+            atk_rad = -1,                               # -1 so base Monster.update doesn't automatically trigger "attacking" state
             rad = monster_info.DWARF_KING_RAD,
             run_away = -1,                              #N'a jamais peur
             atk_speed = 1,
@@ -1376,20 +1376,20 @@ class DwarfKing(Monster):
             knockback_res = 3,                          #Immunisé au knockback (résistance max)
         )
 
-        self.name = 6                                   #Texture côté client (joueur, temporaire)
+        self.name = 6                                   #Texture côté client (BossKingDwarf)
         #self.auto_destruction = True
 
         # Habiliter le double saut pour la classe SmoothJump du boss
         self.smooth_jump.double_jump = True
 
-        #Dégâts de contact : toucher le boss fait très mal
-        self.collision_atk = monster_info.DWARF_KING_DAMAGE
+        # Dégâts de contact : très faibles (user request)
+        self.collision_atk = 2
         self.collision_time_reload = 0.7
 
-        #Vitesse de poursuite du joueur
+        # Vitesse de poursuite du joueur
         self.speed_chase = max(1, self.base_movement * 6)
 
-        #Esquive : alterne un dash et un double saut
+        # Esquive : alterne un dash et un double saut
         self.dodge_cooldown = monster_info.DWARF_KING_DODGE_COOLDOWN
         self.last_dodge = time.perf_counter()
         self.dodge_with_dash = True
@@ -1397,7 +1397,7 @@ class DwarfKing(Monster):
         self.double_jump_pending = False
         self.double_jump_time = 0
 
-        #Invocation de monstres (squelettes et laseroïdes)
+        # Invocation de monstres (squelettes et laseroïdes)
         self.spawn_cooldown = monster_info.DWARF_KING_SPAWN_COOLDOWN
         self.last_spawn = time.perf_counter()
         self.minions_spawned = 0
@@ -1405,15 +1405,58 @@ class DwarfKing(Monster):
         self.monsters_to_spawn = []                     #Vidé par Read_monster à chaque frame
         self.active_minions = []                        #Liste locale pour limiter les invocations actives
 
+        # Pause d'invocation
+        self.is_spawning = False
+        self.spawn_timer = 0.0
+
+        # Attaque de mêlée puissante avec 3s recharge
+        self.last_melee = 0.0
+        self.is_melee_attacking = False
+        self.melee_timer = 0.0
+        self.melee_damage = 50
+        self.melee_damage_dealt = False
+        self.melee_range = monster_info.DWARF_KING_ATK_RAD
+
     def update(self, map, lPlayer, friendly_monsters,dt, collision_handler, projectile_manager,chunk):
 
         if self.still_dead():
             return
 
-        #Gère la cible, la distance, les dégâts de contact et la machine à états
+        now = time.perf_counter()
+
+        # Si en cours de spawn : pause et animation
+        if self.is_spawning:
+            if now >= self.spawn_timer:
+                self.spawn_minions_now()
+            else:
+                self.state = "loading"
+                self.gravity_effect(dt)
+                self.collision_x(map, dt, 0)
+                self.collision_y(map, dt, self.vitesse_y)
+                self.update_vitesse(dt)
+                return
+
+        # Si en cours d'attaque : pause et animation
+        if self.is_melee_attacking:
+            if now >= self.melee_timer:
+                self.is_melee_attacking = False
+                self.focus = False
+                self.state = "moving"
+            else:
+                self.state = "attacking"
+                if not self.melee_damage_dealt and now >= self.last_melee + 1.0:
+                    self.deal_melee_damage(collision_handler)
+                self.gravity_effect(dt)
+                self.collision_x(map, dt, 0)
+                self.collision_y(map, dt, self.vitesse_y)
+                self.update_vitesse(dt)
+                return
+
+        # Comportement standard
         super().update(map, dt, lPlayer,friendly_monsters,collision_handler,chunk)
 
         self.try_spawn_minions()
+        self.try_melee_attack(collision_handler)
         self.try_dodge(map)
         self.resolve_double_jump(map)
 
@@ -1434,7 +1477,7 @@ class DwarfKing(Monster):
 
         if self.vitesse_x < 0: #Change direction du boss en fct de ou il bouge
             self.side = "left"
-        else :
+        elif self.vitesse_x > 0:
             self.side = "right"
 
         self.gravity_effect(dt)
@@ -1492,7 +1535,7 @@ class DwarfKing(Monster):
             self.double_jump_pending = False
 
     def try_spawn_minions(self):
-        """Toutes les spawn_cooldown secondes, invoque un squelette et un laseroïde si la limite active n'est pas atteinte."""
+        """Toutes les spawn_cooldown secondes, initialise la pause d'invocation."""
 
         # Filtrer et nettoyer les sbires morts de la liste locale
         self.active_minions = [m for m in self.active_minions if m.is_alive() and not m.dead]
@@ -1505,19 +1548,71 @@ class DwarfKing(Monster):
         now = time.perf_counter()
         if now - self.last_spawn < self.spawn_cooldown:
             return
+
+        # Commence la pause de 2 secondes avec l'animation spawn_monsters
+        self.is_spawning = True
+        self.spawn_timer = now + 2.0
+        self.state = "loading"
+        self.focus = True
+        self.vitesse_x = 0
+
+    def spawn_minions_now(self):
+        """Méthode exécutée après la pause de 2s pour faire apparaître les sbires."""
+        now = time.perf_counter()
         self.last_spawn = now
+        self.is_spawning = False
+        self.focus = False
+        self.state = "moving"
 
         offset = 3 * self.base_movement
         spawn_y = self.pos_y - 2 * self.base_movement
 
-        # Les monstres sont mis dans monsters_to_spawn, que Read_monster enregistre ensuite
         skeleton = Skeleton(self.pos_x + offset, spawn_y)
         laseroide = Laseroide(self.pos_x - offset, spawn_y)
 
         self.monsters_to_spawn.append(skeleton)
         self.monsters_to_spawn.append(laseroide)
 
-        # Ajouter à notre liste de sbires actifs
         self.active_minions.append(skeleton)
         self.active_minions.append(laseroide)
         self.minions_spawned += 2
+
+    def try_melee_attack(self, collision_handler):
+        """Déclenche l'attaque puissante si à portée (3s recharge, 1.5s pause)."""
+        if self.target is None:
+            return
+
+        now = time.perf_counter()
+        if now - self.last_melee < 3.0:
+            return
+
+        if self.dist <= self.melee_range:
+            self.is_melee_attacking = True
+            self.melee_timer = now + 1.5
+            self.last_melee = now
+            self.melee_damage_dealt = False
+            self.state = "attacking"
+            self.focus = True
+            self.vitesse_x = 0
+
+            # Oriente le boss vers sa cible
+            if self.target.pos_x < self.pos_x:
+                self.side = "left"
+            else:
+                self.side = "right"
+
+    def deal_melee_damage(self, collision_handler):
+        """Applique les dégâts de l'attaque puissante si le joueur est toujours à portée."""
+        self.melee_damage_dealt = True
+        if self.target is None:
+            return
+
+        dx = self.target.pos_x - self.pos_x
+        dy = self.target.pos_y - self.pos_y
+        dist = math.hypot(dx, dy) / self.base_movement
+
+        if dist <= self.melee_range * 1.5:
+            chunk = 99
+            if not self.target.auto_destruction:
+                chunk = 99
+            collision_handler.player_take_damage_no_projectile(self.melee_damage, self.target, chunk)
