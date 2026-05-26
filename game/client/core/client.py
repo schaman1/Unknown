@@ -128,7 +128,7 @@ class Client:
             if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
                 break
 
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18 or msg_id == 20 or msg_id == 26):
+            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18 or msg_id == 20 or msg_id == 26 or msg_id == 27):
                 break
 
             # Détermine la taille du message selon l'ID
@@ -197,6 +197,9 @@ class Client:
 
             elif msg_id == 26 :
                 msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*4
+
+            elif msg_id == 27 :
+                msg_size = 1+2+2
 
             else:
                 print("UNKNOWN MSG ID", msg_id)
@@ -411,6 +414,10 @@ class Client:
                 l.append((chunk,id))
                 
             self.main.state.game.monsters.destroy_monster(l)
+
+        elif id==27:
+            current_hp, max_hp = struct.unpack("!HH", data[1:5])
+            self.main.state.game.update_boss_health(current_hp, max_hp)
 
 
     def display_clients_name(self):

@@ -2,7 +2,8 @@ from serv.domain.mob.team import Team
 
 class CollisionHandler:
 
-    def __init__(self):
+    def __init__(self, server=None):
+        self.server = server
         self.effect_send = []
         self.die_send = []
 
@@ -175,6 +176,10 @@ class CollisionHandler:
             if not ent.dead or delta_life != 0:
 
                 self.effect_send.append([ent.id,delta_life,chunk])
+                
+            if getattr(ent, "name", None) == 6: # DwarfKing name = 6 on server
+                if self.server:
+                    self.server.send_data_all([27, ent.life, ent.max_life])
              
             if die:
                 if ent.auto_destruction :
