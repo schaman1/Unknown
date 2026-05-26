@@ -57,6 +57,9 @@ class Monster_all :
             elif name == 9:
                 self.dic_monster[chunk][id] = monster.Mma(x, y, chunk, self.cell_size, 0) #Mma fighter xd
 
+            elif name == 10:
+                self.dic_monster[chunk][id] = monster.Shaman(x, y, chunk, self.cell_size, 0) #Mma fighter xd
+
             else :
                 print("Unknown monster name in client/domain/mob/monster/monster_all :",name)
 

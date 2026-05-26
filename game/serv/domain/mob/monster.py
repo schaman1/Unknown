@@ -3,7 +3,8 @@ from serv.config import monster_info
 from serv.domain.weapon import weapon1
 from serv.domain.mob.team import Team
 from shared.constants import world
-import math,time
+from serv.domain.projectile import projectile_type
+import math,time,random
 
 class Monster(Mob):
     def __init__(self, hp, damage, x, y,rad=15, atk_rad=2, atk_speed=1,run_away = -1, id = None,prime = 10,acceleration = 0.2,width = 10,height = 10,knockback_res = 0,len_life = 0):
@@ -870,31 +871,25 @@ class Shaman(Monster) :
 
         super().__init__(hp=10+15*world.NBR_OF_PLAYER,damage =6,x=x,y=y,atk_rad = monster_info.SHAMAN_ATK_RAD,rad = monster_info.SHAMAN_RAD,run_away = monster_info.SHAMAN_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.SHAMAN_ACCELERATION,width = 8,height = 8)
 
-        self.knockback_res = 0.5
+        self.knockback_res = 0
 
         self.name = 10 #Permet d'afficher le bon monstre / Dans monster all côté client
 
-        self.last_attack = time.perf_counter()
-        self.len_for_1_attack = 0.1
-        self.min_time_move = 1
-        self.begin_min_time_move = time.perf_counter()
+        self.projecitles = [projectile_type.Death,projectile_type.Fire_B,projectile_type.Pompe,projectile_type.Laser,projectile_type.Lune,projectile_type.Lance]
+        self.has_shot = False
+        self.nbr_spell_shot = monster_info.SHAMAN_NBR_SPELL
 
-        self.hit_box_damage_width = 8
-        self.collision_atk = 5
+        self.begin_shot = time.perf_counter()
+        self.time_before_shot = 1
+        self.angle = 0
 
-        self.begin_attack = time.perf_counter()
-        self.len_attack = 1.5
         self.begin_relax = time.perf_counter()
-        self.time_relax = 0.8
-
-        #self.collision_damage = False
+        self.time_relax = 1
 
     def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
         if self.still_dead():
             return
-        
-        #print(self.state)
         
         super().update(map,dt,lPlayer,friendly_monsters,collision_handler,chunk)
 
@@ -903,125 +898,87 @@ class Shaman(Monster) :
             self.idle_behavior(map,dt)
             
         elif self.state == "moving":
-
             self.moving_behavior(self.target, map,dt)
+
+        elif self.state == "run away":
+            self.leave_behavior(self.target,map,dt)
             
         elif self.state == "attacking":
+            if not self.focus : 
+                self.state = "loading"
+                self.focus = True
+                self.begin_shot = time.perf_counter()
+                self.vitesse_x = 0
 
-            self.attack(collision_handler,map,dt)
+            else :
+                self.attack(self.target,collision_handler,dt,projectile_manager)
 
-        elif self.state =="jump" :
-            self.jump_behavior(self.target,map,dt)
-
-        elif self.state =="fall" :
-            self.fall_behavior(self.target,map,dt)
+        elif self.state == "loading" :
+            if self.begin_shot+self.time_before_shot <= time.perf_counter() :
+                self.state = "attacking"
 
         self.move_all(map,dt,collision_handler)
 
     def idle_behavior(self,map,dt):
-        """est épuisé"""
+        """Reste sur place"""
 
-        if not self.focus :
-            if self.side == "right":
-                
-                self.move_right(map,dt)
-
-            elif self.side == "left":
-
-                self.move_left(map,dt)
-
-        else :
-            if self.begin_relax + self.time_relax < time.perf_counter():
-                self.begin_min_time_move = time.perf_counter()
-                self.state = "moving"
+        if self.side == "left":
+            self.move_left(map,dt)
+        
+        elif self.side == "right":
+            self.move_right(map,dt)
     
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
-
-        if self.focus :
-            if self.min_time_move + self.begin_min_time_move < time.perf_counter():
-                self.focus = False
-
-        if target.pos_x < self.pos_x :
+        if target.pos_x<self.pos_x :
             self.side = "left"
-            self.move_left(map,dt,True)
+            self.move_left(map,dt)
+        
         else :
             self.side = "right"
-            self.move_right(map,dt,True)
-
-        if self.target.pos_y > self.pos_y +self.half_height:
-            self.is_climbing = False
-            self.move_down(dt)
-
-        elif self.target.pos_y < self.pos_y - self.half_height:
-            self.jump(dt)
-
-        else :
-            self.is_climbing=True
-
-    def jump_behavior(self,target,map,dt):
-
-        if self.vitesse_y>0:
-            self.state = "fall"
-
-        if target.pos_x < self.pos_x :
-            self.side = "left"
-            self.move_left(map,dt,True)
-        else :
-            self.side = "right"
-            self.move_right(map,dt,True)
-
-    def fall_behavior(self,target,map,dt):
-
-        if self.vitesse_y==0:
-            self.state = "attacking"
-            self.begin_attack = time.perf_counter()
-
-        if target.pos_x < self.pos_x :
-            self.side = "left"
-            self.move_left(map,dt,True)
-        else :
-            self.side = "right"
-            self.move_right(map,dt,True)
+            self.move_right(map,dt)
     
     def leave_behavior(self,target,map,dt):
-        """Se déplace vers le joueur"""
-
-    def attack(self,collision_handler,map,dt):
-        """Retourne True si le joueur est bien touché"""
-        if not self.focus : 
-            self.focus = True
-            self.state = "jump"
-            self.jump(map)
-
+        """Se déplace à l'opposé du joueur"""
+        if target.pos_x<self.pos_x :
+            self.side = "right"
+            self.move_right(map,dt)
+        
         else :
+            self.side = "left"
+            self.move_left(map,dt)
 
-            if self.target.pos_y > self.pos_y +self.half_height:
-                self.is_climbing = False
-                self.move_down(dt)
+    def attack(self,target,collision_handler,dt,projectile_manager):
+        
+        if not self.has_shot :
+            angle_or = self.get_angle(self.target)
+            speed = self.half_height
+            spells = random.sample(self.projecitles,self.nbr_spell_shot)
 
-            elif self.target.pos_y < self.pos_y - self.half_height:
-                self.jump(dt)
+            for spell in spells :
 
-            else :
-                self.is_climbing=True
+                pos = [self.pos_x,self.pos_y]
+                angle = angle_or + random.randint(0,10)
+                angle = angle%360
 
-            if self.begin_attack+self.len_attack<time.perf_counter():
-                self.state = "idle"
+                rad_angle = math.radians(angle)
+                x = math.cos(rad_angle)
+                y = math.sin(rad_angle)
+                pos[0]+=int(x*speed)
+                pos[1]+=int(y*speed)
+
+                proj = spell(angle,pos,1,False,self)
+                proj.load()
+
+                projectile_manager.add_projectile_create(proj)
+
+                self.has_shot = True
                 self.begin_relax = time.perf_counter()
-            
-            elif self.last_attack + self.len_for_1_attack <= time.perf_counter():
-                self.last_attack = time.perf_counter()
-                if self.target.pos_x<self.pos_x:
-                    self.side = "left"
-                else :
-                    self.side = "right"
-
-                if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
-                    if not self.target.auto_destruction :
-                        chunk = 99
-                    collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
-
+        else :
+            if self.begin_relax + self.time_relax < time.perf_counter():
+                self.state = "moving"
+                self.has_shot = False
+                self.focus = False
 
 class Wall(Monster) :
 
