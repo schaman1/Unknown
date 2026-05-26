@@ -2,9 +2,10 @@ OBJECTS = []
 
 OBJECTS.append(("HEALER",1,8500,15250,0))
 
-OBJECTS.append(("Chest",1,18500,12300,20))
-OBJECTS.append(("Chest",1,19100,16000,10))
-OBJECTS.append(("Chest",1,13400,18600,10))
+
+OBJECTS.append(("Chest",1,19238,16199 +300,10))
+OBJECTS.append(("Chest",1,13400,18600 +300,10))
+OBJECTS.append(("Chest",1,18500,11799 +300,20))
 
 #OBJECTS.append(("Chest",1,10500,19300,20))
 
