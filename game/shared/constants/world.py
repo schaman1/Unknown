@@ -25,7 +25,7 @@ PADDING_CANVA = 2  #Combien de cellule en plus on charge autour de l'ecran du cl
 BG_SIZE_SERVER = (1920,1080)
 
 LEN_X_CHUNK = 13
-LEN_Y_CHUNK = 9
+LEN_Y_CHUNK = 10
 
 #Weapon :
 NBRWEAPONSTOCK = 4
