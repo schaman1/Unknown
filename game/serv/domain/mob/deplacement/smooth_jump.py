@@ -2,7 +2,7 @@ import time
 
 class SmoothJump:
 
-    def __init__(self,time_can_jump=0.2):
+    def __init__(self,time_can_jump=0.1):
 
         self.time_can_jump = time_can_jump
         self.double_jump = False

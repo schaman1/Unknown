@@ -23,7 +23,7 @@ class State:
         self.game = Game(cell_size, screenSize)
 
         self.join = Button((self.Size[0]/2, self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Rejoindre une partie",self.font,"join")
-        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Creer une partie",self.font,"host")
+        self.host = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Créer une partie",self.font,"host")
         self.quit = Button((self.Size[0]/2, 4*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Quitter",self.font,"quit")
 
         self.ip = Button((self.Size[0]/2, 2.5*self.Size[1]/5), (self.Size[0]/3, self.Size[1]/6),assets.BTN,assets.BTN_HOVER,"Ip",self.font,"ip")

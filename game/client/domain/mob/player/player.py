@@ -307,10 +307,10 @@ class Player_not_you(Mob) :
                 self.old_state = "jump"
                 self.animation.set_state("jump")
 
-        elif self.old_state != "idle" and self.old_state!="running":
+        elif self.old_state != "idle" and self.old_state!="running" and self.old_state!="surprise":
             self.animation.set_state("idle")
             self.old_state = "idle"
- 
+
         self.move_mob(new_pos)
 
     def kill(self,duree):
@@ -329,5 +329,6 @@ class Player_not_you(Mob) :
 
     def set_surprise(self):
         self.animation.state = "surprise"
+        self.old_state = "surprise"
         self.animation.frame = 0
         self.remaining_time_anim = self.animation.animation["surprise"]["time"]*4

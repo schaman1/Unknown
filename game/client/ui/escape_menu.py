@@ -18,7 +18,7 @@ class EscapeMenu:
         centre_y = screen_size[1]//2
         setting_y = centre_y -125
         quit_y = centre_y +125
-        settings_btn = Button((centre_x, setting_y), (largeur_bouton, hauteur_bouton), assets.BTN, assets.BTN_HOVER, "Parametres", font, "settings")
+        settings_btn = Button((centre_x, setting_y), (largeur_bouton, hauteur_bouton), assets.BTN, assets.BTN_HOVER, "Paramètres", font, "settings")
         quit_btn = Button((centre_x, quit_y), (largeur_bouton, hauteur_bouton), assets.BTN, assets.BTN_HOVER, "Quitter", font, "quit")
         self.buttons = [settings_btn, quit_btn]
 

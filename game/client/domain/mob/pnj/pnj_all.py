@@ -41,7 +41,7 @@ class Pnj_all :
         pos = (20,185)
         self.add_pnj(pos,'pnj_learn_attack')
     
-        pos = (77,157)
+        pos = (83,157)
         self.add_pnj(pos,'pnj_tell_healer')
     
         pos = (425,261)
