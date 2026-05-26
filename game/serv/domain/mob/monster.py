@@ -44,31 +44,39 @@ class Monster(Mob):
 
         self.state = "idle"  # états possibles : idle, moving, attacking, dead
 
-    def move_left(self,map,dt):
+    def move_left(self,map,dt,force_move=False):
 
-        delta_y = self.half_height + self.base_movement
-        delta_x = -(self.half_width+self.base_movement)
-        if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-            self.side = "right"
-
-        elif self.touch_type(delta_y,delta_x,map,map.vide):
-            self.side = "right"
-        
-        else :
+        if force_move :
             super().move_left(dt)
-
-    def move_right(self,map,dt):
-
-        delta_y = self.half_height + self.base_movement
-        delta_x = self.half_width+self.base_movement
-        if self.touch_type(0,delta_x,map,map.dur) : #y puis x
-            self.side = "left"
-
-        elif self.touch_type(delta_y,delta_x,map,map.vide):
-            self.side = "left"
         
         else :
+            delta_y = self.half_height + self.base_movement
+            delta_x = -(self.half_width+self.base_movement)
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.side = "right"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.side = "right"
+            
+            else :
+                super().move_left(dt)
+
+    def move_right(self,map,dt,force_move = False):
+
+        if force_move :
             super().move_right(dt)
+
+        else :
+            delta_y = self.half_height + self.base_movement
+            delta_x = self.half_width+self.base_movement
+            if self.touch_type(0,delta_x,map,map.dur) : #y puis x
+                self.side = "left"
+
+            elif self.touch_type(delta_y,delta_x,map,map.vide):
+                self.side = "left"
+            
+            else :
+                super().move_right(dt)
 
     def is_alive(self):
         return self.hp>0
@@ -702,11 +710,21 @@ class Mma(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=5+20*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.ESCARGOT_ATK_RAD,rad = monster_info.ESCARGOT_RAD,run_away = monster_info.ESCARGOT_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.ESCARGOT_ACCELERATION,width = 8,height = 8)
+        super().__init__(hp=30+30*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.MMA_ATK_RAD,rad = monster_info.MMA_RAD,run_away = monster_info.MMA_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.MMA_ACCELERATION,width = 8,height = 8)
 
         self.knockback_res = 0.5
 
         self.name = 9 #Permet d'afficher le bon monstre / Dans monster all côté client
+
+        self.last_attack = time.perf_counter()
+        self.len_for_1_attack = 0.1
+
+        self.hit_box_damage_width = 8
+
+        self.begin_attack = time.perf_counter()
+        self.len_attack = 1
+        self.begin_relax = time.perf_counter()
+        self.time_relax = 0.3
 
         #self.collision_damage = False
 
@@ -729,31 +747,117 @@ class Mma(Monster) :
             
         elif self.state == "attacking":
 
-            self.attack(self.target,collision_handler,dt,projectile_manager)
+            self.attack(collision_handler,map,dt)
 
-        delta = self.move_all(map,dt,collision_handler)
+        elif self.state =="jump" :
+            self.jump_behavior(self.target,map,dt)
+
+        elif self.state =="fall" :
+            self.fall_behavior(self.target,map,dt)
+
+        self.move_all(map,dt,collision_handler)
 
     def idle_behavior(self,map,dt):
         """est épuisé"""
-        self.state = "moving"
+
+        if not self.focus :
+            if self.side == "right":
+                
+                self.move_right(map,dt)
+
+            elif self.side == "left":
+
+                self.move_left(map,dt)
+
+        else :
+            if self.begin_relax + self.time_relax < time.perf_counter():
+                self.focus = False
     
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
 
-        if self.side == "right":
-            
-            self.move_right(map,dt)
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
 
-        elif self.side == "left":
+        if self.target.pos_y > self.pos_y +self.half_height:
+            self.is_climbing = False
+            self.move_down(dt)
 
-            self.move_left(map,dt)
+        elif self.target.pos_y < self.pos_y - self.half_height:
+            self.jump(dt)
+
+        else :
+            self.is_climbing=True
+
+    def jump_behavior(self,target,map,dt):
+
+        if self.vitesse_y>0:
+            self.state = "fall"
+
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
+
+    def fall_behavior(self,target,map,dt):
+
+        if self.vitesse_y==0:
+            self.state = "attacking"
+            self.begin_attack = time.perf_counter()
+
+        if target.pos_x < self.pos_x :
+            self.side = "left"
+            self.move_left(map,dt,True)
+        else :
+            self.side = "right"
+            self.move_right(map,dt,True)
     
     def leave_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
 
-    def attack(self,target,collision_handler,dt,projectile_manager):
+    def attack(self,collision_handler,map,dt):
         """Retourne True si le joueur est bien touché"""
-        #self.state = "moving"
+        if not self.focus : 
+            self.focus = True
+            self.state = "jump"
+            self.jump(map)
+
+        else :
+
+            if self.target.pos_y > self.pos_y +self.half_height:
+                self.is_climbing = False
+                self.move_down(dt)
+
+            elif self.target.pos_y < self.pos_y - self.half_height:
+                self.jump(dt)
+
+            else :
+                self.is_climbing=True
+
+            if self.begin_attack+self.len_attack<time.perf_counter():
+                self.state = "idle"
+                self.begin_relax = time.perf_counter()
+            
+            elif self.last_attack + self.len_for_1_attack <= time.perf_counter():
+                self.last_attack = time.perf_counter()
+                if self.target.pos_x<self.pos_x:
+                    self.side = "left"
+                else :
+                    self.side = "right"
+
+                if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
+                    if not self.target.auto_destruction :
+                        chunk = 99
+                    collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
+
+                #else :
+                #    self.state = "idle"
 
 class Wall(Monster) :
 

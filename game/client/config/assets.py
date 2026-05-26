@@ -102,6 +102,7 @@ LIMACE_RUNNING = resource_path("assets/sprites/monster/Limace/Limace_running.png
 
 MMA_JUMP = resource_path("assets/sprites/monster/Mma/mma_jump.png") #add limace attack 
 MMA_RUNNING = resource_path("assets/sprites/monster/Mma/mma_running.png")
+MMA_ATTACKING = resource_path("assets/sprites/monster/Mma/mma_attacking.png")
 
 WALL_IDLE = resource_path("assets/sprites/monster/Wall/Wall_idle.png")
 WALLBig_IDLE = resource_path("assets/sprites/monster/Wall/WallBig_idle.png")

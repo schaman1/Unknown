@@ -330,8 +330,8 @@ class Mma(Monster) :
         self.frame_multiplier = 0
         #------
 
-        self.animation.animation["idle"]["time"] = 0.5
-        self.animation.animation["attacking"]["time"] = 1
+        self.animation.animation["idle"]["time"] = 0.3
+        self.animation.animation["attacking"]["time"] = 0.1
         self.animation.animation["running"]["time"] = 0.2
         self.animation.animation["loading"]["time"] = 1/4
 
