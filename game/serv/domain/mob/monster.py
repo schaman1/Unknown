@@ -883,7 +883,7 @@ class Shaman(Monster) :
         self.angle = 0
 
         self.begin_relax = time.perf_counter()
-        self.time_relax = 0.4
+        self.time_relax = 3
 
     def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 

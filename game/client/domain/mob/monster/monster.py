@@ -105,7 +105,7 @@ class Shaman(Monster) :
         self.name = "Shaman"
         self.chunk = pos_chunk
         self.state = state
-        self.animation.animation["loading"]["time"] = 1/4
+        self.animation.animation["loading"]["time"] = 0.26
 
     def change_state(self,new_state,side):
         """Base pour mettre anim"""
