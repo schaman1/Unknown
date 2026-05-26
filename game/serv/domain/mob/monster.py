@@ -47,6 +47,8 @@ class Monster(Mob):
 
     def move_left(self,map,dt,force_move=False):
 
+        self.side = "left"
+
         if force_move :
             super().move_left(dt)
         
@@ -63,6 +65,8 @@ class Monster(Mob):
                 super().move_left(dt)
 
     def move_right(self,map,dt,force_move = False):
+
+        self.side = "right"
 
         if force_move :
             super().move_right(dt)
