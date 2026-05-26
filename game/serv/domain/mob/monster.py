@@ -724,7 +724,7 @@ class Mma(Monster) :
         self.begin_attack = time.perf_counter()
         self.len_attack = 1.5
         self.begin_relax = time.perf_counter()
-        self.time_relax = 0.3
+        self.time_relax = 0.8
 
         #self.collision_damage = False
 
