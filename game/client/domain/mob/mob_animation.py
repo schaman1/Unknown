@@ -370,6 +370,49 @@ class Animation:
 
             self.add_tombe(cell_size)
 
+        elif entity_name == "DwarfKing":
+
+            aseprite_path = assets.MONSTER_DWARF_KING
+            
+            if os.path.exists(aseprite_path):
+                try:
+                    reader = AsepriteReader(aseprite_path)
+                    if reader.frames:
+                        # Map Aseprite tags to our animation state keys
+                        tag_mapping = {
+                            "idle": "idle",
+                            "run": "running",
+                            "melee_attack": "attacking",
+                            "spawn_monsters": "loading"
+                        }
+                        
+                        loaded_any_tag = False
+                        if reader.tags:
+                            for tag_name, (from_frame, to_frame) in reader.tags.items():
+                                anim_state = tag_mapping.get(tag_name)
+                                if anim_state and anim_state in self.animation:
+                                    loaded_any_tag = True
+                                    for f_idx in range(from_frame, to_frame + 1):
+                                        if f_idx < len(reader.frames):
+                                            surface = reader.frames[f_idx]
+                                            Img = pygame.transform.scale(surface, (self.width,self.height))
+                                            Img_flip = pygame.transform.flip(Img,True,False)
+                                            self.animation[anim_state]["left"].append(Img)
+                                            self.animation[anim_state]["right"].append(Img_flip)
+                                            
+                        # Fallback: if no tag mapping matches or no tags, put all frames in idle
+                        if not loaded_any_tag:
+                            for surface in reader.frames:
+                                Img = pygame.transform.scale(surface, (self.width,self.height))
+                                Img_flip = pygame.transform.flip(Img,True,False)
+                                self.animation["idle"]["left"].append(Img)
+                                self.animation["idle"]["right"].append(Img_flip)
+
+                except Exception as e:
+                    print(f"Failed to load dwarf king aseprite: {e}")
+
+            self.add_tombe(cell_size)
+
     def decoupe_img(self,img,dest,size,invert = False):
         for i in range(0,img.get_height(),size[1]):
             for j in range(0,img.get_width(),size[0]):
