@@ -441,7 +441,7 @@ class Animation:
 
         if self.animation[self.state]["time"]+self.time_start_frame < time.perf_counter():
 
-            self.time_start_frame+=self.animation[self.state]["time"]
+            self.time_start_frame=time.perf_counter()
 
             self.frame = (self.frame+1)%len(self.animation[self.state]["right"])
             
@@ -449,7 +449,6 @@ class Animation:
                 self.fct_to_do()
 
         img = self.animation[self.state][self.direction][self.frame]
-
 
         img = self.check_draw_red_if_damage(img,dt)
 

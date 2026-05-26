@@ -73,12 +73,13 @@ class Mob:
             alpha = 0
 
         if alpha <= 1.0:
+            pass #No issue more with the camera
             self.pos_x = round((1 - alpha) * x0 + alpha * x1)
             self.pos_y = round((1 - alpha) * y0 + alpha * y1)
 
         else:
             # Extrapolation limitée
-            max_extrapolation = 0.10  # 100 ms max
+            max_extrapolation = 0.01  # 100 ms max
             dt = min(time_now - t1, max_extrapolation)
 
             vx = (x1 - x0) / div
