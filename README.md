@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # NIFHLEIM
 
 > *Descends. Survie. Conquiers.*
@@ -26,17 +25,6 @@ Serez-vous assez forts pour vaincre le **Roi de NIFHLEIM** ?
 
 ---
 
-## Caractéristiques
-
-| | |
-|---|---|
-| **Joueurs** | 2 à 5 joueurs |
-| **Durée** | ~30 minutes par run |
-| **Genre** | Rogue-like coopératif |
-| **Difficulté** | Élevée — la mort est permanente |
-
----
-
 ## Installation
 
 ### Prérequis
@@ -50,10 +38,7 @@ Serez-vous assez forts pour vaincre le **Roi de NIFHLEIM** ?
 2. Double-clique sur **`build.bat`**
 3. Attends que les dépendances s'installent
 4. Puis lance Niflheim.exe
-
-```bat
-build.bat
-```
+5. Enfin accepte l'accès au réseau privé et public 
 
 > Le script installe automatiquement toutes les dépendances nécessaires via `pip`.
 
@@ -78,7 +63,3 @@ Copyright © 2026 **TEAM NIKA** — Voir [LICENSE](./LICENSE) pour les détails.
 ---
 
 *Projet réalisé à EPITA.*
-=======
-# Unknown
-Game dev, a developper
->>>>>>> 9506f582f300fe275c38098e97ecf43cdc8d1762
