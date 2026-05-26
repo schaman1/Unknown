@@ -16,7 +16,7 @@ ESCARGOT_TOO_CLOSE = -1 #So never
 
 MMA_ACCELERATION = 1#1 = 1 fois world.ratio
 MMA_RAD = 40
-MMA_ATK_RAD = 15
+MMA_ATK_RAD = 20
 MMA_TOO_CLOSE = -1 #So never
 
 LIMACE_ACCELERATION = 0.4 #1 = 1 fois world.ratio
