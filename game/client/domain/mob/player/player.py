@@ -203,18 +203,19 @@ class Player_you(Mob) :
                 self.animation.set_state("jump")
         
         else :
-            if self.old_state != "idle" and self.old_state!="running":
-                if self.key_active["right"] :
-                    self.animation.direction = "right"
+            if self.key_active["right"] :
+                self.animation.direction = "right"
+                if self.old_state != "idle" and self.old_state!="running":
                     self.animation.set_state("running")
                     self.old_state = "running"
-                elif self.key_active["left"] :
-                    self.animation.direction = "left"
+            elif self.key_active["left"] :
+                self.animation.direction = "left"
+                if self.old_state != "idle" and self.old_state!="running":
                     self.animation.set_state("running")
                     self.old_state = "running"
-                else :
-                    self.old_state = "idle"
-                    self.animation.set_state("idle")
+            else :
+                self.old_state = "idle"
+                self.animation.set_state("idle")
 
     def kill(self,duree):
 
