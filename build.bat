@@ -12,7 +12,7 @@ set EXE=Nifhleim
 set ASSETS="game/assets;assets"
 set JSON="game/client/ui/json;client/ui/json"
 
-pip install -r requirement.txt
+pip install -r tools/requirement.txt
 
 python -m PyInstaller --onefile --windowed --name %EXE% ^
     --add-data "%ASSETS%" ^
@@ -21,6 +21,6 @@ python -m PyInstaller --onefile --windowed --name %EXE% ^
 
 move dist\Nifhleim.exe ..\
 
-
+del Nifhleim.spec
 
 pause

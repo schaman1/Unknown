@@ -21,11 +21,7 @@ secret.env
 # Cache divers
 .cache/
 .mypy_cache/
-<<<<<<< HEAD
 .pytest_cache/
 
 #Cache le exe :
 *.exe
-=======
-.pytest_cache/
->>>>>>> 9506f582f300fe275c38098e97ecf43cdc8d1762

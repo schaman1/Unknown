@@ -19,7 +19,7 @@
 
 Les profondeurs de **NIFHLEIM** vous appellent.
 
-Plongez dans des donjons générés aléatoirement, affrontez des hordes de créatures des ténèbres, et tentez de survivre assez longtemps pour voir la lumière du jour. Chaque run est unique. Chaque mort est définitive.
+Plongez dans les grottes du royaume de Niflheim, affrontez des hordes de créatures des ténèbres, et tentez de survivre assez longtemps pour voir la lumière du jour.
 
 Serez-vous assez forts pour vaincre le **Roi de NIFHLEIM** ?
 
