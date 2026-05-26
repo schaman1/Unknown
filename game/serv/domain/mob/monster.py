@@ -710,7 +710,7 @@ class Mma(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=30+30*world.NBR_OF_PLAYER,damage =5,x=x,y=y,atk_rad = monster_info.MMA_ATK_RAD,rad = monster_info.MMA_RAD,run_away = monster_info.MMA_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.MMA_ACCELERATION,width = 8,height = 8)
+        super().__init__(hp=30+20*world.NBR_OF_PLAYER,damage =6,x=x,y=y,atk_rad = monster_info.MMA_ATK_RAD,rad = monster_info.MMA_RAD,run_away = monster_info.MMA_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.MMA_ACCELERATION,width = 8,height = 8)
 
         self.knockback_res = 0.5
 
@@ -718,8 +718,11 @@ class Mma(Monster) :
 
         self.last_attack = time.perf_counter()
         self.len_for_1_attack = 0.1
+        self.min_time_move = 1
+        self.begin_min_time_move = time.perf_counter()
 
         self.hit_box_damage_width = 8
+        self.collision_atk = 5
 
         self.begin_attack = time.perf_counter()
         self.len_attack = 1.5
@@ -771,10 +774,15 @@ class Mma(Monster) :
 
         else :
             if self.begin_relax + self.time_relax < time.perf_counter():
-                self.focus = False
+                self.begin_min_time_move = time.perf_counter()
+                self.state = "moving"
     
     def moving_behavior(self,target,map,dt):
         """Se déplace vers le joueur"""
+
+        if self.focus :
+            if self.min_time_move + self.begin_min_time_move < time.perf_counter():
+                self.focus = False
 
         if target.pos_x < self.pos_x :
             self.side = "left"
