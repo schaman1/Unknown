@@ -116,8 +116,8 @@ class Main:
                             if pnj!=None:
                                 self.trigger_pnj(pnj,new_interaction)
 
-                        #if event.key == pygame.K_p :
-                        #    self.state.game.mini_map.draw = not self.state.game.mini_map.draw
+                        if event.key == pygame.K_p :
+                            self.state.game.mini_map.draw = not self.state.game.mini_map.draw
 
                         elif event.key == pygame.K_i :
                             self.state.game.trigger_info_key()

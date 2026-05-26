@@ -6,7 +6,7 @@ from client.domain.mob.pnj.pnj_all import Pnj_all
 from client.domain.projectile.projectile_manager import ProjectileManager
 from client.ui.PopupManager.floating_value_display import FloatingValueDisplay
 from client.ui.objects.objects_manager import objects_manager
-#from client.domain.actions.mini_map import MiniMap
+from client.domain.actions.mini_map import MiniMap
 from client.domain.actions.map import Map
 from client.domain.actions.camera import Camera
 from client.domain.intro.intro_story import Intro_story
@@ -19,7 +19,6 @@ from client.config.display_text import FONT, FONT_SMALL
 class Game :
     """Class utilise quand lance le jeu / Permet d'afficher le jeu en gros et devra mettre plus tard les persos à afficher"""
     def __init__(self, cell_size, screenSize):
-        self.canva_size = world.BG_SIZE_SERVER
         self.base_movement = world.RATIO
         self.end = False
         self.end_alpha_len = 6
@@ -74,7 +73,7 @@ class Game :
 
         self.pnj_all = Pnj_all(cell_size,screenSize)
 
-        #self.mini_map = MiniMap(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.canva_size,self.cell_size)
+        self.mini_map = MiniMap(world.NBR_CELL_CAN_SEE,assets.MAP_SEEN,assets.MAP_UNSEEN,self.screen_size,self.cell_size)
 
         self.projectiles = ProjectileManager(cell_size)
 
@@ -227,10 +226,10 @@ class Game :
 
         self.blit_utils(screen,self.screen_size)
 
-        pos = (self.convert_from_base(pos_player[0]),self.convert_from_base(pos_player[1]))
+        #pos = (self.convert_from_base(pos_player[0]),self.convert_from_base(pos_player[1]))
 
         self.pnj_all.blit_dialogue(screen,dt)
-        #self.mini_map.draw_map(screen,pos)
+        self.mini_map.draw_map(screen,pos_player)
         self.blit_infos(screen,self.screen_size,mouse_pos)
 
         self.draw_boss_health_bar(screen, dt)

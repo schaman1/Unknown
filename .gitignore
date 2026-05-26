@@ -22,3 +22,6 @@ secret.env
 .cache/
 .mypy_cache/
 .pytest_cache/
+
+#Cache le exe :
+*.exe
