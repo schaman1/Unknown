@@ -192,30 +192,31 @@ class Player_you(Mob) :
         new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
         self.move_mob(new_pos)
 
-        if new_pos[1]-self.pos_y>0:
+        delta = new_pos[1]-self.pos_y
+
+        if delta>0:
             if self.old_state != "fall" :
                 self.old_state = "fall"
                 self.animation.set_state("fall")
 
-        elif new_pos[1]-self.pos_y<0 :
+        elif delta<0 :
             if self.old_state != "jump" :
                 self.old_state = "jump"
                 self.animation.set_state("jump")
         
-        else :
-            if self.key_active["right"] :
-                self.animation.direction = "right"
-                if self.old_state != "idle" and self.old_state!="running":
-                    self.animation.set_state("running")
-                    self.old_state = "running"
-            elif self.key_active["left"] :
-                self.animation.direction = "left"
-                if self.old_state != "idle" and self.old_state!="running":
-                    self.animation.set_state("running")
-                    self.old_state = "running"
-            else :
-                self.old_state = "idle"
-                self.animation.set_state("idle")
+        if self.key_active["right"] :
+            self.animation.direction = "right"
+            if delta==0 and self.old_state != "idle" and self.old_state!="running":
+                self.animation.set_state("running")
+                self.old_state = "running"
+        elif self.key_active["left"] :
+            self.animation.direction = "left"
+            if delta==0 and self.old_state != "idle" and self.old_state!="running":
+                self.animation.set_state("running")
+                self.old_state = "running"
+        elif delta==0 :
+            self.old_state = "idle"
+            self.animation.set_state("idle")
 
     def kill(self,duree):
 

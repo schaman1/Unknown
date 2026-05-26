@@ -19,8 +19,9 @@ python -m PyInstaller --onefile --windowed --name %EXE% ^
     --add-data "%JSON%" ^
     %SCRIPT%
 
-move dist\Nifhleim.exe ..\
+move dist\%EXE%.exe .
 
 del Nifhleim.spec
+rmdir /s /q dist
 
 pause
