@@ -190,7 +190,7 @@
         "life":0.2,
         "speed":70,
         "rebond":0,
-        "time_reload": 1,
+        "time_reload": 2,
         "degat":2
     },
     "SPELL33":{
