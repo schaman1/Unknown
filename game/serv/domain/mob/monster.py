@@ -875,15 +875,16 @@ class Shaman(Monster) :
 
         self.name = 10 #Permet d'afficher le bon monstre / Dans monster all côté client
 
-        self.projecitles = [projectile_type.Death]
+        self.projecitles = [projectile_type.Death,projectile_type.Fire_B,projectile_type.Pompe,projectile_type.Laser,projectile_type.Lune,projectile_type.Lance]
         self.has_shot = False
+        self.nbr_spell_shot = monster_info.SHAMAN_NBR_SPELL
 
         self.begin_shot = time.perf_counter()
         self.time_before_shot = 1
         self.angle = 0
 
         self.begin_relax = time.perf_counter()
-        self.time_relax = 3
+        self.time_relax = 1
 
     def update(self, map, lPlayer,friendly_monsters,dt,collision_handler,projectile_manager,chunk):
 
@@ -908,10 +909,6 @@ class Shaman(Monster) :
                 self.focus = True
                 self.begin_shot = time.perf_counter()
                 self.vitesse_x = 0
-                if self.angle > 90 and self.angle < 270:
-                    self.side = "left"
-                else:
-                    self.side = "right"
 
             else :
                 self.attack(self.target,collision_handler,dt,projectile_manager)
@@ -925,12 +922,10 @@ class Shaman(Monster) :
     def idle_behavior(self,map,dt):
         """Reste sur place"""
 
-        if self.target.pos_x<self.pos_x :
-            self.side = "left"
+        if self.side == "left":
             self.move_left(map,dt)
         
-        else :
-            self.side = "right"
+        elif self.side == "right":
             self.move_right(map,dt)
     
     def moving_behavior(self,target,map,dt):
@@ -956,24 +951,29 @@ class Shaman(Monster) :
     def attack(self,target,collision_handler,dt,projectile_manager):
         
         if not self.has_shot :
-            angle = self.get_angle(self.target)
-            pos = [self.pos_x,self.pos_y]
+            angle_or = self.get_angle(self.target)
             speed = self.half_height
-            rad_angle = math.radians(angle)
-            x = math.cos(rad_angle)
-            y = math.sin(rad_angle)
-            pos[0]+=int(x*speed)
-            pos[1]+=int(y*speed)
+            spells = random.sample(self.projecitles,self.nbr_spell_shot)
 
-            spell = random.choice(self.projecitles)
+            for spell in spells :
 
-            proj = spell(angle,pos,1,False,self)
-            proj.load()
+                pos = [self.pos_x,self.pos_y]
+                angle = angle_or + random.randint(0,10)
+                angle = angle%360
 
-            projectile_manager.add_projectile_create(proj)
+                rad_angle = math.radians(angle)
+                x = math.cos(rad_angle)
+                y = math.sin(rad_angle)
+                pos[0]+=int(x*speed)
+                pos[1]+=int(y*speed)
 
-            self.has_shot = True
-            self.begin_relax = time.perf_counter()
+                proj = spell(angle,pos,1,False,self)
+                proj.load()
+
+                projectile_manager.add_projectile_create(proj)
+
+                self.has_shot = True
+                self.begin_relax = time.perf_counter()
         else :
             if self.begin_relax + self.time_relax < time.perf_counter():
                 self.state = "moving"
