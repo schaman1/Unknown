@@ -56,9 +56,7 @@ class Server_game(Server) :
             if len(event_player)!=0:
                 self.add_event_player(event_player)
 
-            if send_new_data[0] :
-                print("send_data")
-                
+            if send_new_data[0] :                
                 self.send_data_all([27,send_new_data[1],send_new_data[2]])
 
             self.map_monster.spawn_monsters_from_l(friendly_monster)
