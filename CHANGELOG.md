@@ -1,7 +1,10 @@
 # CHANGELOG
 
+### [1.0.0] - 2026-05-26
+- Version.1
+
 ### [0.0.1] - 2025-10-06
-- card system + display
+- Display + online
 
 ### [0.0.1] - 2025-10-05
 - menu
