@@ -21,4 +21,6 @@ python -m PyInstaller --onefile --windowed --name %EXE% ^
 
 move dist\Nifhleim.exe ..\
 
+
+
 pause
