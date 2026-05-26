@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # NIFHLEIM
 
 > *Descends. Survie. Conquiers.*
@@ -77,3 +78,7 @@ Copyright © 2026 **TEAM NIKA** — Voir [LICENSE](./LICENSE) pour les détails.
 ---
 
 *Projet réalisé à EPITA.*
+=======
+# Unknown
+Game dev, a developper
+>>>>>>> 9506f582f300fe275c38098e97ecf43cdc8d1762
