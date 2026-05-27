@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = []  #x,y,time
-        self.delay = 0.15#1/fps.FPS_SEND_POS_CLIENT
+        self.delay = 0.075#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
         self.max_life = 1
@@ -53,9 +53,14 @@ class Mob:
     def update_interpolate_pos(self):
         time_now = time.perf_counter() - self.delay
 
-        if len(self.interpolate_mov) < 2:
+        if len(self.interpolate_mov) == 0:
             return
 
+        if len(self.interpolate_mov) == 1:
+            self.pos_x, self.pos_y, _ = self.interpolate_mov[0]
+            return
+
+        # Drain old segments
         while len(self.interpolate_mov) > 2 and time_now > self.interpolate_mov[1][2]:
             self.interpolate_mov.pop(0)
 
@@ -65,6 +70,7 @@ class Mob:
         div = t1 - t0
 
         if div <= 0:
+            self.pos_x, self.pos_y = x1, y1
             return
 
         alpha = (time_now - t0) / div
@@ -73,20 +79,11 @@ class Mob:
             alpha = 0
 
         if alpha <= 1.0:
-            pass #No issue more with the camera
             self.pos_x = round((1 - alpha) * x0 + alpha * x1)
             self.pos_y = round((1 - alpha) * y0 + alpha * y1)
-
         else:
-            # Extrapolation limitée
-            max_extrapolation = 0.01  # 100 ms max
-            dt = min(time_now - t1, max_extrapolation)
-
-            vx = (x1 - x0) / div
-            vy = (y1 - y0) / div
-
-            self.pos_x = round(x1 + vx * dt)
-            self.pos_y = round(y1 + vy * dt)
+            # Hold last known position to prevent wild extrapolation/teleports
+            self.pos_x, self.pos_y = x1, y1
 
     #def update_interpolate_pos(self):
         #
