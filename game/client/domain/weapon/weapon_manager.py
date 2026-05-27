@@ -45,6 +45,8 @@ class WeaponManager:
         weapon_hold = None
 
         for j in range(len(self.lWeapons)) :
+            if self.lWeapons[j] is None:
+                continue
 
             #y = self.return_posy_blit_weapon(screen_size,i)
 #
@@ -79,7 +81,8 @@ class WeaponManager:
 
         self.next_allowed_shot[id_weapon] = now+delta_time/1000
 
-        self.lWeapons[id_weapon].timer.update_delta_time(now,delta_time/1000)
+        if self.lWeapons[id_weapon] is not None:
+            self.lWeapons[id_weapon].timer.update_delta_time(now,delta_time/1000)
 
     def shot(self,id_key):
 
@@ -95,6 +98,8 @@ class WeaponManager:
     def touch_spells(self,mouse_pos):
 
         for weapon in (self.lWeapons):
+            if weapon is None:
+                continue
 
             for spell in (weapon.spells) :
 
@@ -119,8 +124,9 @@ class WeaponManager:
         return -1,spell_previous_old,None #No collision
     
     def throw_spell(self,spell):
-
-        self.lWeapons[spell.idx_weapon].spells[spell.idx_spell].img = None
+        weapon = self.lWeapons[spell.idx_weapon]
+        if weapon is not None:
+            weapon.spells[spell.idx_spell].img = None
                     
     def trigger_spell_touch(self,spell):
 
@@ -144,18 +150,20 @@ class WeaponManager:
             return 1,spell_1_info,spell_2_info
 
     def switch_spell(self,spell_1,spell_2):
+            w1 = self.lWeapons[spell_1.idx_weapon]
+            w2 = self.lWeapons[spell_2.idx_weapon]
             
-            
-            self.lWeapons[spell_1.idx_weapon].spells[spell_1.idx_spell] = spell_2
-            self.lWeapons[spell_2.idx_weapon].spells[spell_2.idx_spell] = spell_1
-            
-            spell_1.idx_weapon,spell_2.idx_weapon = spell_2.idx_weapon,spell_1.idx_weapon
-            spell_1.idx_spell,spell_2.idx_spell = spell_2.idx_spell,spell_1.idx_spell
-            spell_1.pos_x,spell_2.pos_x = spell_2.pos_x,spell_1.pos_x
-            spell_1.pos_y,spell_2.pos_y = spell_2.pos_y,spell_1.pos_y
+            if w1 is not None and w2 is not None:
+                w1.spells[spell_1.idx_spell] = spell_2
+                w2.spells[spell_2.idx_spell] = spell_1
+                
+                spell_1.idx_weapon,spell_2.idx_weapon = spell_2.idx_weapon,spell_1.idx_weapon
+                spell_1.idx_spell,spell_2.idx_spell = spell_2.idx_spell,spell_1.idx_spell
+                spell_1.pos_x,spell_2.pos_x = spell_2.pos_x,spell_1.pos_x
+                spell_1.pos_y,spell_2.pos_y = spell_2.pos_y,spell_1.pos_y
 
-            spell_1.load_rect()
-            spell_2.load_rect()
+                spell_1.load_rect()
+                spell_2.load_rect()
 
     def stop_holding_spell(self):
         self.spell_hold.blit_icone = True
@@ -164,8 +172,8 @@ class WeaponManager:
     def draw_timer_all(self,screen):
         
         for weapon in self.lWeapons :
-
-            weapon.draw_timer(screen,time.perf_counter())
+            if weapon is not None:
+                weapon.draw_timer(screen,time.perf_counter())
 
     def reduce_time(self,id_weapon):
 

@@ -364,7 +364,8 @@ class Client:
         elif id==17:
             id_weapon,id_spell,idx_pos = struct.unpack("!BBB",data[1:4])
 
-            self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
+            if self.main.state.game.player_all.me is not None:
+                self.main.state.game.player_all.me.add_spell(id_weapon,id_spell,idx_pos)
 
         elif id==18:
 
@@ -402,7 +403,8 @@ class Client:
             id_weapon = data[1]
             name = {0:"Sac",1:"J",2:"K",3:"L"}
             self.main.state.add_alert(f"Reduction du temps de l'arme : {name[id_weapon]}",color = (0,255,0)) #Maybe change to put J/K/L
-            self.main.state.game.player_all.me.reduce_time(id_weapon)
+            if self.main.state.game.player_all.me is not None:
+                self.main.state.game.player_all.me.reduce_time(id_weapon)
 
         elif id==24:
 

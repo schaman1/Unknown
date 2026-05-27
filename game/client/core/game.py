@@ -165,7 +165,7 @@ class Game :
                     m.change_state(state,side)
 
     def shot(self,id_key):
-        if not self.blit_info:
+        if not self.blit_info and self.player_all.me is not None:
             self.player_command.append(self.player_all.me.shot(id_key))
 
     def blit_monsters(self,screen,x,y,pos_player,max_blit,dt):
@@ -202,6 +202,11 @@ class Game :
 
     def draw(self,screen,dt,mouse_pos=None):
         """Blit le canva sur le screen à la position x,y + return weither is in interaction or not"""
+
+        if self.player_all.me is None:
+            # En attente de l'initialisation du joueur
+            screen.fill((0, 0, 0))
+            return False
 
         #if 1/dt < 100 :
         #    print("Fps : ",1/dt)
@@ -253,8 +258,8 @@ class Game :
         self.projectiles.create_projectile(id,pos_x,pos_y,angle,vitesse,weight,id_img)
 
     def update_next_allowed_shot(self,delta_time,id_weapon):
-
-        self.player_all.me.weapons.update_next_allowed_shot(delta_time,id_weapon)
+        if self.player_all.me is not None:
+            self.player_all.me.weapons.update_next_allowed_shot(delta_time,id_weapon)
 
     def trigger_mouse_down(self,mouse_pos):
 
@@ -269,8 +274,9 @@ class Game :
                 self.spell_blit_mouse =spell_1 
 
             elif info==-1 and spell_1!=None: #In air
+                if self.player_all.me is not None:
+                    self.player_all.me.weapons.stop_holding_spell()
                 self.spell_blit_mouse = None
-
 
             return info,spell_1,spell_2
         
@@ -284,8 +290,8 @@ class Game :
         if self.blit_info == True :
             self.blit_info = False
             if self.blit_info and self.spell_blit_mouse != None:
-                
-                self.player_all.me.weapons.stop_holding_spell()
+                if self.player_all.me is not None:
+                    self.player_all.me.weapons.stop_holding_spell()
                 self.spell_blit_mouse=None
 
             return True
@@ -295,8 +301,8 @@ class Game :
     def trigger_info_key(self):
 
         if self.blit_info and self.spell_blit_mouse != None:
-            
-            self.player_all.me.weapons.stop_holding_spell()
+            if self.player_all.me is not None:
+                self.player_all.me.weapons.stop_holding_spell()
             self.spell_blit_mouse=None
 
         self.blit_info = not self.blit_info
@@ -315,6 +321,8 @@ class Game :
                 player.update_life(new_life,data[2])
 
     def update_money(self,money):
+        if self.player_all.me is None:
+            return
 
         delta_money = self.player_all.me.update_money(money)
 
@@ -367,7 +375,7 @@ class Game :
 
             if not touch_pnj and res[1]!=None:
 
-                if res[2] == 5  and self.player_all.me.money< 1: #Element.price quoi
+                if res[2] == 5  and (self.player_all.me is None or self.player_all.me.money< 1): #Element.price quoi
                     #=> dans l'intro
                     touch_pnj = self.pnj_all.test_trigger(pos_player,None) #Pour parler avec le pnj
                     return False,"Tue un monstre pour avoir assez de Nifly"
@@ -396,7 +404,7 @@ class Game :
             player = self.player_all.dic_players.get(id)
             if player:
                 player.kill(duree)
-                if player == self.player_all.me :
+                if self.player_all.me is not None and player == self.player_all.me :
                     self.fade.set_values(3,duree-3-0.2*4)
 
         else :
@@ -483,5 +491,5 @@ class Game :
         player = self.player_all.dic_players.get(id)
         if player:
             new_pos = player.move((pos_x,pos_y))
-            if player == self.player_all.me :
+            if self.player_all.me is not None and player == self.player_all.me :
                 self.mini_map.draw_circle(new_pos)
