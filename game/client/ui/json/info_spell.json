@@ -298,7 +298,7 @@
         "speed": 0,
         "rebond": 0,
         "time_reload": 0.1,
-        "degat": 10
+        "degat": 13
     },
     "UNKNOWN_SPELL": {
         "type": "projectile",
