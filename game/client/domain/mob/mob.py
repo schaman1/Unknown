@@ -79,7 +79,7 @@ class Mob:
 
         else:
             # Extrapolation limitée
-            max_extrapolation = 0.01  # 100 ms max
+            max_extrapolation = 0.001  # 100 ms max
             dt = min(time_now - t1, max_extrapolation)
 
             vx = (x1 - x0) / div
