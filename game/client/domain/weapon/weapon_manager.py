@@ -166,8 +166,9 @@ class WeaponManager:
                 spell_2.load_rect()
 
     def stop_holding_spell(self):
-        self.spell_hold.blit_icone = True
-        self.spell_hold=None
+        if self.spell_hold!=None :
+            self.spell_hold.blit_icone = True
+            self.spell_hold=None
             
     def draw_timer_all(self,screen):
         
