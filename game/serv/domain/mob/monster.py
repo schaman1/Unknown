@@ -1375,7 +1375,7 @@ class DwarfKing(Monster):
     def __init__(self, x, y, id=0):
 
         super().__init__(
-            hp = 200 + 200 * world.NBR_OF_PLAYER,
+            hp = 200 + 600 * world.NBR_OF_PLAYER,
             damage = monster_info.DWARF_KING_DAMAGE,
             x = x, y = y,
             atk_rad = -1,                               # -1 so base Monster.update doesn't automatically trigger "attacking" state
@@ -1401,7 +1401,7 @@ class DwarfKing(Monster):
         self.collision_time_reload = 0.7
 
         # Vitesse de poursuite du joueur
-        self.speed_chase = max(1, self.base_movement * 6)
+        self.speed_chase = max(1, self.base_movement * 10)
 
         # Esquive : alterne un dash et un double saut
         self.dodge_cooldown = monster_info.DWARF_KING_DODGE_COOLDOWN
@@ -1583,12 +1583,17 @@ class DwarfKing(Monster):
 
         skeleton = Skeleton(self.pos_x + offset, spawn_y)
         laseroide = Laseroide(self.pos_x - offset, spawn_y)
+        mma = Mma(self.pos_x - offset, spawn_y)
 
         self.monsters_to_spawn.append(skeleton)
         self.monsters_to_spawn.append(laseroide)
+        self.monsters_to_spawn.append(mma)
+        self.monsters_to_spawn.append(mma)
 
         self.active_minions.append(skeleton)
         self.active_minions.append(laseroide)
+        self.active_minions.append(mma)
+        self.active_minions.append(mma)
         self.minions_spawned += 2
 
     def try_melee_attack(self, collision_handler):
