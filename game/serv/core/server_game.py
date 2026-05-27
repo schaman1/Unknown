@@ -237,9 +237,12 @@ class Server_game(Server) :
 
             self.add_object(el)
 
+        first = True
+
         for magasin in MAGASIN_BEGIN :
 
-            self.create_magasin(magasin)
+            self.create_magasin(magasin,first)
+            first = False
 
     def trigger(self,chunk,id,sender):
         
@@ -343,31 +346,51 @@ class Server_game(Server) :
         
         self.lClient[sender].set_finish_intro()
 
-    def create_magasin(self,magasin_info) :
+    def create_magasin(self,magasin_info,first) :
         
         pos_x,pos_y = magasin_info
         chunk = self.convert_to_chunk(pos_x,pos_y)
         delta_pos_x = self.base_movement*6
 
-        for i in range(7):
+        if not first :
 
-            if i < 2 :
-                id,ele,type = self.objects_manager.spawn_random_spell(1,chunk,pos_x,pos_y)
-                ele.price = 20
-            elif i <5 :
-                id,ele,type = self.objects_manager.spawn_random_spell(3,chunk,pos_x,pos_y)
-                ele.price = 80
-            elif i == 5 :
-                id,ele,type = self.objects_manager.spawn_random_spell(4,chunk,pos_x,pos_y)
-                ele.price = 200
-            elif i == 6 :
-                id,ele,type = self.objects_manager.spawn_random_spell(2,chunk,pos_x,pos_y)
-                ele.price = 100
-            #Spawn random object
-            pos_x+=delta_pos_x
+            for i in range(7):
 
-            data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
-            self.send_data_all(data)
+                if i < 2 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(1,chunk,pos_x,pos_y)
+                    ele.price = 20
+                elif i <5 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(3,chunk,pos_x,pos_y)
+                    ele.price = 80
+                elif i == 5 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(4,chunk,pos_x,pos_y)
+                    ele.price = 200
+                elif i == 6 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(2,chunk,pos_x,pos_y)
+                    ele.price = 100
+                #Spawn random object
+                pos_x+=delta_pos_x
+
+                data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
+                self.send_data_all(data)
+                
+        else :
+            for i in range(7):
+
+                if i < 4 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(1,chunk,pos_x,pos_y)
+                    ele.price = 20
+                elif i <6 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(3,chunk,pos_x,pos_y)
+                    ele.price = 80
+                elif i == 6 :
+                    id,ele,type = self.objects_manager.spawn_random_spell(2,chunk,pos_x,pos_y)
+                    ele.price = 100
+                #Spawn random object
+                pos_x+=delta_pos_x
+
+                data = [15,[id,world.TYPE_OBJECT[type],ele.id_cat,ele.pos_x,ele.pos_y,chunk,ele.price]]
+                self.send_data_all(data)
 
     def add_event_player(self,event):
 

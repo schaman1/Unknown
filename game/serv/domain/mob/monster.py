@@ -718,7 +718,7 @@ class Mma(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=30+20*world.NBR_OF_PLAYER,damage =6,x=x,y=y,atk_rad = monster_info.MMA_ATK_RAD,rad = monster_info.MMA_RAD,run_away = monster_info.MMA_TOO_CLOSE,atk_speed = 1,id=id,prime = 40,acceleration = monster_info.MMA_ACCELERATION,width = 8,height = 8)
+        super().__init__(hp=30+20*world.NBR_OF_PLAYER,damage =6,x=x,y=y,atk_rad = monster_info.MMA_ATK_RAD,rad = monster_info.MMA_RAD,run_away = monster_info.MMA_TOO_CLOSE,atk_speed = 1,id=id,prime = 70,acceleration = monster_info.MMA_ACCELERATION,width = 8,height = 8)
 
         self.knockback_res = 0.5
 
@@ -739,6 +739,7 @@ class Mma(Monster) :
 
         self.last_time_jump = time.perf_counter()
         self.delta_time_before_jump = 0.7
+        self.len_dead = 60
 
         #self.collision_damage = False
 
@@ -1073,7 +1074,7 @@ class Limace(Monster) :
 
     def __init__(self,x,y,id=0):
 
-        super().__init__(hp=5+5*world.NBR_OF_PLAYER,damage = 5,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
+        super().__init__(hp=5+5*world.NBR_OF_PLAYER,damage = 3,x=x,y=y,atk_rad = monster_info.LIMACE_ATK_RAD,rad = monster_info.LIMACE_RAD,run_away = monster_info.LIMACE_TOO_CLOSE,atk_speed = 1,id=id,prime = 15,acceleration = monster_info.LIMACE_ACCELERATION,width = 6,height = 6)
 
         self.name = 5 #Permet d'afficher le bon monstre / In monster all dans client
 
