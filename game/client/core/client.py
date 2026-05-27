@@ -1,4 +1,4 @@
-import socket, select, struct
+import socket, select, struct, queue, threading
 from shared.constants.network import PORT
 from client.core.queu_event import QueueEvent
 import time
@@ -17,6 +17,8 @@ class Client:
 
         self.buffer = bytearray()
         self.events = QueueEvent(self.main)
+        self.received_messages = queue.Queue()
+        self.send_lock = threading.Lock()
 
         self.font = font
         self.screen = screen
@@ -75,154 +77,155 @@ class Client:
         """Ici, lancé quand connection réussite = lance un thread = script qui va tourner à côté = reception serveurs"""
         print("Connecté au serveur")
         self.connected = True
-        self.client.setblocking(False) #Pour pas bloquer le script
-
-        #threading.Thread(target=self.loop_reception_server, daemon=True).start() #PLus besoin car le fait dans le main
-
+        self.client.setblocking(True)
+        self.received_messages = queue.Queue()
+        threading.Thread(target=self._reader_loop, daemon=True).start()
         self.send_data(id = 1) #3 = client connection
 
-    def poll_reception(self):
-        while True:  # ← boucle jusqu'à ce qu'il n'y ait plus rien
-            readable, _, _ = select.select([self.client], [], [], 0)
-            if not readable:
-                break
+    def _read_exact(self, length):
+        data = bytearray()
+        while len(data) < length:
+            chunk = self.client.recv(length - len(data))
+            if not chunk:
+                raise ConnectionError("Socket closed by server")
+            data.extend(chunk)
+        return data
 
-            try:
-                data = self.client.recv(4096)  # plus grand aussi ca aide
-            except BlockingIOError:
-                return
-            except Exception as e:
-                print("Erreur réception:", e)
-                self.connected = False
-                return
-
-            if not data:
-                print("Connexion perdue")
-                self.connected = False
-                return
-
-            self.buffer.extend(data)
-
-    #def poll_reception(self):
-    #    """Version non bloquante de loop_reception_server(), appelée dans la boucle de jeu."""
-#
-    #    # Vérifie si le socket est prêt (0 = instantané)
-    #    readable, _, _ = select.select([self.client], [], [], 0)
-    #    if not readable:
-    #        return  # aucune donnée, ne bloque jamais
-#
-    #    try:
-    #        data = self.client.recv(1024)
-#
-    #    except BlockingIOError:
-    #        print("Erreur socket non prêt")
-    #        return  # socket non prêt (rare si select utilisé)
-#
-    #    except Exception as e:
-    #        print("Erreur réception:", e)
-    #        self.connected = False
-    #        return
-#
-    #    # Déconnexion détectée
-    #    try :
-    #        if not data:
-    #            print("Connexion perdue")
-    #            self.connected = False
-    #            return
-    #    except :
-    #        print("Connexion perdue")
-    #        self.connected = False
-    #        return
-#
-#
-    #    # Ajoute les données au buffer
-    #    self.buffer.extend(data)
-
-        # ---- Traitement des messages ----
-        while True:
-            if len(self.buffer) < 1:
-                break
-
-            msg_id = self.buffer[0]
-
-            # --- CORRECTION ICI : Pour les messages à taille dynamique (qui lisent un Short (H) à l'index 1:3)
-            # Il nous faut au minimum 3 octets (1 pour l'ID + 2 pour le Short) pour calculer la taille réelle.
-            dynamic_size_ids = {3, 4, 5, 7, 8, 14, 18, 20, 26}
-            if msg_id in dynamic_size_ids and len(self.buffer) < 3:
-                break # On attend d'avoir au moins l'en-tête complète de taille
+    def _reader_loop(self):
+        try:
+            while self.connected:
+                # Read 1 byte for message ID
+                msg_id_data = self._read_exact(1)
+                msg_id = msg_id_data[0]
                 
-            # Idem pour l'id 10 qui lit 1 octet (B) à l'index 1:2
-            if msg_id == 10 and len(self.buffer) < 2:
-                break
+                # Determine message size (handling dynamic or fixed sizes)
+                if msg_id in (0, 9, 19, 21, 22, 25):
+                    msg_size = 1
+                elif msg_id == 1:
+                    msg_size = 1 + 2
+                elif msg_id == 2:
+                    msg_size = 1 + 1
+                elif msg_id == 4:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 16
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 5:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 16
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 6:
+                    msg_size = 1 + 9
+                elif msg_id == 7:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 18
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 8:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 12
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 10:
+                    count_data = self._read_exact(1)
+                    count = struct.unpack("!B", count_data)[0]
+                    body_len = 2 + count
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 11:
+                    msg_size = 1 + 3
+                elif msg_id == 12:
+                    msg_size = 1 + 5
+                elif msg_id == 13:
+                    msg_size = 1 + 2
+                elif msg_id == 14:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 6
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 15:
+                    msg_size = 1 + 15
+                elif msg_id == 16:
+                    msg_size = 1 + 3
+                elif msg_id == 17:
+                    msg_size = 1 + 3
+                elif msg_id == 18:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 6
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 20:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 6
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 23:
+                    msg_size = 1 + 1
+                elif msg_id == 24:
+                    msg_size = 1 + 1
+                elif msg_id == 26:
+                    count_data = self._read_exact(2)
+                    count = struct.unpack("!H", count_data)[0]
+                    body_len = count * 4
+                    body_data = self._read_exact(body_len)
+                    msg = bytearray([msg_id]) + count_data + body_data
+                    self.received_messages.put(msg)
+                    continue
+                elif msg_id == 27:
+                    msg_size = 1 + 4
+                elif msg_id == 28:
+                    msg_size = 1 + 1
+                else:
+                    raise ConnectionError(f"Unknown message ID: {msg_id}")
 
-            # Détermine la taille du message selon l'ID
-            if msg_id in (0, 9, 19, 21, 22, 25):
-                msg_size = 1
-            elif msg_id == 1:
-                msg_size = 1 + 2
-            elif msg_id == 2:
-                msg_size = 1 + 1
-            elif msg_id == 4:
-                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 16
-            elif msg_id == 5:
-                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 16
-            elif msg_id == 6:
-                msg_size = 1 + 9
-            elif msg_id == 7:
-                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 18
-            elif msg_id == 8:
-                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 12
-            elif msg_id == 10:
-                msg_size = 1 + 3 + struct.unpack("!B", self.buffer[1:2])[0]
-            elif msg_id == 11:
-                msg_size = 1 + 3
-            elif msg_id == 12:
-                msg_size = 1 + 5
-            elif msg_id == 13:
-                msg_size = 1 + 2
-            elif msg_id == 14:
-                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
-            elif msg_id == 15:
-                msg_size = 1 + 3 + 8 + 2 + 2
-            elif msg_id == 16:
-                msg_size = 1 + 2 + 1
-            elif msg_id == 17:
-                msg_size = 1 + 3
-            elif msg_id == 18:
-                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
-            elif msg_id == 20:
-                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
-            elif msg_id == 23:
-                msg_size = 1 + 1
-            elif msg_id == 24:
-                msg_size = 1 + 1
-            elif msg_id == 26:
-                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 4
-            elif msg_id == 27:
-                msg_size = 1 + 2 + 2
-            elif msg_id == 28:
-                msg_size = 1 + 1
-            else:
-                print("UNKNOWN MSG ID CLIENT", msg_id, self.buffer)
-                self.buffer.clear()
-                break
+                # Read body for static sizes
+                body_data = self._read_exact(msg_size - 1)
+                msg = bytearray([msg_id]) + body_data
+                self.received_messages.put(msg)
+        except Exception as e:
+            print("Client reader thread error/disconnect:", e)
+            self.received_messages.put(("disconnect", e))
 
-            # Attendre d'avoir la totalité du message
-            if len(self.buffer) < msg_size:
-                break
-
-            # Extraire le message complet
-            msg = self.buffer[:msg_size]
-
-            # Retirer du buffer
-            del self.buffer[:msg_size]
-
-            # Traiter
+    def poll_reception(self):
+        while not self.received_messages.empty():
             try:
-                self.traiter_data(msg,msg_size)
+                msg = self.received_messages.get_nowait()
+            except queue.Empty:
+                break
+
+            if isinstance(msg, tuple) and msg[0] == "disconnect":
+                print("Connexion perdue (via queue)")
+                self.connected = False
+                return
+
+            try:
+                self.traiter_data(msg, len(msg))
             except Exception as e:
-                print(f"Erreur lors du traitement du message {msg_id}: {e}")
-                self.buffer.clear()
+                print(f"Erreur lors du traitement du message {msg[0]}: {e}")
                 break
 
     def reset_values(self):
@@ -465,7 +468,12 @@ class Client:
         elif id==9:
             packet+= struct.pack("!BB",data[0][0],data[0][1])
 
-        self.client.sendall(packet)
+        try:
+            with self.send_lock:
+                self.client.sendall(packet)
+        except Exception as e:
+            print(f"Erreur lors de l'envoi client ({id}): {e}")
+            self.connected = False
         #self.client.sendall(json.dumps(data).encode())
 
     def draw_text(self,screen,font,text,idx):
@@ -473,10 +481,16 @@ class Client:
             screen.blit(text, (50, 50 + idx * 30))
 
     def stop_connection(self):
-
-        self.send_data(id = 2)
+        try:
+            self.send_data(id = 2)
+        except:
+            pass
 
         self.connected = None
+        try:
+            self.client.close()
+        except:
+            pass
 
         self.err_message = ""
 
