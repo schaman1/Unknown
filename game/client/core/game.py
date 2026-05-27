@@ -157,10 +157,12 @@ class Game :
         """Reçoit les données des monstres du serv et les envoie à Monster_all"""
 
         for (chunk, id, x, y, state,side) in data_monster :
-
-            self.monsters.dic_monster[chunk][id].move((x,y))
-                
-            self.monsters.dic_monster[chunk][id].change_state(state,side)
+            m_dict = self.monsters.dic_monster.get(chunk)
+            if m_dict:
+                m = m_dict.get(id)
+                if m:
+                    m.move((x,y))
+                    m.change_state(state,side)
 
     def shot(self,id_key):
         if not self.blit_info:
@@ -308,10 +310,9 @@ class Game :
             #delta_life = new_life - self.player_all.me.life
             #self.add_popup(self.player_all.me,delta_life)
 
-            id_player = data[1]
-            max_life = data[2]
-
-            self.player_all.dic_players[id_player].update_life(new_life,max_life)
+            player = self.player_all.dic_players.get(id_player)
+            if player:
+                player.update_life(new_life,max_life)
 
     def update_money(self,money):
 
@@ -341,13 +342,15 @@ class Game :
             id,chunk,delta_life = e
 
             if chunk==99: #Magic number je sais mais nsm
-                ent = self.player_all.dic_players[id]
-                self.add_popup(ent,delta_life)
-            else :
-                ent = self.monsters.dic_monster[chunk].get(id)
+                ent = self.player_all.dic_players.get(id)
                 if ent is not None:
-
                     self.add_popup(ent,delta_life)
+            else :
+                m_dict = self.monsters.dic_monster.get(chunk)
+                if m_dict:
+                    ent = m_dict.get(id)
+                    if ent is not None:
+                        self.add_popup(ent,delta_life)
 
     def interact(self):
         """Look around player if can interact with an object + interact with the closest one """
@@ -390,14 +393,20 @@ class Game :
         duree = duree/1000
     
         if chunk==99 :
-            self.player_all.dic_players[id].kill(duree)
-            if self.player_all.dic_players[id] == self.player_all.me :
-                self.fade.set_values(3,duree-3-0.2*4)
+            player = self.player_all.dic_players.get(id)
+            if player:
+                player.kill(duree)
+                if player == self.player_all.me :
+                    self.fade.set_values(3,duree-3-0.2*4)
 
         else :
-            self.monsters.dic_monster[chunk][id].kill(duree)
-            if self.monsters.dic_monster[chunk][id].name == "DwarfKing" :
-                self.start_end()
+            m_dict = self.monsters.dic_monster.get(chunk)
+            if m_dict:
+                m = m_dict.get(id)
+                if m:
+                    m.kill(duree)
+                    if m.name == "DwarfKing" :
+                        self.start_end()
 
     def start_end(self):
         self.end = True
@@ -471,6 +480,8 @@ class Game :
         screen.blit(bar_surface, (0, 0))
 
     def move_player(self,id,pos_x,pos_y):
-        new_pos = self.player_all.dic_players[id].move((pos_x,pos_y))
-        if self.player_all.dic_players[id] == self.player_all.me :
-            self.mini_map.draw_circle(new_pos)
+        player = self.player_all.dic_players.get(id)
+        if player:
+            new_pos = player.move((pos_x,pos_y))
+            if player == self.player_all.me :
+                self.mini_map.draw_circle(new_pos)

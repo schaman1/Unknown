@@ -80,18 +80,18 @@ class Server_game(Server) :
 
             if len(return_monster)!=0 :
                 if should_send :
-                    self.send_data_update(return_monster,4)
+                    self.send_data_update([list(client_monsters) for client_monsters in return_monster],4)
             if len(monster_change_chunk)!=0:
-                self.send_data_all((20,monster_change_chunk))
+                self.send_data_all((20,list(monster_change_chunk)))
             if len(monster_destroy)!=0:
-                self.send_data_all([26,monster_destroy])
+                self.send_data_all([26,list(monster_destroy)])
 
             if len(result_projectile)!= 0 :
-                self.send_data_update(result_projectile[0],7)
+                self.send_data_update([list(client_proj) for client_proj in result_projectile[0]],7)
 
-                self.send_data_update(result_projectile[1],8)
+                self.send_data_update([list(client_die) for client_die in result_projectile[1]],8)
 
-                self.send_data_update(result_projectile[2],11)
+                self.send_data_update([list(client_shot) for client_shot in result_projectile[2]],11)
 
             self.handle_clients()
             self.handle_player(dt,should_send)

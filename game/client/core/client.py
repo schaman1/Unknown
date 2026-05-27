@@ -206,8 +206,8 @@ class Client:
 
             else:
                 print("UNKNOWN MSG ID CLIENT", msg_id,self.buffer)
-                self.buffer.pop(0)
-                continue
+                self.buffer.clear()
+                break
 
             # Attendre plus de data ?
             if len(self.buffer) < msg_size:
@@ -220,7 +220,12 @@ class Client:
             del self.buffer[:msg_size]
 
             # Traiter
-            self.traiter_data(msg,msg_size)
+            try:
+                self.traiter_data(msg,msg_size)
+            except Exception as e:
+                print(f"Erreur lors du traitement du message {msg_id}: {e}")
+                self.buffer.clear()
+                break
 
     def reset_values(self):
         self.id = "Coming soon"
@@ -262,7 +267,7 @@ class Client:
             #print("id = 2 and values = ",id_remove)
             #print(f"Remove connection : {data[1]}") #4
             #print(self.main.state.game.player_all.dic_players) #Has player 1 & 2
-            self.main.state.game.player_all.dic_players.pop(id_remove)
+            self.main.state.game.player_all.dic_players.pop(id_remove, None)
 
 
         elif id == 4 : #monsters update
@@ -306,7 +311,8 @@ class Client:
 
             #print(spells_id,"Spells !")
 
-            self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id,self.screen_size)
+            if self.main.state.game.player_all.me:
+                self.main.state.game.player_all.me.add_weapon(idx_weapon_pos,id_weapon,size-7,spells_id,self.screen_size)
 
             #else:
             #    self.main.state.game.player_all.dic_players[client_id].add_weapon(id_weapon)
@@ -424,7 +430,9 @@ class Client:
 
         elif id == 28:
             id_player = data[1]
-            self.main.state.game.player_all.dic_players[id_player].set_surprise()
+            player = self.main.state.game.player_all.dic_players.get(id_player)
+            if player:
+                player.set_surprise()
 
 
     def display_clients_name(self):

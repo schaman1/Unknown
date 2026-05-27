@@ -18,9 +18,14 @@ class Monster_all :
     def change_chunk(self,l):
         """Change chunk for monsters"""
         for chunk,new_chunk,id in l:
-            monster =  self.dic_monster[chunk][id]
-            del self.dic_monster[chunk][id]
-            self.dic_monster[new_chunk][id] = monster
+            m_dict = self.dic_monster.get(chunk)
+            if m_dict:
+                monster = m_dict.get(id)
+                if monster:
+                    del m_dict[id]
+                    new_dict = self.dic_monster.get(new_chunk)
+                    if new_dict is not None:
+                        new_dict[id] = monster
 
     def init_monster(self,lchunck_monsters):
         """Initialise les monstres reçus du serv"""
@@ -84,8 +89,9 @@ class Monster_all :
 
         for monster in l:
             chunk,id = monster
-  
-            del self.dic_monster[chunk][id]
+            m_dict = self.dic_monster.get(chunk)
+            if m_dict and id in m_dict:
+                del m_dict[id]
 
     def distance(self,pos_player,element):
 
