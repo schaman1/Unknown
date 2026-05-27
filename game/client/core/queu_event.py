@@ -12,7 +12,7 @@ class QueueEvent:
 
     def depile(self):
 
-        return self.q.pop()
+        return self.q.pop(0)
     
     def is_empty(self):
         if len(self.q) == 0:
