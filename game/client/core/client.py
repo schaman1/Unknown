@@ -205,7 +205,7 @@ class Client:
                 msg_size = 1+1
 
             else:
-                print("UNKNOWN MSG ID", msg_id)
+                print("UNKNOWN MSG ID CLIENT", msg_id,self.buffer)
                 self.buffer.pop(0)
                 continue
 

@@ -86,7 +86,7 @@ class Network_handler :
                     msg_size = 1+2
 
                 else:
-                    print("UNKNOWN MSG ID", msg_id)
+                    print("UNKNOWN MSG ID SERVER", msg_id,buffer)
                     del buffer[0]
                     continue
 

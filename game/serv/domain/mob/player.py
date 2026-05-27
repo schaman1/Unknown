@@ -118,7 +118,7 @@ class Player(Mob) :
 
     def update_pos(self,map,dt,collision_handler):
 
-        print("pos :",self.pos_x,self.pos_y-self.half_height)
+        #print("pos :",self.pos_x,self.pos_y-self.half_height)
 
         self.check_respawn()
 
