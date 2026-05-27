@@ -95,6 +95,8 @@ class Server:
     def start_server(self, client):
         """Lance le serveur"""
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         #self.serverUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #self.serverUDP.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #Permet d'envoyer des message a tt le monde = BORADCAST
@@ -179,6 +181,7 @@ class Server:
         self.lClient[client_socket] = Player(pos = world.SPAWN_POINT,id = self.nbr_player,host = is_host)
         self.network_handler.send_locks[client_socket] = threading.Lock()
         client_socket.setblocking(True)
+        client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.network_handler.start_client_reader(client_socket)
 
     def send_data_update(self,data,id):

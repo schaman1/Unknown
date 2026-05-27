@@ -9,6 +9,7 @@ class Client:
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = port
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.connected = None
         self.main = main
 
@@ -40,6 +41,7 @@ class Client:
         "Create the client and connect to ther serveur"
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         #-------- Pour ngrok = Online² --------
         #ip, port = self.return_ip_ngrok(ip_port)
