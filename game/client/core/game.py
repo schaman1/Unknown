@@ -29,7 +29,7 @@ class Game :
         self.last_time_add_text_end = time.perf_counter()
         self.nbr_text_end = 0
         self.end_text = []
-        with open(resource_path("client/ui/json/text.json",'r', encoding="utf-8")) as f:
+        with open(resource_path("client/ui/json/text.json"),'r', encoding="utf-8") as f:
 
             dialogues = json.load(f)
             f.close()
