@@ -57,7 +57,7 @@ class Main:
         return event.key == self.action_key(action)
 
     def handle_move_keydown(self, event):
-        if self.state.game.player_all.me.life <= 0:
+        if self.state.game.player_all.me is None or self.state.game.player_all.me.life <= 0:
             return False
 
         if self.is_action(event, "up"):
@@ -87,7 +87,7 @@ class Main:
         return False
 
     def handle_move_keyup(self, event):
-        if self.state.game.player_all.me.life <= 0:
+        if self.state.game.player_all.me is None or self.state.game.player_all.me.life <= 0:
             return False
 
         if self.is_action(event, "up"):
@@ -201,7 +201,7 @@ class Main:
                         elif event.key == pygame.K_SPACE :
                             self.key_command.append([7])"""
 
-                        if self.state.game.player_all.me.life > 0:
+                        if self.state.game.player_all.me is not None and self.state.game.player_all.me.life > 0:
 
                             """if event.key == pygame.K_z :
                                 self.key_command.append([3,0])
@@ -292,8 +292,8 @@ class Main:
 
                         elif info==-1: #Nothing c quand touche rien
                             if spell_1!=None:
-                                
-                                self.state.game.player_all.me.weapons.throw_spell(spell_1)
+                                if self.state.game.player_all.me is not None:
+                                    self.state.game.player_all.me.weapons.throw_spell(spell_1)
                                 spell_info = spell_1.idx_weapon,spell_1.idx_spell
                                 self.client.send_data(9,[spell_info])
 

@@ -76,12 +76,16 @@ class Network_handler :
                 print(f"Error processing client message {msg[0]}: {e}")
 
     def process_message(self,client_socket,msg,msg_size):
-
-        if self.server.is_running_menu:
+        id_msg = msg[0]
+        # Connection and disconnection messages must always be handled by the connection logic (in_menu)
+        # to prevent race conditions during state transitions.
+        if id_msg == 1 or id_msg == 2:
             self.in_menu(msg, client_socket)
-
-        elif self.server.is_running_game:
-            self.in_game(msg, client_socket)
+        else:
+            if self.server.is_running_menu:
+                self.in_menu(msg, client_socket)
+            elif self.server.is_running_game:
+                self.in_game(msg, client_socket)
 
     def in_menu(self, data, sender):
         """Traite les données sachant qu'on est dans le menu"""
