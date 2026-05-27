@@ -179,19 +179,29 @@ class Server:
     def send_data(self,packet,client):
         self.network_handler.send_data(packet,client)
 
-    def send_data_all(self,data):
-        """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
-        def send_to(socket):
-            try:
-                #print("Send successfuly")
-                self.send_data(data, socket)
-            except Exception as e:
-                print(data)
-                print(f"Erreur envoi, {e}",file=sys.stderr)
-                pass  # ou suppression du client mort
+    def send_data_all(self, data):
+            """Permet d'envoyer data a tout les clients connectés au jeu"""
+            # On itère directement sur une copie des clés pour éviter les erreurs de dictionnaire modifié pendant l'itération
+            for socket in list(self.lClient.keys()):
+                try:
+                    self.send_data(data, socket)
+                except Exception as e:
+                    print(data)
+                    print(f"Erreur envoi global, {e}", file=sys.stderr)
 
-        for socket in self.lClient.keys():
-            threading.Thread(target=send_to, args=(socket,), daemon=True).start()
+    #def send_data_all(self,data):
+    #    """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
+    #    def send_to(socket):
+    #        try:
+    #            #print("Send successfuly")
+    #            self.send_data(data, socket)
+    #        except Exception as e:
+    #            print(data)
+    #            print(f"Erreur envoi, {e}",file=sys.stderr)
+    #            pass  # ou suppression du client mort
+#
+    #    for socket in self.lClient.keys():
+    #        threading.Thread(target=send_to, args=(socket,), daemon=True).start()
 
     def handle_clients(self):
         self.network_handler.handle_clients()

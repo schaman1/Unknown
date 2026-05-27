@@ -140,97 +140,74 @@ class Client:
 
         # ---- Traitement des messages ----
         while True:
-            # Besoin d'au moins 1 byte → ID
             if len(self.buffer) < 1:
                 break
 
             msg_id = self.buffer[0]
 
-            if len(self.buffer)<2 and (msg_id!=0 and msg_id!=2):
-                break
-
-            elif len(self.buffer)<3 and (msg_id==3 or msg_id==4 or msg_id == 5 or msg_id==7 or msg_id==8 or msg_id==10 or msg_id == 14 or msg_id==18 or msg_id == 20 or msg_id == 26 or msg_id == 27):
+            # --- CORRECTION ICI : Pour les messages à taille dynamique (qui lisent un Short (H) à l'index 1:3)
+            # Il nous faut au minimum 3 octets (1 pour l'ID + 2 pour le Short) pour calculer la taille réelle.
+            dynamic_size_ids = {3, 4, 5, 7, 8, 14, 18, 20, 26}
+            if msg_id in dynamic_size_ids and len(self.buffer) < 3:
+                break # On attend d'avoir au moins l'en-tête complète de taille
+                
+            # Idem pour l'id 10 qui lit 1 octet (B) à l'index 1:2
+            if msg_id == 10 and len(self.buffer) < 2:
                 break
 
             # Détermine la taille du message selon l'ID
-            if msg_id == 0 or msg_id == 9 or msg_id==19 or msg_id == 21 or msg_id == 22 or msg_id==25:          # start_game / load fini
+            if msg_id in (0, 9, 19, 21, 22, 25):
                 msg_size = 1
-
-            elif msg_id == 1:        # new player
+            elif msg_id == 1:
                 msg_size = 1 + 2
-
-            elif msg_id == 2: #Remove player
-                msg_size = 1+1
-
-            #elif msg_id == 3:
-            #    msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0]*8
-
+            elif msg_id == 2:
+                msg_size = 1 + 1
             elif msg_id == 4:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*16
-
-            elif msg_id==5:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*16
-
-            elif msg_id==6:
-                msg_size = 1+9
-            
-            elif msg_id==7:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*18
-
-            elif msg_id==8:
-                msg_size = 3+struct.unpack("!H",self.buffer[1:3])[0]*12
-
-            elif msg_id==10:
-                msg_size = 1+3+struct.unpack("!B",self.buffer[1:2])[0]
-
-            elif msg_id == 11 :
-                msg_size = 1+3
-
-            elif msg_id==12:
-                msg_size = 1+5
-
+                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 16
+            elif msg_id == 5:
+                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 16
+            elif msg_id == 6:
+                msg_size = 1 + 9
+            elif msg_id == 7:
+                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 18
+            elif msg_id == 8:
+                msg_size = 3 + struct.unpack("!H", self.buffer[1:3])[0] * 12
+            elif msg_id == 10:
+                msg_size = 1 + 3 + struct.unpack("!B", self.buffer[1:2])[0]
+            elif msg_id == 11:
+                msg_size = 1 + 3
+            elif msg_id == 12:
+                msg_size = 1 + 5
             elif msg_id == 13:
-                msg_size = 1+2 #id + !H (taille attendu pour traiter le tableau)
-
+                msg_size = 1 + 2
             elif msg_id == 14:
-                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
-
+                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
             elif msg_id == 15:
-                msg_size = 1+3+8+2+2
-
-            elif msg_id==16:
-                msg_size = 1+2+1
-
+                msg_size = 1 + 3 + 8 + 2 + 2
+            elif msg_id == 16:
+                msg_size = 1 + 2 + 1
             elif msg_id == 17:
-                msg_size = 1+3
-
-            elif msg_id==18:
-                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
-
-            elif msg_id==20:
-                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*6
-
+                msg_size = 1 + 3
+            elif msg_id == 18:
+                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
+            elif msg_id == 20:
+                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 6
             elif msg_id == 23:
-                msg_size = 1+1
-
+                msg_size = 1 + 1
             elif msg_id == 24:
-                msg_size = 1+1
-
-            elif msg_id == 26 :
-                msg_size = 1+2+struct.unpack("!H",self.buffer[1:3])[0]*4
-
-            elif msg_id == 27 :
-                msg_size = 1+2+2
-
+                msg_size = 1 + 1
+            elif msg_id == 26:
+                msg_size = 1 + 2 + struct.unpack("!H", self.buffer[1:3])[0] * 4
+            elif msg_id == 27:
+                msg_size = 1 + 2 + 2
             elif msg_id == 28:
-                msg_size = 1+1
-
+                msg_size = 1 + 1
             else:
-                print("UNKNOWN MSG ID CLIENT", msg_id,self.buffer)
+                print("UNKNOWN MSG ID CLIENT", msg_id, self.buffer)
                 self.buffer.clear()
                 break
 
-            # Attendre plus de data ?
+            # Attendre d'avoir la totalité du message
             if len(self.buffer) < msg_size:
                 break
 
