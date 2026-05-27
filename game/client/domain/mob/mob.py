@@ -17,7 +17,7 @@ class Mob:
         self.pos_blit=0
 
         self.interpolate_mov = []  #x,y,time
-        self.delay = 0.12#1/fps.FPS_SEND_POS_CLIENT
+        self.delay = 0.15#1/fps.FPS_SEND_POS_CLIENT
         
         self.life = 100
         self.max_life = 1
@@ -116,11 +116,20 @@ class Mob:
         #self.pos_x = round((1-alpha)*self.interpolate_mov[0][0] + (alpha*self.interpolate_mov[1][0]))
         #self.pos_y = round((1-alpha)*self.interpolate_mov[0][1] + (alpha*self.interpolate_mov[1][1]))
 
-    def move_mob(self,new_pos):
+    #def move_mob(self,new_pos):
 
         #new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
-
-        self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
+    def move_mob(self, new_pos):
+        expected_interval = 1 / 20  # Test !
+        
+        if len(self.interpolate_mov) == 0:
+            t = time.perf_counter()
+        else:
+            last_t = self.interpolate_mov[-1][2]
+            t = max(time.perf_counter(), last_t + expected_interval)
+        
+        self.interpolate_mov.append((new_pos[0], new_pos[1], t))
+        #self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
 
     def in_dead_state(self):
 
