@@ -120,16 +120,16 @@ class Mob:
 
         #new_pos = self.convert_from_base(delta[0]*self.cell_size),self.convert_from_base(delta[1]*self.cell_size)
     def move_mob(self, new_pos):
-        expected_interval = 1 / 20  # Test !
-        
-        if len(self.interpolate_mov) == 0:
-            t = time.perf_counter()
-        else:
-            last_t = self.interpolate_mov[-1][2]
-            t = max(time.perf_counter(), last_t + expected_interval)
-        
-        self.interpolate_mov.append((new_pos[0], new_pos[1], t))
-        #self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
+        #expected_interval = 1 / 20  # Test !
+        #
+        #if len(self.interpolate_mov) == 0:
+        #    t = time.perf_counter()
+        #else:
+        #    last_t = self.interpolate_mov[-1][2]
+        #    t = max(time.perf_counter(), last_t + expected_interval)
+        #
+        #self.interpolate_mov.append((new_pos[0], new_pos[1], t))
+        self.interpolate_mov.append((new_pos[0],new_pos[1],time.perf_counter()))
 
     def in_dead_state(self):
 
