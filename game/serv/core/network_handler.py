@@ -430,9 +430,9 @@ class Network_handler :
             lock = self.send_locks.get(client)
             if lock:
                 with lock:
-                    client.send(packet)
+                    client.sendall(packet)
             else:
-                client.send(packet)
+                client.sendall(packet)
 
         except OSError:
             is_host = self.server.lClient[client].is_host

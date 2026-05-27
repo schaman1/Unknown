@@ -459,8 +459,8 @@ class Client:
         elif id==9:
             packet+= struct.pack("!BB",data[0][0],data[0][1])
 
-        self.client.send(packet)
-        #self.client.send(json.dumps(data).encode())
+        self.client.sendall(packet)
+        #self.client.sendall(json.dumps(data).encode())
 
     def draw_text(self,screen,font,text,idx):
             text = font.render(text, True, (255, 255, 255))
