@@ -1,4 +1,4 @@
-import select,struct, threading
+import select, struct, threading, queue
 
 class Network_handler :
 
@@ -6,99 +6,74 @@ class Network_handler :
         self.server = server
         self.buffers = {}
         self.send_locks = {}  
+        self.received_messages = queue.Queue()
+
+    def start_client_reader(self, client_socket):
+        threading.Thread(target=self._client_reader_loop, args=(client_socket,), daemon=True).start()
+
+    def _read_exact(self, sock, length):
+        data = bytearray()
+        while len(data) < length:
+            chunk = sock.recv(length - len(data))
+            if not chunk:
+                raise ConnectionError("Socket closed by client")
+            data.extend(chunk)
+        return data
+
+    def _client_reader_loop(self, client_socket):
+        try:
+            # We run as long as the client socket is active in the server
+            while client_socket in self.server.lClient:
+                # Read 1 byte for message ID
+                msg_id_data = self._read_exact(client_socket, 1)
+                msg_id = msg_id_data[0]
+                
+                # Determine message size (handling client to server static sizes)
+                if msg_id in (0, 1, 2, 7, 10, 11, 12, 13):
+                    msg_size = 1
+                elif msg_id in (3, 4, 6):
+                    msg_size = 2
+                elif msg_id == 5:
+                    msg_size = 5
+                elif msg_id == 8:
+                    msg_size = 4
+                elif msg_id == 9:
+                    msg_size = 3
+                else:
+                    raise ConnectionError(f"Unknown message ID on server: {msg_id}")
+                
+                # Read body
+                body_data = self._read_exact(client_socket, msg_size - 1)
+                msg = bytearray([msg_id]) + body_data
+                self.received_messages.put((client_socket, msg, msg_size))
+        except Exception as e:
+            # Ignore expected exceptions when server is shutting down or client already removed
+            if client_socket in self.server.lClient:
+                print(f"Server reader thread error/disconnect for client: {e}")
+                self.received_messages.put((client_socket, ("disconnect", e), 0))
 
     def handle_clients(self):
-        """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
-        
-        #try:
-        #    buffer = bytearray()
-        #    while True:
-
-        sockets = list(self.server.lClient.keys())
-              
-         # Ne pas appeler select sur une liste vide
-        if len(sockets) == 0:
-            return
-        
-        # select non bloquant (timeout = 0)
-        readable, _, _ = select.select(sockets, [], [], 0)
-
-        for client_socket in readable :
+        """Processes messages queued by the background client reader threads."""
+        while not self.received_messages.empty():
             try:
-                data = client_socket.recv(1024)
-
-            except BlockingIOError as e:
-                    continue
-            
-            except Exception as e : 
-                    print("Erreur reception :",e)
-
-            try :
-                if not data:
-                    print(f"Client déconnecté proprement.")
-
-                    self.server.remove_client(client_socket)
-                    continue
-            except :
-                print(f"Client déconnecté proprement.")
-
-                self.server.remove_client(client_socket)
-                continue
-
-            # ajouter les données au buffer du client
-            buffer = self.buffers[client_socket]
-            buffer.extend(data)
-
-            while True:
-                if len(buffer) < 1:
-                    break
-
-                msg_id = buffer[0]
-
-                # Exemple : ID 0 = start_game (1 byte)
-                if msg_id == 0 or msg_id ==10 or msg_id == 11 or msg_id == 12 or msg_id==13: #Start game
-                    msg_size = 1
-
-                elif msg_id == 1: #
-                    msg_size = 1
-
-                elif msg_id == 2:
-                    msg_size = 1
-
-                elif msg_id==3:
-                    msg_size=1+1
+                client_socket, msg, msg_size = self.received_messages.get_nowait()
+            except queue.Empty:
+                break
                 
-                elif msg_id==4:
-                    msg_size=1+1
-
-                elif msg_id==5:
-                    msg_size=1+4
-
-                elif msg_id==6:
-                    msg_size = 1+1
-
-                elif msg_id==7:
-                    msg_size = 1
-
-                elif msg_id==8:
-                    msg_size = 1+2+1
-
-                elif msg_id == 9:
-                    msg_size = 1+2
-
-                else:
-                    print("UNKNOWN MSG ID SERVER", msg_id,buffer)
-                    del buffer[0]
-                    continue
-
-                if len(buffer) < msg_size:
-                    break  # message incomplet
-
-                msg = buffer[:msg_size]
-                del buffer[:msg_size]
-
-                # Traitement
-                self.process_message(client_socket,msg,msg_size)
+            # If the client socket has already been removed, ignore unless it's a disconnect event
+            if client_socket not in self.server.lClient and not (isinstance(msg, tuple) and msg[0] == "disconnect"):
+                continue
+                
+            if isinstance(msg, tuple) and msg[0] == "disconnect":
+                if client_socket in self.server.lClient:
+                    self.server.remove_client(client_socket)
+                continue
+                
+            # Otherwise, process the message in the main game loop context!
+            try:
+                self.process_message(client_socket, msg, msg_size)
+            except Exception as e:
+                print(f"Error processing client message {msg[0]}: {e}")
 
     def process_message(self,client_socket,msg,msg_size):
 
@@ -440,12 +415,7 @@ class Network_handler :
                     client.sendall(packet)
             else:
                 client.sendall(packet)
-                
-        except OSError:
-            is_host = self.server.lClient[client].is_host
-            if is_host:
-                print("Le host a quitté, fermeture du serveur.")
-                self.stop_server()
-
         except Exception as e:
-            print(f"Erreur envoi: {e}")
+            print(f"Erreur envoi client: {e}")
+            if client in self.server.lClient:
+                self.server.remove_client(client)

@@ -40,27 +40,35 @@ class Server:
 
     def remove_client(self, client_socket):
         """Nettoyage propre d’un client déconnecté."""
-        is_host = self.lClient[client_socket].is_host
-        print("Suppression d'un client")
+        if client_socket not in self.lClient:
+            return
+
+        player = self.lClient[client_socket]
+        is_host = player.is_host
+        removed_id = player.id
+        print(f"Suppression du client {removed_id}")
 
         if is_host:
             print("Le host a quitté, fermeture du serveur.")
             self.stop_server()
+            return
 
-        elif client_socket in self.lClient:
-            print(f"Suppression du client {self.safe_peername(client_socket)}")
+        try:
+            client_socket.close()
+        except:
+            pass
+
+        if client_socket in self.network_handler.send_locks:
+            del self.network_handler.send_locks[client_socket]
+
+        del self.lClient[client_socket]
+
+        # Broadcast the removal to other clients
+        for client in list(self.lClient.keys()):
             try:
-                client_socket.close()
-            except:
-                pass
-
-            if client_socket in self.network_handler.buffers:
-                del self.network_handler.buffers[client_socket]
-                del self.network_handler.send_locks[client_socket]
-
-            del self.lClient[client_socket]
-        else:
-            print(f"Tentative de suppression d’un client déjà supprimé.")
+                self.send_data([2, removed_id], client)
+            except Exception as e:
+                print(f"Failed to broadcast player removal: {e}")
 
     def stop_server(self):
         """Arrête le serveur et déconnecte tous les clients."""
@@ -169,9 +177,9 @@ class Server:
         is_host = len(self.lClient) == 0
         self.nbr_player += 1
         self.lClient[client_socket] = Player(pos = world.SPAWN_POINT,id = self.nbr_player,host = is_host)
-        self.network_handler.buffers[client_socket] = bytearray()
         self.network_handler.send_locks[client_socket] = threading.Lock()
-        client_socket.setblocking(False)
+        client_socket.setblocking(True)
+        self.network_handler.start_client_reader(client_socket)
 
     def send_data_update(self,data,id):
         self.network_handler.send_data_update(data,id)
