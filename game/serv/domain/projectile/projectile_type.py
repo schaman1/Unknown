@@ -200,3 +200,19 @@ class Fluff(Projectile) :
         
         self.delta_angle = delta_angle%360
         
+class Big_Lune(Projectile) :
+
+    def __init__(self,angle,pos,team,randomize,owner):
+
+        self.life_time = weapons.BIG_LUNE_LIFE
+
+        super().__init__(pos,self.life_time,angle,
+                         speed = weapons.BIG_LUNE_V,
+                         id_img = 48,
+                         width = weapons.BIG_LUNE_WIDTH,
+                         height = weapons.BIG_LUNE_HEIGHT,
+                         damage = weapons.BIG_LUNE_DAMAGE,
+                         team=team,
+                         randomize_angle=randomize,
+                         owner_pos=owner,
+                         knockback = weapons.KNOCKBACK_LUNE)

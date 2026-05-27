@@ -37,7 +37,7 @@ OBJECTS.append(("Chest",4,48298,14599 +300, 170))
 OBJECTS.append(("Chest",4,117500,21800 +300, 170))
 OBJECTS.append(("Chest",4,97331,52600 +300, 170))
 
-OBJECTS.append(("SPELL",2,1300,18500,5)) #Put a pnj instead
+OBJECTS.append(("SPELL",2,1300,18500,1)) #Put a pnj instead
 
 #OBJECTS.append(("HEALER",1,1400,5300,0))
 #OBJECTS.append(("Chest",2,3500,19200,0))

@@ -69,6 +69,8 @@ class Read_monster :
 
     def create_list_monster(self) :
 
+        first = True
+
         for name in MONSTER_POSITION.keys() :
 
             for pos in MONSTER_POSITION[name] :
@@ -104,7 +106,13 @@ class Read_monster :
                     
                 if class_monster != None :
 
-                    self.create_monster(class_monster(pos[0],pos[1]))
+                    monst = class_monster(pos[0],pos[1])
+                    if first :
+                        monst.prime = 1
+                        monst.len_dead = 3
+                    self.create_monster(monst)
+
+
 
     def return_chg(self, lInfoClient, map,dt,collision_handler,projectile_manager) :
         """Itere parmis tout les monstres visibles et les move, renvoie une liste des modifs à faire"""

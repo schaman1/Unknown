@@ -289,6 +289,17 @@
         "time_reload": 0.3,
         "degat": 8
     },
+    "SPELL48": {
+        "type": "projectile",
+        "name": "Taillade rouge",
+        "description": ["Plus grand que la taillade,",
+                        "elle inflige plus de dégâts."],
+        "life": 0.1,
+        "speed": 0,
+        "rebond": 0,
+        "time_reload": 0.1,
+        "degat": 10
+    },
     "UNKNOWN_SPELL": {
         "type": "projectile",
         "name": "Inconnu",
