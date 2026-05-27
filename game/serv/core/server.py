@@ -171,6 +171,7 @@ class Server:
         self.lClient[client_socket] = Player(pos = world.SPAWN_POINT,id = self.nbr_player,host = is_host)
         self.network_handler.buffers[client_socket] = bytearray()
         self.network_handler.send_locks[client_socket] = threading.Lock()
+        client_socket.setblocking(False)
 
     def send_data_update(self,data,id):
         self.network_handler.send_data_update(data,id)

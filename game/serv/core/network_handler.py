@@ -226,19 +226,26 @@ class Network_handler :
     def send_data_update(self,data,id):
         """Permet d'envoyer data a tout les clients connecté au jeu data = dico"""
         #print(data)
-        def send_to(socket,message):
-            try:
-                #print("Send successfuly")
-                self.send_data(message, socket)
-            except Exception as e:
-                print(message)
-                print(f"Erreur envoi bis {e}")#,file=sys.stderr)
-                pass  # ou suppression du client mort
+        #def send_to(socket,message):
+        #    try:
+        #        #print("Send successfuly")
+        #        self.send_data(message, socket)
+        #    except Exception as e:
+        #        print(message)
+        #        print(f"Erreur envoi bis {e}")#,file=sys.stderr)
+        #        pass  # ou suppression du client mort
 
-        for cnt,socket in enumerate(self.server.lClient.keys()):
+
+        #for cnt,socket in enumerate(self.server.lClient.keys()):
+        #for socket in list(self.server.lClient.keys()):
+        #    if len(data) != 0:
+        #        self.send_data(data, socket)
+        for cnt,socket in enumerate(list(self.server.lClient.keys())):
+
             if len(data[cnt]) != 0:
+                self.send_data([id,data[cnt]], socket)
 
-                threading.Thread(target=send_to, args=(socket,[id,data[cnt]]), daemon=True).start()
+                #threading.Thread(target=send_to, args=(socket,[id,data[cnt]]), daemon=True).start()
 
     def pack_cells(self,cells,packet):
 
