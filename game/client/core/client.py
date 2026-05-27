@@ -85,7 +85,7 @@ class Client:
         while True:  # ← boucle jusqu'à ce qu'il n'y ait plus rien
             readable, _, _ = select.select([self.client], [], [], 0)
             if not readable:
-                return
+                break
 
             try:
                 data = self.client.recv(4096)  # plus grand aussi ca aide
