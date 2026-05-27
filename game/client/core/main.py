@@ -50,6 +50,67 @@ class Main:
             puissance+=1
         size.CELL_SIZE = 2**(puissance-1)
 
+    def action_key(self, action):
+        return self.settings_menu.controls[action]
+
+    def is_action(self, event, action):
+        return event.key == self.action_key(action)
+
+    def handle_move_keydown(self, event):
+        if self.state.game.player_all.me.life <= 0:
+            return False
+
+        if self.is_action(event, "up"):
+            self.key_command.append([3, 0])
+            self.state.game.player_all.me.update_direction_look(1)
+            return True
+
+        elif self.is_action(event, "down"):
+            self.key_command.append([3, 1])
+            self.state.game.player_all.me.update_direction_look(3)
+            return True
+
+        elif self.is_action(event, "left"):
+            self.key_command.append([3, 2])
+            self.state.game.player_all.me.update_direction_look(2)
+            return True
+
+        elif self.is_action(event, "right"):
+            self.key_command.append([3, 3])
+            self.state.game.player_all.me.update_direction_look(0)
+            return True
+
+        elif self.is_action(event, "jump"):
+            self.key_command.append([7])
+            return True
+
+        return False
+
+    def handle_move_keyup(self, event):
+        if self.state.game.player_all.me.life <= 0:
+            return False
+
+        if self.is_action(event, "up"):
+            self.key_command.append([4, 0])
+            self.state.game.player_all.me.update_direction_stop_look(1)
+            return True
+
+        elif self.is_action(event, "down"):
+            self.key_command.append([4, 1])
+            return True
+
+        elif self.is_action(event, "left"):
+            self.key_command.append([4, 2])
+            self.state.game.player_all.me.update_direction_stop_look(2)
+            return True
+
+        elif self.is_action(event, "right"):
+            self.key_command.append([4, 3])
+            self.state.game.player_all.me.update_direction_stop_look(0)
+            return True
+
+        return False
+
     def run(self):
         """Ce qui est run à chaque itérations"""
         running = True
@@ -78,8 +139,10 @@ class Main:
                 if event.type == pygame.KEYUP:
 
                     if self.state.mod == "game":
-
-                        if self.state.game.player_all.me.life > 0:
+                        if not self.escape_menu.visible and not self.settings_menu.visible:
+                            self.handle_move_keyup(event)
+                        
+                        """if self.state.game.player_all.me.life > 0:
 
                             if event.key == pygame.K_z :
                                 self.key_command.append([4,0])
@@ -94,11 +157,19 @@ class Main:
 
                             elif event.key==pygame.K_q:
                                 self.key_command.append([4,2])
-                                self.state.game.player_all.me.update_direction_stop_look(2)
+                                self.state.game.player_all.me.update_direction_stop_look(2)"""
 
                 elif event.type == pygame.KEYDOWN:
 
                     if self.state.mod == "game":
+                        if self.settings_menu.visible:
+                            if event.key == pygame.K_ESCAPE:
+                                self.settings_menu.visible = False
+                                self.escape_menu.visible = True
+                                self.settings_menu.waiting_key = None
+                            elif self.settings_menu.waiting_key:
+                                self.settings_menu.handle_key(event.key)
+                            continue
 
                         if event.key == pygame.K_e:
                             if not self.in_interaction :
@@ -119,15 +190,20 @@ class Main:
                         if event.key == pygame.K_p :
                             self.state.game.mini_map.draw = not self.state.game.mini_map.draw
 
-                        elif event.key == pygame.K_i :
+                        elif self.is_action(event, "inventory"):
+                            self.state.game.trigger_info_key()
+
+                        if not self.escape_menu.visible and not self.settings_menu.visible:
+                            self.handle_move_keydown(event)
+                        """elif event.key == pygame.K_i :
                             self.state.game.trigger_info_key()
 
                         elif event.key == pygame.K_SPACE :
-                            self.key_command.append([7])
+                            self.key_command.append([7])"""
 
                         if self.state.game.player_all.me.life > 0:
 
-                            if event.key == pygame.K_z :
+                            """if event.key == pygame.K_z :
                                 self.key_command.append([3,0])
                                 self.state.game.player_all.me.update_direction_look(1)
 
@@ -142,9 +218,9 @@ class Main:
 
                             elif event.key==pygame.K_q:
                                 self.key_command.append([3,2])
-                                self.state.game.player_all.me.update_direction_look(2)
+                                self.state.game.player_all.me.update_direction_look(2)"""
 
-                            elif event.key==pygame.K_t:
+                            if event.key==pygame.K_t:
                                 self.client.send_data(13,None)
                             
                         if event.key == pygame.K_ESCAPE and self.objClicked is None:
@@ -334,7 +410,22 @@ class Main:
 
     def key_event(self):
 
+
+        if self.escape_menu.visible or self.settings_menu.visible:
+            return
+
         key = pygame.key.get_pressed()
+
+        if key[self.settings_menu.controls["spell1"]]:
+            self.state.game.shot(1)
+
+        if key[self.settings_menu.controls["spell2"]]:
+            self.state.game.shot(2)
+
+        if key[self.settings_menu.controls["spell3"]]:
+            self.state.game.shot(3)
+
+        """key = pygame.key.get_pressed()
         #buttons = pygame.mouse.get_pressed()  #0:left/1:middle/2:right
         #is_looking = None
         #dt_send = int(self.dt*1000)
@@ -346,7 +437,7 @@ class Main:
             self.state.game.shot(2)
 
         if key[pygame.K_l]:
-            self.state.game.shot(3)
+            self.state.game.shot(3)"""
         
 
         #if buttons[0] :
