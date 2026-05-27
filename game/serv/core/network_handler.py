@@ -433,7 +433,7 @@ class Network_handler :
                     client.sendall(packet)
             else:
                 client.sendall(packet)
-
+                
         except OSError:
             is_host = self.server.lClient[client].is_host
             if is_host:

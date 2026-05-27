@@ -82,43 +82,64 @@ class Client:
         self.send_data(id = 1) #3 = client connection
 
     def poll_reception(self):
-        """Version non bloquante de loop_reception_server(), appelée dans la boucle de jeu."""
+        while True:  # ← boucle jusqu'à ce qu'il n'y ait plus rien
+            readable, _, _ = select.select([self.client], [], [], 0)
+            if not readable:
+                return
 
-        # Vérifie si le socket est prêt (0 = instantané)
-        readable, _, _ = select.select([self.client], [], [], 0)
-        if not readable:
-            return  # aucune donnée, ne bloque jamais
+            try:
+                data = self.client.recv(4096)  # plus grand aussi ca aide
+            except BlockingIOError:
+                return
+            except Exception as e:
+                print("Erreur réception:", e)
+                self.connected = False
+                return
 
-        try:
-            data = self.client.recv(1024)
-
-        except BlockingIOError:
-            print("Erreur socket non prêt")
-            return  # socket non prêt (rare si select utilisé)
-
-        except Exception as e:
-            print("Erreur réception:", e)
-            self.connected = False
-            return
-
-        # Déconnexion détectée
-        try :
             if not data:
                 print("Connexion perdue")
                 self.connected = False
                 return
-        except :
-            print("Connexion perdue")
-            self.connected = False
-            return
 
+            self.buffer.extend(data)
 
-        # Ajoute les données au buffer
-        self.buffer.extend(data)
+    #def poll_reception(self):
+    #    """Version non bloquante de loop_reception_server(), appelée dans la boucle de jeu."""
+#
+    #    # Vérifie si le socket est prêt (0 = instantané)
+    #    readable, _, _ = select.select([self.client], [], [], 0)
+    #    if not readable:
+    #        return  # aucune donnée, ne bloque jamais
+#
+    #    try:
+    #        data = self.client.recv(1024)
+#
+    #    except BlockingIOError:
+    #        print("Erreur socket non prêt")
+    #        return  # socket non prêt (rare si select utilisé)
+#
+    #    except Exception as e:
+    #        print("Erreur réception:", e)
+    #        self.connected = False
+    #        return
+#
+    #    # Déconnexion détectée
+    #    try :
+    #        if not data:
+    #            print("Connexion perdue")
+    #            self.connected = False
+    #            return
+    #    except :
+    #        print("Connexion perdue")
+    #        self.connected = False
+    #        return
+#
+#
+    #    # Ajoute les données au buffer
+    #    self.buffer.extend(data)
 
         # ---- Traitement des messages ----
         while True:
-
             # Besoin d'au moins 1 byte → ID
             if len(self.buffer) < 1:
                 break
