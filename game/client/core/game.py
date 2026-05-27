@@ -310,9 +310,9 @@ class Game :
             #delta_life = new_life - self.player_all.me.life
             #self.add_popup(self.player_all.me,delta_life)
 
-            player = self.player_all.dic_players.get(id_player)
+            player = self.player_all.dic_players.get(data[1])
             if player:
-                player.update_life(new_life,max_life)
+                player.update_life(new_life,data[2])
 
     def update_money(self,money):
 
