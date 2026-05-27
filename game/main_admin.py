@@ -11,12 +11,12 @@ from client.core.main import Main
 #Change values to have access to all
 def change_values():
 
-    world.SPAWN_POINT = (41324,21299)#(310*4*100,130*4*100)#
+    world.SPAWN_POINT = (310*4*100,130*4*100)#(41324,21299)#
 
     Default_values.Player_money_start = 5000
     Default_values.PLAYER_LIFE = 5000
     world.START_SEE = True
-    world.NBR_CELL_CAN_SEE *=10
+    world.NBR_CELL_CAN_SEE *=2
 
     world.POS_TOO_LEFT = 0
 
