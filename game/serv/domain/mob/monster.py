@@ -875,7 +875,7 @@ class Mma(Monster) :
                 if self.check_if_player_collide_attack(self.target,self.side,self.hit_box_damage_width) :
                     if not self.target.auto_destruction :
                         chunk = 99
-                    collision_handler.player_take_damage_no_projectile(self.damage,self.target,chunk)
+                        collision_handler.player_take_damage_no_projectile(self.damage,self.target)
 
 class Shaman(Monster) :
 
