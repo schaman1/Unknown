@@ -47,12 +47,23 @@ class Server_game(Server) :
             result_projectile,event_player,friendly_monster = self.projectile_manager.return_chg(self.lClient,dt,self.map_cell)
 
             send_new_data = self.collision_handler.trigger_collision(self.map_monster.dic_monster,self.map_monster.friendly_monsters,self.lClient,self.projectile_manager.dic_projectiles)
-            if len(self.collision_handler.effect_send)!=0:
-                self.send_data_all([14,self.collision_handler.effect_send])
+
+            if len(self.collision_handler.effect_send) != 0:
+                # Passer une copie de la liste pour éviter la modification concurrente
+                self.send_data_all([14, list(self.collision_handler.effect_send)])
                 self.collision_handler.effect_send.clear()
-            if len(self.collision_handler.die_send)!=0:
-                self.send_data_all([18,self.collision_handler.die_send])
+
+            if len(self.collision_handler.die_send) != 0:
+                # Passer une copie de la liste pour éviter la modification concurrente
+                self.send_data_all([18, list(self.collision_handler.die_send)])
                 self.collision_handler.die_send.clear()
+            
+            #if len(self.collision_handler.effect_send)!=0:
+            #    self.send_data_all([14,self.collision_handler.effect_send])
+            #    self.collision_handler.effect_send.clear()
+            #if len(self.collision_handler.die_send)!=0:
+            #    self.send_data_all([18,self.collision_handler.die_send])
+            #    self.collision_handler.die_send.clear()
             if len(event_player)!=0:
                 self.add_event_player(event_player)
 
