@@ -44,7 +44,7 @@ class Pnj_all :
         pos = (83,157)
         self.add_pnj(pos,'pnj_tell_healer')
     
-        pos = (425,261)
+        pos = (350,301)
         self.add_pnj(pos,'pnj_double_jump')
         
         pos = world.POS_PNJ

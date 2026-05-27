@@ -110,6 +110,7 @@ class Read_monster :
                     if first :
                         monst.prime = 1
                         monst.len_dead = 3
+                        first = False
                     self.create_monster(monst)
 
 
