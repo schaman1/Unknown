@@ -114,7 +114,7 @@ class Server_game(Server) :
         if self.lClient[sender].fct_to_do() == True :
 
             self.lClient[sender].pos_x,self.lClient[sender].pos_y = world.POS_RESET[0]*self.base_movement,world.POS_RESET[1]*self.base_movement
-            self.send_data([19,None],sender)
+            self.send_data([19],sender)
 
     def init_canva(self):
         return self.map_cell.return_all(self.lClient) #Renvoie tout les pixels à dessiner

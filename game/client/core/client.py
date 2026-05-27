@@ -331,10 +331,10 @@ class Client:
 
         elif id==14:
 
-            len = struct.unpack("!H", data[1:3])[0]
+            count = struct.unpack("!H", data[1:3])[0]
             popup_to_create = []
 
-            for i in range(len):
+            for i in range(count):
 
                 id,chunk,delta_life = struct.unpack("!HHH",data[6*i+3:6*i+9])
                 

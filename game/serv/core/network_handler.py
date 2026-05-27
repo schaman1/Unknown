@@ -5,6 +5,7 @@ class Network_handler :
     def __init__(self,server) :
         self.server = server
         self.buffers = {}
+        self.send_locks = {}  
 
     def handle_clients(self):
         """Gère la réception des messages d'un client connecté. = Chaque client à sa boucle handle_client"""
@@ -280,6 +281,8 @@ class Network_handler :
 
         for id,pos_x,pos_y in projectiles :
             packet+= struct.pack("!LLL",id,pos_x,pos_y)
+
+        return bytes(packet)
     
     def pack_weapon(self,weapon_info,packet):
         idx_weapon_pos,id_weapon,nbr_spells_max,spells_id = weapon_info
@@ -292,6 +295,8 @@ class Network_handler :
             packet+= struct.pack("!B",id_spell)
             #print("Spells id",id_spell)
 
+        return bytes(packet)
+
     def pack_life_update(self,data,packet):
 
         packet+=struct.pack("!H",len(data))
@@ -299,6 +304,8 @@ class Network_handler :
         for life in data:
             id,new_life,chunk = life
             packet+=struct.pack("!HHH",id,chunk,new_life)
+
+        return bytes(packet)
 
     def pack_die_update(self,data,packet):
 
@@ -309,6 +316,8 @@ class Network_handler :
             duree = int(duree*1000)
             packet+=struct.pack("!HHH",id,chunk,duree)
 
+        return bytes(packet)
+
     def pack_monster_change_chunk(self,data,packet):
 
         packet+=struct.pack("!H",len(data))
@@ -316,6 +325,8 @@ class Network_handler :
         for monster in data:
             chunk,new_chunk,id = monster
             packet+=struct.pack("!HHH",chunk,new_chunk,id)
+
+        return bytes(packet)
 
     def pack_monster_die(self,data,packet):
 
@@ -325,9 +336,12 @@ class Network_handler :
             chunk,id = monster
             packet+=struct.pack("!HH",chunk,id)
 
+        return bytes(packet)
+
     def pack_object(self,data,packet):
 
         packet+=struct.pack("!BBBLLHH",data[0],data[1],data[2],data[3],data[4],data[5],data[6])
+        return bytes(packet)
 
     def send_data(self, data, client):
         """Envoie des données à un client spécifique."""
@@ -346,6 +360,7 @@ class Network_handler :
             packet+=struct.pack("!B",data[1])
 
         elif id == 3:
+            print("Send id 3 !!!")
             self.pack_cells(data[1],packet)
 
         elif id == 4:
@@ -412,15 +427,18 @@ class Network_handler :
             print("Issue id not found : ",id)
 
         try:
-            client.send(packet)
+            lock = self.send_locks.get(client)
+            if lock:
+                with lock:
+                    client.send(packet)
+            else:
+                client.send(packet)
 
         except OSError:
-            # Déconnexion
-            is_host = self.server.lClient[client].is_host#.get(client, {}).get("Host", False)
+            is_host = self.server.lClient[client].is_host
             if is_host:
                 print("Le host a quitté, fermeture du serveur.")
                 self.stop_server()
 
         except Exception as e:
             print(f"Erreur envoi: {e}")
-
