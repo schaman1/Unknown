@@ -13,8 +13,10 @@
     "pnj_double_jump": [
         "Oy ? Mais je n'en crois pas mes pupilles !",
         "Un nain ! Comme moi ! Cela fait si longtemps que je n'en avais pas vu !",
-        "Pour te remercier de ta visite voici un cadeau.",
-        "C'est une pierre qui te permet de sauter une fois de plus !"
+        "Pour te remercier de ta visite, voici un cadeau.",
+        "C'est une pierre qui te permet de sauter une fois de plus !",
+        "Oh, et attends, je vois que tu as une carte dans ton sac !",
+        "Si tu es perdu, appuie sur 'P' pour voir tout le chemin que tu as déjà parcouru !"
     ],
     "pnj_learn_attack": [
         "Oy ! Comment va mon aventurier ?",
