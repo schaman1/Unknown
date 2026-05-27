@@ -469,3 +469,8 @@ class Game :
         bar_surface.blit(hp_text, hp_rect)
         
         screen.blit(bar_surface, (0, 0))
+
+    def move_player(self,id,pos_x,pos_y):
+        new_pos = self.player_all.dic_players[id].move((pos_x,pos_y))
+        if self.player_all.dic_players[id] == self.player_all.me :
+            self.mini_map.draw_circle(new_pos)

@@ -31,5 +31,5 @@ class QueueEvent:
 
                 _,id_player,pos_x,pos_y = data
 
-                self.main.state.game.player_all.dic_players[id_player].move((pos_x,pos_y))
+                self.main.state.game.move_player(id_player,pos_x,pos_y)
 

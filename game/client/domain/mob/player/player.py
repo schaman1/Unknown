@@ -219,6 +219,8 @@ class Player_you(Mob) :
                 self.old_state = "idle"
                 self.animation.set_state("idle")
 
+        return new_pos
+
     def kill(self,duree):
 
         self.key_active["right"] = False

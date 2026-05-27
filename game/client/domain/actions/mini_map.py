@@ -20,17 +20,17 @@ class MiniMap :
         self.vision = 20#vision_size
         self.draw = False
 
-    def draw_circle(self,screen,color,pos,r,width=0):
-
-        pygame.draw.circle(screen, color, pos, r, width)
-
-    def draw_map(self,screen,pos):
+    def draw_circle(self,pos,color=(0,0,0,0),r=20,width=0):
 
         pos = [pos[0]//(4*self.size_1_pixel),pos[1]//(4*self.size_1_pixel)]
 
         pos[0] *=self.scale
         pos[1] *=self.scale
-        self.draw_circle(self.map_unseen,(0,0,0,0),pos,self.vision)
+        pygame.draw.circle(self.map_unseen, color, pos, r, width)
+
+    def draw_map(self,screen,pos):
+
+        #self.draw_circle(pos)
 
         if self.draw :
             screen.blit(self.map_seen,(0,0))
