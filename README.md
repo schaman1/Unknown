@@ -46,13 +46,13 @@ Serez-vous assez forts pour vaincre le **Roi de NIFHLEIM** ?
 
 ## TEAM NIKA
 
-| Nom | Email |
-|-----|-------|
-| Lilian P. | lilian.petit@epita.fr |
-| Louan F. | louan.favre@epita.fr |
-| Clement C. | clement.charbonnier@epita.fr |
-| Edmond J. | edmond.jin@epita.fr |
-| Timothee N. | timothee.nobilet@epita.fr |
+| Membre             | Email                        |
+|--------------------|------------------------------|
+| Lilian Petit       | lilian.petit@epita.fr        |
+| Louan Favre        | louan.favre@epita.fr         |
+| Clement Charbonnier| clement.charbonnier@epita.fr |
+| Edmond Jin         | edmond.jin@epita.fr          |
+| Timothee Nobilet   | timothee.nobilet@epita.fr    |
 
 ---
 
